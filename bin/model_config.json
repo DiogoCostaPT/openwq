@@ -1,0 +1,47 @@
+{
+    "compartments": [
+        {
+            "1": "snow_liquid",
+            "2": "snow_ice",
+            "3": "snow_air"
+        }
+    ],
+    "dimensions": [
+        {
+            "n_x": 100,
+            "n_y": 1,
+            "n_z": 1
+        }
+    ],
+    "chemical_species": [
+        {
+            "1": "no3",
+            "2": "po4"
+        }
+    ],
+    "1": [
+        { 
+            "mobile": true,
+            "water_fluxes": [
+                {
+                    "file_fullpath": "qcmelt_svalbard_test.txt",
+                    "skip_rows": 5,
+                    "time_col": 1,
+                    "var_col": 2,
+                    "unit_convertion_multipler": 1
+                }
+            ],
+            "chemical_species": ["no3","po4"]
+        }
+        ],
+    "2": [
+        { 
+            "mobile": false,
+            "chemical_species": ["no3","po4"]
+        }
+        ]
+}
+
+
+
+
