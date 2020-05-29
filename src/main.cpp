@@ -1,4 +1,5 @@
 // Copyright 2020, Diogo Costa
+// This file is part of OpenWQ model.
 
 // This program, openWQ, is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,20 +17,21 @@
 #include <iostream>
 #include <fstream>
 #include <armadillo>
-#include "json/json.h"
-#include "global.h"
 #include <string>
 
+#include "global.h"
 #include "process_json.h"
-
 
 int main(int argc, char* argv[]) 
 {   
-    // create variables
+    // Class Json config 
+    json_config cls_jc; 
+    
+    // Create variables
     std::string configjson_file (argv[1]); // configuration file
-   
+
     // read and process config json
-    jsonconfig_dim(configjson_file);
+    read_json_configfile(configjson_file);
    
     return 0;
 }

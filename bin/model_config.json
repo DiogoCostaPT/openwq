@@ -1,4 +1,10 @@
 {
+    "project_name": "Test",
+    "geographical_location": "Svalbard",
+    "authors": "Diogo Costa",
+    "date": "May_2020",
+    "additional_info": "Deafult file for testing purposes",
+    "number_of_compartments": 3,
     "compartments": [
         {
             "1": "snow_liquid",
@@ -6,40 +12,18 @@
             "3": "snow_air"
         }
     ],
-    "dimensions": [
-        {
-            "n_x": 100,
-            "n_y": 1,
-            "n_z": 1
-        }
-    ],
+    "compartments_active": [1, 2, 3],
+    "dimensions_nx": 100,
+    "dimensions_ny": 1,
+    "dimensions_nz": 1,
+    "number_of_chemical_species": 2,
     "chemical_species": [
         {
             "1": "no3",
             "2": "po4"
         }
     ],
-    "1": [
-        { 
-            "mobile": true,
-            "water_fluxes": [
-                {
-                    "file_fullpath": "qcmelt_svalbard_test.txt",
-                    "skip_rows": 5,
-                    "time_col": 1,
-                    "var_col": 2,
-                    "unit_convertion_multipler": 1
-                }
-            ],
-            "chemical_species": ["no3","po4"]
-        }
-        ],
-    "2": [
-        { 
-            "mobile": false,
-            "chemical_species": ["no3","po4"]
-        }
-        ]
+    "chemical_species_active": [1, 2]
 }
 
 

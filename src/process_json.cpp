@@ -1,76 +1,48 @@
-// Process config json file
+// Copyright 2020, Diogo Costa
+// This file is part of OpenWQ model.
+
+// This program, openWQ, is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) aNCOLS later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 #include "process_json.h"
 
-void jsonconfig_dim(const std::string& configjson_file)
+void read_json_configfile(const std::string& configjson_file)
 {
 
-    std::string str, msg, count_str;
-    bool cmpt_on,dim_on,chem_on;
+        json_config cls_jc; 
 
-    unsigned count = 0,
-             cmt_num = 0, 
-             n_x = 0,
-             n_y = 0,
-             n_z = 0,
-             chem_num = 0;
+        std::ifstream i(configjson_file);
+        json j;
+        i >> j;
+
+        try{
+                cls_jc.proj_geninfo.project_name = j["project_name"];
+                cls_jc.proj_geninfo.geographical_location = j["geographical_location"];
+                cls_jc.proj_geninfo.authors = j["authors"];
+                cls_jc.proj_geninfo.date = j["date"];
+                cls_jc.proj_geninfo.additional_info = j["additional_info"];
+                cls_jc.proj_size.number_of_compartments = j["number_of_compartments"];
+                cls_jc.proj_size.number_of_chemical_species = j["number_of_chemical_species"]; 
+                cls_jc.proj_size.dim_nx = j["dimensions_nx"];
+                cls_jc.proj_size.dim_ny = j["dimensions_ny"];
+                cls_jc.proj_size.dim_nz = j["dimensions_nz"];
+
+        }catch (json::type_error){
+                std::cout << "An exception occurred parsing" << configjson_file << '\n';
+        }
+
+        
+
     
-    std::ifstream file(configjson_file);
-    
-    int i = 0;
-    cmpt_on = false;
-    while (std::getline(file, str)) 
-    {
-        // check the comand
-         if(str.find("compartments") != std::string::npos){
-             cmpt_on = true;
-             dim_on = false;
-             chem_on = false;
-             count = 1;
-             continue;
-             }; 
-         if(str.find("dimensions") != std::string::npos){
-             cmpt_on = false;
-             dim_on = true;
-             chem_on = false;
-             count = 1;
-             continue;
-             }; 
-         if(str.find("chemical_species") != std::string::npos){
-             cmpt_on = false;
-             dim_on = false;
-             chem_on = true;
-             count = 1;
-             continue;
-             }; 
-         
-         // compartments
-         if (cmpt_on){
-             count_str = std::to_string(count);
-             if(str.find(count_str) != std::string::npos){
-                 cmt_num++;
-                 count++;
-                 continue;};
-         };
-
-        // dimensions
-         if (dim_on){
-             count_str = std::to_string(count);
-             if(str.find("n_x") != std::string::npos){
-                 n_x = ++;
-                 n_y = ;
-                 continue;};
-         };
-
-        // chemical species
-         if (chem_on){
-             count_str = std::to_string(count);
-             if(str.find(count_str) != std::string::npos){
-                 chem_num++;
-                 count++;
-                 continue;};
-         }
-
-    }
-
 }

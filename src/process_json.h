@@ -5,9 +5,13 @@
 
 #include <string>
 #include <fstream>
+#include <iostream>
+#include "jnlohmann/json.h"
+#include "global.h"
 
+using json = nlohmann::json;
 
-void jsonconfig_dim(const std::string& configjson_file);
+void read_json_configfile(const std::string& configjson_file);
 
 
 #endif
