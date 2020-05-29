@@ -24,14 +24,12 @@
 
 int main(int argc, char* argv[]) 
 {   
-    // Class Json config 
-    json_config cls_jc; 
-    
-    // Create variables
-    std::string configjson_file (argv[1]); // configuration file
+   
+    // Configuration file
+    std::string configjson_file (argv[1]); 
 
-    // read and process config json
-    read_json_configfile(configjson_file);
+    // Get general info and size of the project
+    read_json_infosize(configjson_file);
    
     return 0;
 }

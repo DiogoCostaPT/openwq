@@ -17,29 +17,29 @@
 
 #include "process_json.h"
 
-void read_json_configfile(const std::string& configjson_file)
+void read_json_infosize(const std::string& configjson_file)
 {
 
-        json_config cls_jc; 
+        ClassGenProj ClassGP; 
 
         std::ifstream i(configjson_file);
         json j;
         i >> j;
 
         try{
-                cls_jc.proj_geninfo.project_name = j["project_name"];
-                cls_jc.proj_geninfo.geographical_location = j["geographical_location"];
-                cls_jc.proj_geninfo.authors = j["authors"];
-                cls_jc.proj_geninfo.date = j["date"];
-                cls_jc.proj_geninfo.additional_info = j["additional_info"];
-                cls_jc.proj_size.number_of_compartments = j["number_of_compartments"];
-                cls_jc.proj_size.number_of_chemical_species = j["number_of_chemical_species"]; 
-                cls_jc.proj_size.dim_nx = j["dimensions_nx"];
-                cls_jc.proj_size.dim_ny = j["dimensions_ny"];
-                cls_jc.proj_size.dim_nz = j["dimensions_nz"];
+                ClassGP.geninfo.project_name = j["project_name"];
+                ClassGP.geninfo.geographical_location = j["geographical_location"];
+                ClassGP.geninfo.authors = j["authors"];
+                ClassGP.geninfo.date = j["date"];
+                ClassGP.geninfo.additional_info = j["additional_info"];
+                ClassGP.size.number_of_compartments = j["number_of_compartments"];
+                ClassGP.size.number_of_chemical_species = j["number_of_chemical_species"]; 
+                ClassGP.size.dim_nx = j["dimensions_nx"];
+                ClassGP.size.dim_ny = j["dimensions_ny"];
+                ClassGP.size.dim_nz = j["dimensions_nz"];
 
         }catch (json::type_error){
-                std::cout << "An exception occurred parsing" << configjson_file << '\n';
+                std::cout << "An exception occurred parsing" << configjson_file << std::endl;
         }
 
         

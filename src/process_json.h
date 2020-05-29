@@ -11,7 +11,7 @@
 
 using json = nlohmann::json;
 
-void read_json_configfile(const std::string& configjson_file);
+void read_json_infosize(const std::string& configjson_file);
 
 
 #endif
