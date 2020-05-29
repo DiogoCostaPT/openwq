@@ -7,7 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include "jnlohmann/json.h"
-#include "global.h"
+#include "globalgeneral.h"
 
 using json = nlohmann::json;
 

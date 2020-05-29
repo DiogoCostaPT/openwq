@@ -1,8 +1,8 @@
 
-#ifndef GLOBALH_INCLUDED
-#define GLOBALH_INCLUDED
+#ifndef GLOBALGENERALH_INCLUDED
+#define GLOBALGENERALH_INCLUDED
 
-// JSON config file
+// General information about the project
 class ClassGenProj
 {
     public:
@@ -23,9 +23,6 @@ class ClassGenProj
         unsigned int dim_nz;
     } size;
 
-    
-
 };
-
 
 #endif

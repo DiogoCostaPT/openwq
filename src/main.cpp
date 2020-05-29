@@ -19,17 +19,25 @@
 #include <armadillo>
 #include <string>
 
-#include "global.h"
+#include "globalgeneral.h"
+#include "globalspecific.h"
 #include "process_json.h"
 
 int main(int argc, char* argv[]) 
 {   
-   
+    ClassGenProj ClassGP; 
+
     // Configuration file
     std::string configjson_file (argv[1]); 
 
     // Get general info and size of the project
     read_json_infosize(configjson_file);
+
+    ClassDetProj ClassDP(ClassGP.size.number_of_compartments,
+        ClassGP.size.number_of_chemical_species,
+        ClassGP.size.dim_nx,
+        ClassGP.size.dim_ny,
+        ClassGP.size.dim_nz);
    
     return 0;
 }

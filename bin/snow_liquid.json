@@ -1,0 +1,16 @@
+{
+    "mobile": true,
+    "water_fluxes": [
+        {
+            "file_fullpath": "qcmelt_svalbard_test.txt",
+            "skip_rows": 5,
+            "time_col": 1,
+            "var_col": 2,
+            "unit_convertion_multipler": 1
+        }
+    ]
+}
+
+
+
+
