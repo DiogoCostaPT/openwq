@@ -17,11 +17,8 @@
 
 #include "process_json.h"
 
-void read_json_infosize(const std::string& configjson_file)
+void read_json_infosize(ClassGenProj& ClassGP, const std::string& configjson_file)
 {
-
-        ClassGenProj ClassGP; 
-
         std::ifstream i(configjson_file);
         json j;
         i >> j;
@@ -40,9 +37,7 @@ void read_json_infosize(const std::string& configjson_file)
 
         }catch (json::type_error){
                 std::cout << "An exception occurred parsing" << configjson_file << std::endl;
+                abort();
         }
-
-        
-
     
 }

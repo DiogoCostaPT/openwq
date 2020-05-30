@@ -22,6 +22,7 @@
 #include "globalgeneral.h"
 #include "globalspecific.h"
 #include "process_json.h"
+#include "utility.h"
 
 int main(int argc, char* argv[]) 
 {   
@@ -31,14 +32,24 @@ int main(int argc, char* argv[])
     std::string configjson_file (argv[1]); 
 
     // Get general info and size of the project
-    read_json_infosize(configjson_file);
+    read_json_infosize(ClassGP,configjson_file);
 
+    // Assign OnOFF array
+    //OnOFF OnOFF(ClassGP.size.number_of_compartments,ClassGP.size.number_of_chemical_species); // create class
+    //OnOFF_assign(ClassGP,OnOFF); // assign values
+
+    // Assign the main variable
     ClassDetProj ClassDP(ClassGP.size.number_of_compartments,
         ClassGP.size.number_of_chemical_species,
         ClassGP.size.dim_nx,
         ClassGP.size.dim_ny,
         ClassGP.size.dim_nz);
-   
-    return 0;
+
+    // Initialize major matrixes
+    initiate(ClassGP,ClassDP);
+
+    // Initiate (IC and BC)
+    //initiate();
+
 }
 
