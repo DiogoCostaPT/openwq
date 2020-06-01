@@ -41,12 +41,19 @@ class ClassDetProj
             char cmpt_names[numcmp]; // compartment names
             char spec_names[numspec]; // species names
 
-            arma::Cube<double> domain_xyz(nx,ny,nz);
+            //arma::Cube<double> domain_xyz(nx,ny,nz);
             
 
-            arma::field<arma::Mat<double>> wflux(numcmp,numspec); // water fluxes
-            arma::field<arma::Mat<double>> wmass(numcmp,numspec); // water mass
-            arma::field<arma::Mat<double>> chemass(numcmp,numspec); // chemical mass
+            //arma::field<arma::Mat<double>> wflux(numcmp,numspec); // water fluxes
+            //arma::field<arma::Mat<double>> wmass(numcmp,numspec); // water mass
+            //arma::field<arma::Mat<double>> chemass(numcmp,numspec); // chemical mass
+
+
+            domain_xyz = std::unique_ptr<arma::Cube<double>>(new arma::cube(nx,ny,nz));
+
+            wflux = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numcmp,numspec));
+            wmass = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numcmp,numspec));
+            chemass = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numcmp,numspec));
 
             /*
             cmp1_wmass = std::unique_ptr<arma::Cube<double>>(new arma::cube(nx*onoff[0][0],ny*onoff[0][0],nz*onoff[0][0]));
@@ -126,8 +133,14 @@ class ClassDetProj
         cmp1_chm6_mass,cmp2_chm6_mass,cmp3_chm6_mass,cmp4_chm6_mass,cmp5_chm6_mass,cmp6_chm6_mass;
         */
     
-    arma::Cube<double> domain_xyz;
-    arma::field<arma::Mat<double>> wflux,wmass,chemass;
+    //arma::Cube<double> domain_xyz;
+    //arma::field<arma::Mat<double>> wflux,wmass,chemass;
+
+    std::unique_ptr<arma::Cube<double>> domain_xyz;
+    std::unique_ptr<arma::field<arma::Mat<double>>> wflux;
+    std::unique_ptr<arma::field<arma::Mat<double>>> wmass;
+    std::unique_ptr<arma::field<arma::Mat<double>>> chemass;
+   
     
 
 };

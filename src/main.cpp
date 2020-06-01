@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
         ClassGP.size.dim_ny,
         ClassGP.size.dim_nz);
 
-    // Initialize major matrixes
+    // Initialize major arma::field variables
     initiate(ClassGP,ClassDP);
 
     // Initiate (IC and BC)
