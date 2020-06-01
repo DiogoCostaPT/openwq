@@ -1,4 +1,3 @@
-
 // Copyright 2020, Diogo Costa
 // This file is part of OpenWQ model.
 
@@ -15,18 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PROCESS_JSONH_INCLUDED
-#define PROCESS_JSONH_INCLUDED
 
-#include <string>
-#include <fstream>
-#include <iostream>
-#include "jnlohmann/json.h"
+#ifndef PROCESS_UTILITYH_INCLUDED
+#define PROCESS_UTILITYH_INCLUDED
+
 #include "global.h"
 
-using json = nlohmann::json;
 
-void read_json_configfile(ClassGenProj& ClassGP, const std::string& configjson_file);
+void initiate(ClassGenProj& ClassGP, ClassDetProj& ClassDP);
 
 
 #endif

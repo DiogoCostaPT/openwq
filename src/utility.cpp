@@ -15,18 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PROCESS_JSONH_INCLUDED
-#define PROCESS_JSONH_INCLUDED
 
-#include <string>
-#include <fstream>
-#include <iostream>
-#include "jnlohmann/json.h"
-#include "global.h"
-
-using json = nlohmann::json;
-
-void read_json_configfile(ClassGenProj& ClassGP, const std::string& configjson_file);
+#include "utility.h"
 
 
-#endif
+void initiate(ClassGenProj& ClassGP, ClassDetProj& ClassDP){
+
+    int numcmp = ClassGP.size.number_of_compartments;
+    int numspec = ClassGP.size.number_of_chemical_species;
+
+     // Allocate memory and set to zero: domain
+    (*ClassDP.domain_xyz).zeros();
+
+    // Assign and  allocate memory: wflux,wmassk,chemass
+    for (int i=0;i<numcmp;i++){
+        for (int j=0;j<numspec;j++){
+            (*ClassDP.wflux)(i,j) = (*ClassDP.domain_xyz);
+            (*ClassDP.wmass)(i,j) = (*ClassDP.domain_xyz);
+            (*ClassDP.chemass)(i,j) = (*ClassDP.domain_xyz);
+        }
+    }
+
+
+}

@@ -17,7 +17,7 @@
 
 #include "process_json.h"
 
-void read_json_infosize(ClassGenProj& ClassGP, const std::string& configjson_file)
+void read_json_configfile(ClassGenProj& ClassGP, const std::string& configjson_file)
 {
         std::ifstream i(configjson_file);
         json j;

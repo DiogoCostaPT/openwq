@@ -14,14 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GLOBALGENERALH_INCLUDED
-#define GLOBALGENERALH_INCLUDED
+#ifndef GLOBALH_INCLUDED
+#define GLOBALH_INCLUDED
 
 #include <string>
+#include<armadillo>
+#include<memory> 
 
 // General information about the project
 class ClassGenProj
 {
+   
+
     public:
 
     struct geninfo {
@@ -42,24 +46,43 @@ class ClassGenProj
 
 };
 
-// Binary array to activate/deactivate compartments and chemcial species
-class OnOFF {
+
+// General information about the project
+class ClassDetProj
+{
+    
 
     public:
-
-    OnOFF(){
+    ClassDetProj(){
 
     }
-    OnOFF(size_t numcmp,size_t numspec){
+    ClassDetProj(size_t numcmp,size_t numspec, size_t nx, size_t ny, size_t nz){
 
         this-> numcmp = numcmp;
         this-> numspec = numspec;
+        this-> nx = nx;
+        this-> ny = ny;
+        this-> nz = nz;
 
-        unsigned int bin[numcmp][numspec];
+        try{
+            char cmpt_names[numcmp]; // compartment names
+            char spec_names[numspec]; // species names
+
+            domain_xyz = std::unique_ptr<arma::Cube<double>>(new arma::cube(nx,ny,nz));
+
+            wflux = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numcmp,numspec));
+            wmass = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numcmp,numspec));
+            chemass = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numcmp,numspec));
+
+        }catch(int e){
+            std::cout << "An exception occurred creating the domain: ERR " << std::to_string(e) << std::endl;
+        }
+
     }
+    size_t numcmp, numspec, nx, ny, nz;
 
-    size_t numcmp, numspec;
-    unsigned int bin;
+    std::unique_ptr<arma::Cube<double>> domain_xyz;
+    std::unique_ptr<arma::field<arma::Mat<double>>> wflux, wmass, chemass; 
 
 };
 

@@ -3,34 +3,9 @@
     "geographical_location": "Svalbard",
     "authors": "Diogo Costa",
     "date": "May_2020",
-    "additional_info": "Deafult file for testing purposes",
-    "dimensions_nx": 100,
-    "dimensions_ny": 1,
-    "dimensions_nz": 1,
-    "number_of_compartments": 3,
-    "number_of_chemical_species": 2,
-    "compartment_names": [
-        {
-            "1": "snow_liquid",
-            "2": "snow_ice",
-            "3": "snow_air"
-        }
-    ],
-    "compartment_jsonfile_path": [
-        {
-            "1": "snow_liquid.json",
-            "2": "snow_ice.json",
-            "3": "snow_air.json"
-        }
-    ],
-    "compartments_active": [1, 2, 3],
-    "chemical_species_names": [
-        {
-            "1": "no3",
-            "2": "po4"
-        }
-    ],
-    "chemical_species_active": [1, 2]
+    "additional_info": "Default file for testing purposes",
+    "water_balance_setup_file": "water_fully_distributed.json",
+    "biogeochemistry_setup_file": "generic_water_quality_model.json" 
 }
 
 

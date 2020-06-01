@@ -19,8 +19,7 @@
 #include <armadillo>
 #include <string>
 
-#include "globalgeneral.h"
-#include "globalspecific.h"
+#include "global.h"
 #include "process_json.h"
 #include "utility.h"
 
@@ -32,7 +31,7 @@ int main(int argc, char* argv[])
     std::string configjson_file (argv[1]); 
 
     // Get general info and size of the project
-    read_json_infosize(ClassGP,configjson_file);
+    read_json_configfile(ClassGP,configjson_file);
 
     // Assign OnOFF array
     //OnOFF OnOFF(ClassGP.size.number_of_compartments,ClassGP.size.number_of_chemical_species); // create class
