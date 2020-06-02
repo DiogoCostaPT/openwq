@@ -20,19 +20,22 @@
 #include <string>
 
 #include "global.h"
-#include "process_json.h"
 #include "utility.h"
 
 int main(int argc, char* argv[]) 
 {   
+    JSONfiles JSONfiles;
+    
     Prj_GenInfo Prj_GenInfo;
     Prj_Dim Prj_Dim;
 
     // Configuration file
     std::string configjson_file (argv[1]); 
 
-    // Get general project info and setup files
-    read_json_configfile(Prj_GenInfo,configjson_file);
+    // Read JSON files 
+    read_JSON_2class(JSONfiles.Master,configjson_file); // master file
+    read_JSON_2class(JSONfiles.H2O,JSONfiles.Master["water_balance_setup_file"]); // water file
+    read_JSON_2class(JSONfiles.BGC,JSONfiles.Master["biogeochemistry_setup_file"]); // BGC file
 
     // Get number of compartments
     read_json_getfilefield(Prj_GenInfo.water_balance_setup_file,"number_of_compartments",Prj_Dim.num_compartments);

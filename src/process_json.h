@@ -26,10 +26,12 @@
 
 using json = nlohmann::json;
 
+void read_JSON_2class(json & jsondata,const std::string& jsonfile);
+
 void read_json_configfile(Prj_GenInfo& Prj_GenInfo, const std::string& configjson_file);
 
 void read_json_getfilefield(std::string &jsonfile, const char jsonfield[], int &go_to_global);
 
-void  read_json_comptdim(Prj_GenInfo& Prj_GenInfo,std::unique_ptr<unsigned int[]> & n_xyz, int umcmp,int numspec);
+void read_json_comptdim(Prj_GenInfo& Prj_GenInfo,std::unique_ptr<unsigned int[]> & n_xyz, int umcmp,int numspec);
 
 #endif

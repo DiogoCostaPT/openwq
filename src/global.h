@@ -18,8 +18,23 @@
 #define GLOBALH_INCLUDED
 
 #include <string>
-#include<armadillo>
-#include<memory> 
+#include <armadillo>
+#include <memory> 
+#include "jnlohmann/json.h"
+using json = nlohmann::json;
+
+
+// Project Information
+class JSONfiles
+{
+    public:
+
+    json Master;
+    json H2O;
+    json BGC;
+
+};
+
 
 // Porject general info
 class Prj_GenInfo

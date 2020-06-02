@@ -18,6 +18,19 @@
 #include "process_json.h"
 
 
+void read_JSON_2class(json & jsondata,const std::string& jsonfile)
+{
+        try{
+                std::ifstream i(jsonfile);
+                i >> (jsondata);
+
+        }catch (json::type_error){
+                std::cout << "An exception occurred parsing" << jsonfile << std::endl;
+                abort();
+        }
+}
+
+
 void read_json_configfile(Prj_GenInfo& Prj_GenInfo, const std::string& configjson_file)
 {
         try{
