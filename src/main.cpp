@@ -35,13 +35,13 @@ int main(int argc, char* argv[])
     read_JSON_2class(JSONfiles.BGC,JSONfiles.Master["biogeochemistry_setup_file"]); // BGC file
    
     // Assign the main arma::field variables
-    Prj_StateVar Prj_StateVar(JSONfiles.H2O["number_of_compartments"]);
+    Prj_StateVar Prj_StateVar(JSONfiles.H2O["compartments"].size());
 
-    // Initialize major arma::field variables based the individual compartment dimensions
-    initiate(JSONfiles,Prj_StateVar);
+    // Initialize memmory for major arma::field variables
+    initmemory(JSONfiles,Prj_StateVar);
 
-    // Initiate (IC and BC)
-    //initiate();
+    // IC (water and chemical mass)
+    IC_calc(JSONfiles,Prj_StateVar);
 
 }
 

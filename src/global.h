@@ -48,7 +48,6 @@ class Prj_StateVar
         this-> numcmp = numcmp;
 
         try{
-            char cmpt_names[numcmp]; // compartment names
 
             wflux = std::unique_ptr<arma::field<arma::Cube<double>>>(new arma::field<arma::cube>(numcmp)); // 1 field: flow
             wmass = std::unique_ptr<arma::field<arma::Cube<double>>>(new arma::field<arma::cube>(numcmp)); // 1 field: water mass

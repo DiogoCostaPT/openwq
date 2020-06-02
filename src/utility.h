@@ -20,11 +20,21 @@
 
 #include <armadillo>
 
-#include "process_json.h"
 #include "global.h"
 #include "string.h"
 
-void initiate(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
+using json = nlohmann::json;
 
+void initmemory(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
+
+void read_JSON_2class(json & jsondata,const std::string& jsonfile);
+
+void IC_calc(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
+
+void read_file_3Dcoldata(std::string & filepath,
+            json & file_gridxyz_col,
+            json & file_varxyz_col,
+            arma::Cube<double> & to_cubedata
+            );
 
 #endif

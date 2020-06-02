@@ -19,11 +19,11 @@
 #include "utility.h"
 
 
-// Read grid size for each compartment and initialize
-void initiate(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar)
+// Initialize memory of major variables: arma::field
+void initmemory(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar)
 {
         // domain/water (number of compartments and grid dimensions)
-        int numcmp = JSONfiles.H2O["number_of_compartments"];
+        int numcmp = JSONfiles.H2O["compartments"].size();
         std::unique_ptr<unsigned int[]> n_xyz(new unsigned int[3]); // pointer to nx, ny, nx information
         n_xyz[0] = 0;
         n_xyz[1] = 0;
@@ -61,4 +61,47 @@ void initiate(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar)
                             (*Prj_StateVar.chemass)(i) = domain_spec;
                         }
         }
+}
+
+
+// Read JSON file to class
+void read_JSON_2class(json & jsondata,const std::string& jsonfile)
+{
+        try{
+                std::ifstream i(jsonfile);
+                i >> (jsondata);
+
+        }catch (json::type_error){
+                std::cout << "An exception occurred parsing" << jsonfile << std::endl;
+                abort();
+        }
+}
+
+
+// Initial conditions (water and chemical mass)
+void IC_calc(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
+
+    int numcmp = JSONfiles.H2O["compartments"].size();
+        
+    for (int i=0;i<numcmp;i++){
+        std::string filepath = JSONfiles.H2O[std::to_string(i+1)]["water_fluxes_file"]["file_path"];
+        read_file_3Dcoldata(filepath,
+            JSONfiles.H2O[std::to_string(i+1)]["water_massbalance_file"]["grid_col"],
+            JSONfiles.H2O[std::to_string(i+1)]["water_massbalance_file"]["var_col"],
+            (*Prj_StateVar.wmass)(i)
+            );
+
+    }
+
+}
+
+// read 3D col data from file at assign to variable
+void read_file_3Dcoldata(std::string & filepath,
+    json & file_gridxyz_col,
+    json & file_varxyz_col,
+    arma::Cube<double> & to_cubedata
+    ){
+
+    
+
 }
