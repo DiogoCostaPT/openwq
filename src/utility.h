@@ -23,7 +23,7 @@
 #include "process_json.h"
 #include "global.h"
 
-void initiate(Prj_GenInfo& Prj_GenInfo, Prj_Dim& Prj_Dim,Prj_StateVar& Prj_StateVar);
+void initiate(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 
 
 #endif

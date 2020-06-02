@@ -36,31 +36,6 @@ class JSONfiles
 };
 
 
-// Porject general info
-class Prj_GenInfo
-{
-    public:
-
-    std::string project_name;
-    std::string geographical_location;
-    std::string authors;
-    std::string date;
-    std::string additional_info;
-    std::string water_balance_setup_file;
-    std::string biogeochemistry_setup_file;
-
-};
-
-// Project general dimensions
-class Prj_Dim
-{
-    public:
-
-    int num_compartments;
-    int num_chemical_species;
-
-};
-
 // General information about the project
 class Prj_StateVar
 {
@@ -68,27 +43,26 @@ class Prj_StateVar
     Prj_StateVar(){
 
     }
-    Prj_StateVar(size_t numcmp,size_t numspec){
+    Prj_StateVar(size_t numcmp){
 
         this-> numcmp = numcmp;
-        this-> numspec = numspec;
 
         try{
             char cmpt_names[numcmp]; // compartment names
-            char spec_names[numspec]; // species names
 
-            wflux = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numcmp,numspec));
-            wmass = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numcmp,numspec));
-            chemass = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numcmp,numspec));
+            wflux = std::unique_ptr<arma::field<arma::Cube<double>>>(new arma::field<arma::cube>(numcmp)); // 1 field: flow
+            wmass = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(numcmp)); // multiple fields: one for eacg chem
+            chemass = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(numcmp));  // multiple fields: one for eacg chem
 
         }catch(int e){
             std::cout << "An exception occurred creating the domain: ERR " << std::to_string(e) << std::endl;
         }
 
     }
-    size_t numcmp, numspec;
+    size_t numcmp;
 
-    std::unique_ptr<arma::field<arma::Mat<double>>> wflux, wmass, chemass; 
+    std::unique_ptr<arma::field<arma::Cube<double>>> wflux;
+    std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> wmass, chemass; 
 
 };
 
