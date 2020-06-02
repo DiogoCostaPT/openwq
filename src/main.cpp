@@ -25,27 +25,24 @@
 
 int main(int argc, char* argv[]) 
 {   
-    ClassGenProj ClassGP; 
+    Prj_GenInfo Prj_GenInfo;
+    Prj_Dim Prj_Dim;
 
     // Configuration file
     std::string configjson_file (argv[1]); 
 
-    // Get general info and size of the project
-    read_json_configfile(ClassGP,configjson_file);
+    // Get general project info and setup files
+    read_json_configfile(Prj_GenInfo,configjson_file);
 
-    // Assign OnOFF array
-    //OnOFF OnOFF(ClassGP.size.number_of_compartments,ClassGP.size.number_of_chemical_species); // create class
-    //OnOFF_assign(ClassGP,OnOFF); // assign values
+    // Get number of compartments
+    read_json_getfilefield(Prj_GenInfo.water_balance_setup_file,"number_of_compartments",Prj_Dim.num_compartments);
+    
+    // Assign the main arma::field variables
+    Prj_StateVar Prj_StateVar(Prj_Dim.num_compartments,
+        Prj_Dim.num_chemical_species);
 
-    // Assign the main variable
-    ClassDetProj ClassDP(ClassGP.size.number_of_compartments,
-        ClassGP.size.number_of_chemical_species,
-        ClassGP.size.dim_nx,
-        ClassGP.size.dim_ny,
-        ClassGP.size.dim_nz);
-
-    // Initialize major arma::field variables
-    initiate(ClassGP,ClassDP);
+    // Initialize major arma::field variables based the individual compartment dimensions
+    initiate(Prj_GenInfo,Prj_Dim,Prj_StateVar);
 
     // Initiate (IC and BC)
     //initiate();

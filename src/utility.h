@@ -15,13 +15,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef PROCESS_UTILITYH_INCLUDED
-#define PROCESS_UTILITYH_INCLUDED
+#ifndef UTILITYH_INCLUDED
+#define UTILITYH_INCLUDED
 
+#include <armadillo>
+
+#include "process_json.h"
 #include "global.h"
 
-
-void initiate(ClassGenProj& ClassGP, ClassDetProj& ClassDP);
+void initiate(Prj_GenInfo& Prj_GenInfo, Prj_Dim& Prj_Dim,Prj_StateVar& Prj_StateVar);
 
 
 #endif
