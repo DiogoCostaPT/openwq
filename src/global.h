@@ -51,7 +51,7 @@ class Prj_StateVar
             char cmpt_names[numcmp]; // compartment names
 
             wflux = std::unique_ptr<arma::field<arma::Cube<double>>>(new arma::field<arma::cube>(numcmp)); // 1 field: flow
-            wmass = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(numcmp)); // multiple fields: one for eacg chem
+            wmass = std::unique_ptr<arma::field<arma::Cube<double>>>(new arma::field<arma::cube>(numcmp)); // 1 field: water mass
             chemass = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(numcmp));  // multiple fields: one for eacg chem
 
         }catch(int e){
@@ -61,8 +61,8 @@ class Prj_StateVar
     }
     size_t numcmp;
 
-    std::unique_ptr<arma::field<arma::Cube<double>>> wflux;
-    std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> wmass, chemass; 
+    std::unique_ptr<arma::field<arma::Cube<double>>> wflux, wmass;
+    std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> chemass; 
 
 };
 

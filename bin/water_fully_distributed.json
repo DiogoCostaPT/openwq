@@ -1,20 +1,16 @@
 {
     "number_of_compartments": 3,
-    "compartment_names": [
-        {
+    "compartment_names":{
             "1": "snow_liquid",
             "2": "snow_ice",
             "3": "snow_air"
-        }
-    ],
-    "1":[
-        {
+        },
+    "1":{
             "nx": 100,
             "ny": 1,
             "nz": 1,
             "mobile": true,
-            "water_flux_file":[
-                {
+            "water_flux_file":{
                     "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/qcmelt_svalbard_test_crhm.txt",
                     "skip_first_rows": 5,
                     "time_col": 1,
@@ -28,23 +24,17 @@
                     "deliminter": ",",
                     "unit_convertion_multipler": 1
                 }
-            ]
-        }
-    ],
-    "2":[
-        {
+        },
+    "2":{
+            "nx": 100,
+            "ny": 1,
+            "nz": 1,
+            "mobile": false
+        },
+    "3":{
             "nx": 100,
             "ny": 1,
             "nz": 1,
             "mobile": false
         }
-    ],
-    "3":[
-        {
-            "nx": 100,
-            "ny": 1,
-            "nz": 1,
-            "mobile": false
-        }
-    ]
 }

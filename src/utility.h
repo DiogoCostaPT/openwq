@@ -22,6 +22,7 @@
 
 #include "process_json.h"
 #include "global.h"
+#include "string.h"
 
 void initiate(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 

@@ -1,32 +1,23 @@
 {
-    "total_number_of_chemical_species": 5,
-    "list_all_chemical_species_names": [
-        {
-            "1": "no3",
-            "2": "nh4",
-            "3": "don",
-            "4": "labileN",
-            "5": "regractoryN"
+    "list_chemical_species": {
+        "1": "no3",
+        "2": "nh4",
+        "3": "don",
+        "4": "labileN",
+        "5": "regractoryN"
+        },
+    "compartments":{
+        "1":{
+            "chem_species": [1,2],
+            "transformations": "denitrification.json"
+        },
+        "2":{
+            "chem_species": [1,2],
+            "transformations": "denitrification.json"
+        },
+        "3":{
+            "chem_species": [1,2],
+            "transformations": "denitrification.json"
         }
-    ],
-    "snow_liquid":[
-        {
-            "chemical_species_exist": [1,2,3,4,5]  
-        }
-    ],
-    "snow_ice":[
-        {
-            "chemical_species_exist": [1,2,3,4,5]  
-        }
-    ],
-    "snow_air":[
-        {
-            "chemical_species_exist": [1,2,3,4,5]  
-        }
-    ],
-    "transformations":[
-        {
-            "nitrification": "denitrification.json"
-        }
-    ]
+    }
 }
