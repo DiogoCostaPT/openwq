@@ -82,26 +82,107 @@ void read_JSON_2class(json & jsondata,const std::string& jsonfile)
 void IC_calc(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
 
     int numcmp = JSONfiles.H2O["compartments"].size();
-        
+    std::string filepath;
+    
     for (int i=0;i<numcmp;i++){
-        std::string filepath = JSONfiles.H2O[std::to_string(i+1)]["water_fluxes_file"]["file_path"];
-        read_file_3Dcoldata(filepath,
-            JSONfiles.H2O[std::to_string(i+1)]["water_massbalance_file"]["grid_col"],
-            JSONfiles.H2O[std::to_string(i+1)]["water_massbalance_file"]["var_col"],
-            (*Prj_StateVar.wmass)(i)
-            );
+
+            // wmass
+            read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["IC_water_massbalance_file"],
+                (*Prj_StateVar.wmass)(i));
 
     }
 
 }
 
 // read 3D col data from file at assign to variable
-void read_file_3Dcoldata(std::string & filepath,
-    json & file_gridxyz_col,
-    json & file_varxyz_col,
-    arma::Cube<double> & to_cubedata
-    ){
+void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata){
 
-    
+    // get necessary inf o from JSON file
+    std::string filename = filejson["file_path"];
+    int skiprows_num = filejson["skip_header_rows"];
+    std::string deliminter = filejson["deliminter"];
+    std::vector<int> grid_col = filejson["grid_col"];
+    int var_col = filejson["var_col"];
+
+    const char * cdeliminter = deliminter.c_str();
+    std::vector<int>::iterator it;
+
+    // all relevant columns: grid and var
+    std::vector<int> allcols_2search;
+    allcols_2search.insert(allcols_2search.begin(),grid_col.begin(),grid_col.end());
+    allcols_2search.insert(allcols_2search.end(),var_col); 
+
+    // Create a vector of <string, int vector> pairs to store the FileData_extract
+    std::vector<std::pair<std::string, std::vector<double>>> FileData_extract;
+
+    // Create an input filestream
+    std::ifstream thisFile(filename);
+
+    // Make sure the file is open
+    if(!thisFile.is_open()) throw std::runtime_error("Could not open file:" + filename);
+
+    // Helper vars
+    std::string line, fieldi;
+    int colIdx = 0,line_i = 0;
+
+    // Read the column names
+    if(thisFile.good())
+    {
+        // Extract the first line in the file
+        std::getline(thisFile, line);
+
+        // Create a stringstream from line
+        std::stringstream ss(line);
+
+        // Extract each column name
+        while(std::getline(ss, fieldi, *cdeliminter)){
+            
+            it = std::find(allcols_2search.begin(), allcols_2search.end(), colIdx + 1); // check if column of interest
+
+            if (it != allcols_2search.end()){  // skip header    
+                // Initialize and add <fieldi, int vector> pairs to FileData_extract
+                FileData_extract.push_back({fieldi, std::vector<double> {}});
+            } 
+            colIdx++;
+        }
+       
+    }
+
+    // Read data, line by line AND save to FileData_extrac (for proper debug) and to final to_cubedata
+    int colIdx_res;
+    std::array<int,4> linedata; linedata.fill(0.0f);
+
+    while(std::getline(thisFile, line))
+    {
+        // Create a stringstream of the current line
+        std::stringstream ss(line);
+       
+        // Keep track of the current column index
+        colIdx = 0; 
+        colIdx_res = 0;
+
+        if (line_i>=skiprows_num-1){ // skip header
+        
+            // Extract each integer
+            while(std::getline(ss, fieldi, *cdeliminter)){
+                
+                it = std::find(allcols_2search.begin(), allcols_2search.end(), colIdx); // check if column of interest
+
+                // Add the current integer to the 'colIdx' column's values vector
+                if (it != allcols_2search.end()){  // skip header
+                    FileData_extract.at(colIdx_res).second.push_back(std::stod(fieldi)); // save in vector (for proper debugging)
+                    linedata[colIdx_res] = std::stod(fieldi);
+                    colIdx_res++;
+                }                             
+                
+                colIdx++; // Increment the column index
+            }
+            (to_cubedata)(linedata[0],linedata[1],linedata[2]) = linedata[3]; // save to to_cubedata
+        }
+        line_i++;
+    }
+
+    // Close file
+    thisFile.close();
 
 }

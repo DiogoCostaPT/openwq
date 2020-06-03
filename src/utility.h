@@ -22,6 +22,7 @@
 
 #include "global.h"
 #include "string.h"
+#include <algorithm>
 
 using json = nlohmann::json;
 
@@ -31,10 +32,6 @@ void read_JSON_2class(json & jsondata,const std::string& jsonfile);
 
 void IC_calc(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 
-void read_file_3Dcoldata(std::string & filepath,
-            json & file_gridxyz_col,
-            json & file_varxyz_col,
-            arma::Cube<double> & to_cubedata
-            );
+void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata);
 
 #endif
