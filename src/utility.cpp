@@ -123,7 +123,7 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata){
 
     // Helper vars
     std::string line, fieldi;
-    int colIdx = 0,line_i = 0;
+    int colIdx = 1,line_i = 0;
 
     // Read the column names
     if(thisFile.good())
@@ -137,7 +137,7 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata){
         // Extract each column name
         while(std::getline(ss, fieldi, *cdeliminter)){
             
-            it = std::find(allcols_2search.begin(), allcols_2search.end(), colIdx + 1); // check if column of interest
+            it = std::find(allcols_2search.begin(), allcols_2search.end(), colIdx); // check if column of interest
 
             if (it != allcols_2search.end()){  // skip header    
                 // Initialize and add <fieldi, int vector> pairs to FileData_extract
@@ -150,7 +150,7 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata){
 
     // Read data, line by line AND save to FileData_extrac (for proper debug) and to final to_cubedata
     int colIdx_res;
-    std::array<int,4> linedata; linedata.fill(0.0f);
+    std::array<double,4> linedata; linedata.fill(0.0f);
 
     while(std::getline(thisFile, line))
     {
@@ -158,7 +158,7 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata){
         std::stringstream ss(line);
        
         // Keep track of the current column index
-        colIdx = 0; 
+        colIdx = 1; 
         colIdx_res = 0;
 
         if (line_i>=skiprows_num-1){ // skip header
@@ -171,7 +171,7 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata){
                 // Add the current integer to the 'colIdx' column's values vector
                 if (it != allcols_2search.end()){  // skip header
                     FileData_extract.at(colIdx_res).second.push_back(std::stod(fieldi)); // save in vector (for proper debugging)
-                    linedata[colIdx_res] = std::stod(fieldi);
+                    linedata[(*it)-1] = std::stod(fieldi);
                     colIdx_res++;
                 }                             
                 
