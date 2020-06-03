@@ -5,19 +5,76 @@
         "3": "don",
         "4": "labileN",
         "5": "regractoryN"
-        },
+    },
     "compartments":{
         "1":{
             "chem_species": [1,2],
-            "transformations": "denitrification.json"
+            "1":{
+                "IC_file":{
+                    "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                    "skip_header_rows": 1,
+                    "grid_col": [1,2,false],
+                    "var_col": 7,
+                    "deliminter": ",",
+                    "unit_convertion_multipler": 1
+                }
+            },
+            "2":{
+                "IC_file":{
+                    "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                    "skip_header_rows": 1,
+                    "grid_col": [1,2,false],
+                    "var_col": 7,
+                    "deliminter": ",",
+                    "unit_convertion_multipler": 1
+                }
+            }
         },
         "2":{
             "chem_species": [1,2],
-            "transformations": "denitrification.json"
+            "1":{
+                "IC_file":{
+                    "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                    "skip_header_rows": 1,
+                    "grid_col": [1,2,false],
+                    "var_col": 7,
+                    "deliminter": ",",
+                    "unit_convertion_multipler": 1
+                }
+            },
+            "2":{
+                "IC_file":{
+                    "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                    "skip_header_rows": 1,
+                    "grid_col": [1,2,false],
+                    "var_col": 7,
+                    "deliminter": ",",
+                    "unit_convertion_multipler": 1
+                }
+            }
         },
         "3":{
             "chem_species": [1,2],
-            "transformations": "denitrification.json"
+            "1":{
+                "IC_file":{
+                    "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                    "skip_header_rows": 1,
+                    "grid_col": [1,2,false],
+                    "var_col": 7,
+                    "deliminter": ",",
+                    "unit_convertion_multipler": 1
+                }
+            },
+            "2":{
+                "IC_file":{
+                    "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                    "skip_header_rows": 1,
+                    "grid_col": [1,2,false],
+                    "var_col": 7,
+                    "deliminter": ",",
+                    "unit_convertion_multipler": 1
+                }
+            }
         }
     }
 }

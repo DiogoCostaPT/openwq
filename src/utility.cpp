@@ -82,16 +82,31 @@ void read_JSON_2class(json & jsondata,const std::string& jsonfile)
 void IC_calc(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
 
     int numcmp = JSONfiles.H2O["compartments"].size();
+    int numspec;
     std::string filepath;
+    bool mobile;
     
     for (int i=0;i<numcmp;i++){
 
         // wmass
-        read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["IC_water_massbalance_file"],
+        read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["IC_file"],
             (*Prj_StateVar.wmass)(i));
+        
+        // wflux (only if mobile)
+        mobile = JSONfiles.H2O[std::to_string(i+1)]["mobile"];
+        if (mobile){
+            read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["water_fluxes_file"],
+                (*Prj_StateVar.wflux)(i));
+        }
 
+        // chemass
+        numspec = JSONfiles.BGC["compartments"][std::to_string(i+1)]["chem_species"].size();
+
+        for (int j=0;j<numspec;j++){
+            read_file_3Dcoldata(JSONfiles.BGC["compartments"][std::to_string(i+1)]
+                [std::to_string(j+1)]["IC_file"],(*Prj_StateVar.chemass)(i)(j));
+        }
     }
-
 }
 
 // read 3D col data from file at assign to variable
