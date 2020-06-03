@@ -8,15 +8,15 @@
             "nx": 100,
             "ny": 10,
             "nz": 1,
-            "mobile": true,
             "IC_water_massbalance_file":{
                 "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
                 "skip_header_rows": 1,
                 "grid_col": [1,2,false],
-                "var_col": 4,
+                "var_col": 7,
                 "deliminter": ",",
                 "unit_convertion_multipler": 1
             },
+            "mobile": true,
             "water_fluxes_file":{
                     "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/qcmelt_svalbard_test_crhm.txt",
                     "skip_header_rows": 1,
@@ -28,14 +28,30 @@
         },
     "2":{
             "nx": 100,
-            "ny": 1,
+            "ny": 10,
             "nz": 1,
+            "IC_water_massbalance_file":{
+                "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                "skip_header_rows": 1,
+                "grid_col": [1,2,false],
+                "var_col": 8,
+                "deliminter": ",",
+                "unit_convertion_multipler": 1
+            },
             "mobile": false
         },
     "3":{
             "nx": 100,
-            "ny": 1,
+            "ny": 10,
             "nz": 1,
+            "IC_water_massbalance_file":{
+                "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                "skip_header_rows": 1,
+                "grid_col": [1,2,false],
+                "var_col": 9,
+                "deliminter": ",",
+                "unit_convertion_multipler": 1
+            },
             "mobile": false
         }
 }

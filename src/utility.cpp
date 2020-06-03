@@ -86,9 +86,9 @@ void IC_calc(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     
     for (int i=0;i<numcmp;i++){
 
-            // wmass
-            read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["IC_water_massbalance_file"],
-                (*Prj_StateVar.wmass)(i));
+        // wmass
+        read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["IC_water_massbalance_file"],
+            (*Prj_StateVar.wmass)(i));
 
     }
 
@@ -171,7 +171,10 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata){
                 // Add the current integer to the 'colIdx' column's values vector
                 if (it != allcols_2search.end()){  // skip header
                     FileData_extract.at(colIdx_res).second.push_back(std::stod(fieldi)); // save in vector (for proper debugging)
-                    linedata[(*it)-1] = std::stod(fieldi);
+                    
+                    std::cout << std::distance(allcols_2search.begin(),it) << std::endl;
+
+                    linedata[std::distance(allcols_2search.begin(),it)] = std::stod(fieldi);
                     colIdx_res++;
                 }                             
                 
