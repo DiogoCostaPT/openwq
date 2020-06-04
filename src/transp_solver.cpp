@@ -22,9 +22,9 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     for (int icmp=1;icmp<numcmp;icmp++){
         
         numspec = JSONfiles.BGC["compartments"][std::to_string(icmp)]["chem_species"].size();
-        wfluxC_x = (*Prj_StateVar.wflux)(icmp)(1);
-        wfluxC_y = (*Prj_StateVar.wflux)(icmp)(2);
-        wfluxC_z = (*Prj_StateVar.wflux)(icmp)(3);
+        wfluxC_x = (*Prj_StateVar.wflux)(icmp)(0);
+        wfluxC_y = (*Prj_StateVar.wflux)(icmp)(1);
+        wfluxC_z = (*Prj_StateVar.wflux)(icmp)(2);
         wmassC = (*Prj_StateVar.wmass)(icmp);
         
         for (int ichem=1;ichem<numspec;ichem++){

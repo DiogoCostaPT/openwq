@@ -195,8 +195,6 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int v
                 if (it != allcols_2search.end()){  // skip header
                     FileData_extract.at(colIdx_res).second.push_back(std::stod(fieldi)); // save in vector (for proper debugging)
                     
-                    std::cout << std::distance(allcols_2search.begin(),it) << std::endl;
-
                     linedata[std::distance(allcols_2search.begin(),it)] = std::stod(fieldi);
                     colIdx_res++;
                 }                             
