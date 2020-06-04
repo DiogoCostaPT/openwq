@@ -41,12 +41,18 @@ void initmemory(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar)
                         n_xyz[1] = JSONfiles.H2O[std::to_string(i+1)]["ny"];
                         n_xyz[2] = JSONfiles.H2O[std::to_string(i+1)]["nz"];
                         
-                        // fwater fluxes arma::cube
+                        // wmass fluxes arma::cube
                         arma::Cube<double> domain_xyz(n_xyz[0],n_xyz[1],n_xyz[2]);
-                        (*Prj_StateVar.wflux)(i) = domain_xyz; // fwater fluxes arma::cube
                         (*Prj_StateVar.wmass)(i) = domain_xyz; // fwater fluxes arma::cube
 
-                        // water quality
+                        // wflux
+                        arma::field<arma::Cube<double>> domain_field(3); // for x, y, z
+                        for (int d=0;d<3;d++){ 
+                            domain_field(d) = domain_xyz;
+                        }
+                         (*Prj_StateVar.wflux)(i) = domain_field;
+
+                        // chemass
                         numspec_j = 0;
                         for (int j=0;j<numlistspec;j++){ 
 
@@ -54,11 +60,11 @@ void initmemory(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar)
                             numspec_j = JSONfiles.BGC["compartments"][std::to_string(i+1)]["chem_species"].size(); 
 
                             // creating arma::field of arma:c:cube of size numspec_j-> copies of domain_xyz for each species
-                            arma::field<arma::Cube<double>> domain_spec(numspec_j);
+                            arma::field<arma::Cube<double>> domain_field(numspec_j);
                             for (int s=0;s<numspec_j;s++){
-                                domain_spec(s) = domain_xyz;
+                                domain_field(s) = domain_xyz;
                             }
-                            (*Prj_StateVar.chemass)(i) = domain_spec;
+                            (*Prj_StateVar.chemass)(i) = domain_field;
                         }
         }
 }
@@ -90,34 +96,36 @@ void IC_calc(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
 
         // wmass
         read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["IC_file"],
-            (*Prj_StateVar.wmass)(i));
+            (*Prj_StateVar.wmass)(i),JSONfiles.H2O[std::to_string(i+1)]["IC_file"]["var_col"]);
         
         // wflux (only if mobile)
         mobile = JSONfiles.H2O[std::to_string(i+1)]["mobile"];
         if (mobile){
-            read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["water_fluxes_file"],
-                (*Prj_StateVar.wflux)(i));
+            std::vector<int> icols = JSONfiles.H2O[std::to_string(i+1)]["water_fluxes_file"]["var_col"];
+            for (int j=0;j<3;j++){
+                read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["water_fluxes_file"],
+                    (*Prj_StateVar.wflux)(i)(j),icols[j]);
+            }
         }
 
         // chemass
         numspec = JSONfiles.BGC["compartments"][std::to_string(i+1)]["chem_species"].size();
-
         for (int j=0;j<numspec;j++){
             read_file_3Dcoldata(JSONfiles.BGC["compartments"][std::to_string(i+1)]
-                [std::to_string(j+1)]["IC_file"],(*Prj_StateVar.chemass)(i)(j));
+                [std::to_string(j+1)]["IC_file"],(*Prj_StateVar.chemass)(i)(j),
+                JSONfiles.BGC["compartments"][std::to_string(i+1)][std::to_string(j+1)]["IC_file"]["var_col"]);
         }
     }
 }
 
 // read 3D col data from file at assign to variable
-void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata){
+void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col){
 
     // get necessary inf o from JSON file
     std::string filename = filejson["file_path"];
     int skiprows_num = filejson["skip_header_rows"];
     std::string deliminter = filejson["deliminter"];
     std::vector<int> grid_col = filejson["grid_col"];
-    int var_col = filejson["var_col"];
 
     const char * cdeliminter = deliminter.c_str();
     std::vector<int>::iterator it;

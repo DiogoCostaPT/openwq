@@ -21,7 +21,7 @@
                 "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
                 "skip_header_rows": 1,
                 "grid_col": [1,2,false],
-                "var_col": 7,
+                "var_col": [4,5,false],
                 "deliminter": ",",
                 "unit_convertion_multipler": 1
                 }

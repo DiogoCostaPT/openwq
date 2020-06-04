@@ -32,6 +32,6 @@ void read_JSON_2class(json & jsondata,const std::string& jsonfile);
 
 void IC_calc(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 
-void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata);
+void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col);
 
 #endif
