@@ -8,7 +8,6 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     int nx ,ny, nz;
     int dx, dy, dz;
     int numspec;
-    double disp_x, disp_y, disp_z;
     arma::cube conc;
     arma::cube dcdx,dcdy,dcdz;
     arma::cube dc2dx2,dc2dy2,dc2dz2;
@@ -17,10 +16,17 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     arma::cube wfluxC_x, wfluxC_y, wfluxC_z;
     
     int numcmp = JSONfiles.H2O["compartments"].size();
+    double disp_x = JSONfiles.BGC["dispersion"]["x-dir"];
+    double disp_y = JSONfiles.BGC["dispersion"]["y-dir"];
+    double disp_z = JSONfiles.BGC["dispersion"]["z-dir"];
     
 
     for (int icmp=1;icmp<numcmp;icmp++){
         
+        nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
+        ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
+        nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
+
         numspec = JSONfiles.BGC["compartments"][std::to_string(icmp)]["chem_species"].size();
         wfluxC_x = (*Prj_StateVar.wflux)(icmp)(0);
         wfluxC_y = (*Prj_StateVar.wflux)(icmp)(1);
@@ -32,10 +38,14 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                 chemassC = (*Prj_StateVar.chemass)(icmp)(ichem);
                 conc = chemassC / wmassC;
 
-            for (int ix=1;ix<nx;ix++){
-                for (int iy=1;iy<ny;iy++){
-                    for (int iz=1;iz<nz;iz++){
-                    
+            for (int ix=0;ix<nx;ix++){
+                for (int iy=0;iy<ny;iy++){
+                    for (int iz=0;iz<nz;iz++){
+                        
+                        std::cout << chemassC(ix,iy,iz) << std::endl;
+                        
+
+                        /*
                         dcdx(ix,iy,iz)=(conc(ix,iy,iz)-conc(ix-1,iy,iz))/dx;
                         dcdy(ix,iy,iz)=(conc(ix,iy,iz)-conc(ix,iy-1,iz))/dy;
                         dcdz(ix,iy,iz)=(conc(ix,iy,iz)-conc(ix,iy,iz-1))/dz;
@@ -57,6 +67,7 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                         dmdt(ix,iy,iz) = std::fmin(dmdt(ix,iy,iz), chemassC(ix,iy,iz));
 
                         chemassC(ix,iy,iz) = chemassC(ix,iy,iz) + dmdt(ix,iy,iz);
+                        */
 
                     }
                 }
