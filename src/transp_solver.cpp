@@ -14,6 +14,7 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     arma::cube dmdt;
     arma::cube wmassC,chemassC;
     arma::cube wfluxC_x, wfluxC_y, wfluxC_z;
+    double mfluxL,frac;
     
     int numcmp = JSONfiles.H2O["compartments"].size();
     double disp_x = JSONfiles.BGC["dispersion"]["x-dir"];
@@ -35,16 +36,48 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
         
         for (int ichem=1;ichem<numspec;ichem++){
 
-                chemassC = (*Prj_StateVar.chemass)(icmp)(ichem);
-                conc = chemassC / wmassC;
+            chemassC = (*Prj_StateVar.chemass)(icmp)(ichem);
 
-            for (int ix=0;ix<nx;ix++){
-                for (int iy=0;iy<ny;iy++){
-                    for (int iz=0;iz<nz;iz++){
+            for (int ix=1;ix<nx-1;ix++){
+                for (int iy=1;iy<ny-1;iy++){
+                    for (int iz=1;iz<nz-1;iz++){
                         
-                        std::cout << chemassC(ix,iy,iz) << std::endl;
+                        mfluxL = (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * (wfluxC_x(ix,iy,iz) + wfluxC_y(ix,iy,iz) 
+                        + wfluxC_z(ix,iy,iz))/wmassC(ix,iy,iz);
+                        if (mfluxL < 0.0f){ // limit flux to available material
+                            mfluxL = (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz);
+                            frac = wmassC(ix,iy,iz) / (wfluxC_x(ix,iy,iz) + wfluxC_y(ix,iy,iz) + wfluxC_z(ix,iy,iz));
+                        }else {
+                            frac = 1.0f;
+                        }
+                        (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) -= frac * mfluxL;
                         
+                        // x-dir
+                        if (wfluxC_x(ix,iy,iz) > 0.0f){
+                            (*Prj_StateVar.chemass)(icmp)(ichem)(ix+1,iy,iz) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_x(ix,iy,iz)/wmassC(ix,iy,iz);
+                        }else
+                        {
+                            (*Prj_StateVar.chemass)(icmp)(ichem)(ix-1,iy,iz) -= (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_x(ix,iy,iz)/wmassC(ix,iy,iz);
+                        }
 
+                         // y-dir
+                        if (wfluxC_y(ix,iy,iz) > 0.0f){
+                            (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy+1,iz) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_y(ix,iy,iz)/wmassC(ix,iy,iz);
+                        }else
+                        {
+                            (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy-1,iz) -= (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_y(ix,iy,iz)/wmassC(ix,iy,iz);
+                        }
+
+                         // z-dir
+                        if (wfluxC_z(ix,iy,iz) > 0.0f){
+                            (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz+1) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_z(ix,iy,iz)/wmassC(ix,iy,iz);
+                        }else
+                        {
+                            (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz-1) -= (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_z(ix,iy,iz)/wmassC(ix,iy,iz);
+                        }
+                        
+                        // MISSING DISPERSION (NOT VALIDATED YET)
+                        
                         /*
                         dcdx(ix,iy,iz)=(conc(ix,iy,iz)-conc(ix-1,iy,iz))/dx;
                         dcdy(ix,iy,iz)=(conc(ix,iy,iz)-conc(ix,iy-1,iz))/dy;
