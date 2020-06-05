@@ -16,6 +16,8 @@
 #include <vtkPointData.h>
 #include <vtkVertexGlyphFilter.h>
 
-void writeVTU(char * filename_char);
+#include "global.h"
+
+void writeVTU(JSONfiles& JSONfiles,int icmp);
 
 #endif

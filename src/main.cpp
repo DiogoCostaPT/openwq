@@ -26,6 +26,7 @@
 
 int main(int argc, char* argv[]) 
 {   
+    std::string vtufilename;
     JSONfiles JSONfiles;
     
     // Configuration file
@@ -37,7 +38,8 @@ int main(int argc, char* argv[])
     read_JSON_2class(JSONfiles.BGC,JSONfiles.Master["biogeochemistry_setup_file"]); // BGC file
    
     // Assign the main arma::field variables
-    Prj_StateVar Prj_StateVar(JSONfiles.H2O["compartments"].size());
+    int numcmp = JSONfiles.H2O["compartments"].size();
+    Prj_StateVar Prj_StateVar(numcmp);
 
     // Initialize memmory for major arma::field variables
     initmemory(JSONfiles,Prj_StateVar);
@@ -49,7 +51,9 @@ int main(int argc, char* argv[])
     transp_solve(JSONfiles,Prj_StateVar);
 
     // Print Results
-    writeVTU("test.vtu"); // https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
+    for (int j=0;j<numcmp;j++){
+        writeVTU(JSONfiles,j); // https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
+    }
 
 }
 
