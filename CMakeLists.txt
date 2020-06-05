@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 project(openwq)
 
@@ -10,12 +10,24 @@ set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic")
 #set(CMAKE_CXX_FLAGS "-O2 -g ")
 #set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
-find_package(Armadillo REQUIRED)
-find_package(OpenMP)
+find_package(VTK 
+        COMPONENTS 
+        vtkCommonCore
+        vtkCommonDataModel
+        vtkFiltersGeneral
+        vtkIOXML
+        vtkInteractionStyle
+        vtkRenderingCore
+        vtkRenderingFreeType
+        vtkRenderingOpenGL2 
+
+        REQUIRED)
+
+find_package(OpenMP REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
-include_directories(${AMRADILLO_INCLUDE_DIR} ${PROJECT_SOURCE_DIR})
+#include_directories(${PROJECT_SOURCE_DIR} ${AMRADILLO_INCLUDE_DIR})
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -24,4 +36,6 @@ add_executable(openwq
 
 target_link_libraries(
         openwq
-        ${ARMADILLO_LIBRARIES} )
+        ${ARMADILLO_LIBRARIES}
+        ${VTK_LIBRARIES})
+
