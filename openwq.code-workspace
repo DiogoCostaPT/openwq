@@ -84,7 +84,8 @@
 			"rope": "cpp",
 			"scoped_allocator": "cpp",
 			"shared_mutex": "cpp",
-			"cuchar": "cpp"
+			"cuchar": "cpp",
+			"*.txx": "cpp"
 		}
 	}
 }
