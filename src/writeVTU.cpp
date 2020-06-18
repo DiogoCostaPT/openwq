@@ -56,12 +56,13 @@ void writeVTU(JSONfiles& JSONfiles,int icmp)
   // As an exercise you can modify the coordinates of the points to create
   // seven topologically distinct convex hexahedras.
 
- int i;
+/*
   static double x[27][3]={{0,0,0}, {1,0,0}, {2,0,0}, {0,1,0}, {1,1,0}, {2,1,0},
                           {0,0,1}, {1,0,1}, {2,0,1}, {0,1,1}, {1,1,1}, {2,1,1},
                           {0,1,2}, {1,1,2}, {2,1,2}, {0,1,3}, {1,1,3}, {2,1,3},
                           {0,1,4}, {1,1,4}, {2,1,4}, {0,1,5}, {1,1,5}, {2,1,5},
                           {0,1,6}, {1,1,6}, {2,1,6}};
+
   static vtkIdType pts[12][8]={{0, 1, 4, 3, 6, 7, 10, 9},
                                {1, 2, 5, 4, 7, 8, 11, 10},
                                {6, 10, 9, 12, 0, 0, 0, 0},
@@ -75,28 +76,54 @@ void writeVTU(JSONfiles& JSONfiles,int icmp)
                                {21, 24, 0, 0, 0, 0, 0, 0},
                                {25, 0, 0, 0, 0, 0, 0, 0}};
 
+*/
+    int numvert = (nx+1)*(ny+1)*(nz+1);
+    int nnumel = nx * ny * nz;
+    
+  
+    vtkIdType pts[nnumel][8];
+    int i = 0;
+     for (int ix=0;ix<=nx;ix++){
+        for (int iy=0;iy<=ny;iy++){
+            for (int iz=0;iz<=nz;iz++){
+                pts[i][0] = i;
+                pts[i][1] = i+1;
+                pts[i][2] = (ny+1) + i;
+                pts[i][3] = (ny+1) + i+1;
+                pts[i][4] = (ny+1)*(nx+1) + i;
+                pts[i][5] = (ny+1)*(nx+1) + i+1;
+                pts[i][6] = (ny+1)*(nx+1) + (ny+1) + i;
+                pts[i][7] = (ny+1)*(nx+1) + (ny+1) + i+1;
+                i++;
+            }
+        }
+     }
+
+    double x[numvert][3];
+
+    i = 0;
+
+    for (int iz=0;iz<=nz;iz++){
+        for (int iy=0;iy<=ny;iy++){
+            for (int ix=0;ix<=nx;ix++){
+                x[i][0] = ix-0.5;
+                x[i][1] = iy-0.5;
+                x[i][2] = iz-0.5;
+                i++;
+            }
+        }
+    }
 
 
-
-  vtkSmartPointer<vtkPoints> points =
-    vtkSmartPointer<vtkPoints>::New();
-  for (i=0; i<27; i++) points->InsertPoint(i,x[i]);
+  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+  for (i=0; i<numvert; i++) points->InsertPoint(i,x[i]);
 
   vtkSmartPointer<vtkUnstructuredGrid> ugrid =
     vtkSmartPointer<vtkUnstructuredGrid>::New();
   ugrid->Allocate(100);
-  ugrid->InsertNextCell(VTK_HEXAHEDRON, 8, pts[0]);
-  ugrid->InsertNextCell(VTK_HEXAHEDRON, 8, pts[1]);
-  ugrid->InsertNextCell(VTK_TETRA, 4, pts[2]);
-  ugrid->InsertNextCell(VTK_TETRA, 4, pts[3]);
-  ugrid->InsertNextCell(VTK_POLYGON, 6, pts[4]);
-  ugrid->InsertNextCell(VTK_TRIANGLE_STRIP, 6, pts[5]);
-  ugrid->InsertNextCell(VTK_QUAD, 4, pts[6]);
-  ugrid->InsertNextCell(VTK_TRIANGLE, 3, pts[7]);
-  ugrid->InsertNextCell(VTK_TRIANGLE, 3, pts[8]);
-  ugrid->InsertNextCell(VTK_LINE, 2, pts[9]);
-  ugrid->InsertNextCell(VTK_LINE, 2, pts[10]);
-  ugrid->InsertNextCell(VTK_VERTEX, 1, pts[11]);
+  for (i=0; i<nnumel; i++){
+      ugrid->InsertNextCell(VTK_HEXAHEDRON, 8, pts[i]);
+  }
 
   ugrid->SetPoints(points);
 
