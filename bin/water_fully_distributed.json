@@ -7,7 +7,7 @@
     "1":{
             "nx": 100,
             "ny": 10,
-            "nz": 1,
+            "nz": 2,
             "IC_file":{
                 "file_path": "bin/0.txt",
                 "skip_header_rows": 1,
