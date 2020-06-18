@@ -26,6 +26,12 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkUnstructuredGrid.h>
+#include <vtkDoubleArray.h>
+
+#include <vtkPoints.h>
+#include <vtkPolyData.h>
+#include <vtkPointData.h>
+#include <vtkFloatArray.h>
 
 #include "global.h"
 

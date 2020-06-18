@@ -68,6 +68,21 @@ void writeVTU(JSONfiles& JSONfiles,int icmp)
 
     ugrid->SetPoints(points);
 
+    // Add information to the unstructured grid: compartment data
+     vtkSmartPointer<vtkDoubleArray> varexpot = vtkSmartPointer<vtkDoubleArray>::New();
+    varexpot->SetNumberOfValues(numvert);
+    i = 0;
+    for (int iz=0;iz<=nz;iz++){   
+            for (int ix=0;ix<=nx;ix++){
+                for (int iy=0;iy<=ny;iy++){
+                varexpot->SetValue(i, i);
+            i++;
+            }
+        }
+     }
+
+    ugrid->GetPointData()->SetScalars(varexpot);
+
     // Write file
     vtkSmartPointer<vtkXMLUnstructuredGridWriter> writer =
         vtkSmartPointer<vtkXMLUnstructuredGridWriter>::New();  
