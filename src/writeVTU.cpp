@@ -80,28 +80,9 @@ void writeVTU(JSONfiles& JSONfiles,int icmp)
     int numvert = (nx+1)*(ny+1)*(nz+1);
     int nnumel = nx * ny * nz;
     
-  
-    vtkIdType pts[nnumel][8];
+        double x[numvert][3];
+
     int i = 0;
-    for (int iz=0;iz<nz;iz++){   
-            for (int ix=0;ix<nx;ix++){
-                for (int iy=0;iy<ny;iy++){
-                pts[i][0] = nx*ny*(iz) + ny*(ix) + iy;
-                pts[i][1] = nx*ny*(iz) + ny*(ix) + iy+1;
-                pts[i][2] = nx*ny*(iz) + ny*(ix+1) + iy;
-                pts[i][3] = nx*ny*(iz) + ny*(ix+1) + iy+1;
-                pts[i][4] = nx*ny*(iz+1) + ny*(ix) + iy;
-                pts[i][5] = nx*ny*(iz+1) + ny*(ix) + iy+1;
-                pts[i][6] = nx*ny*(iz+1) + ny*(ix+1) + iy;
-                pts[i][7] = nx*ny*(iz+1) + ny*(ix+1) + iy+1;
-            i++;
-            }
-        }
-     }
-
-    double x[numvert][3];
-
-    i = 0;
 
     for (int iz=0;iz<=nz;iz++){   
             for (int ix=0;ix<=nx;ix++){
@@ -113,6 +94,26 @@ void writeVTU(JSONfiles& JSONfiles,int icmp)
             }
         }
     }
+  
+    vtkIdType pts[nnumel][8];
+    i = 0;
+    for (int iz=0;iz<nz;iz++){   
+            for (int ix=0;ix<nx;ix++){
+                for (int iy=0;iy<ny;iy++){
+                pts[i][0] = (nx+1)*(ny+1)*(iz) + (ny+1)*(ix) + iy;
+                pts[i][1] = (nx+1)*(ny+1)*(iz) + (ny+1)*(ix+1) + iy;
+                pts[i][2] = (nx+1)*(ny+1)*(iz) + (ny+1)*(ix+1) + iy+1;
+                pts[i][3] = (nx+1)*(ny+1)*(iz) + (ny+1)*(ix) + iy+1;
+                pts[i][4] = (nx+1)*(ny+1)*(iz+1) + (ny+1)*(ix) + iy;
+                pts[i][5] = (nx+1)*(ny+1)*(iz+1) + (ny+1)*(ix+1) + iy;
+                pts[i][6] = (nx+1)*(ny+1)*(iz+1) + (ny+1)*(ix+1) + iy+1;
+                pts[i][7] = (nx+1)*(ny+1)*(iz+1) + (ny+1)*(ix) + iy+1;
+            i++;
+            }
+        }
+     }
+
+
 
 
   vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
