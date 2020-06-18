@@ -83,18 +83,18 @@ void writeVTU(JSONfiles& JSONfiles,int icmp)
   
     vtkIdType pts[nnumel][8];
     int i = 0;
-     for (int ix=0;ix<=nx;ix++){
-        for (int iy=0;iy<=ny;iy++){
-            for (int iz=0;iz<=nz;iz++){
-                pts[i][0] = i;
-                pts[i][1] = i+1;
-                pts[i][2] = (ny+1) + i;
-                pts[i][3] = (ny+1) + i+1;
-                pts[i][4] = (ny+1)*(nx+1) + i;
-                pts[i][5] = (ny+1)*(nx+1) + i+1;
-                pts[i][6] = (ny+1)*(nx+1) + (ny+1) + i;
-                pts[i][7] = (ny+1)*(nx+1) + (ny+1) + i+1;
-                i++;
+    for (int iz=0;iz<nz;iz++){   
+            for (int ix=0;ix<nx;ix++){
+                for (int iy=0;iy<ny;iy++){
+                pts[i][0] = nx*ny*(iz) + ny*(ix) + iy;
+                pts[i][1] = nx*ny*(iz) + ny*(ix) + iy+1;
+                pts[i][2] = nx*ny*(iz) + ny*(ix+1) + iy;
+                pts[i][3] = nx*ny*(iz) + ny*(ix+1) + iy+1;
+                pts[i][4] = nx*ny*(iz+1) + ny*(ix) + iy;
+                pts[i][5] = nx*ny*(iz+1) + ny*(ix) + iy+1;
+                pts[i][6] = nx*ny*(iz+1) + ny*(ix+1) + iy;
+                pts[i][7] = nx*ny*(iz+1) + ny*(ix+1) + iy+1;
+            i++;
             }
         }
      }
@@ -103,9 +103,9 @@ void writeVTU(JSONfiles& JSONfiles,int icmp)
 
     i = 0;
 
-    for (int iz=0;iz<=nz;iz++){
-        for (int iy=0;iy<=ny;iy++){
+    for (int iz=0;iz<=nz;iz++){   
             for (int ix=0;ix<=nx;ix++){
+                for (int iy=0;iy<=ny;iy++){
                 x[i][0] = ix-0.5;
                 x[i][1] = iy-0.5;
                 x[i][2] = iz-0.5;
