@@ -35,6 +35,6 @@
 
 #include "global.h"
 
-void writeVTU(JSONfiles& JSONfiles,int icmp);
+void writeVTU(JSONfiles& JSONfiles,int icmp, Prj_StateVar& Prj_StateVar);
 
 #endif

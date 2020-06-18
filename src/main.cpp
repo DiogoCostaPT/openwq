@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 
     // Print Results
     for (int j=0;j<numcmp;j++){
-        writeVTU(JSONfiles,j); // https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
+        writeVTU(JSONfiles,j,Prj_StateVar); // https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
     }
 
 }

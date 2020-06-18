@@ -3,7 +3,7 @@
 
 #include "writeVTU.h"
 
-void writeVTU(JSONfiles& JSONfiles,int icmp)
+void writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar)
 {
 
     // This was built for hexahedrons (see line 66) for now (cubes, Rectangular cuboid, Trigonal trapezohedron, etc)
@@ -16,6 +16,9 @@ void writeVTU(JSONfiles& JSONfiles,int icmp)
     int nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
     int ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
     int nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
+
+     // get number of species for compartment icmp
+    int numspec = JSONfiles.BGC["compartments"][std::to_string(icmp+1)]["chem_species"].size();
 
     // total number of vertices and hexahedrons
     int numvert = (nx+1)*(ny+1)*(nz+1);
@@ -68,20 +71,27 @@ void writeVTU(JSONfiles& JSONfiles,int icmp)
 
     ugrid->SetPoints(points);
 
-    // Add information to the unstructured grid: compartment data
-     vtkSmartPointer<vtkDoubleArray> varexpot = vtkSmartPointer<vtkDoubleArray>::New();
+    // Add information to the unstructured grid: compartment data 
+    for (int ichem=0;ichem<numspec;ichem++){ // all chemical species
+    vtkSmartPointer<vtkDoubleArray> varexpot = vtkSmartPointer<vtkDoubleArray>::New();
     varexpot->SetNumberOfValues(numvert);
-    i = 0;
-    for (int iz=0;iz<=nz;iz++){   
-            for (int ix=0;ix<=nx;ix++){
-                for (int iy=0;iy<=ny;iy++){
-                varexpot->SetValue(i, i);
-            i++;
+        i = 0;
+        for (int iz=0;iz<=nz;iz++){   
+                for (int ix=0;ix<=nx;ix++){
+                    for (int iy=0;iy<=ny;iy++){
+                        if(iz!=nz && iy!=ny && ix!=nx){
+                            varexpot->SetValue(i, (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz));
+                        }else{
+                            varexpot->SetValue(i, 0);
+                        }
+                i++;
+                }
             }
         }
-     }
+        ugrid->GetPointData()->AddArray(varexpot);
+    }
 
-    ugrid->GetPointData()->SetScalars(varexpot);
+    
 
     // Write file
     vtkSmartPointer<vtkXMLUnstructuredGridWriter> writer =
