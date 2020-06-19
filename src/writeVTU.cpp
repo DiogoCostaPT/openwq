@@ -3,7 +3,7 @@
 
 #include "writeVTU.h"
 
-void writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar)
+int writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar)
 {
 
     // This was built for hexahedrons (see line 66) for now (cubes, Rectangular cuboid, Trigonal trapezohedron, etc)
@@ -110,31 +110,8 @@ void writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar)
     writer->SetInputData(ugrid);
     writer->Write();
 
+    return EXIT_SUCCESS;
 
-// Display file without the need of Parview
-/*
-    
-    vtkSmartPointer<vtkXMLUnstructuredGridReader> reader = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
-    reader->SetFileName(filename.c_str());
-    reader->Update();
 
-    vtkSmartPointer<vtkDataSetMapper> mapper = vtkSmartPointer<vtkDataSetMapper>::New();
-    mapper->SetInputConnection(reader->GetOutputPort());
-
-    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-    actor->SetMapper(mapper); // actor contain`s: (1) object properties (color, shading type, etc), (2) geometry, and (3) transformations
-
-    vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
-    vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
-    renderWindow->AddRenderer(renderer);
-    vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-    renderWindowInteractor->SetRenderWindow(renderWindow);
-
-    renderer->AddActor(actor);
-    renderer->SetBackground(.3, .6, .3); // Background color green
-
-    renderWindow->Render();
-    renderWindowInteractor->Start();
-    */
 
 }
