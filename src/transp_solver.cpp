@@ -22,19 +22,19 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     double disp_z = JSONfiles.BGC["dispersion"]["z-dir"];
     
 
-    for (int icmp=1;icmp<numcmp;icmp++){
+    for (int icmp=0;icmp<numcmp;icmp++){
         
         nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
         ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
         nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
 
-        numspec = JSONfiles.BGC["compartments"][std::to_string(icmp)]["chem_species"].size();
+        numspec = JSONfiles.BGC["compartments"][std::to_string(icmp+1)]["chem_species"].size();
         wfluxC_x = (*Prj_StateVar.wflux)(icmp)(0);
         wfluxC_y = (*Prj_StateVar.wflux)(icmp)(1);
         wfluxC_z = (*Prj_StateVar.wflux)(icmp)(2);
         wmassC = (*Prj_StateVar.wmass)(icmp);
-        
-        for (int ichem=1;ichem<numspec;ichem++){
+       
+        for (int ichem=0;ichem<numspec;ichem++){
 
             chemassC = (*Prj_StateVar.chemass)(icmp)(ichem);
 
