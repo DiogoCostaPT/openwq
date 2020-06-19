@@ -79,62 +79,10 @@ void read_JSON_2class(json & jsondata,const std::string& jsonfile)
 }
 
 
-// Initial conditions (water and chemical mass)
-void readSetIC(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
-
-    int numcmp = JSONfiles.H2O["compartments"].size();
-    int numspec,chem_ii;
-    std::string filepath;
-    
-    for (int i=0;i<numcmp;i++){
-
-        // wmass
-        read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["IC_file"],
-            (*Prj_StateVar.wmass)(i),JSONfiles.H2O[std::to_string(i+1)]["IC_file"]["var_col"]);
-        
-       
-
-        // chemass
-        numspec = JSONfiles.BGC["compartments"][std::to_string(i+1)]["chem_species"].size();
-        std::vector<int> chemname_nums = 
-            JSONfiles.BGC["compartments"][std::to_string(i+1)]["chem_species"]; //chem species # within compartment icmp (from JSON.BGQ)
-        
-        for (int j=0;j<numspec;j++){
-            chem_ii = chemname_nums[j];
-            read_file_3Dcoldata(JSONfiles.BGC["compartments"][std::to_string(i+1)]
-                [std::to_string(chem_ii)]["IC_file"],(*Prj_StateVar.chemass)(i)(j),
-                JSONfiles.BGC["compartments"][std::to_string(i+1)][std::to_string(chem_ii)]["IC_file"]["var_col"]);
-        }
-    }
-}
-
-
-// Read and assign fluxes: wflux
-void readSetFluxes(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
-    
-    int numcmp = JSONfiles.H2O["compartments"].size();
-    bool mobile;
-
-    for (int i=0;i<numcmp;i++){
-
-        mobile = JSONfiles.H2O[std::to_string(i+1)]["mobile"];
-        if (mobile){
-            std::vector<int> icols = JSONfiles.H2O[std::to_string(i+1)]["water_fluxes_file"]["var_col"];
-            for (int j=0;j<3;j++){
-                read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["water_fluxes_file"],
-                    (*Prj_StateVar.wflux)(i)(j),icols[j]);
-            }
-        }
-        
-    }
-}
-
-
 // read 3D col data from file at assign to variable
-void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col){
+void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col, std::string filename){
 
     // get necessary inf o from JSON file
-    std::string filename = filejson["file_path"];
     int skiprows_num = filejson["skip_header_rows"];
     std::string deliminter = filejson["deliminter"];
     std::vector<int> grid_col = filejson["grid_col"];

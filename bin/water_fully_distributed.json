@@ -17,8 +17,10 @@
                 "unit_convertion_multipler": 1
             },
             "mobile": true,
-            "water_fluxes_file":{
-                "file_path": "bin/0.txt",
+            "water_fluxes_files":{
+                "multiple_files": true,
+                "folder_IF_multiple_files": "Results",
+                "file_path_IFNOT_multiplefiles": "bin/0.txt",
                 "skip_header_rows": 1,
                 "grid_col": [1,2,false],
                 "var_col": [4,5,false],

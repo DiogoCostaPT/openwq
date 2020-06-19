@@ -34,6 +34,6 @@ void readSetIC(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 
 void readSetFluxes(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 
-void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col);
+void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col,std::string filename);
 
 #endif
