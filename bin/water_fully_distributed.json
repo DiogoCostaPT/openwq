@@ -18,7 +18,7 @@
             },
             "mobile": true,
             "water_fluxes_files":{
-                "multiple_files": true,
+                "multiple_files": false,
                 "folder_IF_multiple_files": "Results",
                 "file_path_IFNOT_multiplefiles": "bin/0.txt",
                 "skip_header_rows": 1,

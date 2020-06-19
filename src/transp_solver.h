@@ -4,6 +4,11 @@
 
 #include <armadillo>
 #include "global.h"
+#include "readSetFluxes.h"
+
+#include "utility.h"
+#include "string.h"
+#include <algorithm>
 
 void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 

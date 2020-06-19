@@ -15,13 +15,18 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     arma::cube wmassC,chemassC;
     arma::cube wfluxC_x, wfluxC_y, wfluxC_z;
     double mfluxL,frac;
-    
+
     int numcmp = JSONfiles.H2O["compartments"].size();
     double disp_x = JSONfiles.BGC["dispersion"]["x-dir"];
     double disp_y = JSONfiles.BGC["dispersion"]["y-dir"];
     double disp_z = JSONfiles.BGC["dispersion"]["z-dir"];
-    
 
+
+    // Get fluxes
+    readSetFluxes(JSONfiles,Prj_StateVar);
+  
+    
+    // ADE solver
     for (int icmp=0;icmp<numcmp;icmp++){
         
         nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
