@@ -83,7 +83,7 @@ void read_JSON_2class(json & jsondata,const std::string& jsonfile)
 void IC_calc(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
 
     int numcmp = JSONfiles.H2O["compartments"].size();
-    int numspec;
+    int numspec,chem_ii;
     std::string filepath;
     bool mobile;
     
@@ -105,10 +105,14 @@ void IC_calc(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
 
         // chemass
         numspec = JSONfiles.BGC["compartments"][std::to_string(i+1)]["chem_species"].size();
+        std::vector<int> chemname_nums = 
+            JSONfiles.BGC["compartments"][std::to_string(i+1)]["chem_species"]; //chem species # within compartment icmp (from JSON.BGQ)
+        
         for (int j=0;j<numspec;j++){
+            chem_ii = chemname_nums[j];
             read_file_3Dcoldata(JSONfiles.BGC["compartments"][std::to_string(i+1)]
-                [std::to_string(j+1)]["IC_file"],(*Prj_StateVar.chemass)(i)(j),
-                JSONfiles.BGC["compartments"][std::to_string(i+1)][std::to_string(j+1)]["IC_file"]["var_col"]);
+                [std::to_string(chem_ii)]["IC_file"],(*Prj_StateVar.chemass)(i)(j),
+                JSONfiles.BGC["compartments"][std::to_string(i+1)][std::to_string(chem_ii)]["IC_file"]["var_col"]);
         }
     }
 }
