@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
     initmemory(JSONfiles,Prj_StateVar);
 
     // IC (water and chemical mass)
-    IC_calc(JSONfiles,Prj_StateVar);
+    readSetIC(JSONfiles,Prj_StateVar);
 
     // Transport solver
     transp_solve(JSONfiles,Prj_StateVar);

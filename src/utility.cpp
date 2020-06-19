@@ -80,12 +80,11 @@ void read_JSON_2class(json & jsondata,const std::string& jsonfile)
 
 
 // Initial conditions (water and chemical mass)
-void IC_calc(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
+void readSetIC(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
 
     int numcmp = JSONfiles.H2O["compartments"].size();
     int numspec,chem_ii;
     std::string filepath;
-    bool mobile;
     
     for (int i=0;i<numcmp;i++){
 
@@ -93,15 +92,7 @@ void IC_calc(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
         read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["IC_file"],
             (*Prj_StateVar.wmass)(i),JSONfiles.H2O[std::to_string(i+1)]["IC_file"]["var_col"]);
         
-        // wflux (only if mobile)
-        mobile = JSONfiles.H2O[std::to_string(i+1)]["mobile"];
-        if (mobile){
-            std::vector<int> icols = JSONfiles.H2O[std::to_string(i+1)]["water_fluxes_file"]["var_col"];
-            for (int j=0;j<3;j++){
-                read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["water_fluxes_file"],
-                    (*Prj_StateVar.wflux)(i)(j),icols[j]);
-            }
-        }
+       
 
         // chemass
         numspec = JSONfiles.BGC["compartments"][std::to_string(i+1)]["chem_species"].size();
@@ -116,6 +107,28 @@ void IC_calc(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
         }
     }
 }
+
+
+// Read and assign fluxes: wflux
+void readSetFluxes(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
+    
+    int numcmp = JSONfiles.H2O["compartments"].size();
+    bool mobile;
+
+    for (int i=0;i<numcmp;i++){
+
+        mobile = JSONfiles.H2O[std::to_string(i+1)]["mobile"];
+        if (mobile){
+            std::vector<int> icols = JSONfiles.H2O[std::to_string(i+1)]["water_fluxes_file"]["var_col"];
+            for (int j=0;j<3;j++){
+                read_file_3Dcoldata(JSONfiles.H2O[std::to_string(i+1)]["water_fluxes_file"],
+                    (*Prj_StateVar.wflux)(i)(j),icols[j]);
+            }
+        }
+        
+    }
+}
+
 
 // read 3D col data from file at assign to variable
 void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col){
