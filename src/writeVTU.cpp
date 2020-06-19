@@ -11,6 +11,7 @@ void writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar)
 
     std::string filename = JSONfiles.H2O["compartments"][std::to_string(icmp+1)];
     filename.append(".vtu");
+    std::string chemname;
 
     // get domain dimensions
     int nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
@@ -71,10 +72,20 @@ void writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar)
 
     ugrid->SetPoints(points);
 
-    // Add information to the unstructured grid: compartment data 
+    // Add information to the unstructured grid: compartment data
+   
+    std::vector<int> chemname_nums = 
+        JSONfiles.BGC["compartments"][std::to_string(icmp+1)]["chem_species"]; //chem species # within compartment icmp (from JSON.BGQ)
+
     for (int ichem=0;ichem<numspec;ichem++){ // all chemical species
-    vtkSmartPointer<vtkDoubleArray> varexpot = vtkSmartPointer<vtkDoubleArray>::New();
-    varexpot->SetNumberOfValues(numvert);
+
+        vtkSmartPointer<vtkDoubleArray> varexpot = vtkSmartPointer<vtkDoubleArray>::New();
+        varexpot->SetNumberOfValues(numvert);
+
+        // Set name of array (chem variable name)
+        chemname = JSONfiles.BGC["list_chemical_species"][std::to_string(chemname_nums[ichem])];
+        varexpot->SetName(chemname.c_str());
+
         i = 0;
         for (int iz=0;iz<=nz;iz++){   
                 for (int ix=0;ix<=nx;ix++){
@@ -90,8 +101,6 @@ void writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar)
         }
         ugrid->GetPointData()->AddArray(varexpot);
     }
-
-    
 
     // Write file
     vtkSmartPointer<vtkXMLUnstructuredGridWriter> writer =
