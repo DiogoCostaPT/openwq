@@ -16,30 +16,30 @@
             "chem_species": [1,2,5],
             "1":{
                 "IC_file":{
-                    "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                    "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
-                    "var_col": 8,
+                    "var_col": 3,
                     "deliminter": ",",
                     "unit_convertion_multipler": 1
                 }
             },
             "2":{
                 "IC_file":{
-                    "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                    "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
-                    "var_col": 8,
+                    "var_col": 3,
                     "deliminter": ",",
                     "unit_convertion_multipler": 1
                 }
             },
             "5":{
                 "IC_file":{
-                    "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                    "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
-                    "var_col": 8,
+                    "var_col": 3,
                     "deliminter": ",",
                     "unit_convertion_multipler": 1
                 }
@@ -49,20 +49,20 @@
             "chem_species": [1,2],
             "1":{
                 "IC_file":{
-                    "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                    "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
-                    "var_col": 8,
+                    "var_col": 4,
                     "deliminter": ",",
                     "unit_convertion_multipler": 1
                 }
             },
             "2":{
                 "IC_file":{
-                    "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                    "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
-                    "var_col": 8,
+                    "var_col": 4,
                     "deliminter": ",",
                     "unit_convertion_multipler": 1
                 }
@@ -72,7 +72,7 @@
             "chem_species": [1,2],
             "1":{
                 "IC_file":{
-                    "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                    "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
                     "var_col": 8,
@@ -82,7 +82,7 @@
             },
             "2":{
                 "IC_file":{
-                    "file_path": "/media/dcosta/data/megasync/ec_main/models/pulse/code/code_pulse_cpp/bin/Results/0.txt",
+                    "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
                     "var_col": 8,
