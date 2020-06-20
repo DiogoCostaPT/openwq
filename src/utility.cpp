@@ -168,5 +168,26 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int v
 
     // Close file
     thisFile.close();
-
 }
+
+/* *****
+* Read file names in Results directory 
+***** */
+void GetFluxesFiles(std::string &path,
+        std::vector<std::string> &filenames_i,int icmp){
+
+    struct dirent *entry;
+    int i, timestart, filenum = 0, simnum;
+    std::string filename_i;
+ 
+    DIR *dir = opendir((path).c_str());
+    
+    if (dir != NULL) {
+        while ((entry = readdir(dir)) != NULL) {
+            filenames_i.push_back(entry->d_name); // storing the file names
+            filenum = filenum + 1;
+        }
+    }
+    closedir(dir);
+}
+

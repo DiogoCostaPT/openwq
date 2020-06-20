@@ -18,15 +18,13 @@
             },
             "mobile": true,
             "water_fluxes_files":{
-                "multiple_files": false,
-                "folder_IF_multiple_files": "Results",
-                "file_path_IFNOT_multiplefiles": "bin/0.txt",
+                "folder_path": "bin/Fluxes",
                 "skip_header_rows": 1,
                 "grid_col": [1,2,false],
-                "var_col": [4,5,false],
+                "var_col": 3,
                 "deliminter": ",",
                 "unit_convertion_multipler": 1
-                }
+            }
         },
     "2":{
             "nx": 100,

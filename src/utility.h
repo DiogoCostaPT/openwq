@@ -22,6 +22,7 @@
 
 #include "global.h"
 #include "string.h"
+#include <dirent.h>
 #include <algorithm>
 
 using json = nlohmann::json;
@@ -34,6 +35,10 @@ void readSetIC(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 
 void readSetFluxes(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 
-void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col,std::string filename);
+void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, 
+    int var_col,std::string filename);
+
+void GetFluxesFiles(std::string &path,
+        std::vector<std::string> &filenames_i,int icmp);
 
 #endif

@@ -15,7 +15,10 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     arma::cube wmassC,chemassC;
     arma::cube wfluxC_x, wfluxC_y, wfluxC_z;
     double mfluxL,frac;
-
+    bool mobile;
+    std::string folder_path; 
+    std::vector<std::vector<std::string>> filenames;
+    
     int numcmp = JSONfiles.H2O["compartments"].size();
     double disp_x = JSONfiles.BGC["dispersion"]["x-dir"];
     double disp_y = JSONfiles.BGC["dispersion"]["y-dir"];
@@ -23,12 +26,31 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
 
 
     // Get fluxes
-    readSetFluxes(JSONfiles,Prj_StateVar);
+    //readSetFluxes(JSONfiles,Prj_StateVar);
+
+    // Get fluxes files
+    for (int icmp=1;icmp<=numcmp;icmp++){
+        
+        mobile = JSONfiles.H2O[std::to_string(icmp)]["mobile"];
+        std::vector<std::string> filenames_i;
+
+        if (mobile){
+            folder_path = JSONfiles.H2O[std::to_string(icmp)]["water_fluxes_files"]["folder_path"];
+            GetFluxesFiles(folder_path,filenames_i,icmp); // list the results files to get the last time step
+            
+        }else{
+            filenames_i.push_back("NOT_MOBILE");
+        }
+        filenames.push_back(filenames_i);
+    }
   
     
     // ADE solver
     for (int icmp=0;icmp<numcmp;icmp++){
         
+        mobile = JSONfiles.H2O[std::to_string(icmp)]["mobile"];
+        if(!mobile) continue; // skip if compartment is not mobile
+
         nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
         ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
         nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
