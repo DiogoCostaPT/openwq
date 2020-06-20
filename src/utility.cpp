@@ -189,5 +189,6 @@ void GetFluxesFiles(std::string &path,
         }
     }
     closedir(dir);
+    free(entry);
 }
 

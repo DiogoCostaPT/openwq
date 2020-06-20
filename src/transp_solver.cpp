@@ -15,9 +15,11 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     arma::cube wmassC,chemassC;
     arma::cube wfluxC_x, wfluxC_y, wfluxC_z;
     double mfluxL,frac;
+    double filename_ii;
     bool mobile;
     std::string folder_path; 
-    std::vector<std::vector<std::string>> filenames;
+    std::vector<std::vector<std::string>> fluxes_filenames;
+    std::vector<std::vector<double>> fluxes_filenames_num;
     
     int numcmp = JSONfiles.H2O["compartments"].size();
     double disp_x = JSONfiles.BGC["dispersion"]["x-dir"];
@@ -25,10 +27,7 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     double disp_z = JSONfiles.BGC["dispersion"]["z-dir"];
 
 
-    // Get fluxes
-    //readSetFluxes(JSONfiles,Prj_StateVar);
-
-    // Get fluxes files
+    // Get fluxes files for each compartment
     for (int icmp=1;icmp<=numcmp;icmp++){
         
         mobile = JSONfiles.H2O[std::to_string(icmp)]["mobile"];
@@ -41,15 +40,35 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
         }else{
             filenames_i.push_back("NOT_MOBILE");
         }
-        filenames.push_back(filenames_i);
+        fluxes_filenames.push_back(filenames_i);
     }
-  
+
+    // Convert filename strings to numbers
+    for (int icmp=0;icmp<numcmp;icmp++){
+        
+        std::vector<std::string> filenames_i = fluxes_filenames[icmp];
+
+        for(int i=0;i<filenames_i.size();i++){
+            //filename_ii = filenames_i[i]; // CONTINUE HERE
+           
+            try{
+                //simnum = std::stoi(filename_i.substr(0,sizeof(filename_i)-4));
+                //timestart = std::max(timestart,simnum);
+            } catch(const std::exception& e){
+            }
+           
+        }
+    }
+    
     
     // ADE solver
     for (int icmp=0;icmp<numcmp;icmp++){
         
         mobile = JSONfiles.H2O[std::to_string(icmp)]["mobile"];
         if(!mobile) continue; // skip if compartment is not mobile
+
+        // Get fluxes
+        //readSetFluxes(JSONfiles,Prj_StateVar);
 
         nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
         ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
