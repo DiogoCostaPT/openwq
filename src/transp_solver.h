@@ -4,7 +4,6 @@
 
 #include <armadillo>
 #include "global.h"
-#include "readSetFluxes.h"
 
 #include "utility.h"
 #include "string.h"

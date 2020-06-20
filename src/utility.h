@@ -38,7 +38,12 @@ void readSetFluxes(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, 
     int var_col,std::string filename);
 
-void GetFluxesFiles(std::string &path,
-        std::vector<std::string> &filenames_i,int icmp);
+void GetFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &fluxes_filenames);
+
+void GetFilesInFolder(std::string &path,std::vector<std::string> &filenames_i);
+
+void ConvertSortFluxesFilenames2Double(JSONfiles& JSONfiles,
+    std::vector<std::vector<std::string>>& fluxes_filenames,
+    std::vector<std::vector<double>>& fluxes_filenames_num);
 
 #endif

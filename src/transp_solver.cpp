@@ -15,9 +15,7 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     arma::cube wmassC,chemassC;
     arma::cube wfluxC_x, wfluxC_y, wfluxC_z;
     double mfluxL,frac;
-    double filename_ii;
     bool mobile;
-    std::string folder_path; 
     std::vector<std::vector<std::string>> fluxes_filenames;
     std::vector<std::vector<double>> fluxes_filenames_num;
     
@@ -28,39 +26,11 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
 
 
     // Get fluxes files for each compartment
-    for (int icmp=1;icmp<=numcmp;icmp++){
-        
-        mobile = JSONfiles.H2O[std::to_string(icmp)]["mobile"];
-        std::vector<std::string> filenames_i;
-
-        if (mobile){
-            folder_path = JSONfiles.H2O[std::to_string(icmp)]["water_fluxes_files"]["folder_path"];
-            GetFluxesFiles(folder_path,filenames_i,icmp); // list the results files to get the last time step
-            
-        }else{
-            filenames_i.push_back("NOT_MOBILE");
-        }
-        fluxes_filenames.push_back(filenames_i);
-    }
+    GetFluxesFiles(JSONfiles,fluxes_filenames);
 
     // Convert filename strings to numbers
-    for (int icmp=0;icmp<numcmp;icmp++){
-        
-        std::vector<std::string> filenames_i = fluxes_filenames[icmp];
-
-        for(int i=0;i<filenames_i.size();i++){
-            //filename_ii = filenames_i[i]; // CONTINUE HERE
-           
-            try{
-                //simnum = std::stoi(filename_i.substr(0,sizeof(filename_i)-4));
-                //timestart = std::max(timestart,simnum);
-            } catch(const std::exception& e){
-            }
-           
-        }
-    }
-    
-    
+    ConvertSortFluxesFilenames2Double(JSONfiles,fluxes_filenames,fluxes_filenames_num);
+     
     // ADE solver
     for (int icmp=0;icmp<numcmp;icmp++){
         
