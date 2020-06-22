@@ -30,6 +30,14 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
 
     // Convert filename strings to numbers
     ConvertSortFluxesFilenames2Double(JSONfiles,fluxes_filenames,fluxes_filenames_num);
+
+    // Check if time steps match between mobile compartments
+    bool timeMatch_flag = CheckIfCompTimeStepsMatch(fluxes_filenames_num);
+
+    // NOW:
+    // 1: check if the time steps match for the different compartments. Do I need to do this?
+    // 2: Start the time loop
+    // 3: Move the ADE solver to another file?
      
     // ADE solver
     for (int icmp=0;icmp<numcmp;icmp++){

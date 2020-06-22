@@ -247,3 +247,41 @@ void ConvertSortFluxesFilenames2Double(JSONfiles& JSONfiles,
         fluxes_filenames_num.push_back(fluxes_filenames_num_i);
     }
 }
+
+// Check if time steps match between compartments
+bool CheckIfCompTimeStepsMatch(std::vector<std::vector<double>> &fluxes_filenames_num){
+
+    bool tsm_flag = true;
+    std::vector<int> mobileCompt;
+    int numcmp = fluxes_filenames_num.size();
+    int numelem;
+
+    // Identify the mobile compartments
+    for (int icmp=0;icmp<numcmp;icmp++){
+        numelem = fluxes_filenames_num[icmp].size();
+        if (numelem>0) mobileCompt.push_back(icmp);
+    }
+
+    // If mobileCompt.size() <=1 mobile compartment, no problem with timestep matching between compartments
+    // If mobileCompt.size() >1 mobile compartment, we need to check the the timesteps are the same between compartments
+    if (mobileCompt.size()>1){
+        tsm_flag = true;
+        int num_mobileCompt = mobileCompt.size(); // num of mobile compartments
+        int tmpst_num = fluxes_filenames_num[mobileCompt[0]].size(); // num of elements of the 1st mobile compartment
+        for (int icmp=1;icmp<num_mobileCompt;icmp++){ // loop over compartmennts: compare all mobile_compartments with the first compartment
+            for (int tmpst=0;tmpst<tmpst_num;tmpst++){ // loop over time steps (vector elements)
+                if (fluxes_filenames_num[mobileCompt[icmp]][tmpst] != fluxes_filenames_num[mobileCompt[0]][tmpst]){
+                    tsm_flag = false;
+                    std::cout << "Timesteps mismatch at timestep: " + 
+                        std::to_string(fluxes_filenames_num[mobileCompt[0]][tmpst]) + "; Compartments: " 
+                        + std::to_string(mobileCompt[0+1]) + " and "
+                        + std::to_string(mobileCompt[icmp+1]) << std::endl;
+                    break;
+                }
+            }
+            if (tsm_flag==false) break;
+        }
+    }
+
+    return tsm_flag;
+}
