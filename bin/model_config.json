@@ -5,7 +5,8 @@
     "date": "May_2020",
     "additional_info": "Default file for testing purposes",
     "water_balance_setup_file": "bin/water_fully_distributed.json",
-    "biogeochemistry_setup_file": "bin/generic_water_quality_model.json" 
+    "biogeochemistry_setup_file": "bin/generic_water_quality_model.json",
+    "export_results_folder": "bin/Results"
 }
 
 

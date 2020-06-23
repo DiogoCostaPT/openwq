@@ -21,12 +21,12 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     std::vector<std::vector<double>> fluxes_filenames_num;
     std::string fluxes_filenamesExtention;
     std::vector<int> mobileCompt;
+    std::string res_folder = JSONfiles.Master["export_results_folder"];
     
     int numcmp = JSONfiles.H2O["compartments"].size();
     double disp_x = JSONfiles.BGC["dispersion"]["x-dir"];
     double disp_y = JSONfiles.BGC["dispersion"]["y-dir"];
     double disp_z = JSONfiles.BGC["dispersion"]["z-dir"];
-
 
     // Get fluxes files for each compartment
     GetFluxesFiles(JSONfiles,fluxes_filenames);
@@ -84,7 +84,7 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                                 (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) -= frac * mfluxL;
                                 
                                 // x-dir
-                                if (wfluxC_x(ix,iy,iz) > 0.0f && ix<nx){
+                                if (wfluxC_x(ix,iy,iz) > 0.0f && ix<(nx-1)){
                                     (*Prj_StateVar.chemass)(icmp)(ichem)(ix+1,iy,iz) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_x(ix,iy,iz)/wmassC(ix,iy,iz);
                                 }else if(ix>0)
                                 {
@@ -92,7 +92,7 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                                 }
 
                                 // y-dir
-                                if (wfluxC_y(ix,iy,iz) > 0.0f && iy<ny){
+                                if (wfluxC_y(ix,iy,iz) > 0.0f && iy<(ny-1)){
                                     (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy+1,iz) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_y(ix,iy,iz)/wmassC(ix,iy,iz);
                                 }else if(iy>0)
                                 {
@@ -100,7 +100,7 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                                 }
 
                                 // z-dir
-                                if (wfluxC_z(ix,iy,iz) > 0.0f && iz<nz){
+                                if (wfluxC_z(ix,iy,iz) > 0.0f && iz<(nz-1)){
                                     (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz+1) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_z(ix,iy,iz)/wmassC(ix,iy,iz);
                                 }else if(iz>0)
                                 {
