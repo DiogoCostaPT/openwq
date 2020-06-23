@@ -3,13 +3,15 @@
 
 #include "writeVTU.h"
 
-int writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar)
+int writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar, int tmpst_i)
 {
 
     // This was built for hexahedrons (see line 66) for now (cubes, Rectangular cuboid, Trigonal trapezohedron, etc)
     // But line 33:33 makes determining cubes of side lenght = 1 (but this can all be changed)
 
     std::string filename = JSONfiles.H2O["compartments"][std::to_string(icmp+1)];
+    filename.append("_");
+    filename.append(std::to_string(tmpst_i)); // time stamp
     filename.append(".vtu");
     std::string chemname;
 

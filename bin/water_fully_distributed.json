@@ -45,7 +45,7 @@
                 "grid_col": [1,2,false],
                 "var_col": [3,false,false],
                 "deliminter": ",",
-                "unit_convertion_multipler": 100
+                "unit_convertion_multipler": 1000
             }
         },
     "3":{

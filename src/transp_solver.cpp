@@ -138,6 +138,12 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                     }
                 }
             }
+
+            // Print Results
+        for (int j=0;j<numcmp;j++){
+            writeVTU(JSONfiles,j,Prj_StateVar,tmpst_i); // https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
+        }
+
         }
     }
 

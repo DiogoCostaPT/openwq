@@ -22,6 +22,6 @@
 
 #include "global.h"
 
-int writeVTU(JSONfiles& JSONfiles,int icmp, Prj_StateVar& Prj_StateVar);
+int writeVTU(JSONfiles& JSONfiles,int icmp, Prj_StateVar& Prj_StateVar, int tmpst_i);
 
 #endif

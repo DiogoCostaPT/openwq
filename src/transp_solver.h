@@ -9,6 +9,8 @@
 #include "global.h"
 #include "utility.h"
 #include "readSetFluxes.h"
+#include "transp_solver.h"
+#include "writeVTU.h"
 
 void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 

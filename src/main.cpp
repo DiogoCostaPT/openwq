@@ -22,7 +22,6 @@
 #include "global.h"
 #include "utility.h"
 #include "transp_solver.h"
-#include "writeVTU.h"
 
 int main(int argc, char* argv[]) 
 {   
@@ -49,11 +48,6 @@ int main(int argc, char* argv[])
 
     // Transport solver
     transp_solve(JSONfiles,Prj_StateVar);
-
-    // Print Results
-    for (int j=0;j<numcmp;j++){
-        writeVTU(JSONfiles,j,Prj_StateVar); // https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
-    }
 
 }
 
