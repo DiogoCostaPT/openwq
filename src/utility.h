@@ -46,6 +46,9 @@ void ConvertSortFluxesFilenames2Double(JSONfiles& JSONfiles,
     std::vector<std::vector<std::string>>& fluxes_filenames,
     std::vector<std::vector<double>>& fluxes_filenames_num);
 
-bool CheckIfCompTimeStepsMatch(std::vector<std::vector<double>>& fluxes_filenames_num);
+bool CheckIfCompTimeStepsMatch(std::vector<std::vector<double>> &fluxes_filenames_num,
+    std::vector<int> &mobileCompt);
+
+void GetFileExtension(std::string & str, std::string & str_extention);
 
 #endif

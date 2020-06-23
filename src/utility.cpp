@@ -80,7 +80,8 @@ void read_JSON_2class(json & jsondata,const std::string& jsonfile)
 
 
 // read 3D col data from file at assign to variable
-void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col, std::string filename){
+void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col, 
+    std::string filename){
 
     // get necessary inf o from JSON file
     int skiprows_num = filejson["skip_header_rows"];
@@ -249,10 +250,10 @@ void ConvertSortFluxesFilenames2Double(JSONfiles& JSONfiles,
 }
 
 // Check if time steps match between compartments
-bool CheckIfCompTimeStepsMatch(std::vector<std::vector<double>> &fluxes_filenames_num){
+bool CheckIfCompTimeStepsMatch(std::vector<std::vector<double>> &fluxes_filenames_num,
+    std::vector<int> &mobileCompt){
 
     bool tsm_flag = true;
-    std::vector<int> mobileCompt;
     int numcmp = fluxes_filenames_num.size();
     int numelem;
 
@@ -284,4 +285,12 @@ bool CheckIfCompTimeStepsMatch(std::vector<std::vector<double>> &fluxes_filename
     }
 
     return tsm_flag;
+}
+
+// Get extention of extention
+void GetFileExtension(std::string &str, std::string &str_extention){
+
+    std::size_t pos = str.find(".");      // position of "." in str
+    str_extention = str.substr (pos);     // get from "." to the end
+
 }

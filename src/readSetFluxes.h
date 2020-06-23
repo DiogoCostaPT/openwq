@@ -4,8 +4,11 @@
 #define READSETFLUXESH_INCLUDED
 
 #include "global.h"
+#include "utility.h"
+#include "string.h"
 
 void readSetFluxes(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,
-    std::vector<int> mobileCompt,std::string& fluxes_filenamesExtention);
+    std::vector<int> mobileCompt,std::string& fluxes_filenamesExtention,
+    int tmpst);
 
 #endif

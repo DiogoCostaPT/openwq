@@ -3,11 +3,12 @@
 #define TRANSPSOLVERH_INCLUDED
 
 #include <armadillo>
-#include "global.h"
-
-#include "utility.h"
 #include "string.h"
 #include <algorithm>
+
+#include "global.h"
+#include "utility.h"
+#include "readSetFluxes.h"
 
 void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 

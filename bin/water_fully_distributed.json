@@ -21,7 +21,7 @@
                 "folder_path": "bin/Fluxes",
                 "skip_header_rows": 1,
                 "grid_col": [1,2,false],
-                "var_col": 3,
+                "var_col": [3,false,false],
                 "deliminter": ",",
                 "unit_convertion_multipler": 1
             }
@@ -40,10 +40,10 @@
             },
             "mobile": true,
             "water_fluxes_files":{
-                "folder_path": "bin/Fluxes_2",
+                "folder_path": "bin/Fluxes",
                 "skip_header_rows": 1,
                 "grid_col": [1,2,false],
-                "var_col": 3,
+                "var_col": [3,false,false],
                 "deliminter": ",",
                 "unit_convertion_multipler": 1
             }
