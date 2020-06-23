@@ -38,112 +38,114 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     bool timeMatch_flag = CheckIfCompTimeStepsMatch(fluxes_filenames_num,mobileCompt);
 
     // Get Extention of Fluxes files: use 1st mobile compartment as reference and [3]-> because the first 2 are allways ".' and "..""
-    GetFileExtension(fluxes_filenames[mobileCompt[0]][2],fluxes_filenamesExtention);
+    if (!mobileCompt.empty()){
+        GetFileExtension(fluxes_filenames[mobileCompt[0]][2],fluxes_filenamesExtention);
 
-    // if all mobile_compartment timesteps match, run ADE_solver
-    if (timeMatch_flag){
+        // if all mobile_compartment timesteps match, run ADE_solver
+        if (timeMatch_flag){
 
-        int tmpst_num = fluxes_filenames_num[mobileCompt[0]].size(); // num of elements of the 1st mobile compartment
-        
-        for (int tmpst=0;tmpst<tmpst_num;tmpst++){ // time loop
+            int tmpst_num = fluxes_filenames_num[mobileCompt[0]].size(); // num of elements of the 1st mobile compartment
             
-            tmpst_i = fluxes_filenames_num[mobileCompt[0]][tmpst]; // timestep in file
-
-            readSetFluxes(JSONfiles,Prj_StateVar,mobileCompt,fluxes_filenamesExtention,tmpst_i); // Get all fluxes at timestep tmpst
-
-            for (int icmp=0;icmp<mobileCompt.size();icmp++){ // comparment loop
+            for (int tmpst=0;tmpst<tmpst_num;tmpst++){ // time loop
                 
-                icmpMob = mobileCompt[icmp]; // get mobile compartments
+                tmpst_i = fluxes_filenames_num[mobileCompt[0]][tmpst]; // timestep in file
+
+                readSetFluxes(JSONfiles,Prj_StateVar,mobileCompt,fluxes_filenamesExtention,tmpst_i); // Get all fluxes at timestep tmpst
+
+                for (int icmp=0;icmp<mobileCompt.size();icmp++){ // comparment loop
+                    
+                    icmpMob = mobileCompt[icmp]; // get mobile compartments
+                    
+                    nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
+                    ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
+                    nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
+
+                    numspec = JSONfiles.BGC["compartments"][std::to_string(icmp+1)]["chem_species"].size();
+                    wfluxC_x = (*Prj_StateVar.wflux)(icmp)(0);
+                    wfluxC_y = (*Prj_StateVar.wflux)(icmp)(1);
+                    wfluxC_z = (*Prj_StateVar.wflux)(icmp)(2);
+                    wmassC = (*Prj_StateVar.wmass)(icmp);
                 
-                nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
-                ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
-                nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
+                    for (int ichem=0;ichem<numspec;ichem++){
 
-                numspec = JSONfiles.BGC["compartments"][std::to_string(icmp+1)]["chem_species"].size();
-                wfluxC_x = (*Prj_StateVar.wflux)(icmp)(0);
-                wfluxC_y = (*Prj_StateVar.wflux)(icmp)(1);
-                wfluxC_z = (*Prj_StateVar.wflux)(icmp)(2);
-                wmassC = (*Prj_StateVar.wmass)(icmp);
-            
-                for (int ichem=0;ichem<numspec;ichem++){
+                        chemassC = (*Prj_StateVar.chemass)(icmp)(ichem);
 
-                    chemassC = (*Prj_StateVar.chemass)(icmp)(ichem);
+                        for (int ix=0;ix<nx;ix++){
+                            for (int iy=0;iy<ny;iy++){
+                                for (int iz=0;iz<nz;iz++){
+                                    
+                                    mfluxL = (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * (wfluxC_x(ix,iy,iz) + wfluxC_y(ix,iy,iz) 
+                                    + wfluxC_z(ix,iy,iz))/wmassC(ix,iy,iz);
+                                    if (mfluxL < 0.0f){ // limit flux to available material
+                                        mfluxL = (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz);
+                                        frac = wmassC(ix,iy,iz) / (wfluxC_x(ix,iy,iz) + wfluxC_y(ix,iy,iz) + wfluxC_z(ix,iy,iz));
+                                    }else {
+                                        frac = 1.0f;
+                                    }
+                                    (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) -= frac * mfluxL;
+                                    
+                                    // x-dir
+                                    if (wfluxC_x(ix,iy,iz) > 0.0f && ix<(nx-1)){
+                                        (*Prj_StateVar.chemass)(icmp)(ichem)(ix+1,iy,iz) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_x(ix,iy,iz)/wmassC(ix,iy,iz);
+                                    }else if(ix>0)
+                                    {
+                                        (*Prj_StateVar.chemass)(icmp)(ichem)(ix-1,iy,iz) -= (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_x(ix,iy,iz)/wmassC(ix,iy,iz);
+                                    }
 
-                    for (int ix=0;ix<nx;ix++){
-                        for (int iy=0;iy<ny;iy++){
-                            for (int iz=0;iz<nz;iz++){
-                                
-                                mfluxL = (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * (wfluxC_x(ix,iy,iz) + wfluxC_y(ix,iy,iz) 
-                                + wfluxC_z(ix,iy,iz))/wmassC(ix,iy,iz);
-                                if (mfluxL < 0.0f){ // limit flux to available material
-                                    mfluxL = (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz);
-                                    frac = wmassC(ix,iy,iz) / (wfluxC_x(ix,iy,iz) + wfluxC_y(ix,iy,iz) + wfluxC_z(ix,iy,iz));
-                                }else {
-                                    frac = 1.0f;
+                                    // y-dir
+                                    if (wfluxC_y(ix,iy,iz) > 0.0f && iy<(ny-1)){
+                                        (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy+1,iz) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_y(ix,iy,iz)/wmassC(ix,iy,iz);
+                                    }else if(iy>0)
+                                    {
+                                        (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy-1,iz) -= (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_y(ix,iy,iz)/wmassC(ix,iy,iz);
+                                    }
+
+                                    // z-dir
+                                    if (wfluxC_z(ix,iy,iz) > 0.0f && iz<(nz-1)){
+                                        (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz+1) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_z(ix,iy,iz)/wmassC(ix,iy,iz);
+                                    }else if(iz>0)
+                                    {
+                                        (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz-1) -= (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_z(ix,iy,iz)/wmassC(ix,iy,iz);
+                                    }
+                                    
+                                    // MISSING DISPERSION (NOT VALIDATED YET)
+                                    
+                                    /*
+                                    dcdx(ix,iy,iz)=(conc(ix,iy,iz)-conc(ix-1,iy,iz))/dx;
+                                    dcdy(ix,iy,iz)=(conc(ix,iy,iz)-conc(ix,iy-1,iz))/dy;
+                                    dcdz(ix,iy,iz)=(conc(ix,iy,iz)-conc(ix,iy,iz-1))/dz;
+
+                                    dc2dx2(ix,iy,iz)=((conc(ix+1,iy,iz)-conc(ix,iy,iz))/dx
+                                        -(conc(ix,iy,iz)-conc(ix-1,iy,iz))/dx)/(dx);
+                                    dc2dy2(ix,iy,iz)=((conc(ix,iy+1,iz)-conc(ix,iy,iz))/dy
+                                        -(conc(ix,iy,iz)-conc(ix,iy-1,iz))/dy)/(dy);
+                                    dc2dz2(ix,iy,iz)=((conc(ix,iy,iz+1)-conc(ix,iy,iz))/dz
+                                        -(conc(ix,iy,iz)-conc(ix,iy,iz-1))/dz)/(dz);
+
+                                    dmdt(ix,iy,iz)= -(wfluxC_x)(ix,iy,iz)*dcdx(ix,iy,iz)
+                                        -(wfluxC_y)(ix,iy,iz)*dcdy(ix,iy,iz)
+                                        -(wfluxC_z)(ix,iy,iz)*dcdz(ix,iy,iz)
+                                        +disp_x*dc2dx2(ix,iy,iz)
+                                        +disp_y*dc2dy2(ix,iy,iz)
+                                        +disp_z*dc2dz2(ix,iy,iz);
+
+                                    dmdt(ix,iy,iz) = std::fmin(dmdt(ix,iy,iz), chemassC(ix,iy,iz));
+
+                                    chemassC(ix,iy,iz) = chemassC(ix,iy,iz) + dmdt(ix,iy,iz);
+                                    */
+
                                 }
-                                (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) -= frac * mfluxL;
-                                
-                                // x-dir
-                                if (wfluxC_x(ix,iy,iz) > 0.0f && ix<(nx-1)){
-                                    (*Prj_StateVar.chemass)(icmp)(ichem)(ix+1,iy,iz) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_x(ix,iy,iz)/wmassC(ix,iy,iz);
-                                }else if(ix>0)
-                                {
-                                    (*Prj_StateVar.chemass)(icmp)(ichem)(ix-1,iy,iz) -= (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_x(ix,iy,iz)/wmassC(ix,iy,iz);
-                                }
-
-                                // y-dir
-                                if (wfluxC_y(ix,iy,iz) > 0.0f && iy<(ny-1)){
-                                    (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy+1,iz) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_y(ix,iy,iz)/wmassC(ix,iy,iz);
-                                }else if(iy>0)
-                                {
-                                    (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy-1,iz) -= (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_y(ix,iy,iz)/wmassC(ix,iy,iz);
-                                }
-
-                                // z-dir
-                                if (wfluxC_z(ix,iy,iz) > 0.0f && iz<(nz-1)){
-                                    (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz+1) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_z(ix,iy,iz)/wmassC(ix,iy,iz);
-                                }else if(iz>0)
-                                {
-                                    (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz-1) -= (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_z(ix,iy,iz)/wmassC(ix,iy,iz);
-                                }
-                                
-                                // MISSING DISPERSION (NOT VALIDATED YET)
-                                
-                                /*
-                                dcdx(ix,iy,iz)=(conc(ix,iy,iz)-conc(ix-1,iy,iz))/dx;
-                                dcdy(ix,iy,iz)=(conc(ix,iy,iz)-conc(ix,iy-1,iz))/dy;
-                                dcdz(ix,iy,iz)=(conc(ix,iy,iz)-conc(ix,iy,iz-1))/dz;
-
-                                dc2dx2(ix,iy,iz)=((conc(ix+1,iy,iz)-conc(ix,iy,iz))/dx
-                                    -(conc(ix,iy,iz)-conc(ix-1,iy,iz))/dx)/(dx);
-                                dc2dy2(ix,iy,iz)=((conc(ix,iy+1,iz)-conc(ix,iy,iz))/dy
-                                    -(conc(ix,iy,iz)-conc(ix,iy-1,iz))/dy)/(dy);
-                                dc2dz2(ix,iy,iz)=((conc(ix,iy,iz+1)-conc(ix,iy,iz))/dz
-                                    -(conc(ix,iy,iz)-conc(ix,iy,iz-1))/dz)/(dz);
-
-                                dmdt(ix,iy,iz)= -(wfluxC_x)(ix,iy,iz)*dcdx(ix,iy,iz)
-                                    -(wfluxC_y)(ix,iy,iz)*dcdy(ix,iy,iz)
-                                    -(wfluxC_z)(ix,iy,iz)*dcdz(ix,iy,iz)
-                                    +disp_x*dc2dx2(ix,iy,iz)
-                                    +disp_y*dc2dy2(ix,iy,iz)
-                                    +disp_z*dc2dz2(ix,iy,iz);
-
-                                dmdt(ix,iy,iz) = std::fmin(dmdt(ix,iy,iz), chemassC(ix,iy,iz));
-
-                                chemassC(ix,iy,iz) = chemassC(ix,iy,iz) + dmdt(ix,iy,iz);
-                                */
-
                             }
                         }
                     }
                 }
+
+                // Print Results
+            for (int j=0;j<numcmp;j++){
+                writeVTU(JSONfiles,j,Prj_StateVar,tmpst_i); // https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
             }
 
-            // Print Results
-        for (int j=0;j<numcmp;j++){
-            writeVTU(JSONfiles,j,Prj_StateVar,tmpst_i); // https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
-        }
-
+            }
         }
     }
 

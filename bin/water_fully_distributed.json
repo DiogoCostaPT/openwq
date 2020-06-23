@@ -16,7 +16,7 @@
                 "deliminter": ",",
                 "unit_convertion_multipler": 1
             },
-            "mobile": true,
+            "mobile": false,
             "water_fluxes_files":{
                 "folder_path": "bin/Fluxes",
                 "skip_header_rows": 0,
@@ -29,23 +29,23 @@
     "2":{
             "nx": 100,
             "ny": 10,
-            "nz": 1,
+            "nz": 10,
             "IC_file":{
-                "file_path": "bin/0.txt",
+                "file_path": "bin/0_3D.txt",
                 "skip_header_rows": 1,
-                "grid_col": [1,2,false],
-                "var_col": 8,
+                "grid_col": [1,2,3],
+                "var_col": 5,
                 "deliminter": ",",
                 "unit_convertion_multipler": 1
             },
-            "mobile": true,
+            "mobile": false,
             "water_fluxes_files":{
                 "folder_path": "bin/Fluxes",
                 "skip_header_rows": 0,
                 "grid_col": [1,2,false],
-                "var_col": [3,false,false],
+                "var_col": [3,3,false],
                 "deliminter": ",",
-                "unit_convertion_multipler": 1000
+                "unit_convertion_multipler": 1
             }
         },
     "3":{
