@@ -69,9 +69,9 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
 
                     chemassC = (*Prj_StateVar.chemass)(icmp)(ichem);
 
-                    for (int ix=1;ix<nx-1;ix++){
-                        for (int iy=1;iy<ny-1;iy++){
-                            for (int iz=1;iz<nz-1;iz++){
+                    for (int ix=0;ix<nx;ix++){
+                        for (int iy=0;iy<ny;iy++){
+                            for (int iz=0;iz<nz;iz++){
                                 
                                 mfluxL = (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * (wfluxC_x(ix,iy,iz) + wfluxC_y(ix,iy,iz) 
                                 + wfluxC_z(ix,iy,iz))/wmassC(ix,iy,iz);
@@ -84,25 +84,25 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                                 (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) -= frac * mfluxL;
                                 
                                 // x-dir
-                                if (wfluxC_x(ix,iy,iz) > 0.0f){
+                                if (wfluxC_x(ix,iy,iz) > 0.0f && ix<nx){
                                     (*Prj_StateVar.chemass)(icmp)(ichem)(ix+1,iy,iz) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_x(ix,iy,iz)/wmassC(ix,iy,iz);
-                                }else
+                                }else if(ix>0)
                                 {
                                     (*Prj_StateVar.chemass)(icmp)(ichem)(ix-1,iy,iz) -= (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_x(ix,iy,iz)/wmassC(ix,iy,iz);
                                 }
 
                                 // y-dir
-                                if (wfluxC_y(ix,iy,iz) > 0.0f){
+                                if (wfluxC_y(ix,iy,iz) > 0.0f && iy<ny){
                                     (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy+1,iz) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_y(ix,iy,iz)/wmassC(ix,iy,iz);
-                                }else
+                                }else if(iy>0)
                                 {
                                     (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy-1,iz) -= (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_y(ix,iy,iz)/wmassC(ix,iy,iz);
                                 }
 
                                 // z-dir
-                                if (wfluxC_z(ix,iy,iz) > 0.0f){
+                                if (wfluxC_z(ix,iy,iz) > 0.0f && iz<nz){
                                     (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz+1) += (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_z(ix,iy,iz)/wmassC(ix,iy,iz);
-                                }else
+                                }else if(iz>0)
                                 {
                                     (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz-1) -= (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) * wfluxC_z(ix,iy,iz)/wmassC(ix,iy,iz);
                                 }
