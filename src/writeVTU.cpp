@@ -87,7 +87,7 @@ int writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar, int tmpst
         varexpot->SetNumberOfValues(numvert);
 
         // Set name of array (chem variable name)
-        chemname = JSONfiles.WQ["list_chemical_species"][std::to_string(chemname_nums[ichem])];
+        chemname = JSONfiles.BGC["list_chemical_species"][std::to_string(chemname_nums[ichem])];
         varexpot->SetName(chemname.c_str());
 
         i = 0;

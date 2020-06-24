@@ -30,7 +30,7 @@ void initmemory(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar)
         n_xyz[2] = 0;
 
         // BGC
-        int numlistspec = JSONfiles.WQ["list_chemical_species"].size(); // size of list_chemical_speciess
+        int numlistspec = JSONfiles.BGC["list_chemical_species"].size(); // size of list_chemical_speciess
         int numspec_j;
 
         // Assign and  allocate memory: wflux,wmassk,chemass
