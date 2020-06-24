@@ -5,5 +5,13 @@
         "3": "don",
         "4": "labileN",
         "5": "regractoryN"
+    },
+    "transformations":{
+        "denitrification":{
+            "kinetics":"nh4 = no3 * k",
+            "parameters":{
+                "k": 0.01
+            }
+        }
     }
 }
