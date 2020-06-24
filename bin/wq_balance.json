@@ -9,7 +9,7 @@
             "chem_species": ["no3","nh4","refracN"],
             "no3":{
                 "IC_file":{
-                    "file_path": "bin/0.txt",
+                    "file_path": "bin/0_3D.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
                     "var_col": 3,
@@ -19,7 +19,7 @@
             },
             "nh4":{
                 "IC_file":{
-                    "file_path": "bin/0.txt",
+                    "file_path": "bin/0_3D.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
                     "var_col": 3,
@@ -29,7 +29,7 @@
             },
             "refracN":{
                 "IC_file":{
-                    "file_path": "bin/0.txt",
+                    "file_path": "bin/0_3D.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
                     "var_col": 3,
@@ -52,7 +52,7 @@
             },
             "nh4":{
                 "IC_file":{
-                    "file_path": "bin/0.txt",
+                    "file_path": "bin/0_3D.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
                     "var_col": 4,
@@ -65,7 +65,7 @@
             "chem_species":["no3","nh4"],
             "no3":{
                 "IC_file":{
-                    "file_path": "bin/0.txt",
+                    "file_path": "bin/0_3D.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
                     "var_col": 8,
@@ -75,7 +75,7 @@
             },
             "nh4":{
                 "IC_file":{
-                    "file_path": "bin/0.txt",
+                    "file_path": "bin/0_3D.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
                     "var_col": 8,
