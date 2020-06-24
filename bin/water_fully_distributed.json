@@ -29,7 +29,7 @@
     "2":{
             "nx": 100,
             "ny": 10,
-            "nz": 10,
+            "nz": 5,
             "IC_file":{
                 "file_path": "bin/0_3D.txt",
                 "skip_header_rows": 1,

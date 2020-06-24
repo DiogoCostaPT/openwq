@@ -37,15 +37,21 @@ void transp_solve(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     // Check if time steps match between mobile compartments
     bool timeMatch_flag = CheckIfCompTimeStepsMatch(fluxes_filenames_num,mobileCompt);
 
+    // Save initial conditions
+    for (int j=0;j<numcmp;j++){
+        writeVTU(JSONfiles,j,Prj_StateVar,0); // https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
+    }
+    
     // Get Extention of Fluxes files: use 1st mobile compartment as reference and [3]-> because the first 2 are allways ".' and "..""
-    if (!mobileCompt.empty()){
+    if (!mobileCompt.empty()){ // if at least one compartment is mobile
+
         GetFileExtension(fluxes_filenames[mobileCompt[0]][2],fluxes_filenamesExtention);
 
         // if all mobile_compartment timesteps match, run ADE_solver
         if (timeMatch_flag){
 
             int tmpst_num = fluxes_filenames_num[mobileCompt[0]].size(); // num of elements of the 1st mobile compartment
-            
+                        
             for (int tmpst=0;tmpst<tmpst_num;tmpst++){ // time loop
                 
                 tmpst_i = fluxes_filenames_num[mobileCompt[0]][tmpst]; // timestep in file
