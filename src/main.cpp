@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
     // Read JSON files 
     read_JSON_2class(JSONfiles.Master,configjson_file); // master file
     read_JSON_2class(JSONfiles.H2O,JSONfiles.Master["water_balance_setup_file"]); // water file
-    read_JSON_2class(JSONfiles.BGC,JSONfiles.Master["biogeochemistry_setup_file"]); // BGC file
+    read_JSON_2class(JSONfiles.WQ,JSONfiles.Master["biogeochemistry_setup_file"]); // BGC file
    
     // Assign the main arma::field variables
     int numcmp = JSONfiles.H2O["compartments"].size();

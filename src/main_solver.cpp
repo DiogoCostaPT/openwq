@@ -24,9 +24,9 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     std::string res_folder = JSONfiles.Master["export_results_folder"];
     
     int numcmp = JSONfiles.H2O["compartments"].size();
-    double disp_x = JSONfiles.BGC["dispersion"]["x-dir"];
-    double disp_y = JSONfiles.BGC["dispersion"]["y-dir"];
-    double disp_z = JSONfiles.BGC["dispersion"]["z-dir"];
+    double disp_x = JSONfiles.WQ["dispersion"]["x-dir"];
+    double disp_y = JSONfiles.WQ["dispersion"]["y-dir"];
+    double disp_z = JSONfiles.WQ["dispersion"]["z-dir"];
 
     // Get fluxes files for each compartment
     GetFluxesFiles(JSONfiles,fluxes_filenames);
@@ -69,7 +69,7 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                     ny = JSONfiles.H2O[std::to_string(icmpMob+1)]["ny"];
                     nz = JSONfiles.H2O[std::to_string(icmpMob+1)]["nz"];
 
-                    std::vector<double> chemspec_i = JSONfiles.BGC["compartments"][std::to_string(icmpMob+1)]["chem_species"];
+                    std::vector<double> chemspec_i = JSONfiles.WQ["compartments"][std::to_string(icmpMob+1)]["chem_species"];
                     numspec = chemspec_i.size();
                     wfluxC_x = (*Prj_StateVar.wflux)(icmpMob)(0);
                     wfluxC_y = (*Prj_StateVar.wflux)(icmpMob)(1);

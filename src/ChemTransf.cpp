@@ -23,7 +23,7 @@ void Transf(std::string expression_string){
    for (x = T(-5); x <= T(+5); x += T(0.001))
    {
       T y = expression.value();
-      printf("%19.15f\t%19.15f\n",x,y);
+      //printf("%19.15f\t%19.15f\n",x,y);
    }
 
 

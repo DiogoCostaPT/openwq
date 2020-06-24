@@ -30,7 +30,7 @@ void initmemory(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar)
         n_xyz[2] = 0;
 
         // BGC
-        int numlistspec = JSONfiles.BGC["list_chemical_species"].size(); // size of list_chemical_speciess
+        int numlistspec = JSONfiles.WQ["list_chemical_species"].size(); // size of list_chemical_speciess
         int numspec_j;
 
         // Assign and  allocate memory: wflux,wmassk,chemass
@@ -53,7 +53,7 @@ void initmemory(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar)
                          (*Prj_StateVar.wflux)(i) = domain_field;
 
                         // chemass
-                        numspec_j = JSONfiles.BGC["compartments"][std::to_string(i+1)]["chem_species"].size(); 
+                        numspec_j = JSONfiles.WQ["compartments"][std::to_string(i+1)]["chem_species"].size(); 
 
                         // creating arma::field of arma:c:cube of size numspec_j-> copies of domain_xyz for each species
                         arma::field<arma::Cube<double>> domain_field_2(numspec_j);

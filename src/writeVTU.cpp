@@ -23,7 +23,7 @@ int writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar, int tmpst
     int nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
 
      // get number of species for compartment icmp
-    int numspec = JSONfiles.BGC["compartments"][std::to_string(icmp+1)]["chem_species"].size();
+    int numspec = JSONfiles.WQ["compartments"][std::to_string(icmp+1)]["chem_species"].size();
 
     // total number of vertices and hexahedrons
     int numvert = (nx+1)*(ny+1)*(nz+1);
@@ -79,7 +79,7 @@ int writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar, int tmpst
     // Add information to the unstructured grid: compartment data
    
     std::vector<int> chemname_nums = 
-        JSONfiles.BGC["compartments"][std::to_string(icmp+1)]["chem_species"]; //chem species # within compartment icmp (from JSON.BGQ)
+        JSONfiles.WQ["compartments"][std::to_string(icmp+1)]["chem_species"]; //chem species # within compartment icmp (from JSON.BGQ)
 
     for (int ichem=0;ichem<numspec;ichem++){ // all chemical species
 
@@ -87,7 +87,7 @@ int writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar, int tmpst
         varexpot->SetNumberOfValues(numvert);
 
         // Set name of array (chem variable name)
-        chemname = JSONfiles.BGC["list_chemical_species"][std::to_string(chemname_nums[ichem])];
+        chemname = JSONfiles.WQ["list_chemical_species"][std::to_string(chemname_nums[ichem])];
         varexpot->SetName(chemname.c_str());
 
         i = 0;

@@ -4,8 +4,9 @@
     "authors": "Diogo Costa",
     "date": "May_2020",
     "additional_info": "Default file for testing purposes",
-    "water_balance_setup_file": "bin/water_fully_distributed.json",
-    "biogeochemistry_setup_file": "bin/generic_water_quality_model.json",
+    "water_balance_setup_file": "bin/water_balance.json",
+    "wq_balance_setup_file": "bin/wq_balance.json",
+    "BGC_cycling_setup_file": "bin/BGC_cyle.json",
     "export_results_folder": "bin/Results"
 }
 

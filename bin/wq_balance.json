@@ -1,11 +1,4 @@
 {
-    "list_chemical_species": {
-        "1": "no3",
-        "2": "nh4",
-        "3": "don",
-        "4": "labileN",
-        "5": "regractoryN"
-    },
     "dispersion": {
         "x-dir": 0.3,
         "y-dir": 0.3,
