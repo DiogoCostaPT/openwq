@@ -49,10 +49,10 @@
             "chem_species": [1,2],
             "1":{
                 "IC_file":{
-                    "file_path": "bin/0.txt",
+                    "file_path": "bin/0_3D.txt",
                     "skip_header_rows": 1,
-                    "grid_col": [1,2,false],
-                    "var_col": 4,
+                    "grid_col": [1,2,3],
+                    "var_col": 5,
                     "deliminter": ",",
                     "unit_convertion_multipler": 1
                 }

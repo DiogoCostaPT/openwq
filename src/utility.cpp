@@ -107,64 +107,44 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int v
 
     // Helper vars
     std::string line, fieldi;
-    int colIdx = 1,line_i = 0;
+    int line_i = 0;
 
-    // Read the column names
-    if(thisFile.good())
-    {
-        // Extract the first line in the file
-        std::getline(thisFile, line);
-
-        // Create a stringstream from line
-        std::stringstream ss(line);
-
-        // Extract each column name
-        while(std::getline(ss, fieldi, *cdeliminter)){
-            
-            it = std::find(allcols_2search.begin(), allcols_2search.end(), colIdx); // check if column of interest
-
-            if (it != allcols_2search.end()){  // skip header    
-                // Initialize and add <fieldi, int vector> pairs to FileData_extract
-                FileData_extract.push_back({fieldi, std::vector<double> {}});
-            } 
-            colIdx++;
-        }
-       
-    }
-
-    // Read data, line by line AND save to FileData_extrac (for proper debug) and to final to_cubedata
-    int colIdx_res;
+        // Read data, line by line AND save to FileData_extrac (for proper debug) and to final to_cubedata
+    int colIdx,colIdx_res;
     std::array<double,4> linedata; linedata.fill(0.0f);
 
-    while(std::getline(thisFile, line))
+     if(thisFile.good())
     {
-        // Create a stringstream of the current line
-        std::stringstream ss(line);
-       
-        // Keep track of the current column index
-        colIdx = 1; 
-        colIdx_res = 0;
 
-        if (line_i>=skiprows_num-1){ // skip header
+        while(std::getline(thisFile, line))
+        {
+            // Create a stringstream of the current line
+            std::stringstream ss(line);
         
-            // Extract each integer
-            while(std::getline(ss, fieldi, *cdeliminter)){
-                
-                it = std::find(allcols_2search.begin(), allcols_2search.end(), colIdx); // check if column of interest
+            // Keep track of the current column index
+            colIdx = 1; 
+            colIdx_res = 0;
 
-                // Add the current integer to the 'colIdx' column's values vector
-                if (it != allcols_2search.end()){  // skip header
-                    FileData_extract.at(colIdx_res).second.push_back(std::stod(fieldi)); // save in vector (for proper debugging)
+            if (line_i>=skiprows_num){ // skip header
+            
+                // Extract each integer
+                while(std::getline(ss, fieldi, *cdeliminter)){
                     
-                    linedata[std::distance(allcols_2search.begin(),it)] = std::stod(fieldi);
-                    colIdx_res++;
-                }                             
-                
-                colIdx++; // Increment the column index
+                    it = std::find(allcols_2search.begin(), allcols_2search.end(), colIdx); // check if column of interest
+
+                    // Add the current integer to the 'colIdx' column's values vector
+                    if (it != allcols_2search.end()){  // skip header
+                                               
+                        linedata[std::distance(allcols_2search.begin(),it)] = std::stod(fieldi);
+                        colIdx_res++;
+                    }                             
+                    
+                    colIdx++; // Increment the column index
+                }
+                (to_cubedata)(linedata[0],linedata[1],linedata[2]) = linedata[3]; // save to to_cubedata
             }
-            (to_cubedata)(linedata[0],linedata[1],linedata[2]) = linedata[3]; // save to to_cubedata
+            line_i++;
         }
-        line_i++;
     }
 
     // Close file
