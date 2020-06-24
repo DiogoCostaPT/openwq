@@ -11,13 +11,17 @@
         "2": "nitrification"
     },
     "1":{
-        "kinetics":"nh4 = nh4 - no3 * k",
+        "consumed": "no3",
+        "produced": "",
+        "kinetics": "no3 * k",
         "parameters":{
             "k": 0.01
         }
     },
     "2":{
-        "kinetics":"no3 = no3 - no3 * k1",
+        "consumed": "labileN",
+        "produced": "no3",
+        "kinetics": "no3 * k",
         "parameters":{
             "k": 0.01
         }

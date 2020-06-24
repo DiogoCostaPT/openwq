@@ -10,6 +10,6 @@
 
 void ChemTransf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp);
 
-void Transf();
+void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp,std::string expression_string);
 
 #endif
