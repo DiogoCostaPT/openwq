@@ -4,7 +4,7 @@
 template <typename T>
 void Transf(std::string expression_string){
 
-    typedef exprtk::symbol_table<T> symbol_table_t;
+   typedef exprtk::symbol_table<T> symbol_table_t;
    typedef exprtk::expression<T>     expression_t;
    typedef exprtk::parser<T>             parser_t;
 
@@ -30,11 +30,22 @@ void Transf(std::string expression_string){
 }
 
 
-void ChemTransf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
+void ChemTransf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp){
 
-   // 
-   std::string expression_string = "clamp(-1.0,sin(2 * pi * x) + cos(x / 2 * pi),+1.0)";
-    Transf<double>(expression_string);
-  
+    std::string expression_string; // expression string
+    
+    // Get chemical species in compartment
+    std::vector<std::string> chem_species = JSONfiles.WQ["compartments"][std::to_string(icmp+1)]["chem_species"];
+
+    // Get chem transformations
+    int num_transf = JSONfiles.BGC["transformations"].size();
+
+    // Looping over transformations
+    for (int transi=0;transi<num_transf;transi++){
+ 
+        expression_string = JSONfiles.BGC[std::to_string(transi+1)]["kinetics"];
+        Transf<double>(expression_string); // calling exprtk: parsing expression
+        
+    }
 }
 

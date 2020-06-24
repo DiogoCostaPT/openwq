@@ -7,11 +7,19 @@
         "5": "refracN"
     },
     "transformations":{
-        "denitrification":{
-            "kinetics":"nh4 = no3 * k",
-            "parameters":{
-                "k": 0.01
-            }
+        "1": "denitrification",
+        "2": "nitrification"
+    },
+    "1":{
+        "kinetics":"nh4 = nh4 - no3 * k",
+        "parameters":{
+            "k": 0.01
+        }
+    },
+    "2":{
+        "kinetics":"no3 = no3 - no3 * k1",
+        "parameters":{
+            "k": 0.01
         }
     }
 }
