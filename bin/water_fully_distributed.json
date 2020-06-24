@@ -43,9 +43,9 @@
                 "folder_path": "bin/Fluxes",
                 "skip_header_rows": 0,
                 "grid_col": [1,2,false],
-                "var_col": [3,3,false],
+                "var_col": [3,false,false],
                 "deliminter": ",",
-                "unit_convertion_multipler": 1000
+                "unit_convertion_multipler": 0.1
             }
         },
     "3":{
