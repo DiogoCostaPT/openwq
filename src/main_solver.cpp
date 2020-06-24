@@ -69,18 +69,17 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                     ny = JSONfiles.H2O[std::to_string(icmpMob+1)]["ny"];
                     nz = JSONfiles.H2O[std::to_string(icmpMob+1)]["nz"];
 
-                    std::vector<double> chemspec_i = JSONfiles.WQ["compartments"][std::to_string(icmpMob+1)]["chem_species"];
+                    std::vector<std::string> chemspec_i = JSONfiles.WQ["compartments"][std::to_string(icmpMob+1)]["chem_species"];
                     numspec = chemspec_i.size();
                     wfluxC_x = (*Prj_StateVar.wflux)(icmpMob)(0);
                     wfluxC_y = (*Prj_StateVar.wflux)(icmpMob)(1);
                     wfluxC_z = (*Prj_StateVar.wflux)(icmpMob)(2);
                     wmassC = (*Prj_StateVar.wmass)(icmpMob);
                 
-                    for (int ichemloop=0;ichemloop<numspec;ichemloop++){
+                    for (int ichem=0;ichem<numspec;ichem++){
 
-                        ichem = chemspec_i[ichemloop]-1; // get chem species
-                        chemassC = (*Prj_StateVar.chemass)(icmpMob)(ichem); // get corresponding arma::cubic
-                        
+                        //ichem = chemspec_i[ichemloop]-1; // get chem species
+                                                
                         for (int ix=0;ix<nx;ix++){
                             for (int iy=0;iy<ny;iy++){
                                 for (int iz=0;iz<nz;iz++){

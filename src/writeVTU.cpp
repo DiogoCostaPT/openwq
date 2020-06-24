@@ -78,7 +78,7 @@ int writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar, int tmpst
 
     // Add information to the unstructured grid: compartment data
    
-    std::vector<int> chemname_nums = 
+    std::vector<std::string> chemnames = 
         JSONfiles.WQ["compartments"][std::to_string(icmp+1)]["chem_species"]; //chem species # within compartment icmp (from JSON.BGQ)
 
     for (int ichem=0;ichem<numspec;ichem++){ // all chemical species
@@ -87,7 +87,7 @@ int writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar, int tmpst
         varexpot->SetNumberOfValues(numvert);
 
         // Set name of array (chem variable name)
-        chemname = JSONfiles.BGC["list_chemical_species"][std::to_string(chemname_nums[ichem])];
+        chemname = chemnames[ichem];
         varexpot->SetName(chemname.c_str());
 
         i = 0;

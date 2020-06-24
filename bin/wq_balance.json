@@ -6,8 +6,8 @@
     },
     "compartments":{
         "1":{
-            "chem_species": [1,2,5],
-            "1":{
+            "chem_species": ["no3","nh4","refracN"],
+            "no3":{
                 "IC_file":{
                     "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
@@ -17,7 +17,7 @@
                     "unit_convertion_multipler": 1
                 }
             },
-            "2":{
+            "nh4":{
                 "IC_file":{
                     "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
@@ -27,7 +27,7 @@
                     "unit_convertion_multipler": 1
                 }
             },
-            "5":{
+            "refracN":{
                 "IC_file":{
                     "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
@@ -39,8 +39,8 @@
             }
         },
         "2":{
-            "chem_species": [1,2],
-            "1":{
+            "chem_species": ["no3","nh4"],
+            "no3":{
                 "IC_file":{
                     "file_path": "bin/0_3D.txt",
                     "skip_header_rows": 1,
@@ -50,7 +50,7 @@
                     "unit_convertion_multipler": 1
                 }
             },
-            "2":{
+            "nh4":{
                 "IC_file":{
                     "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
@@ -62,8 +62,8 @@
             }
         },
         "3":{
-            "chem_species": [1,2],
-            "1":{
+            "chem_species":["no3","nh4"],
+            "no3":{
                 "IC_file":{
                     "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
@@ -73,7 +73,7 @@
                     "unit_convertion_multipler": 1
                 }
             },
-            "2":{
+            "nh4":{
                 "IC_file":{
                     "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
