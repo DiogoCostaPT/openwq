@@ -87,6 +87,8 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int v
     int skiprows_num = filejson["skip_header_rows"];
     std::string deliminter = filejson["deliminter"];
     std::vector<int> grid_col = filejson["grid_col"];
+    double unit_convertion_multipler = filejson["unit_convertion_multipler"];
+    
 
     const char * cdeliminter = deliminter.c_str();
     std::vector<int>::iterator it;
@@ -141,7 +143,7 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int v
                     
                     colIdx++; // Increment the column index
                 }
-                (to_cubedata)(linedata[0],linedata[1],linedata[2]) = linedata[3]; // save to to_cubedata
+                (to_cubedata)(linedata[0],linedata[1],linedata[2]) = linedata[3] * unit_convertion_multipler; // save to to_cubedata
             }
             line_i++;
         }

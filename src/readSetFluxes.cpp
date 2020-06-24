@@ -29,7 +29,7 @@ void readSetFluxes(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,
             if (var_col[xyz_i] == 0) continue; // skip if var_col[xyz_i] == false 
 
                 read_file_3Dcoldata(JSONfiles.H2O[std::to_string(icmpMobile+1)]["water_fluxes_files"],
-                    (*Prj_StateVar.wflux)(icmpMobile+1)(xyz_i),
+                    (*Prj_StateVar.wflux)(icmpMobile)(xyz_i),
                     var_col[xyz_i], filepath_i);
         }
     }
