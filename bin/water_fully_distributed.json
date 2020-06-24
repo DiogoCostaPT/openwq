@@ -40,10 +40,10 @@
             },
             "mobile": true,
             "water_fluxes_files":{
-                "folder_path": "bin/Fluxes",
+                "folder_path": "bin/Fluxes_2",
                 "skip_header_rows": 0,
-                "grid_col": [1,2,false],
-                "var_col": [3,false,false],
+                "grid_col": [1,2,3],
+                "var_col": [4,4,4],
                 "deliminter": ",",
                 "unit_convertion_multipler": 0.1
             }

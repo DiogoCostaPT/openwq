@@ -21,7 +21,7 @@
 
 #include "global.h"
 #include "utility.h"
-#include "transp_solver.h"
+#include "main_solver.h"
 
 int main(int argc, char* argv[]) 
 {   
@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
     readSetIC(JSONfiles,Prj_StateVar);
 
     // Transport solver
-    transp_solve(JSONfiles,Prj_StateVar);
+    main_solver(JSONfiles,Prj_StateVar);
 
 }
 
