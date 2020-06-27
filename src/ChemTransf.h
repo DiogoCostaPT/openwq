@@ -7,6 +7,7 @@
 
 #include <cstdio>
 #include <string>
+#include <string>
 
 void ChemTransf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp);
 
