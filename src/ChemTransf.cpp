@@ -11,7 +11,7 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
     int index_cons, index_prod;
     int index_i;
     std::vector<int> index_transf;
-    double chemass_consumed, chemass_produced;
+    //double chemass_consumed, chemass_produced;
     std::vector<double> chemass_transf;
     
     // Get transformation transi info
@@ -27,9 +27,7 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
     for(int chemi=0;chemi<chem_species.size();chemi++){
         chemname = chem_species[chemi];
 
-        // Consumed
-        index_i = chemname.find(consumed_spec);
-        if (index_i!=-1 && !consumed_spec.empty()) 
+        // Consumedchemass_consumed, chemass_produced;ty()) 
             index_cons = chemi; // index
 
         // Produced
@@ -39,9 +37,11 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
 
         // In expression
         index_i = expression_string.find(chemname);
+        int ii = 0;
         if (index_i!=-1 && !expression_string.empty()){
             index_transf.push_back(chemi); // index
-            expression_string_modif.replace(index_i,chemname.size(),"chemass_transf[i]");
+            expression_string_modif.replace(index_i,chemname.size(),"chemass_transf["+std::to_string(ii)+"]");
+            ii++;
         }
 
     }
@@ -50,8 +50,8 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
 
     // Add variables
     symbol_table_t symbol_table;
-    symbol_table.add_variable(chem_species[index_cons],chemass_consumed);
-    symbol_table.add_variable(chem_species[index_prod],chemass_produced);
+    //symbol_table.add_variable(chem_species[index_cons],chemass_consumed);
+    //symbol_table.add_variable(chem_species[index_prod],chemass_produced);
     for (int i=0;i<index_transf.size();i++){
         symbol_table.add_variable(chem_species[index_transf[i]],chemass_transf[i]);
     }
@@ -61,15 +61,34 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
     expression.register_symbol_table(symbol_table);
 
     parser_t parser;
-    parser.compile(expression_string,expression);
+    parser.compile(expression_string_example,expression);
 
-    //for (conc = T(-5); conc <= T(+5); conc += T(0.001))
-    //{
-    //    T y = expression.value();
-        //printf("%19.15f\t%19.15f\n",x,y);
-    //}
+    // Loop over space
+    int nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
+    int ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
+    int nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
+    double transf_mass;
+    for (int ix=0;ix<nx;ix++){
+        for (int iy=0;iy<ny;iy++){
+            for (int iz=0;iz<nz;iz++){
+                
+                // loop to get all the variables inside the expression
+                for (int chem=0;chem<chemass_transf.size();chem++){
+                    chemass_transf[chem] = (*Prj_StateVar.chemass)(icmp)(index_transf[chem])(ix,iy,iz);
+                }
 
+                // mass transfered
+                transf_mass = expression.value(); 
 
+                // mass consumed
+                (*Prj_StateVar.chemass)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
+
+                // mass prod
+                (*Prj_StateVar.chemass)(icmp)(index_prod)(ix,iy,iz) += transf_mass;
+
+            }
+        }
+     }
 }
 
 
