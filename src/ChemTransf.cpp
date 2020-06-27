@@ -41,7 +41,7 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
         index_i = expression_string.find(chemname);
         if (index_i!=-1 && !expression_string.empty()){
             index_transf.push_back(chemi); // index
-            expression_string_modif.replace(index_i,chemname.size()-1,"chemass_transf[i]");
+            expression_string_modif.replace(index_i,chemname.size(),"chemass_transf[i]");
         }
 
     }
