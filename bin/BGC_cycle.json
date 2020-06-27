@@ -12,8 +12,8 @@
     },
     "1":{
         "consumed": "no3",
-        "produced": "",
-        "kinetics": "no3 * k",
+        "produced": "nh4",
+        "kinetics": "nh4 * k",
         "parameters":{
             "k": 0.01
         }

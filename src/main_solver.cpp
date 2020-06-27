@@ -64,8 +64,8 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                         wfluxC_y = (*Prj_StateVar.wflux)(icmpMob)(1);
                         wfluxC_z = (*Prj_StateVar.wflux)(icmpMob)(2);
                         wmassC = (*Prj_StateVar.wmass)(icmpMob);
-                        for (int ichem=0;ichem<numspec;ichem++) ADE_solver(JSONfiles,Prj_StateVar,
-                            icmpMob,ichem,wfluxC_x,wfluxC_y,wfluxC_z,wmassC);                                       
+                        for (int ichem=0;ichem<numspec;ichem++) 
+                            ADE_solver(JSONfiles,Prj_StateVar,icmpMob,ichem,wfluxC_x,wfluxC_y,wfluxC_z,wmassC);                                       
 
                     }
 
