@@ -14,7 +14,8 @@
         "consumed": "no3",
         "produced": "nh4",
         "kinetics": "nh4 * k",
-        "parameters":{
+        "parameter_names": ["k"],
+        "parameter_values":{
             "k": 0.01
         }
     },
@@ -22,7 +23,8 @@
         "consumed": "labileN",
         "produced": "no3",
         "kinetics": "no3 * k",
-        "parameters":{
+        "parameter_names": ["k"],
+        "parameter_values":{
             "k": 0.01
         }
     }

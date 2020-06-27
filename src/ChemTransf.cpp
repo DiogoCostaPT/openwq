@@ -10,6 +10,7 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
     std::string chemname;
     int index_cons, index_prod;
     int index_i;
+    double param_val;
     std::vector<int> index_transf;
     //double chemass_consumed, chemass_produced;
     std::vector<double> chemass_transf;
@@ -18,6 +19,7 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
     std::string consumed_spec =  JSONfiles.BGC[std::to_string(transi+1)]["consumed"];
     std::string produced_spec =  JSONfiles.BGC[std::to_string(transi+1)]["produced"];
     std::string expression_string = JSONfiles.BGC[std::to_string(transi+1)]["kinetics"];
+    std::vector<std::string> parameter_names = JSONfiles.BGC[std::to_string(transi+1)]["parameter_names"];
     std::string expression_string_modif = expression_string;
     
     // Get chemical species in compartment
@@ -40,19 +42,25 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
         int ii = 0;
         if (index_i!=-1 && !expression_string.empty()){
             index_transf.push_back(chemi); // index
-            expression_string_modif.replace(index_i,chemname.size(),"chemass_transf["+std::to_string(ii)+"]");
+            expression_string_modif.replace(index_i,index_i + chemname.size(),"chemass_transf["+std::to_string(ii)+"]");
             ii++;
         }
 
     }
 
-    std::string expression_string_example = "clamp(-1.0,sin(2 * pi * x) + cos(x / 2 * pi),+1.0)";
+    // Parmeters
+    for (int i=0;i<parameter_names.size();i++){
+        index_i = expression_string_modif.find(parameter_names[i]);
+        param_val = JSONfiles.BGC[std::to_string(transi+1)]["parameter_values"][parameter_names[i]];
+        expression_string_modif.replace(index_i,index_i + parameter_names[i].size(),std::to_string(param_val));
+    }
 
-    // Add variables
+    // Add variables to symbol_table
     symbol_table_t symbol_table;
     //symbol_table.add_variable(chem_species[index_cons],chemass_consumed);
     //symbol_table.add_variable(chem_species[index_prod],chemass_produced);
     for (int i=0;i<index_transf.size();i++){
+        chemass_transf.push_back(0); // creating the vector
         symbol_table.add_variable(chem_species[index_transf[i]],chemass_transf[i]);
     }
     // symbol_table.add_constants();
@@ -61,7 +69,7 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
     expression.register_symbol_table(symbol_table);
 
     parser_t parser;
-    parser.compile(expression_string_example,expression);
+    parser.compile(expression_string_modif,expression);
 
     // Loop over space
     int nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
