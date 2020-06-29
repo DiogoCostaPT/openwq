@@ -54,8 +54,8 @@
                 "IC_file":{
                     "file_path": "bin/0_3D.txt",
                     "skip_header_rows": 1,
-                    "grid_col": [1,2,false],
-                    "var_col": 4,
+                    "grid_col": [1,2,3],
+                    "var_col": 6,
                     "deliminter": ",",
                     "unit_convertion_multipler": 1
                 }

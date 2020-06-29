@@ -14,6 +14,7 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     std::string fluxes_filenamesExtention;
     std::vector<int> mobileCompt;
     std::string res_folder = JSONfiles.Master["export_results_folder"];
+    std::vector<int>::iterator is_mobile; // to check if mobile in compartment loop
     
     int numcmp = JSONfiles.H2O["compartments"].size();
     double disp_x = JSONfiles.WQ["dispersion"]["x-dir"];
@@ -51,22 +52,24 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                     readSetFluxes(JSONfiles,Prj_StateVar,mobileCompt,fluxes_filenamesExtention,tmpst_i); // Get all fluxes at timestep tmpst
                     
                     // Solve transport -> call ADE_solver
-                    for (int icmp=0;icmp<mobileCompt.size();icmp++){ // comparment loop
+                    for (int icmp=0;icmp<numcmp;icmp++){ // comparment loop
 
                         // Perform chemical transformations
                         ChemTransf(JSONfiles,Prj_StateVar,icmp);
                         
-                        // Run ADE_solver
-                        icmpMob = mobileCompt[icmp]; // get mobile compartments
-                        std::vector<std::string> chemspec_i = JSONfiles.WQ["compartments"][std::to_string(icmpMob+1)]["chem_species"];
-                        numspec = chemspec_i.size();
-                        wfluxC_x = (*Prj_StateVar.wflux)(icmpMob)(0);
-                        wfluxC_y = (*Prj_StateVar.wflux)(icmpMob)(1);
-                        wfluxC_z = (*Prj_StateVar.wflux)(icmpMob)(2);
-                        wmassC = (*Prj_StateVar.wmass)(icmpMob);
-                        for (int ichem=0;ichem<numspec;ichem++) 
-                            ADE_solver(JSONfiles,Prj_StateVar,icmpMob,ichem,wfluxC_x,wfluxC_y,wfluxC_z,wmassC);                                       
-
+                        is_mobile = find (mobileCompt.begin(), mobileCompt.end(), icmp);
+                        if (is_mobile != mobileCompt.end()){// if mobile
+                            // Run ADE_solver
+                            icmpMob = mobileCompt[icmp]; // get mobile compartments
+                            std::vector<std::string> chemspec_i = JSONfiles.WQ["compartments"][std::to_string(icmpMob+1)]["chem_species"];
+                            numspec = chemspec_i.size();
+                            wfluxC_x = (*Prj_StateVar.wflux)(icmpMob)(0);
+                            wfluxC_y = (*Prj_StateVar.wflux)(icmpMob)(1);
+                            wfluxC_z = (*Prj_StateVar.wflux)(icmpMob)(2);
+                            wmassC = (*Prj_StateVar.wmass)(icmpMob);
+                            for (int ichem=0;ichem<numspec;ichem++) 
+                                ADE_solver(JSONfiles,Prj_StateVar,icmpMob,ichem,wfluxC_x,wfluxC_y,wfluxC_z,wmassC);                                       
+                        }
                     }
 
                     // Print Results

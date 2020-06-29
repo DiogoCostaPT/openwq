@@ -16,7 +16,7 @@
                 "deliminter": ",",
                 "unit_convertion_multipler": 1
             },
-            "mobile": false,
+            "mobile": true,
             "water_fluxes_files":{
                 "folder_path": "bin/Fluxes",
                 "skip_header_rows": 0,
@@ -38,7 +38,7 @@
                 "deliminter": ",",
                 "unit_convertion_multipler": 1
             },
-            "mobile": true,
+            "mobile": false,
             "water_fluxes_files":{
                 "folder_path": "bin/Fluxes_2",
                 "skip_header_rows": 0,
