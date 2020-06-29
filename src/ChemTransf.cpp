@@ -3,6 +3,7 @@
 
 void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int transi){
 
+
     typedef exprtk::symbol_table<double> symbol_table_t;
     typedef exprtk::expression<double>     expression_t;
     typedef exprtk::parser<double>             parser_t;
@@ -61,8 +62,8 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
     //symbol_table.add_variable(chem_species[index_prod],chemass_produced);
     for (int i=0;i<index_transf.size();i++){
         chemass_transf.push_back(0); // creating the vector
-        symbol_table.add_variable(chem_species[index_transf[i]],chemass_transf[i]);
     }
+    symbol_table.add_vector("chemass_transf",chemass_transf);
     // symbol_table.add_constants();
 
     expression_t expression;
@@ -75,7 +76,7 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
     int nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
     int ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
     int nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
-    double transf_mass;
+
     for (int ix=0;ix<nx;ix++){
         for (int iy=0;iy<ny;iy++){
             for (int iz=0;iz<nz;iz++){
@@ -86,7 +87,7 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
                 }
 
                 // mass transfered
-                transf_mass = expression.value(); 
+                double transf_mass = expression.value(); 
 
                 // mass consumed
                 (*Prj_StateVar.chemass)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
@@ -97,6 +98,33 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
             }
         }
      }
+
+
+/* // THis one works well (check for comparison)
+   typedef exprtk::symbol_table<double> symbol_table_t;
+   typedef exprtk::expression<double>     expression_t;
+   typedef exprtk::parser<double>             parser_t;
+
+   std::string expression_string = "clamp(-1.0,sin(2 * pi * x) + cos(x / 2 * pi),+1.0)";
+double x;
+
+   symbol_table_t symbol_table;
+   symbol_table.add_variable("x",x);
+   symbol_table.add_constants();
+
+   expression_t expression;
+   expression.register_symbol_table(symbol_table);
+
+   parser_t parser;
+   parser.compile(expression_string,expression);
+
+   for (x = double(-5); x <= double(+5); x += double(0.001))
+   {
+      double y = expression.value();
+      printf("%19.15f\t%19.15f\n",x,y);
+   }
+*/
+
 }
 
 
