@@ -12,7 +12,7 @@
                     "file_path": "bin/0_3D.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
-                    "var_col": 3,
+                    "var_col": 5,
                     "deliminter": ",",
                     "unit_convertion_multipler": 1
                 }
@@ -22,7 +22,7 @@
                     "file_path": "bin/0_3D.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
-                    "var_col": 3,
+                    "var_col": 6,
                     "deliminter": ",",
                     "unit_convertion_multipler": 1
                 }
@@ -32,7 +32,7 @@
                     "file_path": "bin/0_3D.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
-                    "var_col": 3,
+                    "var_col": 5,
                     "deliminter": ",",
                     "unit_convertion_multipler": 1
                 }

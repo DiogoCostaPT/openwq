@@ -1,12 +1,29 @@
 
 #include "ChemTransf.h"
 
+// Compute chemical transformations
+void ChemTransf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp){
+
+    std::string expression_string; // expression string
+    
+    // Get chem transformations
+    int num_transf = JSONfiles.BGC["transformations"].size();
+
+    // Looping over transformations
+    for (int transi=0;transi<num_transf;transi++){
+ 
+        Transf(JSONfiles,Prj_StateVar, icmp,transi); // calling exprtk: parsing expression
+        
+    }
+}
+
+// Compute each chemical transformation
 void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int transi){
 
 
     typedef exprtk::symbol_table<double> symbol_table_t;
-    typedef exprtk::expression<double>     expression_t;
-    typedef exprtk::parser<double>             parser_t;
+    typedef exprtk::expression<double> expression_t;
+    typedef exprtk::parser<double> parser_t;
 
     std::string chemname;
     int index_cons, index_prod;
@@ -31,6 +48,8 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
         chemname = chem_species[chemi];
 
         // Consumedchemass_consumed, chemass_produced;ty()) 
+        index_i = chemname.find(consumed_spec);
+        if (index_i!=-1 && !consumed_spec.empty())
             index_cons = chemi; // index
 
         // Produced
@@ -99,47 +118,8 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
         }
      }
 
-
-/* // THis one works well (check for comparison)
-   typedef exprtk::symbol_table<double> symbol_table_t;
-   typedef exprtk::expression<double>     expression_t;
-   typedef exprtk::parser<double>             parser_t;
-
-   std::string expression_string = "clamp(-1.0,sin(2 * pi * x) + cos(x / 2 * pi),+1.0)";
-double x;
-
-   symbol_table_t symbol_table;
-   symbol_table.add_variable("x",x);
-   symbol_table.add_constants();
-
-   expression_t expression;
-   expression.register_symbol_table(symbol_table);
-
-   parser_t parser;
-   parser.compile(expression_string,expression);
-
-   for (x = double(-5); x <= double(+5); x += double(0.001))
-   {
-      double y = expression.value();
-      printf("%19.15f\t%19.15f\n",x,y);
-   }
-*/
-
 }
 
 
-void ChemTransf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp){
 
-    std::string expression_string; // expression string
-    
-    // Get chem transformations
-    int num_transf = JSONfiles.BGC["transformations"].size();
-
-    // Looping over transformations
-    for (int transi=0;transi<num_transf;transi++){
- 
-        Transf(JSONfiles,Prj_StateVar, icmp,transi); // calling exprtk: parsing expression
-        
-    }
-}
 
