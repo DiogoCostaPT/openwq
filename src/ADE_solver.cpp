@@ -19,7 +19,7 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
     elemt_plus(0,0) = 1;
     elemt_plus(1,1) = 1;
     elemt_plus(2,2) = 1;
-    int dir_plus;
+    int dir_plus, idir,n_idir;
 
     for (int ix=0;ix<nx;ix++){
         for (int iy=0;iy<ny;iy++){
@@ -38,9 +38,6 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
                     else  // limit fo available material
                         frac = fmax(fmin(wfluxL/(*Prj_StateVar.wmass)(icmp)(ix,iy,iz),1.0f),-1.0f);
 
-                        //std::cout << (*Prj_StateVar.wmass)(icmp)(ix,iy,iz) << std::endl;
-                        std::cout << frac << std::endl;
-                    
                     // To support the identification of the element from/t where the flux comes or goes
                     if (frac>0)
                         dir_plus = 1;
@@ -57,6 +54,21 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
                     (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) -= mfluxL;
                     
                     // Mass balance at respective adjacent (source) node
+                    // but skip if the receiving node it outside the domain
+                    if (dir==0){
+                        idir = ix;
+                        n_idir = nx;
+                    }else if (dir==1){
+                        idir = iy;
+                        n_idir = ny;
+                    }else{
+                        idir = iz;
+                        n_idir = nz;
+                    }
+
+                    if (idir+dir_plus*elemt_plus(dir,dir)>=n_idir)
+                        continue;
+
                     (*Prj_StateVar.wmass)(icmp)(ix+dir_plus*elemt_plus(dir,0),iy+dir_plus*elemt_plus(dir,1),
                         iz+dir_plus*elemt_plus(dir,2)) += wfluxL;
                     (*Prj_StateVar.chemass)(icmp)(ichem)(ix+dir_plus*elemt_plus(dir,0),iy+dir_plus*elemt_plus(dir,1),
