@@ -23,7 +23,7 @@
                 "grid_col": [1,2,false],
                 "var_col": [3,false,false],
                 "deliminter": ",",
-                "unit_convertion_multipler": 10
+                "unit_convertion_multipler": 4
             }
         },
     "2":{

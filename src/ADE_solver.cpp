@@ -20,7 +20,6 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
     elemt_plus(1,1) = 1;
     elemt_plus(2,2) = 1;
     int dir_plus;
-    
 
     for (int ix=0;ix<nx;ix++){
         for (int iy=0;iy<ny;iy++){
@@ -28,15 +27,19 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
                 
                 for (int dir=0;dir<3;dir++){ // x, y and z directions
 
-                    dir_plus = 1;
-
                     wfluxL = (*Prj_StateVar.wflux)(icmp)(dir)(ix,iy,iz);
+
+                    if ((*Prj_StateVar.wmass)(icmp)(ix,iy,iz) <= 0.0f)
+                        continue;
 
                     // Check water flux
                     if (wfluxL==0.0f)  // skip if no flow in dir direction
                         continue;                                 
                     else  // limit fo available material
-                        frac = fmax(fmin((*Prj_StateVar.wmass)(icmp)(ix,iy,iz)/wfluxL,1.0f),-1.0f);
+                        frac = fmax(fmin(wfluxL/(*Prj_StateVar.wmass)(icmp)(ix,iy,iz),1.0f),-1.0f);
+
+                        //std::cout << (*Prj_StateVar.wmass)(icmp)(ix,iy,iz) << std::endl;
+                        std::cout << frac << std::endl;
                     
                     // To support the identification of the element from/t where the flux comes or goes
                     if (frac>0)

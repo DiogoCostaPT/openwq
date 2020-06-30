@@ -7,6 +7,8 @@
         "5": "refracN"
     },
     "transformations":{
+        "1": "denitrification",
+        "2": "nitrification"
     },
     "1":{
         "consumed": "no3",
@@ -14,7 +16,7 @@
         "kinetics": "no3 * k",
         "parameter_names": ["k"],
         "parameter_values":{
-            "k": 0.003
+            "k": 0.01
         }
     },
     "2":{
@@ -23,7 +25,7 @@
         "kinetics": "no3 * k",
         "parameter_names": ["k"],
         "parameter_values":{
-            "k": 0.003
+            "k": 0.01
         }
     }
 }

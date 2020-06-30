@@ -9,7 +9,17 @@
             "chem_species": ["no3","nh4","refracN"],
             "1":{
                 "IC_file":{
-                    "file_path": "bin/0_3D.txt",
+                    "file_path": "bin/0.txt",
+                    "skip_header_rows": 1,
+                    "grid_col": [1,2,false],
+                    "var_col": 4,
+                    "deliminter": ",",
+                    "unit_convertion_multipler": 1
+                }
+            },
+            "2":{
+                "IC_file":{
+                    "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
                     "var_col": 5,
@@ -17,19 +27,9 @@
                     "unit_convertion_multipler": 1
                 }
             },
-            "2":{
-                "IC_file":{
-                    "file_path": "bin/0_3D.txt",
-                    "skip_header_rows": 1,
-                    "grid_col": [1,2,false],
-                    "var_col": 6,
-                    "deliminter": ",",
-                    "unit_convertion_multipler": 1
-                }
-            },
             "3":{
                 "IC_file":{
-                    "file_path": "bin/0_3D.txt",
+                    "file_path": "bin/0.txt",
                     "skip_header_rows": 1,
                     "grid_col": [1,2,false],
                     "var_col": 5,
