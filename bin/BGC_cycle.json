@@ -7,8 +7,6 @@
         "5": "refracN"
     },
     "transformations":{
-        "1": "denitrification",
-        "2": "nitrification"
     },
     "1":{
         "consumed": "no3",

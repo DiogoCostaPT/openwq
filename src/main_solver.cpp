@@ -8,7 +8,6 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     int numspec;
     int icmpMob, tmpst_i;
     bool mobile;
-    arma::cube wfluxC_x,wfluxC_y,wfluxC_z,wmassC;
     std::vector<std::vector<std::string>> fluxes_filenames;
     std::vector<std::vector<double>> fluxes_filenames_num;
     std::string fluxes_filenamesExtention;
@@ -63,12 +62,8 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                             icmp = mobileCompt[icmp]; // get mobile compartments
                             std::vector<std::string> chemspec_i = JSONfiles.WQ["compartments"][std::to_string(icmp+1)]["chem_species"];
                             numspec = chemspec_i.size();
-                            wfluxC_x = (*Prj_StateVar.wflux)(icmp)(0);
-                            wfluxC_y = (*Prj_StateVar.wflux)(icmp)(1);
-                            wfluxC_z = (*Prj_StateVar.wflux)(icmp)(2);
-                            wmassC = (*Prj_StateVar.wmass)(icmp);
                             for (int ichem=0;ichem<numspec;ichem++) 
-                                ADE_solver(JSONfiles,Prj_StateVar,icmp,ichem,wfluxC_x,wfluxC_y,wfluxC_z,wmassC);                                       
+                                ADE_solver_1(JSONfiles,Prj_StateVar,icmp,ichem);                                       
                         }
                     }
 
