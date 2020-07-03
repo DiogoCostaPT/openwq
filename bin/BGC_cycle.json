@@ -16,7 +16,7 @@
         "kinetics": "no3 * k",
         "parameter_names": ["k"],
         "parameter_values":{
-            "k": 0.001
+            "k": 0.00
         }
     },
     "2":{
@@ -25,7 +25,7 @@
         "kinetics": "no3 * k",
         "parameter_names": ["k"],
         "parameter_values":{
-            "k": 0.001
+            "k": 0.00
         }
     }
 }

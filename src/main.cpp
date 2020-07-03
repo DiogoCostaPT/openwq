@@ -33,8 +33,9 @@ int main(int argc, char* argv[])
 
     // Read JSON files 
     read_JSON_2class(JSONfiles.Master,configjson_file); // master file
-    read_JSON_2class(JSONfiles.H2O,JSONfiles.Master["water_balance_setup_file"]); // water file
-    read_JSON_2class(JSONfiles.WQ,JSONfiles.Master["wq_balance_setup_file"]); // BGC file
+    read_JSON_2class(JSONfiles.H2O,JSONfiles.Master["water_balance_setup_file"]); // H2O file
+    read_JSON_2class(JSONfiles.CMPI,JSONfiles.Master["cmp_interaction_file"]); // CMP file
+    read_JSON_2class(JSONfiles.WQ,JSONfiles.Master["wq_balance_setup_file"]); // WQ file
     read_JSON_2class(JSONfiles.BGC,JSONfiles.Master["BGC_cycling_setup_file"]); // BGC file
    
     // Assign the main arma::field variables

@@ -40,11 +40,12 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata,
 
 void GetFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &fluxes_filenames);
 
+void GetComptInteractFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &compInt_filenames);
+
 void GetFilesInFolder(std::string &path,std::vector<std::string> &filenames_i);
 
-void ConvertSortFluxesFilenames2Double(JSONfiles& JSONfiles,
-    std::vector<std::vector<std::string>>& fluxes_filenames,
-    std::vector<std::vector<double>>& fluxes_filenames_num);
+void ConvertSortFilenames2Double(int numtotal,std::vector<std::vector<std::string>>& filenames,
+    std::vector<std::vector<double>>& filenames_num);
 
 bool CheckIfCompTimeStepsMatch(std::vector<std::vector<double>> &fluxes_filenames_num,
     std::vector<int> &mobileCompt);

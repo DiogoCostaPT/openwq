@@ -31,6 +31,7 @@ class JSONfiles
 
     json Master;
     json H2O;
+    json CMPI;
     json WQ;
     json BGC;
 

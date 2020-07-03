@@ -1,0 +1,45 @@
+{
+    "interactions":{
+    "1": "snow_ice_to_snow_liquid",
+    "2": "snow_air_to_snow_liquid"
+    },
+    "1":{
+        "exchange_type": "water_flux",
+        "exchange_compartments":{
+            "source": "1",
+            "recipient": "2"
+        },
+        "mapping_file":{
+            "folder_path": "bin/Cmp_Interact_ice_snow",
+            "skip_header_rows": 1,
+            "grid_col_send": [1,2,false],
+            "grid_col_receive": [3,4,false],
+            "var_col": 5,
+            "deliminter": ",",
+            "unit_convertion_multipler": 1
+        }
+    },
+    "2":{
+        "exchange_type": "chem_flux",
+        "exchange_compartments":{
+            "source": "1",
+            "recipient": "2"
+        },
+        "mapping_file":{
+            "file_path": "bin/0.txt",
+            "skip_header_rows": 1,
+            "grid_col_send": [1,2,false],
+            "grid_col_receive": [3,4,false],
+            "kinetics":{
+                "1": "no3 * k",
+                "2": "nh4 * k"
+            },
+            "parameter_names": ["k"],
+            "parameter_values":{
+                "k": 0.00
+            },
+            "deliminter": ",",
+            "unit_convertion_multipler": 1
+        }
+    }
+}

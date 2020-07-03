@@ -153,7 +153,7 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int v
     thisFile.close();
 }
 
-// Read all files inside the JSON:H2O[water_fluxes_files][folder_path]
+// Read all files inside the folder
 void GetFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &fluxes_filenames){
 
     std::string folder_path;
@@ -177,6 +177,29 @@ void GetFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &
     }
 }
 
+// Read all files inside the folder
+void  GetComptInteractFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &compInt_filenames){
+
+    std::string folder_path, interact_type;
+    
+    int numInter = JSONfiles.CMPI["interactions"].size();
+
+    for (int it=1;it<=numInter;it++){
+        
+        interact_type = JSONfiles.CMPI[std::to_string(it)]["exchange_type"];
+        std::vector<std::string> filenames_i;
+
+        if (interact_type.compare("water_flux") == 0){
+            folder_path = JSONfiles.CMPI[std::to_string(it)]["mapping_file"]["folder_path"];
+            GetFilesInFolder(folder_path,filenames_i); // list the results files to get the last time step
+            
+        }else{
+            filenames_i.push_back("NOT_FLUX_INTERACT");
+        }
+        compInt_filenames.push_back(filenames_i);
+    }
+}
+
 
 /* *****
 * Read file names in Results directory 
@@ -197,37 +220,40 @@ void GetFilesInFolder(std::string &path,
         }
     }
     closedir(dir);
-    free(entry);
+    try{
+        free(entry);
+    }catch(const std::exception& e){
+
+    }
 }
 
-// Convert the fluxes filenames to double AND sort them
-void ConvertSortFluxesFilenames2Double(JSONfiles& JSONfiles,
-    std::vector<std::vector<std::string>>& fluxes_filenames,
-    std::vector<std::vector<double>>& fluxes_filenames_num){
+// Convert the filenames to double AND sort them
+void ConvertSortFilenames2Double(int numtotal,
+    std::vector<std::vector<std::string>>& filenames,
+    std::vector<std::vector<double>>& filenames_num){
 
-    int numcmp = JSONfiles.H2O["compartments"].size();
     std::string filename_ii;
     double simnum;
 
-    for (int icmp=0;icmp<numcmp;icmp++){
+    for (int i=0;i<numtotal;i++){
         
-        std::vector<std::string> filenames_i = fluxes_filenames[icmp];
-        std::vector<double> fluxes_filenames_num_i;
+        std::vector<std::string> filenames_i = filenames[i];
+        std::vector<double> filenames_num_i;
 
         for(int i=0;i<filenames_i.size();i++){
             filename_ii = filenames_i[i];
            
             try{
                 simnum = std::stod(filename_ii);
-                fluxes_filenames_num_i.push_back(simnum);
+                filenames_num_i.push_back(simnum);
             } catch(const std::exception& e){
-                std::cout << " a standard exception was caught in ConvertSortFluxesFilenames2Double, with message '"
+                std::cout << " a standard exception was caught in ConvertSortFilenames2Double, with message '"
                   << e.what() << "'\n";
             }
            
         }
-        std::sort(fluxes_filenames_num_i.begin(),fluxes_filenames_num_i.end());
-        fluxes_filenames_num.push_back(fluxes_filenames_num_i);
+        std::sort(filenames_num_i.begin(),filenames_num_i.end());
+        filenames_num.push_back(filenames_num_i);
     }
 }
 
