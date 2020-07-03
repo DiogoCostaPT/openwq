@@ -33,34 +33,34 @@ void initmemory(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar)
         int numlistspec = JSONfiles.BGC["list_chemical_species"].size(); // size of list_chemical_speciess
         int numspec_j;
 
-        // Assign and  allocate memory: wflux,wmassk,chemass
-               for (int i=0;i<numcmp;i++){
-                       
-                       // dimensions
-                        n_xyz[0] = JSONfiles.H2O[std::to_string(i+1)]["nx"];
-                        n_xyz[1] = JSONfiles.H2O[std::to_string(i+1)]["ny"];
-                        n_xyz[2] = JSONfiles.H2O[std::to_string(i+1)]["nz"];
-                        
-                        // wmass fluxes arma::cube
-                        arma::Cube<double> domain_xyz(n_xyz[0],n_xyz[1],n_xyz[2]);
-                        (*Prj_StateVar.wmass)(i) = domain_xyz; // fwater fluxes arma::cube
+        // Assign and  allocate memory: wflux_intra,wmassk,chemass
+        for (int i=0;i<numcmp;i++){
+                
+            // dimensions
+            n_xyz[0] = JSONfiles.H2O[std::to_string(i+1)]["nx"];
+            n_xyz[1] = JSONfiles.H2O[std::to_string(i+1)]["ny"];
+            n_xyz[2] = JSONfiles.H2O[std::to_string(i+1)]["nz"];
+            
+            // wmass fluxes arma::cube
+            arma::Cube<double> domain_xyz(n_xyz[0],n_xyz[1],n_xyz[2]);
+            (*Prj_StateVar.wmass)(i) = domain_xyz; // fwater fluxes arma::cube
 
-                        // wflux
-                        arma::field<arma::Cube<double>> domain_field(3); // for x, y, z
-                        for (int d=0;d<3;d++){ 
-                            domain_field(d) = domain_xyz;
-                        }
-                         (*Prj_StateVar.wflux)(i) = domain_field;
+            // wflux_intra
+            arma::field<arma::Cube<double>> domain_field(3); // for x, y, z
+            for (int d=0;d<3;d++){ 
+                domain_field(d) = domain_xyz;
+            }
+                (*Prj_StateVar.wflux_intra)(i) = domain_field;
 
-                        // chemass
-                        numspec_j = JSONfiles.WQ["compartments"][std::to_string(i+1)]["chem_species"].size(); 
+            // chemass
+            numspec_j = JSONfiles.WQ["compartments"][std::to_string(i+1)]["chem_species"].size(); 
 
-                        // creating arma::field of arma:c:cube of size numspec_j-> copies of domain_xyz for each species
-                        arma::field<arma::Cube<double>> domain_field_2(numspec_j);
-                        for (int s=0;s<numspec_j;s++){
-                            domain_field_2(s) = domain_xyz;
-                        }
-                        (*Prj_StateVar.chemass)(i) = domain_field_2;
+            // creating arma::field of arma:c:cube of size numspec_j-> copies of domain_xyz for each species
+            arma::field<arma::Cube<double>> domain_field_2(numspec_j);
+            for (int s=0;s<numspec_j;s++){
+                domain_field_2(s) = domain_xyz;
+            }
+            (*Prj_StateVar.chemass)(i) = domain_field_2;
         }
 }
 
@@ -257,34 +257,52 @@ void ConvertSortFilenames2Double(int numtotal,
     }
 }
 
-// Check if time steps match between compartments
-bool CheckIfCompTimeStepsMatch(std::vector<std::vector<double>> &fluxes_filenames_num,
+// Indentify the mobile compartments
+void IdentifyMobileCompt(std::vector<std::vector<double>> &filenames_num,
     std::vector<int> &mobileCompt){
-
-    bool tsm_flag = true;
-    int numcmp = fluxes_filenames_num.size();
+  
+    int numcmp = filenames_num.size();
     int numelem;
 
     // Identify the mobile compartments
     for (int icmp=0;icmp<numcmp;icmp++){
-        numelem = fluxes_filenames_num[icmp].size();
+        numelem = filenames_num[icmp].size();
         if (numelem>0) mobileCompt.push_back(icmp);
     }
 
-    // If mobileCompt.size() <=1 mobile compartment, no problem with timestep matching between compartments
-    // If mobileCompt.size() >1 mobile compartment, we need to check the the timesteps are the same between compartments
-    if (mobileCompt.size()>1){
+}
+
+
+// Check if time steps match between fluxes folders
+bool CheckIfCompTimeStepsMatch(std::vector<std::vector<double>> &filenames_num){
+
+    bool tsm_flag = true;
+
+    int num_datafolders = filenames_num.size(); // num of files with fluxes data
+    int numfiles;
+    std::vector<double> tmpst_num_all;
+    std::vector<std::vector<double>> filenames_num_noempty;
+
+    if (num_datafolders>1){
         tsm_flag = true;
-        int num_mobileCompt = mobileCompt.size(); // num of mobile compartments
-        int tmpst_num = fluxes_filenames_num[mobileCompt[0]].size(); // num of elements of the 1st mobile compartment
-        for (int icmp=1;icmp<num_mobileCompt;icmp++){ // loop over compartmennts: compare all mobile_compartments with the first compartment
-            for (int tmpst=0;tmpst<tmpst_num;tmpst++){ // loop over time steps (vector elements)
-                if (fluxes_filenames_num[mobileCompt[icmp]][tmpst] != fluxes_filenames_num[mobileCompt[0]][tmpst]){
+
+        // Get the number of files inside each folder (intra and inter fluxes)
+        for (int ifields=0;ifields<num_datafolders;ifields++){ // loop over compartmennts: compare all mobile_compartments with the first compartment
+            numfiles = filenames_num[ifields].size();
+            if (numfiles!=0){
+                tmpst_num_all.push_back(numfiles);
+                filenames_num_noempty.push_back(filenames_num[ifields]);
+            }
+        }
+        
+        for (int ifields=1;ifields<tmpst_num_all.size();ifields++){ // loop over compartmennts: compare all mobile_compartments with the first compartment
+            
+            for (int tmpst=0;tmpst<tmpst_num_all[ifields];tmpst++){ // loop over time steps (vector elements)
+                
+                if (filenames_num_noempty[ifields][tmpst] != filenames_num_noempty[0][tmpst]){
                     tsm_flag = false;
                     std::cout << "Timesteps mismatch at timestep: " + 
-                        std::to_string(fluxes_filenames_num[mobileCompt[0]][tmpst]) + "; Compartments: " 
-                        + std::to_string(mobileCompt[0+1]) + " and "
-                        + std::to_string(mobileCompt[icmp+1]) << std::endl;
+                        std::to_string(filenames_num_noempty[ifields][tmpst]) << std::endl;
                     break;
                 }
             }

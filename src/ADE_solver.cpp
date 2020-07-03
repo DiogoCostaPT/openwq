@@ -5,14 +5,14 @@
 
 void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int &ichem){
 
-    double mfluxL,wfluxL,frac;
+    double mfluxL,wflux_intraL,frac;
     int nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
     int ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
     int nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
 
-    //arma::cube wfluxC_x = (*Prj_StateVar.wflux)(icmp)(0);
-    //arma::cube wfluxC_y = (*Prj_StateVar.wflux)(icmp)(1);
-    //arma::cube wfluxC_z = (*Prj_StateVar.wflux)(icmp)(2);
+    //arma::cube wflux_intraC_x = (*Prj_StateVar.wflux_intra)(icmp)(0);
+    //arma::cube wflux_intraC_y = (*Prj_StateVar.wflux_intra)(icmp)(1);
+    //arma::cube wflux_intraC_z = (*Prj_StateVar.wflux_intra)(icmp)(2);
     //arma::cube wmassC = (*Prj_StateVar.wmass)(icmp);
 
     arma::mat elemt_plus = arma::zeros<arma::mat>(3,3);
@@ -27,16 +27,16 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
                 
                 for (int dir=0;dir<3;dir++){ // x, y and z directions
 
-                    wfluxL = (*Prj_StateVar.wflux)(icmp)(dir)(ix,iy,iz);
+                    wflux_intraL = (*Prj_StateVar.wflux_intra)(icmp)(dir)(ix,iy,iz);
 
                     if ((*Prj_StateVar.wmass)(icmp)(ix,iy,iz) <= 0.0f)
                         continue;
 
                     // Check water flux
-                    if (wfluxL==0.0f)  // skip if no flow in dir direction
+                    if (wflux_intraL==0.0f)  // skip if no flow in dir direction
                         continue;                                 
                     else  // limit fo available material
-                        frac = fmax(fmin(wfluxL/(*Prj_StateVar.wmass)(icmp)(ix,iy,iz),1.0f),-1.0f);
+                        frac = fmax(fmin(wflux_intraL/(*Prj_StateVar.wmass)(icmp)(ix,iy,iz),1.0f),-1.0f);
 
                     // To support the identification of the element from/t where the flux comes or goes
                     if (frac>0)
@@ -46,11 +46,11 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
                          
                     
                     // limit to available material
-                    wfluxL = frac * wfluxL;
+                    wflux_intraL = frac * wflux_intraL;
                     mfluxL = frac * (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz);
 
                     // Mass balance at x,y,z node
-                    (*Prj_StateVar.wmass)(icmp)(ix,iy,iz) -= wfluxL;
+                    (*Prj_StateVar.wmass)(icmp)(ix,iy,iz) -= wflux_intraL;
                     (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) -= mfluxL;
                     
                     // Mass balance at respective adjacent (source) node
@@ -70,7 +70,7 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
                         continue;
 
                     (*Prj_StateVar.wmass)(icmp)(ix+dir_plus*elemt_plus(dir,0),iy+dir_plus*elemt_plus(dir,1),
-                        iz+dir_plus*elemt_plus(dir,2)) += wfluxL;
+                        iz+dir_plus*elemt_plus(dir,2)) += wflux_intraL;
                     (*Prj_StateVar.chemass)(icmp)(ichem)(ix+dir_plus*elemt_plus(dir,0),iy+dir_plus*elemt_plus(dir,1),
                         iz+dir_plus*elemt_plus(dir,2)) += mfluxL;
                 }

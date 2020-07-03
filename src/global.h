@@ -45,14 +45,16 @@ class Prj_StateVar
     Prj_StateVar(){
 
     }
-    Prj_StateVar(size_t numcmp){
+    Prj_StateVar(size_t numcmp, size_t numinteract){
 
         this-> numcmp = numcmp;
+        this-> numinteract = numinteract;
 
         try{
 
             wmass = std::unique_ptr<arma::field<arma::Cube<double>>>(new arma::field<arma::cube>(numcmp)); // 1 field: water mass
-            wflux = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(numcmp)); // 1 field: flow
+            wflux_intra = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(numcmp)); // 1 field: flow
+            wflux_inter = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(numinteract)); // 1 field: flow
             chemass = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(numcmp));  // multiple fields: one for eacg chem
 
         }catch(int e){
@@ -60,10 +62,10 @@ class Prj_StateVar
         }
 
     }
-    size_t numcmp;
+    size_t numcmp, numinteract;
 
     std::unique_ptr<arma::field<arma::Cube<double>>>  wmass;
-    std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> wflux,chemass; 
+    std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> wflux_intra,wflux_inter,chemass; 
 
 };
 

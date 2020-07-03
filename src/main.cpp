@@ -39,8 +39,9 @@ int main(int argc, char* argv[])
     read_JSON_2class(JSONfiles.BGC,JSONfiles.Master["BGC_cycling_setup_file"]); // BGC file
    
     // Assign the main arma::field variables
-    int numcmp = JSONfiles.H2O["compartments"].size();
-    Prj_StateVar Prj_StateVar(numcmp);
+    int numcmp = JSONfiles.H2O["compartments"].size(); // number of compartments
+    int numinteract = JSONfiles.CMPI["interactions"].size(); // number of interactions between compartments
+    Prj_StateVar Prj_StateVar(numcmp,numinteract);
 
     // Initialize memmory for major arma::field variables
     initmemory(JSONfiles,Prj_StateVar);

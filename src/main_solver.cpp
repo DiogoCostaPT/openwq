@@ -10,7 +10,7 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     bool mobile;
     std::vector<std::vector<std::string>> fluxes_filenames, compFluxInt_filenames;
     std::vector<std::vector<double>> fluxes_filenames_num,compFluxInt_filenames_num,all_filenames_num;
-    std::string fluxes_fileExtention;
+    std::string fluxes_fileExtention,compFluxInt_fileExtention;
     std::vector<int> mobileCompt;
     std::string res_folder = JSONfiles.Master["export_results_folder"];
     std::vector<int>::iterator is_mobile; // to check if mobile in compartment loop
@@ -26,7 +26,7 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     // Get flux interaction files between compartments
     GetComptInteractFluxesFiles(JSONfiles,compFluxInt_filenames);
 
-    // Convert filename strings to numbers
+    // Convert filename strings to numbers: inter and intra fluxes
     ConvertSortFilenames2Double(JSONfiles.H2O["compartments"].size(),fluxes_filenames,fluxes_filenames_num);
     ConvertSortFilenames2Double(JSONfiles.CMPI["interactions"].size(),compFluxInt_filenames,compFluxInt_filenames_num);
 
@@ -34,8 +34,13 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     all_filenames_num = fluxes_filenames_num;
     for (int i=0;i<compFluxInt_filenames_num.size();i++){
         all_filenames_num.push_back(compFluxInt_filenames_num[i]);
-    } 
-    bool timeMatch_flag = CheckIfCompTimeStepsMatch(fluxes_filenames_num,mobileCompt);
+    }
+
+    // Identify the mobile compartments
+    IdentifyMobileCompt(all_filenames_num,mobileCompt);
+
+    // Check if all fluxes files (intra and inter) match
+    bool timeMatch_flag = CheckIfCompTimeStepsMatch(all_filenames_num);
 
     // Save initial conditions
     for (int j=0;j<numcmp;j++){
@@ -49,7 +54,8 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
         if (!mobileCompt.empty()){ // if at least one compartment is mobile
 
             GetFileExtension(fluxes_filenames[mobileCompt[0]][2],fluxes_fileExtention);
-
+            GetFileExtension(compFluxInt_filenames[mobileCompt[0]][2],fluxes_fileExtention);
+            
                 int tmpst_num = fluxes_filenames_num[mobileCompt[0]].size(); // num of elements of the 1st mobile compartment
                             
                 for (int tmpst=0;tmpst<tmpst_num;tmpst++){ // time loop
@@ -57,7 +63,7 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                     tmpst_i = fluxes_filenames_num[mobileCompt[0]][tmpst]; // timestep in file
                     
                     readSetFluxes(JSONfiles,Prj_StateVar,mobileCompt,fluxes_fileExtention,tmpst_i); // Get all fluxes at timestep tmpst
-                    //readCompInteract(JSONfiles,Prj_StateVar,mobileCompt,cmptInteract_fileExtention,tmpst_i); // Get all fluxes at timestep tmpst
+                    readCompInteract(JSONfiles,Prj_StateVar,mobileCompt,compFluxInt_fileExtention,tmpst_i); // Get all fluxes at timestep tmpst
 
                     // Solve transport -> call ADE_solver
                     for (int icmp=0;icmp<numcmp;icmp++){ // comparment loop

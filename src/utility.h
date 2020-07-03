@@ -47,8 +47,10 @@ void GetFilesInFolder(std::string &path,std::vector<std::string> &filenames_i);
 void ConvertSortFilenames2Double(int numtotal,std::vector<std::vector<std::string>>& filenames,
     std::vector<std::vector<double>>& filenames_num);
 
-bool CheckIfCompTimeStepsMatch(std::vector<std::vector<double>> &fluxes_filenames_num,
+void IdentifyMobileCompt(std::vector<std::vector<double>> &filenames_num,
     std::vector<int> &mobileCompt);
+
+bool CheckIfCompTimeStepsMatch(std::vector<std::vector<double>> &fluxes_filenames_num);
 
 void GetFileExtension(std::string & str, std::string & str_extention);
 
