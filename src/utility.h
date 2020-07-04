@@ -38,6 +38,9 @@ void readSetFluxes(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, 
     int var_col,std::string filename);
 
+void read_file_CMPIcoldata(json & filejson,arma::Mat<double> & to_matdata, int source, 
+    int recipient, std::string filename);
+
 void GetFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &fluxes_filenames);
 
 void GetComptInteractFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &compInt_filenames);

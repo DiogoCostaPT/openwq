@@ -153,6 +153,83 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int v
     thisFile.close();
 }
 
+// Read inter fluxes file data
+void read_file_CMPIcoldata(json & filejson,arma::Mat<double> & to_matdata, int source, 
+    int recipient,  std::string filename){
+
+    // get necessary inf o from JSON file
+    int skiprows_num = filejson["skip_header_rows"];
+    std::string deliminter = filejson["deliminter"];
+    std::vector<int> grid_col_send = filejson["grid_col_send"];
+    std::vector<int> grid_col_receive = filejson["grid_col_receive"];
+    double unit_convertion_multipler = filejson["unit_convertion_multipler"];
+    
+
+    const char * cdeliminter = deliminter.c_str();
+    std::vector<int>::iterator it;
+
+    // all relevant columns: grid and var
+    std::vector<int> allcols_2search;
+    allcols_2search.insert(allcols_2search.begin(),grid_col.begin(),grid_col.end());
+    allcols_2search.insert(allcols_2search.end(),var_col); 
+
+    // Create a vector of <string, int vector> pairs to store the FileData_extract
+    std::vector<std::pair<std::string, std::vector<double>>> FileData_extract;
+
+    // Create an input filestream
+    std::ifstream thisFile(filename);
+
+    // Make sure the file is open
+    if(!thisFile.is_open()) throw std::runtime_error("Could not open file:" + filename);
+
+    // Helper vars
+    std::string line, fieldi;
+    int line_i = 0;
+
+        // Read data, line by line AND save to FileData_extrac (for proper debug) and to final to_cubedata
+    int colIdx,colIdx_res;
+    std::array<double,4> linedata; linedata.fill(0.0f);
+
+     if(thisFile.good())
+    {
+
+        while(std::getline(thisFile, line))
+        {
+            // Create a stringstream of the current line
+            std::stringstream ss(line);
+        
+            // Keep track of the current column index
+            colIdx = 1; 
+            colIdx_res = 0;
+
+            if (line_i>=skiprows_num){ // skip header
+            
+                // Extract each integer
+                while(std::getline(ss, fieldi, *cdeliminter)){
+                    
+                    it = std::find(allcols_2search.begin(), allcols_2search.end(), colIdx); // check if column of interest
+
+                    // Add the current integer to the 'colIdx' column's values vector
+                    if (it != allcols_2search.end()){  // skip header
+                                               
+                        linedata[std::distance(allcols_2search.begin(),it)] = std::stod(fieldi);
+                        colIdx_res++;
+                    }                             
+                    
+                    colIdx++; // Increment the column index
+                }
+                (to_cubedata)(linedata[0],linedata[1],linedata[2]) = linedata[3] * unit_convertion_multipler; // save to to_cubedata
+            }
+            line_i++;
+        }
+    }
+
+    // Close file
+    thisFile.close();
+}
+
+
+
 // Read all files inside the folder
 void GetFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &fluxes_filenames){
 

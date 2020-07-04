@@ -39,31 +39,29 @@ void readSetFluxes(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,std::vector<i
 void readCompInteract(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, std::string& filenamesExtention,
     int tmpst){
 
-    int icmpMobile;
     int numInter = JSONfiles.CMPI["interactions"].size();
 
     // loop over compartmennts: compare all mobile_compartments with the first compartment
-    for (int i=0;i<numInter;i++){ 
+    for (int it=0;it<numInter;it++){ 
 
         // fluxes file for timestep tmpst
-        std::string filepath_i = JSONfiles.CMPI[std::to_string(i+1)]["mapping_file"]["folder_path"];
+        std::string filepath_i = JSONfiles.CMPI[std::to_string(it+1)]["mapping_file"]["folder_path"];
         filepath_i.append("/");
         filepath_i.append(std::to_string(tmpst)); // timestep number
         filepath_i.append(filenamesExtention); // file extention
 
+        // Source and recipient compartments
+        int source = JSONfiles.CMPI[std::to_string(it+1)]["exchange_compartments"]["source"];
+        int recipient = JSONfiles.CMPI[std::to_string(it+1)]["exchange_compartments"]["recipient"];
+
         // Get grid col locations
-        std::vector<int> grid_col_send = JSONfiles.CMPI[std::to_string(i+1)]["mapping_file"]["grid_col_send"];
-        std::vector<int> grid_col_receive = JSONfiles.CMPI[std::to_string(i+1)]["mapping_file"]["grid_col_receive"];
+        std::vector<int> grid_col_send = JSONfiles.CMPI[std::to_string(it+1)]["mapping_file"]["grid_col_send"];
+        std::vector<int> grid_col_receive = JSONfiles.CMPI[std::to_string(it+1)]["mapping_file"]["grid_col_receive"];
 
         // loop over x-, y- and z-directions
-        for (int xyz_i=0;xyz_i<3;xyz_i++){
+        read_file_CMPIcoldata(JSONfiles.CMPI[std::to_string(it+1)]["mapping_file"],
+            (*Prj_StateVar.wflux_inter)(it), source, recipient, filepath_i);
 
-            if (grid_col_send[xyz_i] == 0) continue; // skip if var_col[xyz_i] == false 
-
-                read_file_3Dcoldata(JSONfiles.H2O[std::to_string(icmpMobile+1)]["water_fluxes_files"],
-                    (*Prj_StateVar.wflux_intra)(icmpMobile)(xyz_i),
-                    grid_col_send[xyz_i], filepath_i);
-        }
     }
 
 }
