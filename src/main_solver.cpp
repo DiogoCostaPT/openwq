@@ -37,7 +37,7 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     }
 
     // Identify the mobile compartments
-    IdentifyMobileCompt(all_filenames_num,mobileCompt);
+    IdentifyMobileCompt(fluxes_filenames_num,mobileCompt);
 
     // Check if all fluxes files (intra and inter) match
     bool timeMatch_flag = CheckIfCompTimeStepsMatch(all_filenames_num);
