@@ -54,7 +54,7 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
         if (!mobileCompt.empty()){ // if at least one compartment is mobile
 
             GetFileExtension(fluxes_filenames[mobileCompt[0]][2],fluxes_fileExtention);
-            GetFileExtension(compFluxInt_filenames[mobileCompt[0]][2],fluxes_fileExtention);
+            GetFileExtension(compFluxInt_filenames[mobileCompt[0]][2],compFluxInt_fileExtention);
             
                 int tmpst_num = fluxes_filenames_num[mobileCompt[0]].size(); // num of elements of the 1st mobile compartment
                             
@@ -62,8 +62,13 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                     
                     tmpst_i = fluxes_filenames_num[mobileCompt[0]][tmpst]; // timestep in file
                     
+                    // Inter FLUXES
+                    readCompInteract(JSONfiles,Prj_StateVar,compFluxInt_fileExtention,tmpst_i); // Get all fluxes at timestep tmpst
+
+
+
+                    // ADE SOLVER (intra fluxes)
                     readSetFluxes(JSONfiles,Prj_StateVar,mobileCompt,fluxes_fileExtention,tmpst_i); // Get all fluxes at timestep tmpst
-                    readCompInteract(JSONfiles,Prj_StateVar,mobileCompt,compFluxInt_fileExtention,tmpst_i); // Get all fluxes at timestep tmpst
 
                     // Solve transport -> call ADE_solver
                     for (int icmp=0;icmp<numcmp;icmp++){ // comparment loop
