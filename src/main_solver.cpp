@@ -65,8 +65,6 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                     // Inter FLUXES
                     readCompInteract(JSONfiles,Prj_StateVar,compFluxInt_fileExtention,tmpst_i); // Get all fluxes at timestep tmpst
 
-
-
                     // ADE SOLVER (intra fluxes)
                     readSetFluxes(JSONfiles,Prj_StateVar,mobileCompt,fluxes_fileExtention,tmpst_i); // Get all fluxes at timestep tmpst
 

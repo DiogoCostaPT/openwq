@@ -10,9 +10,9 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
     int ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
     int nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
 
-    //arma::cube wflux_intraC_x = (*Prj_StateVar.wflux_intra)(icmp)(0);
-    //arma::cube wflux_intraC_y = (*Prj_StateVar.wflux_intra)(icmp)(1);
-    //arma::cube wflux_intraC_z = (*Prj_StateVar.wflux_intra)(icmp)(2);
+    //arma::cube wflux_intraC_x = (*Prj_StateVar.wflux)(icmp)(0);
+    //arma::cube wflux_intraC_y = (*Prj_StateVar.wflux)(icmp)(1);
+    //arma::cube wflux_intraC_z = (*Prj_StateVar.wflux)(icmp)(2);
     //arma::cube wmassC = (*Prj_StateVar.wmass)(icmp);
 
     arma::mat elemt_plus = arma::zeros<arma::mat>(3,3);
@@ -27,7 +27,7 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
                 
                 for (int dir=0;dir<3;dir++){ // x, y and z directions
 
-                    wflux_intraL = (*Prj_StateVar.wflux_intra)(icmp)(dir)(ix,iy,iz);
+                    wflux_intraL = (*Prj_StateVar.wflux)(icmp)(dir)(ix,iy,iz);
 
                     if ((*Prj_StateVar.wmass)(icmp)(ix,iy,iz) <= 0.0f)
                         continue;

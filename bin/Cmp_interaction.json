@@ -22,8 +22,8 @@
     "2":{
         "exchange_type": "chem_flux",
         "exchange_compartments":{
-            "source": 1,
-            "recipient": 2
+            "compartment_source": 1,
+            "compartment_recipient": 2
         },
         "mapping_file":{
             "file_path": "bin/0.txt",

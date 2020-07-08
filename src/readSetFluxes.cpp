@@ -28,7 +28,7 @@ void readSetFluxes(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,std::vector<i
             if (var_col[xyz_i] == 0) continue; // skip if var_col[xyz_i] == false 
 
                 read_file_3Dcoldata(JSONfiles.H2O[std::to_string(icmpMobile+1)]["water_fluxes_files"],
-                    (*Prj_StateVar.wflux_intra)(icmpMobile)(xyz_i),
+                    (*Prj_StateVar.wflux)(icmpMobile)(xyz_i),
                     var_col[xyz_i], filepath_i);
         }
     }
@@ -67,7 +67,10 @@ void readCompInteract(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, std::stri
 
         // loop over x-, y- and z-directions
         read_file_CMPIcoldata(JSONfiles.CMPI[std::to_string(it+1)]["mapping_file"],
-            (*Prj_StateVar.wflux_inter)(it), source, recipient, filepath_i, exchange_type);
+            (*Prj_StateVar.wchem_exch)(it), source, recipient, filepath_i, exchange_type);
+         
+
+            
 
     }
 
