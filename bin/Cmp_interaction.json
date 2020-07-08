@@ -6,8 +6,8 @@
     "1":{
         "exchange_type": "water_flux",
         "exchange_compartments":{
-            "source": 1,
-            "recipient": 2
+            "compartment_source": 1,
+            "compartment_recipient": 2
         },
         "mapping_file":{
             "folder_path": "bin/Cmp_Interact_ice_snow",
