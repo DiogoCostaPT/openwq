@@ -42,6 +42,7 @@ void readCompInteract(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, std::stri
     int numInter = JSONfiles.CMPI["interactions"].size();
     std::string exchange_type;
     std::string filepath_i;
+    int index_chem;
 
     // loop over compartmennts: compare all mobile_compartments with the first compartment
     for (int it=0;it<numInter;it++){ 
@@ -68,7 +69,55 @@ void readCompInteract(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, std::stri
         //std::vector<int> grid_col_receive = JSONfiles.CMPI[std::to_string(it+1)]["mapping_file"]["grid_col_receive"];
 
         // Extract water_flux or calculate chem_exchange
-        read_file_CMPIcoldata(JSONfiles, Prj_StateVar, it, source, recipient, filepath_i, exchange_type);
+        read_file_CMPIcoldata(JSONfiles, Prj_StateVar, it, source, recipient, filepath_i, exchange_type,index_chem);
+
+        // Perform the water or chem mass exchange
+        int numrows = (*Prj_StateVar.wchem_exch)(it).size();
+        int ix_s, iy_s, iz_s, ix_r, iy_r, iz_r;
+        double wfllux_val, chemass_val;
+
+        // if water_flux
+        if (exchange_type.compare("water_flux")==0){
+            for (int rowi=0;rowi<numrows;rowi++){
+                source = (*Prj_StateVar.wchem_exch)(it)(0);
+                ix_s = (*Prj_StateVar.wchem_exch)(it)(1);
+                iy_s = (*Prj_StateVar.wchem_exch)(it)(2);
+                iz_s = (*Prj_StateVar.wchem_exch)(it)(3);
+                recipient = (*Prj_StateVar.wchem_exch)(it)(4);
+                ix_r = (*Prj_StateVar.wchem_exch)(it)(5);
+                iy_r = (*Prj_StateVar.wchem_exch)(it)(6);
+                iz_r = (*Prj_StateVar.wchem_exch)(it)(7);
+                wfllux_val = (*Prj_StateVar.wchem_exch)(it)(8);
+                chemass_val = wfllux_val/(*Prj_StateVar.wmass)(source)(ix_s,iy_s,iz_s) * (*Prj_StateVar.chemass)(source)(index_chem)(ix_s,iy_s,iz_s);
+                
+                // source
+                (*Prj_StateVar.wmass)(source)(ix_s,iy_s,iz_s) -= wfllux_val;
+                (*Prj_StateVar.chemass)(source)(index_chem)(ix_s,iy_s,iz_s) -= chemass_val;
+
+                // recipient
+                (*Prj_StateVar.wmass)(recipient)(ix_r,iy_r,iz_r) += wfllux_val;
+                (*Prj_StateVar.chemass)(recipient)(index_chem)(ix_r,iy_r,iz_r) += chemass_val;
+                
+            }
+        // if chem_exchange
+        }else if (exchange_type.compare("chem_exchange")==0){
+            for (int rowi=0;rowi<numrows;rowi++){
+                source = (*Prj_StateVar.wchem_exch)(it)(0);
+                ix_s = (*Prj_StateVar.wchem_exch)(it)(1);
+                iy_s = (*Prj_StateVar.wchem_exch)(it)(2);
+                iz_s = (*Prj_StateVar.wchem_exch)(it)(3);
+                recipient = (*Prj_StateVar.wchem_exch)(it)(4);
+                ix_r = (*Prj_StateVar.wchem_exch)(it)(5);
+                iy_r = (*Prj_StateVar.wchem_exch)(it)(6);
+                iz_r = (*Prj_StateVar.wchem_exch)(it)(7);
+                chemass_val = (*Prj_StateVar.wchem_exch)(it)(8);
+                          
+                // just chemass
+                (*Prj_StateVar.chemass)(source)(index_chem)(ix_s,iy_s,iz_s) -= chemass_val;
+                (*Prj_StateVar.chemass)(recipient)(index_chem)(ix_r,iy_r,iz_r) += chemass_val;
+
+            }
+        }
 
 
     }

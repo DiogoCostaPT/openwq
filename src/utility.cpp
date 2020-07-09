@@ -157,7 +157,7 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int v
 
 // Read inter fluxes file data
 void read_file_CMPIcoldata(JSONfiles & JSONfiles,Prj_StateVar& Prj_StateVar, int iteraction, int source, 
-    int recipient, std::string filename, std::string exchange_type){
+    int recipient, std::string filename, std::string exchange_type, int & index_chem){
 
     // get necessary inf o from JSON file
     int skiprows_num = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["skip_header_rows"];
@@ -258,7 +258,7 @@ void read_file_CMPIcoldata(JSONfiles & JSONfiles,Prj_StateVar& Prj_StateVar, int
                     std::vector<double> parameter_values = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["parameter_values"];
 
                     ChemCompExchange(JSONfiles, Prj_StateVar, source, kinetics, 
-                        parameter_names, parameter_values,linedata);
+                        parameter_names, parameter_values,linedata,index_chem);
 
                     (to_matdata)(colIdx,8) = linedata[6]; // save
                 }

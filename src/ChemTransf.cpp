@@ -123,7 +123,7 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
 // Mass exchange between compartments
 void ChemCompExchange(JSONfiles& JSONfiles, Prj_StateVar& Prj_StateVar, int source, std::string kinetics, 
     std::vector<std::string> parameter_names, std::vector<double> parameter_values,
-    std::array<double,7> & linedata){
+    std::array<double,7> & linedata, int & index_chem){
 
     typedef exprtk::symbol_table<double> symbol_table_t;
     typedef exprtk::expression<double> expression_t;
@@ -133,7 +133,6 @@ void ChemCompExchange(JSONfiles& JSONfiles, Prj_StateVar& Prj_StateVar, int sour
     std::string kinetics_modif = kinetics;
     std::string chemname;
     int index_i;
-    int index_chem;
     int index_transf;
     double chemass_transf;
 

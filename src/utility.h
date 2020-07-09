@@ -40,7 +40,7 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata,
     int var_col,std::string filename);
 
 void read_file_CMPIcoldata(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int iteraction, int source, 
-    int recipient, std::string filename, std::string exchange_type);
+    int recipient, std::string filename, std::string exchange_type, int & index_chem);
 
 void GetFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &fluxes_filenames);
 
