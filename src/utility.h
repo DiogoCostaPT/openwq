@@ -19,11 +19,12 @@
 #define UTILITYH_INCLUDED
 
 #include <armadillo>
-
-#include "global.h"
 #include "string.h"
 #include <dirent.h>
 #include <algorithm>
+
+#include "global.h"
+#include "ChemTransf.h"
 
 using json = nlohmann::json;
 
