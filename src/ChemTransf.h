@@ -15,6 +15,6 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
 
 void ChemCompExchange(JSONfiles& JSONfile, Prj_StateVar& Prj_StateVar, int source, std::string kinetics, 
     std::vector<std::string> parameter_names, std::vector<double> parameter_values,
-    std::array<double,9> & linedata);
+    std::array<double,7> & linedata);
 
 #endif

@@ -123,7 +123,7 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
 // Mass exchange between compartments
 void ChemCompExchange(JSONfiles& JSONfiles, Prj_StateVar& Prj_StateVar, int source, std::string kinetics, 
     std::vector<std::string> parameter_names, std::vector<double> parameter_values,
-    std::array<double,9> & linedata){
+    std::array<double,7> & linedata){
 
     typedef exprtk::symbol_table<double> symbol_table_t;
     typedef exprtk::expression<double> expression_t;
@@ -139,7 +139,7 @@ void ChemCompExchange(JSONfiles& JSONfiles, Prj_StateVar& Prj_StateVar, int sour
 
     
     // Get chemical species in the source compartment
-    std::vector<std::string> chem_species = JSONfiles.WQ["compartments"][std::to_string(source)]["chem_species"];
+    std::vector<std::string> chem_species = JSONfiles.WQ["compartments"][std::to_string(source+1)]["chem_species"];
 
    // Find chem of relevance
     int ii = 0;
@@ -159,8 +159,8 @@ void ChemCompExchange(JSONfiles& JSONfiles, Prj_StateVar& Prj_StateVar, int sour
 
     // Parmeters
     for (int i=0;i<parameter_names.size();i++){
-        index_i = kinetics.find(parameter_names[i]);
-        kinetics.replace(index_i,index_i + parameter_names[i].size(),std::to_string(parameter_values[i]));
+        index_i = kinetics_modif.find(parameter_names[i]);
+        kinetics_modif.replace(index_i,index_i + parameter_names[i].size(),std::to_string(parameter_values[i]));
     }
 
     // Add variables to symbol_table
@@ -173,7 +173,7 @@ void ChemCompExchange(JSONfiles& JSONfiles, Prj_StateVar& Prj_StateVar, int sour
     expression.register_symbol_table(symbol_table);
 
     parser_t parser;
-    parser.compile(kinetics,expression);
+    parser.compile(kinetics_modif,expression);
 
     chemass_transf = (*Prj_StateVar.chemass)(source)(index_chem)(linedata[0],linedata[1],linedata[2]);
 

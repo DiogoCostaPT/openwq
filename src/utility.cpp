@@ -207,8 +207,8 @@ void read_file_CMPIcoldata(JSONfiles & JSONfiles,Prj_StateVar& Prj_StateVar, int
     arma::Mat<double> to_matdata(length,num_cols);
 
         // Read data, line by line AND save to FileData_extrac (for proper debug) and to final to_cubedata
-    int colIdx,colIdx_res;
-    std::array<double,9> linedata; linedata.fill(0.0f);
+    int colIdx,colIdx_res,index;
+    std::array<double,7> linedata;
 
      if(thisFile.good())
     {
@@ -221,6 +221,7 @@ void read_file_CMPIcoldata(JSONfiles & JSONfiles,Prj_StateVar& Prj_StateVar, int
             // Keep track of the current column index
             colIdx = 0; 
             colIdx_res = 0;
+            linedata.fill(0.0f);
 
             if (line_i>=skiprows_num){ // skip header
             
@@ -230,9 +231,10 @@ void read_file_CMPIcoldata(JSONfiles & JSONfiles,Prj_StateVar& Prj_StateVar, int
                     it = std::find(allcols_2search.begin(), allcols_2search.end(), colIdx); // check if column of interest
 
                     // Add the current integer to the 'colIdx' column's values vector
-                    if (it != allcols_2search.end()){  // skip header
+                    if (it[0] > 0 & it != allcols_2search.end()){  // skip header
                                                
-                        linedata[std::distance(allcols_2search.begin(),it)] = std::stod(fieldi);
+                        index = std::distance(allcols_2search.begin(),it);
+                        linedata[index] = std::stod(fieldi);
                         colIdx_res++;
                     }                             
                     
