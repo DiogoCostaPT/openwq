@@ -1,7 +1,7 @@
 {
     "interactions":{
     "1": "snow_ice_to_snow_liquid",
-    "2": "snow_air_to_snow_liquid"
+    "2": "snow_air_to_snow_liquid_NO3"
     },
     "1":{
         "exchange_type": "water_flux",
@@ -20,7 +20,7 @@
         }
     },
     "2":{
-        "exchange_type": "chem_flux",
+        "exchange_type": "chem_exchange",
         "exchange_compartments":{
             "compartment_source": 1,
             "compartment_recipient": 2
@@ -30,16 +30,10 @@
             "skip_header_rows": 1,
             "grid_col_send": [1,2,false],
             "grid_col_receive": [3,4,false],
-            "kinetics":{
-                "1": "no3 * k",
-                "2": "nh4 * k"
-            },
-            "parameter_names": ["k"],
-            "parameter_values":{
-                "k": 0.00
-            },
             "deliminter": ",",
-            "unit_convertion_multipler": 1
+            "kinetics": "no3 * k",
+            "parameter_names": ["k"],
+            "parameter_values":[0.01]
         }
     }
 }

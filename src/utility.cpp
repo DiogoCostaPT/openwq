@@ -156,25 +156,22 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int v
 }
 
 // Read inter fluxes file data
-void read_file_CMPIcoldata(json & filejson,arma::Mat<double> & to_matdata, int source, 
+void read_file_CMPIcoldata(JSONfiles & JSONfiles,Prj_StateVar& Prj_StateVar, int iteraction, int source, 
     int recipient, std::string filename, std::string exchange_type){
 
     // get necessary inf o from JSON file
-    int skiprows_num = filejson["skip_header_rows"];
-    std::string deliminter = filejson["deliminter"];
-    std::vector<int> grid_col_send = filejson["grid_col_send"];
-    std::vector<int> grid_col_receive = filejson["grid_col_receive"];
+    int skiprows_num = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["skip_header_rows"];
+    std::string deliminter = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["deliminter"];
+    std::vector<int> grid_col_send = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["grid_col_send"];
+    std::vector<int> grid_col_receive = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["grid_col_receive"];
     int var_col;
-    int num_cols;
+    int num_cols = 9;
     double unit_convertion_multipler;
     
     // var_col only exists for exchange_type = water_flux
     if (exchange_type.compare("water_flux")==0){
-        var_col = filejson["var_col"];
-        unit_convertion_multipler = filejson["unit_convertion_multipler"];
-        num_cols = 9;
-    }else {
-        num_cols = 8;
+        var_col = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["var_col"];
+        unit_convertion_multipler = JSONfiles.CMPI[std::to_string(it+1)]["mapping_file"]["unit_convertion_multipler"];
     }
 
     const char * cdeliminter = deliminter.c_str();
@@ -184,7 +181,7 @@ void read_file_CMPIcoldata(json & filejson,arma::Mat<double> & to_matdata, int s
     std::vector<int> allcols_2search;
     allcols_2search.insert(allcols_2search.begin(),grid_col_send.begin(),grid_col_send.end());
     allcols_2search.insert(allcols_2search.begin(),grid_col_receive.begin(),grid_col_receive.end());
-    if (exchange_type.compare("water_flux")==0)
+    if (exchange_type.compare("water_flux")==0) // search this extra column if it has a water flux
         allcols_2search.insert(allcols_2search.end(),var_col); 
         
 
@@ -207,8 +204,7 @@ void read_file_CMPIcoldata(json & filejson,arma::Mat<double> & to_matdata, int s
     thisFile.seekg (0, thisFile.beg); // return to begining of file
    
     // create ama::Mat with correct number of dimensions
-    int const num_cols_i = num_cols;
-    arma::Mat<double> to_matdata_temp(length,num_cols_i);
+    arma::Mat<double> to_matdata(length,num_cols);
 
         // Read data, line by line AND save to FileData_extrac (for proper debug) and to final to_cubedata
     int colIdx,colIdx_res;
@@ -242,22 +238,34 @@ void read_file_CMPIcoldata(json & filejson,arma::Mat<double> & to_matdata, int s
                     
                     colIdx++; // Increment the column index
                 }
-                (to_matdata_temp)(colIdx,0) = source;
-                (to_matdata_temp)(colIdx,1) = linedata[0];
-                (to_matdata_temp)(colIdx,2) = linedata[1];
-                (to_matdata_temp)(colIdx,3) = linedata[2];
-                (to_matdata_temp)(colIdx,4) = recipient;
-                (to_matdata_temp)(colIdx,5) = linedata[3];
-                (to_matdata_temp)(colIdx,6) = linedata[4];
-                (to_matdata_temp)(colIdx,7) = linedata[5];
-                 if (exchange_type.compare("water_flux")==0)
-                    (to_matdata_temp)(colIdx,8) = linedata[6] * unit_convertion_multipler; // save to to_cubedata
+                (to_matdata)(colIdx,0) = source;
+                (to_matdata)(colIdx,1) = linedata[0];
+                (to_matdata)(colIdx,2) = linedata[1];
+                (to_matdata)(colIdx,3) = linedata[2];
+                (to_matdata)(colIdx,4) = recipient;
+                (to_matdata)(colIdx,5) = linedata[3];
+                (to_matdata)(colIdx,6) = linedata[4];
+                (to_matdata)(colIdx,7) = linedata[5];
+
+                if (exchange_type.compare("water_flux")==0){
+                    (to_matdata)(colIdx,8) = linedata[6] * unit_convertion_multipler; // save
+                }else if (exchange_type.compare("chem_exchange")==0){ // chem exchange
+
+                    std::string kinetics = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["kinetics"];
+                    std::vector<std::string> parameter_names = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["parameter_names"];
+                    std::vector<double> parameter_values = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["parameter_values"];
+
+                    linedata[6] = ChemCompExchange(JSONfile, Prj_StateVar, source, kinetics, 
+                        parameter_names, parameter_values);
+
+                    (to_matdata)(colIdx,8) = linedata[6]; // save
+                }
             }
             line_i++;
         }
     }
 
-    to_matdata = to_matdata_temp;
+    (*Prj_StateVar.wchem_exch)(iteraction) = to_matdata;
 
     // Close file
     thisFile.close();

@@ -62,7 +62,7 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                     
                     tmpst_i = fluxes_filenames_num[mobileCompt[0]][tmpst]; // timestep in file
                     
-                    // Inter FLUXES
+                    // Exchange between compartments: wflux or chem_exchange
                     readCompInteract(JSONfiles,Prj_StateVar,compFluxInt_fileExtention,tmpst_i); // Get all fluxes at timestep tmpst
 
                     // ADE SOLVER (intra fluxes)

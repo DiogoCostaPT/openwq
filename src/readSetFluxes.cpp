@@ -54,23 +54,22 @@ void readCompInteract(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, std::stri
             filepath_i.append("/");
             filepath_i.append(std::to_string(tmpst)); // timestep number
             filepath_i.append(filenamesExtention); // file extention
-        }else if (exchange_type.compare("chem_flux")==0) // chem exchange
+        }else if (exchange_type.compare("chem_exchange")==0) // chem exchange
             filepath_i = JSONfiles.CMPI[std::to_string(it+1)]["mapping_file"]["file_path"];
 
         // Source and recipient compartments
         int source = JSONfiles.CMPI[std::to_string(it+1)]["exchange_compartments"]["compartment_source"];
         int recipient = JSONfiles.CMPI[std::to_string(it+1)]["exchange_compartments"]["compartment_recipient"];
+        source --; // C++ starts with 0 and the JSON file users will use 1
+        recipient --;
 
         // Get grid col locations
-        std::vector<int> grid_col_send = JSONfiles.CMPI[std::to_string(it+1)]["mapping_file"]["grid_col_send"];
-        std::vector<int> grid_col_receive = JSONfiles.CMPI[std::to_string(it+1)]["mapping_file"]["grid_col_receive"];
+        //std::vector<int> grid_col_send = JSONfiles.CMPI[std::to_string(it+1)]["mapping_file"]["grid_col_send"];
+        //std::vector<int> grid_col_receive = JSONfiles.CMPI[std::to_string(it+1)]["mapping_file"]["grid_col_receive"];
 
-        // loop over x-, y- and z-directions
-        read_file_CMPIcoldata(JSONfiles.CMPI[std::to_string(it+1)]["mapping_file"],
-            (*Prj_StateVar.wchem_exch)(it), source, recipient, filepath_i, exchange_type);
-         
+        // Extract water_flux or calculate chem_exchange
+        read_file_CMPIcoldata(JSONfiles, Prj_StateVar, it, source, recipient, filepath_i, exchange_type);
 
-            
 
     }
 

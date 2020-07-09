@@ -120,6 +120,20 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
 
 }
 
+// Mass exchange between compartments
 
+double ChemCompExchange(JSONfiles& JSONfiles, Prj_StateVar& Prj_StateVar, int source, std::string kinetics, 
+    std::vector<std::string> parameter_names, std::vector<double> parameter_values){
+
+    double wmass_exchange;
+    std::string kinetics_modif = kinetics;
+
+    // Get chemical species in the source compartment
+    std::vector<std::string> chem_species = JSONfiles.WQ["compartments"][std::to_string(source)]["chem_species"];
+
+
+
+    return wmass_exchange;
+}
 
 

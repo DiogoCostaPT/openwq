@@ -13,4 +13,7 @@ void ChemTransf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp);
 
 void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int transi);
 
+double ChemCompExchange(JSONfiles& JSONfile, Prj_StateVar& Prj_StateVar, int source, std::string kinetics, 
+    std::vector<std::string> parameter_names, std::vector<double> parameter_values);
+
 #endif
