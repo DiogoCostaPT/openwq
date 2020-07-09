@@ -48,7 +48,7 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
         chemname = chem_species[chemi];
 
         // Consumedchemass_consumed, chemass_produced;ty()) 
-        index_i = chemname.find(consumed_spec);
+        index_i = expression_string.find(chemname);
         if (index_i!=-1 && !consumed_spec.empty())
             index_cons = chemi; // index
 
@@ -121,19 +121,65 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
 }
 
 // Mass exchange between compartments
+void ChemCompExchange(JSONfiles& JSONfiles, Prj_StateVar& Prj_StateVar, int source, std::string kinetics, 
+    std::vector<std::string> parameter_names, std::vector<double> parameter_values,
+    std::array<double,9> & linedata){
 
-double ChemCompExchange(JSONfiles& JSONfiles, Prj_StateVar& Prj_StateVar, int source, std::string kinetics, 
-    std::vector<std::string> parameter_names, std::vector<double> parameter_values){
+    typedef exprtk::symbol_table<double> symbol_table_t;
+    typedef exprtk::expression<double> expression_t;
+    typedef exprtk::parser<double> parser_t;
 
     double wmass_exchange;
     std::string kinetics_modif = kinetics;
+    std::string chemname;
+    int index_i;
+    int index_chem;
+    int index_transf;
+    double chemass_transf;
 
+    
     // Get chemical species in the source compartment
     std::vector<std::string> chem_species = JSONfiles.WQ["compartments"][std::to_string(source)]["chem_species"];
 
+   // Find chem of relevance
+    int ii = 0;
+    for(int chemi=0;chemi<chem_species.size();chemi++){
+        chemname = chem_species[chemi];
 
+        // Consumedchemass_consumed, chemass_produced;ty()) 
+        index_i = kinetics.find(chemname);
+        if (index_i!=-1 && !kinetics.empty()){
 
-    return wmass_exchange;
+            index_chem = chemi; // index
+            kinetics_modif.replace(index_i,index_i + chemname.size(),"chemass_transf");
+
+            break;
+            }
+        }
+
+    // Parmeters
+    for (int i=0;i<parameter_names.size();i++){
+        index_i = kinetics.find(parameter_names[i]);
+        kinetics.replace(index_i,index_i + parameter_names[i].size(),std::to_string(parameter_values[i]));
+    }
+
+    // Add variables to symbol_table
+    symbol_table_t symbol_table;
+
+    symbol_table.add_variable("chemass_transf",chemass_transf);
+    // symbol_table.add_constants();
+
+    expression_t expression;
+    expression.register_symbol_table(symbol_table);
+
+    parser_t parser;
+    parser.compile(kinetics,expression);
+
+    chemass_transf = (*Prj_StateVar.chemass)(source)(index_chem)(linedata[0],linedata[1],linedata[2]);
+
+    // mass transfered
+    linedata[6] = expression.value(); 
+
 }
 
 

@@ -255,8 +255,8 @@ void read_file_CMPIcoldata(JSONfiles & JSONfiles,Prj_StateVar& Prj_StateVar, int
                     std::vector<std::string> parameter_names = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["parameter_names"];
                     std::vector<double> parameter_values = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["parameter_values"];
 
-                    linedata[6] = ChemCompExchange(JSONfiles, Prj_StateVar, source, kinetics, 
-                        parameter_names, parameter_values);
+                    ChemCompExchange(JSONfiles, Prj_StateVar, source, kinetics, 
+                        parameter_names, parameter_values,linedata);
 
                     (to_matdata)(colIdx,8) = linedata[6]; // save
                 }
