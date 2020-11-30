@@ -31,7 +31,7 @@ class DEMOS_OpenWQ{
     
     void read_JSON_2class(json & jsondata,const std::string& jsonfile);
 
-    void ModConfig(DEMOS_OpenWQ.jsonin& DEMOS_OpenWQ.jsonin,const std::string DEMOS_OpenWQ_configjson);
+    void ModConfig(JSONfiles& JSONfiles,const std::string configjson_file);
 
 };
 

@@ -33,13 +33,13 @@ void DEMOS_OpenWQ::read_JSON_2class(json & jsondata,const std::string& jsonfile)
 }
 
 // Call function to (1) read JSONs
-void DEMOS_OpenWQ::ModConfig(DEMOS_OpenWQ.jsonin& DEMOS_OpenWQ.jsonin,const std::string DEMOS_OpenWQ_configjson){
+void DEMOS_OpenWQ::ModConfig(JSONfiles& JSONfiles,const std::string configjson_file){
 
-    read_JSON_2class(DEMOS_OpenWQ.jsonin.Master,DEMOS_OpenWQ_configjson); // master file
-    read_JSON_2class(DEMOS_OpenWQ.jsonin.H2O,DEMOS_OpenWQ.jsonin.Master["water_balance_setup_file"]); // H2O file
-    read_JSON_2class(DEMOS_OpenWQ.jsonin.CMPI,DEMOS_OpenWQ.jsonin.Master["cmp_interaction_file"]); // CMP file
-    read_JSON_2class(DEMOS_OpenWQ.jsonin.WQ,DEMOS_OpenWQ.jsonin.Master["wq_balance_setup_file"]); // WQ file
-    read_JSON_2class(DEMOS_OpenWQ.jsonin.BGC,DEMOS_OpenWQ.jsonin.Master["BGC_cycling_setup_file"]); // BGC file
+    read_JSON_2class(JSONfiles.Master,configjson_file); // master file
+    read_JSON_2class(JSONfiles.H2O,JSONfiles.Master["water_balance_setup_file"]); // H2O file
+    read_JSON_2class(JSONfiles.CMPI,JSONfiles.Master["cmp_interaction_file"]); // CMP file
+    read_JSON_2class(JSONfiles.WQ,JSONfiles.Master["wq_balance_setup_file"]); // WQ file
+    read_JSON_2class(JSONfiles.BGC,JSONfiles.Master["BGC_cycling_setup_file"]); // BGC file
     
 }
 
