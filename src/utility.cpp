@@ -66,21 +66,6 @@ void initmemory(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar)
 
 }
 
-
-// Read JSON file to class
-void read_JSON_2class(json & jsondata,const std::string& jsonfile)
-{
-        try{
-                std::ifstream i(jsonfile);
-                i >> (jsondata);
-
-        }catch (json::type_error){
-                std::cout << "An exception occurred parsing" << jsonfile << std::endl;
-                abort();
-        }
-}
-
-
 // read 3D col data from file at assign to variable
 void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col, 
     std::string filename){

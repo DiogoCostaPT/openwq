@@ -23,6 +23,8 @@
 #include "utility.h"
 #include "main_solver.h"
 
+#include "DEMOS_OpenWQ_modelConfig.h"
+
 int main(int argc, char* argv[]) 
 {   
     std::string vtufilename;
@@ -31,12 +33,9 @@ int main(int argc, char* argv[])
     // Configuration file
     std::string configjson_file (argv[1]); 
 
-    // Read JSON files 
-    read_JSON_2class(JSONfiles.Master,configjson_file); // master file
-    read_JSON_2class(JSONfiles.H2O,JSONfiles.Master["water_balance_setup_file"]); // H2O file
-    read_JSON_2class(JSONfiles.CMPI,JSONfiles.Master["cmp_interaction_file"]); // CMP file
-    read_JSON_2class(JSONfiles.WQ,JSONfiles.Master["wq_balance_setup_file"]); // WQ file
-    read_JSON_2class(JSONfiles.BGC,JSONfiles.Master["BGC_cycling_setup_file"]); // BGC file
+    DEMOS_OpenWQ DEMOS_OpenWQ; // crate an object of the DEMOS_OpenWQ class
+
+    DEMOS_OpenWQ.ModConfig(JSONfiles,configjson_file);
    
     // Assign the main arma::field variables
     int numcmp = JSONfiles.H2O["compartments"].size(); // number of compartments

@@ -7,7 +7,7 @@ void ChemTransf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp){
     std::string expression_string; // expression string
     
     // Get chem transformations
-    int num_transf = JSONfiles.BGC["transformations"].size();
+    int num_transf = JSONfiles.BGC["list_transformations"].size();
 
     // Looping over transformations
     for (int transi=0;transi<num_transf;transi++){
