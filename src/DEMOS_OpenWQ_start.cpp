@@ -183,7 +183,7 @@ void DEMOS_OpenWQ_start::readSetIC(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_Op
 }
 
 // Call function to (1) read JSONs
-void DEMOS_OpenWQ_start::config(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,const std::string configjson_file){
+void DEMOS_OpenWQ_start::initiate(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,const std::string configjson_file){
 
         // Real all configuration files
         read_JSON_2class(DEMOS_OpenWQ_json.Master,configjson_file); // master file

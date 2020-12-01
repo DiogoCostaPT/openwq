@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
     // DEMOS_OpenWQ_start
     DEMOS_OpenWQ_start DEMOS_OpenWQ_start; // create an object of the DEMOS_OpenWQ class
 
-    DEMOS_OpenWQ_start.config(DEMOS_OpenWQ_json,
+    DEMOS_OpenWQ_start.initiate(DEMOS_OpenWQ_json,
             DEMOS_OpenWQ_configjson);
     
     // Transport solver

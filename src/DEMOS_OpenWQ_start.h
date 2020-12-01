@@ -35,7 +35,7 @@ class DEMOS_OpenWQ_start{
     
     void read_JSON_2class(json& jsondata,const std::string& jsonfile);
 
-    void config(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,const std::string configjson_file);
+    void initiate(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,const std::string configjson_file);
 
     void read_file_3Dcoldata(json& filejson,arma::Cube<double>& to_cubedata, 
     int var_col,std::string filename);
