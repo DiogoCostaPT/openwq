@@ -3,15 +3,15 @@
 #ifndef READSETFLUXESH_INCLUDED
 #define READSETFLUXESH_INCLUDED
 
-#include "global.h"
+#include "DEMOS_OpenWQ_global.h"
 #include "utility.h"
 #include "string.h"
 
-void readSetFluxes(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,
+void readSetFluxes(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
     std::vector<int> mobileCompt,std::string& fluxes_filenamesExtention,
     int tmpst);
 
-void readCompInteract(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, std::string& filenamesExtention,
+void readCompInteract(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, std::string& filenamesExtention,
     int tmpst);
 
 #endif

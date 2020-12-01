@@ -2,7 +2,7 @@
 #include "main_solver.h"
 
 // main solver
-void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
+void main_solver(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars){
 
 
     int numspec;
@@ -12,23 +12,23 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
     std::vector<std::vector<double>> fluxes_filenames_num,compFluxInt_filenames_num,all_filenames_num;
     std::string fluxes_fileExtention,compFluxInt_fileExtention;
     std::vector<int> mobileCompt;
-    std::string res_folder = JSONfiles.Master["export_results_folder"];
+    std::string res_folder = DEMOS_OpenWQ_json.Master["export_results_folder"];
     std::vector<int>::iterator is_mobile; // to check if mobile in compartment loop
     
-    int numcmp = JSONfiles.H2O["compartments"].size();
-    double disp_x = JSONfiles.WQ["dispersion"]["x-dir"];
-    double disp_y = JSONfiles.WQ["dispersion"]["y-dir"];
-    double disp_z = JSONfiles.WQ["dispersion"]["z-dir"];
+    int numcmp = DEMOS_OpenWQ_json.H2O["compartments"].size();
+    double disp_x = DEMOS_OpenWQ_json.WQ["dispersion"]["x-dir"];
+    double disp_y = DEMOS_OpenWQ_json.WQ["dispersion"]["y-dir"];
+    double disp_z = DEMOS_OpenWQ_json.WQ["dispersion"]["z-dir"];
 
     // Get fluxes files for each compartment
-    GetFluxesFiles(JSONfiles,fluxes_filenames);
+    GetFluxesFiles(DEMOS_OpenWQ_json,fluxes_filenames);
     
     // Get flux interaction files between compartments
-    GetComptInteractFluxesFiles(JSONfiles,compFluxInt_filenames);
+    GetComptInteractFluxesFiles(DEMOS_OpenWQ_json,compFluxInt_filenames);
 
     // Convert filename strings to numbers: inter and intra fluxes
-    ConvertSortFilenames2Double(JSONfiles.H2O["compartments"].size(),fluxes_filenames,fluxes_filenames_num);
-    ConvertSortFilenames2Double(JSONfiles.CMPI["interactions"].size(),compFluxInt_filenames,compFluxInt_filenames_num);
+    ConvertSortFilenames2Double(DEMOS_OpenWQ_json.H2O["compartments"].size(),fluxes_filenames,fluxes_filenames_num);
+    ConvertSortFilenames2Double(DEMOS_OpenWQ_json.CMPI["interactions"].size(),compFluxInt_filenames,compFluxInt_filenames_num);
 
     // Check if time steps match for intra and inter compartment fluxes files
     all_filenames_num = fluxes_filenames_num;
@@ -44,7 +44,7 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
 
     // Save initial conditions
     for (int j=0;j<numcmp;j++){
-        writeVTU(JSONfiles,j,Prj_StateVar,0); 
+        writeVTU(DEMOS_OpenWQ_json,j,DEMOS_OpenWQ_vars,0); 
     }
     
     // Run run ADE_solver and ADE_solver if all mobile_compartment timesteps match, 
@@ -63,34 +63,34 @@ void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar){
                     tmpst_i = fluxes_filenames_num[mobileCompt[0]][tmpst]; // timestep in file
                     
                     // Exchange between compartments: wflux or chem_exchange
-                    readCompInteract(JSONfiles,Prj_StateVar,compFluxInt_fileExtention,tmpst_i); // Get all fluxes at timestep tmpst
+                    readCompInteract(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars,compFluxInt_fileExtention,tmpst_i); // Get all fluxes at timestep tmpst
 
                     // Sinks and sources: chem only
 
                     
                     // ADE SOLVER (intra fluxes)
-                    readSetFluxes(JSONfiles,Prj_StateVar,mobileCompt,fluxes_fileExtention,tmpst_i); // Get all fluxes at timestep tmpst
+                    readSetFluxes(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars,mobileCompt,fluxes_fileExtention,tmpst_i); // Get all fluxes at timestep tmpst
 
                     // Solve transport -> call ADE_solver
                     for (int icmp=0;icmp<numcmp;icmp++){ // comparment loop
 
                         // Perform chemical transformations
-                        ChemTransf(JSONfiles,Prj_StateVar,icmp);
+                        ChemTransf(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars,icmp);
                         
                         is_mobile = find (mobileCompt.begin(), mobileCompt.end(), icmp);
                         if (is_mobile != mobileCompt.end()){// if mobile
                             // Run ADE_solver
                             icmp = mobileCompt[icmp]; // get mobile compartments
-                            std::vector<std::string> chemspec_i = JSONfiles.WQ["compartments"][std::to_string(icmp+1)]["chem_species"];
+                            std::vector<std::string> chemspec_i = DEMOS_OpenWQ_json.WQ["compartments"][std::to_string(icmp+1)]["chem_species"];
                             numspec = chemspec_i.size();
                             for (int ichem=0;ichem<numspec;ichem++) 
-                                ADE_solver_1(JSONfiles,Prj_StateVar,icmp,ichem);                                       
+                                ADE_solver_1(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars,icmp,ichem);                                       
                         }
                     }
 
                     // Print Results
                 for (int j=0;j<numcmp;j++){
-                    writeVTU(JSONfiles,j,Prj_StateVar,tmpst_i); // https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
+                    writeVTU(DEMOS_OpenWQ_json,j,DEMOS_OpenWQ_vars,tmpst_i); // https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
                 }
 
             }

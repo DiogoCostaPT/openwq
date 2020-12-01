@@ -2,23 +2,23 @@
 #include "ChemTransf.h"
 
 // Compute chemical transformations
-void ChemTransf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp){
+void ChemTransf(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int icmp){
 
     std::string expression_string; // expression string
     
     // Get chem transformations
-    int num_transf = JSONfiles.BGC["list_transformations"].size();
+    int num_transf = DEMOS_OpenWQ_json.BGC["list_transformations"].size();
 
     // Looping over transformations
     for (int transi=0;transi<num_transf;transi++){
  
-        Transf(JSONfiles,Prj_StateVar, icmp,transi); // calling exprtk: parsing expression
+        Transf(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars, icmp,transi); // calling exprtk: parsing expression
         
     }
 }
 
 // Compute each chemical transformation
-void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int transi){
+void Transf(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int icmp, int transi){
 
 
     typedef exprtk::symbol_table<double> symbol_table_t;
@@ -34,14 +34,14 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
     std::vector<double> chemass_transf;
     
     // Get transformation transi info
-    std::string consumed_spec =  JSONfiles.BGC[std::to_string(transi+1)]["consumed"];
-    std::string produced_spec =  JSONfiles.BGC[std::to_string(transi+1)]["produced"];
-    std::string expression_string = JSONfiles.BGC[std::to_string(transi+1)]["kinetics"];
-    std::vector<std::string> parameter_names = JSONfiles.BGC[std::to_string(transi+1)]["parameter_names"];
+    std::string consumed_spec =  DEMOS_OpenWQ_json.BGC[std::to_string(transi+1)]["consumed"];
+    std::string produced_spec =  DEMOS_OpenWQ_json.BGC[std::to_string(transi+1)]["produced"];
+    std::string expression_string = DEMOS_OpenWQ_json.BGC[std::to_string(transi+1)]["kinetics"];
+    std::vector<std::string> parameter_names = DEMOS_OpenWQ_json.BGC[std::to_string(transi+1)]["parameter_names"];
     std::string expression_string_modif = expression_string;
     
     // Get chemical species in compartment
-    std::vector<std::string> chem_species = JSONfiles.WQ["compartments"][std::to_string(icmp+1)]["chem_species"];
+    std::vector<std::string> chem_species = DEMOS_OpenWQ_json.WQ["compartments"][std::to_string(icmp+1)]["chem_species"];
      
     // Find species indexes: consumed, produced and in the expression
     for(int chemi=0;chemi<chem_species.size();chemi++){
@@ -71,7 +71,7 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
     // Parmeters
     for (int i=0;i<parameter_names.size();i++){
         index_i = expression_string_modif.find(parameter_names[i]);
-        param_val = JSONfiles.BGC[std::to_string(transi+1)]["parameter_values"][parameter_names[i]];
+        param_val = DEMOS_OpenWQ_json.BGC[std::to_string(transi+1)]["parameter_values"][parameter_names[i]];
         expression_string_modif.replace(index_i,index_i + parameter_names[i].size(),std::to_string(param_val));
     }
 
@@ -92,9 +92,9 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
     parser.compile(expression_string_modif,expression);
 
     // Loop over space
-    int nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
-    int ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
-    int nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
+    int nx = DEMOS_OpenWQ_json.H2O[std::to_string(icmp+1)]["nx"];
+    int ny = DEMOS_OpenWQ_json.H2O[std::to_string(icmp+1)]["ny"];
+    int nz = DEMOS_OpenWQ_json.H2O[std::to_string(icmp+1)]["nz"];
 
     for (int ix=0;ix<nx;ix++){
         for (int iy=0;iy<ny;iy++){
@@ -102,17 +102,17 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
                 
                 // loop to get all the variables inside the expression
                 for (int chem=0;chem<chemass_transf.size();chem++){
-                    chemass_transf[chem] = (*Prj_StateVar.chemass)(icmp)(index_transf[chem])(ix,iy,iz);
+                    chemass_transf[chem] = (*DEMOS_OpenWQ_vars.chemass)(icmp)(index_transf[chem])(ix,iy,iz);
                 }
 
                 // mass transfered
                 double transf_mass = expression.value(); 
 
                 // mass consumed
-                (*Prj_StateVar.chemass)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
+                (*DEMOS_OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
 
                 // mass prod
-                (*Prj_StateVar.chemass)(icmp)(index_prod)(ix,iy,iz) += transf_mass;
+                (*DEMOS_OpenWQ_vars.chemass)(icmp)(index_prod)(ix,iy,iz) += transf_mass;
 
             }
         }
@@ -121,7 +121,7 @@ void Transf(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int icmp, int trans
 }
 
 // Mass exchange between compartments
-void ChemCompExchange(JSONfiles& JSONfiles, Prj_StateVar& Prj_StateVar, int source, std::string kinetics, 
+void ChemCompExchange(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json, DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int source, std::string kinetics, 
     std::vector<std::string> parameter_names, std::vector<double> parameter_values,
     std::array<double,7> & linedata, int & index_chem){
 
@@ -138,7 +138,7 @@ void ChemCompExchange(JSONfiles& JSONfiles, Prj_StateVar& Prj_StateVar, int sour
 
     
     // Get chemical species in the source compartment
-    std::vector<std::string> chem_species = JSONfiles.WQ["compartments"][std::to_string(source+1)]["chem_species"];
+    std::vector<std::string> chem_species = DEMOS_OpenWQ_json.WQ["compartments"][std::to_string(source+1)]["chem_species"];
 
    // Find chem of relevance
     int ii = 0;
@@ -174,7 +174,7 @@ void ChemCompExchange(JSONfiles& JSONfiles, Prj_StateVar& Prj_StateVar, int sour
     parser_t parser;
     parser.compile(kinetics_modif,expression);
 
-    chemass_transf = (*Prj_StateVar.chemass)(source)(index_chem)(linedata[0],linedata[1],linedata[2]);
+    chemass_transf = (*DEMOS_OpenWQ_vars.chemass)(source)(index_chem)(linedata[0],linedata[1],linedata[2]);
 
     // mass transfered
     linedata[6] = expression.value(); 

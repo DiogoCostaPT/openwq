@@ -20,8 +20,8 @@
 */
 
 
-#include "global.h"
+#include "DEMOS_OpenWQ_global.h"
 
-int writeVTU(JSONfiles& JSONfiles,int icmp, Prj_StateVar& Prj_StateVar, int tmpst_i);
+int writeVTU(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,int icmp, DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int tmpst_i);
 
 #endif

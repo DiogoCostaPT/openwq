@@ -23,28 +23,20 @@
 #include <dirent.h>
 #include <algorithm>
 
-#include "global.h"
+#include "DEMOS_OpenWQ_global.h"
 #include "ChemTransf.h"
 
 using json = nlohmann::json;
 
-void initmemory(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
 
-void read_JSON_2class(json & jsondata,const std::string& jsonfile);
+void readSetFluxes(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
 
-void readSetIC(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
-
-void readSetFluxes(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
-
-void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, 
-    int var_col,std::string filename);
-
-void read_file_CMPIcoldata(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar, int iteraction, int source, 
+void read_file_CMPIcoldata(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int iteraction, int source, 
     int recipient, std::string filename, std::string exchange_type, int & index_chem);
 
-void GetFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &fluxes_filenames);
+void GetFluxesFiles(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,std::vector<std::vector<std::string>> &fluxes_filenames);
 
-void GetComptInteractFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &compInt_filenames);
+void GetComptInteractFluxesFiles(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,std::vector<std::vector<std::string>> &compInt_filenames);
 
 void GetFilesInFolder(std::string &path,std::vector<std::string> &filenames_i);
 

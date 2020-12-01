@@ -25,7 +25,7 @@ using json = nlohmann::json;
 
 
 // Project Information
-class JSONfiles
+class DEMOS_OpenWQ_json
 {
     public:
 
@@ -39,13 +39,13 @@ class JSONfiles
 
 
 // General information about the project
-class Prj_StateVar
+class DEMOS_OpenWQ_vars
 {
     public:
-    Prj_StateVar(){
+    DEMOS_OpenWQ_vars(){
 
     }
-    Prj_StateVar(size_t numcmp, size_t numinteract){
+    DEMOS_OpenWQ_vars(size_t numcmp, size_t numinteract){
 
         this-> numcmp = numcmp;
         this-> numinteract = numinteract;

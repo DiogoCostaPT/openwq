@@ -19,144 +19,23 @@
 #include "utility.h"
 
 
-// Initialize memory of major variables: arma::field
-void initmemory(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar)
-{
-        // domain/water (number of compartments and grid dimensions)
-        int numcmp = JSONfiles.H2O["compartments"].size();
-        std::unique_ptr<unsigned int[]> n_xyz(new unsigned int[3]); // pointer to nx, ny, nx information
-        n_xyz[0] = 0;
-        n_xyz[1] = 0;
-        n_xyz[2] = 0;
-        int numInter = JSONfiles.CMPI["interactions"].size();
-
-        // BGC
-        int numlistspec = JSONfiles.BGC["list_chemical_species"].size(); // size of list_chemical_speciess
-        int numspec_j;
-
-        // Assign and  allocate memory: wflux,wmassk,chemass
-        for (int i=0;i<numcmp;i++){
-                
-            // dimensions
-            n_xyz[0] = JSONfiles.H2O[std::to_string(i+1)]["nx"];
-            n_xyz[1] = JSONfiles.H2O[std::to_string(i+1)]["ny"];
-            n_xyz[2] = JSONfiles.H2O[std::to_string(i+1)]["nz"];
-            
-            // wmass fluxes arma::cube
-            arma::Cube<double> domain_xyz(n_xyz[0],n_xyz[1],n_xyz[2]);
-            (*Prj_StateVar.wmass)(i) = domain_xyz; // fwater fluxes arma::cube
-
-            // wflux
-            arma::field<arma::Cube<double>> domain_field(3); // for x, y, z
-            for (int d=0;d<3;d++){ 
-                domain_field(d) = domain_xyz;
-            }
-                (*Prj_StateVar.wflux)(i) = domain_field;
-
-            // chemass
-            numspec_j = JSONfiles.WQ["compartments"][std::to_string(i+1)]["chem_species"].size(); 
-
-            // creating arma::field of arma:c:cube of size numspec_j-> copies of domain_xyz for each species
-            arma::field<arma::Cube<double>> domain_field_2(numspec_j);
-            for (int s=0;s<numspec_j;s++){
-                domain_field_2(s) = domain_xyz;
-            }
-            (*Prj_StateVar.chemass)(i) = domain_field_2;
-        }
-
-}
-
-// read 3D col data from file at assign to variable
-void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col, 
-    std::string filename){
-
-    // get necessary inf o from JSON file
-    int skiprows_num = filejson["skip_header_rows"];
-    std::string deliminter = filejson["deliminter"];
-    std::vector<int> grid_col = filejson["grid_col"];
-    double unit_convertion_multipler = filejson["unit_convertion_multipler"];
-    
-
-    const char * cdeliminter = deliminter.c_str();
-    std::vector<int>::iterator it;
-
-    // all relevant columns: grid and var
-    std::vector<int> allcols_2search;
-    allcols_2search.insert(allcols_2search.begin(),grid_col.begin(),grid_col.end());
-    allcols_2search.insert(allcols_2search.end(),var_col); 
-
-    // Create a vector of <string, int vector> pairs to store the FileData_extract
-    std::vector<std::pair<std::string, std::vector<double>>> FileData_extract;
-
-    // Create an input filestream
-    std::ifstream thisFile(filename);
-
-    // Make sure the file is open
-    if(!thisFile.is_open()) throw std::runtime_error("Could not open file:" + filename);
-
-    // Helper vars
-    std::string line, fieldi;
-    int line_i = 0;
-
-        // Read data, line by line AND save to FileData_extrac (for proper debug) and to final to_cubedata
-    int colIdx,colIdx_res;
-    std::array<double,4> linedata; linedata.fill(0.0f);
-
-     if(thisFile.good())
-    {
-
-        while(std::getline(thisFile, line))
-        {
-            // Create a stringstream of the current line
-            std::stringstream ss(line);
-        
-            // Keep track of the current column index
-            colIdx = 1; 
-            colIdx_res = 0;
-
-            if (line_i>=skiprows_num){ // skip header
-            
-                // Extract each integer
-                while(std::getline(ss, fieldi, *cdeliminter)){
-                    
-                    it = std::find(allcols_2search.begin(), allcols_2search.end(), colIdx); // check if column of interest
-
-                    // Add the current integer to the 'colIdx' column's values vector
-                    if (it != allcols_2search.end()){  // skip header
-                                               
-                        linedata[std::distance(allcols_2search.begin(),it)] = std::stod(fieldi);
-                        colIdx_res++;
-                    }                             
-                    
-                    colIdx++; // Increment the column index
-                }
-                (to_cubedata)(linedata[0],linedata[1],linedata[2]) = linedata[3] * unit_convertion_multipler; // save to to_cubedata
-            }
-            line_i++;
-        }
-    }
-
-    // Close file
-    thisFile.close();
-}
-
 // Read inter fluxes file data
-void read_file_CMPIcoldata(JSONfiles & JSONfiles,Prj_StateVar& Prj_StateVar, int iteraction, int source, 
+void read_file_CMPIcoldata(DEMOS_OpenWQ_json & DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int iteraction, int source, 
     int recipient, std::string filename, std::string exchange_type, int & index_chem){
 
     // get necessary inf o from JSON file
-    int skiprows_num = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["skip_header_rows"];
-    std::string deliminter = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["deliminter"];
-    std::vector<int> grid_col_send = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["grid_col_send"];
-    std::vector<int> grid_col_receive = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["grid_col_receive"];
+    int skiprows_num = DEMOS_OpenWQ_json.CMPI[std::to_string(iteraction+1)]["mapping_file"]["skip_header_rows"];
+    std::string deliminter = DEMOS_OpenWQ_json.CMPI[std::to_string(iteraction+1)]["mapping_file"]["deliminter"];
+    std::vector<int> grid_col_send = DEMOS_OpenWQ_json.CMPI[std::to_string(iteraction+1)]["mapping_file"]["grid_col_send"];
+    std::vector<int> grid_col_receive = DEMOS_OpenWQ_json.CMPI[std::to_string(iteraction+1)]["mapping_file"]["grid_col_receive"];
     int var_col;
     int num_cols = 9;
     double unit_convertion_multipler;
     
     // var_col only exists for exchange_type = water_flux
     if (exchange_type.compare("water_flux")==0){
-        var_col = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["var_col"];
-        unit_convertion_multipler = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["unit_convertion_multipler"];
+        var_col = DEMOS_OpenWQ_json.CMPI[std::to_string(iteraction+1)]["mapping_file"]["var_col"];
+        unit_convertion_multipler = DEMOS_OpenWQ_json.CMPI[std::to_string(iteraction+1)]["mapping_file"]["unit_convertion_multipler"];
     }
 
     const char * cdeliminter = deliminter.c_str();
@@ -238,11 +117,11 @@ void read_file_CMPIcoldata(JSONfiles & JSONfiles,Prj_StateVar& Prj_StateVar, int
                     (to_matdata)(colIdx,8) = linedata[6] * unit_convertion_multipler; // save
                 }else if (exchange_type.compare("chem_exchange")==0){ // chem exchange
 
-                    std::string kinetics = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["kinetics"];
-                    std::vector<std::string> parameter_names = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["parameter_names"];
-                    std::vector<double> parameter_values = JSONfiles.CMPI[std::to_string(iteraction+1)]["mapping_file"]["parameter_values"];
+                    std::string kinetics = DEMOS_OpenWQ_json.CMPI[std::to_string(iteraction+1)]["mapping_file"]["kinetics"];
+                    std::vector<std::string> parameter_names = DEMOS_OpenWQ_json.CMPI[std::to_string(iteraction+1)]["mapping_file"]["parameter_names"];
+                    std::vector<double> parameter_values = DEMOS_OpenWQ_json.CMPI[std::to_string(iteraction+1)]["mapping_file"]["parameter_values"];
 
-                    ChemCompExchange(JSONfiles, Prj_StateVar, source, kinetics, 
+                    ChemCompExchange(DEMOS_OpenWQ_json, DEMOS_OpenWQ_vars, source, kinetics, 
                         parameter_names, parameter_values,linedata,index_chem);
 
                     (to_matdata)(colIdx,8) = linedata[6]; // save
@@ -252,7 +131,7 @@ void read_file_CMPIcoldata(JSONfiles & JSONfiles,Prj_StateVar& Prj_StateVar, int
         }
     }
 
-    (*Prj_StateVar.wchem_exch)(iteraction) = to_matdata;
+    (*DEMOS_OpenWQ_vars.wchem_exch)(iteraction) = to_matdata;
 
     // Close file
     thisFile.close();
@@ -261,20 +140,20 @@ void read_file_CMPIcoldata(JSONfiles & JSONfiles,Prj_StateVar& Prj_StateVar, int
 
 
 // Read all files inside the folder
-void GetFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &fluxes_filenames){
+void GetFluxesFiles(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,std::vector<std::vector<std::string>> &fluxes_filenames){
 
     std::string folder_path;
     bool mobile;
     
-    int numcmp = JSONfiles.H2O["compartments"].size();
+    int numcmp = DEMOS_OpenWQ_json.H2O["compartments"].size();
 
     for (int icmp=1;icmp<=numcmp;icmp++){
         
-        mobile = JSONfiles.H2O[std::to_string(icmp)]["mobile"];
+        mobile = DEMOS_OpenWQ_json.H2O[std::to_string(icmp)]["mobile"];
         std::vector<std::string> filenames_i;
 
         if (mobile){
-            folder_path = JSONfiles.H2O[std::to_string(icmp)]["water_fluxes_files"]["folder_path"];
+            folder_path = DEMOS_OpenWQ_json.H2O[std::to_string(icmp)]["water_fluxes_files"]["folder_path"];
             GetFilesInFolder(folder_path,filenames_i); // list the results files to get the last time step
             
         }else{
@@ -285,19 +164,19 @@ void GetFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &
 }
 
 // Read all files inside the folder
-void  GetComptInteractFluxesFiles(JSONfiles& JSONfiles,std::vector<std::vector<std::string>> &compInt_filenames){
+void  GetComptInteractFluxesFiles(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,std::vector<std::vector<std::string>> &compInt_filenames){
 
     std::string folder_path, interact_type;
     
-    int numInter = JSONfiles.CMPI["interactions"].size();
+    int numInter = DEMOS_OpenWQ_json.CMPI["interactions"].size();
 
     for (int it=1;it<=numInter;it++){
         
-        interact_type = JSONfiles.CMPI[std::to_string(it)]["exchange_type"];
+        interact_type = DEMOS_OpenWQ_json.CMPI[std::to_string(it)]["exchange_type"];
         std::vector<std::string> filenames_i;
 
         if (interact_type.compare("water_flux") == 0){
-            folder_path = JSONfiles.CMPI[std::to_string(it)]["mapping_file"]["folder_path"];
+            folder_path = DEMOS_OpenWQ_json.CMPI[std::to_string(it)]["mapping_file"]["folder_path"];
             GetFilesInFolder(folder_path,filenames_i); // list the results files to get the last time step
             
         }else{

@@ -3,17 +3,17 @@
 
 #include "ADE_solver.h"
 
-void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int &ichem){
+void ADE_solver_1(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,int &icmp,int &ichem){
 
     double mfluxL,wflux_intraL,frac;
-    int nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
-    int ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
-    int nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
+    int nx = DEMOS_OpenWQ_json.H2O[std::to_string(icmp+1)]["nx"];
+    int ny = DEMOS_OpenWQ_json.H2O[std::to_string(icmp+1)]["ny"];
+    int nz = DEMOS_OpenWQ_json.H2O[std::to_string(icmp+1)]["nz"];
 
-    //arma::cube wflux_intraC_x = (*Prj_StateVar.wflux)(icmp)(0);
-    //arma::cube wflux_intraC_y = (*Prj_StateVar.wflux)(icmp)(1);
-    //arma::cube wflux_intraC_z = (*Prj_StateVar.wflux)(icmp)(2);
-    //arma::cube wmassC = (*Prj_StateVar.wmass)(icmp);
+    //arma::cube wflux_intraC_x = (*DEMOS_OpenWQ_vars.wflux)(icmp)(0);
+    //arma::cube wflux_intraC_y = (*DEMOS_OpenWQ_vars.wflux)(icmp)(1);
+    //arma::cube wflux_intraC_z = (*DEMOS_OpenWQ_vars.wflux)(icmp)(2);
+    //arma::cube wmassC = (*DEMOS_OpenWQ_vars.wmass)(icmp);
 
     arma::mat elemt_plus = arma::zeros<arma::mat>(3,3);
     elemt_plus(0,0) = 1;
@@ -27,16 +27,16 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
                 
                 for (int dir=0;dir<3;dir++){ // x, y and z directions
 
-                    wflux_intraL = (*Prj_StateVar.wflux)(icmp)(dir)(ix,iy,iz);
+                    wflux_intraL = (*DEMOS_OpenWQ_vars.wflux)(icmp)(dir)(ix,iy,iz);
 
-                    if ((*Prj_StateVar.wmass)(icmp)(ix,iy,iz) <= 0.0f)
+                    if ((*DEMOS_OpenWQ_vars.wmass)(icmp)(ix,iy,iz) <= 0.0f)
                         continue;
 
                     // Check water flux
                     if (wflux_intraL==0.0f)  // skip if no flow in dir direction
                         continue;                                 
                     else  // limit fo available material
-                        frac = fmax(fmin(wflux_intraL/(*Prj_StateVar.wmass)(icmp)(ix,iy,iz),1.0f),-1.0f);
+                        frac = fmax(fmin(wflux_intraL/(*DEMOS_OpenWQ_vars.wmass)(icmp)(ix,iy,iz),1.0f),-1.0f);
 
                     // To support the identification of the element from/t where the flux comes or goes
                     if (frac>0)
@@ -47,11 +47,11 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
                     
                     // limit to available material
                     wflux_intraL = frac * wflux_intraL;
-                    mfluxL = frac * (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz);
+                    mfluxL = frac * (*DEMOS_OpenWQ_vars.chemass)(icmp)(ichem)(ix,iy,iz);
 
                     // Mass balance at x,y,z node
-                    (*Prj_StateVar.wmass)(icmp)(ix,iy,iz) -= wflux_intraL;
-                    (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz) -= mfluxL;
+                    (*DEMOS_OpenWQ_vars.wmass)(icmp)(ix,iy,iz) -= wflux_intraL;
+                    (*DEMOS_OpenWQ_vars.chemass)(icmp)(ichem)(ix,iy,iz) -= mfluxL;
                     
                     // Mass balance at respective adjacent (source) node
                     // but skip if the receiving node it outside the domain
@@ -69,9 +69,9 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
                     if (idir+dir_plus*elemt_plus(dir,dir)>=n_idir)
                         continue;
 
-                    (*Prj_StateVar.wmass)(icmp)(ix+dir_plus*elemt_plus(dir,0),iy+dir_plus*elemt_plus(dir,1),
+                    (*DEMOS_OpenWQ_vars.wmass)(icmp)(ix+dir_plus*elemt_plus(dir,0),iy+dir_plus*elemt_plus(dir,1),
                         iz+dir_plus*elemt_plus(dir,2)) += wflux_intraL;
-                    (*Prj_StateVar.chemass)(icmp)(ichem)(ix+dir_plus*elemt_plus(dir,0),iy+dir_plus*elemt_plus(dir,1),
+                    (*DEMOS_OpenWQ_vars.chemass)(icmp)(ichem)(ix+dir_plus*elemt_plus(dir,0),iy+dir_plus*elemt_plus(dir,1),
                         iz+dir_plus*elemt_plus(dir,2)) += mfluxL;
                 }
 
@@ -83,7 +83,7 @@ void ADE_solver_1(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar,int &icmp,int 
 
 /*
 // ADE solver
-void ADE_solver_2(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar)
+void ADE_solver_2(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars)
 {
 
     double pfw,pfe,qfs,qfn,ntp, pfce, he,fp,fe,hne, pfde,area,areae,arean,hn,qxl,qyl,fw,

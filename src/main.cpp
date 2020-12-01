@@ -19,37 +19,30 @@
 #include <armadillo>
 #include <string>
 
-#include "global.h"
 #include "utility.h"
 #include "main_solver.h"
 
-#include "DEMOS_OpenWQ_modelConfig.h"
+#include "DEMOS_OpenWQ_global.h"
+#include "DEMOS_OpenWQ_start.h"
 
 int main(int argc, char* argv[]) 
 {   
     std::string vtufilename;
-    JSONfiles JSONfiles;
+
+    // create object for input json files
+    DEMOS_OpenWQ_json DEMOS_OpenWQ_json;
     
-    // Configuration file
-    std::string configjson_file (argv[1]); 
+    // Configuration file (from argv)
+    std::string DEMOS_OpenWQ_configjson (argv[1]); 
 
-    DEMOS_OpenWQ DEMOS_OpenWQ; // crate an object of the DEMOS_OpenWQ class
+    // DEMOS_OpenWQ_start
+    DEMOS_OpenWQ_start DEMOS_OpenWQ_start; // create an object of the DEMOS_OpenWQ class
 
-    DEMOS_OpenWQ.ModConfig(JSONfiles,configjson_file);
-   
-    // Assign the main arma::field variables
-    int numcmp = JSONfiles.H2O["compartments"].size(); // number of compartments
-    int numinteract = JSONfiles.CMPI["interactions"].size(); // number of interactions between compartments
-    Prj_StateVar Prj_StateVar(numcmp,numinteract);
-
-    // Initialize memmory for major arma::field variables
-    initmemory(JSONfiles,Prj_StateVar);
-
-    // IC (water and chemical mass)
-    readSetIC(JSONfiles,Prj_StateVar);
-
+    DEMOS_OpenWQ_start.config(DEMOS_OpenWQ_json,DEMOS_OpenWQ_configjson);
+    
     // Transport solver
-    main_solver(JSONfiles,Prj_StateVar);
+    //DEMOS_OpenWQ_vars DEMOS_OpenWQ_vars;
+    //main_solver(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars);
 
 }
 

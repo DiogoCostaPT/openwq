@@ -3,27 +3,27 @@
 
 #include "writeVTU.h"
 
-int writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar, int tmpst_i)
+int writeVTU(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,int icmp,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int tmpst_i)
 {
 
     // This was built for hexahedrons (see line 66) for now (cubes, Rectangular cuboid, Trigonal trapezohedron, etc)
     // But line 33:33 makes determining cubes of side lenght = 1 (but this can all be changed)
 
-    std::string filename = JSONfiles.Master["export_results_folder"];
+    std::string filename = DEMOS_OpenWQ_json.Master["export_results_folder"];
     filename.append("/");
-    filename.append(JSONfiles.H2O["compartments"][std::to_string(icmp+1)]);
+    filename.append(DEMOS_OpenWQ_json.H2O["compartments"][std::to_string(icmp+1)]);
     filename.append("_");
     filename.append(std::to_string(tmpst_i)); // time stamp
     filename.append(".vtu");
     std::string chemname;
 
     // get domain dimensions
-    int nx = JSONfiles.H2O[std::to_string(icmp+1)]["nx"];
-    int ny = JSONfiles.H2O[std::to_string(icmp+1)]["ny"];
-    int nz = JSONfiles.H2O[std::to_string(icmp+1)]["nz"];
+    int nx = DEMOS_OpenWQ_json.H2O[std::to_string(icmp+1)]["nx"];
+    int ny = DEMOS_OpenWQ_json.H2O[std::to_string(icmp+1)]["ny"];
+    int nz = DEMOS_OpenWQ_json.H2O[std::to_string(icmp+1)]["nz"];
 
      // get number of species for compartment icmp
-    int numspec = JSONfiles.WQ["compartments"][std::to_string(icmp+1)]["chem_species"].size();
+    int numspec = DEMOS_OpenWQ_json.WQ["compartments"][std::to_string(icmp+1)]["chem_species"].size();
 
     // total number of vertices and hexahedrons
     int numvert = (nx+1)*(ny+1)*(nz+1);
@@ -79,7 +79,7 @@ int writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar, int tmpst
     // Add information to the unstructured grid: compartment data
    
     std::vector<std::string> chemnames = 
-        JSONfiles.WQ["compartments"][std::to_string(icmp+1)]["chem_species"]; //chem species # within compartment icmp (from JSON.BGQ)
+        DEMOS_OpenWQ_json.WQ["compartments"][std::to_string(icmp+1)]["chem_species"]; //chem species # within compartment icmp (from JSON.BGQ)
 
     for (int ichem=0;ichem<numspec;ichem++){ // all chemical species
 
@@ -95,7 +95,7 @@ int writeVTU(JSONfiles& JSONfiles,int icmp,Prj_StateVar& Prj_StateVar, int tmpst
                 for (int ix=0;ix<=nx;ix++){
                     for (int iy=0;iy<=ny;iy++){
                         if(iz!=nz && iy!=ny && ix!=nx){
-                            varexpot->SetValue(i, (*Prj_StateVar.chemass)(icmp)(ichem)(ix,iy,iz));
+                            varexpot->SetValue(i, (*DEMOS_OpenWQ_vars.chemass)(icmp)(ichem)(ix,iy,iz));
                         }else{
                             varexpot->SetValue(i, 0);
                         }

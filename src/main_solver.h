@@ -6,7 +6,7 @@
 #include "string.h"
 #include <algorithm>
 
-#include "global.h"
+#include "DEMOS_OpenWQ_global.h"
 #include "utility.h"
 #include "readSetFluxes.h"
 #include "main_solver.h"
@@ -14,6 +14,6 @@
 #include "ChemTransf.h"
 #include "ADE_solver.h"
 
-void main_solver(JSONfiles& JSONfiles,Prj_StateVar& Prj_StateVar);
+void main_solver(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
 
 #endif
