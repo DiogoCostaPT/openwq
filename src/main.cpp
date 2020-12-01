@@ -24,6 +24,7 @@
 
 #include "DEMOS_OpenWQ_global.h"
 #include "DEMOS_OpenWQ_start.h"
+#include "DEMOS_OpenWQ_load.h"
 
 int main(int argc, char* argv[]) 
 {   
@@ -32,17 +33,37 @@ int main(int argc, char* argv[])
     // Configuration file (from argv)
     std::string DEMOS_OpenWQ_configjson (argv[1]); 
     
-    // Input JSON files
+    // Create Object: DEMOS_OpenWQ_json (Input JSON files)
     DEMOS_OpenWQ_json DEMOS_OpenWQ_json; // create object
     
+    // Load input data
+    int numcmp;
+    int numinteract;
+    DEMOS_OpenWQ_load DEMOS_OpenWQ_load; // create object: json files load modules
+    DEMOS_OpenWQ_load.loadinit(DEMOS_OpenWQ_json,
+        DEMOS_OpenWQ_configjson,
+        numcmp,
+        numinteract);
+    
+    // Create Object: DEMOS_OpenWQ_vars (opernWQ variables)
+    DEMOS_OpenWQ_vars DEMOS_OpenWQ_vars(numcmp,numinteract);
+
     // DEMOS_OpenWQ_start
-    DEMOS_OpenWQ_start DEMOS_OpenWQ_start; // create object
-    DEMOS_OpenWQ_start.initiate(DEMOS_OpenWQ_json,
-            DEMOS_OpenWQ_configjson);
+    DEMOS_OpenWQ_start DEMOS_OpenWQ_start; // create object: start modules e.g., initiate
+    DEMOS_OpenWQ_start.initiate(
+        DEMOS_OpenWQ_json,
+        DEMOS_OpenWQ_configjson,
+        DEMOS_OpenWQ_vars);
     
     // DEMOS_OpenWQ_run
-    DEMOS_OpenWQ_run DEMOS_OpenWQ_run; // create object
-    DEMOS_OpenWQ_run.callrun(DEMOS_OpenWQ_json);
+    DEMOS_OpenWQ_run DEMOS_OpenWQ_run;      // create object: transport modules
+    DEMOS_OpenWQ_chem DEMOS_OpenWQ_chem;    // create object: biochemistry modules
+    DEMOS_OpenWQ_print DEMOS_OpenWQ_print;  // print modules
+    DEMOS_OpenWQ_run.callrun(DEMOS_OpenWQ_json,
+        DEMOS_OpenWQ_vars,
+        DEMOS_OpenWQ_start,
+        DEMOS_OpenWQ_chem,
+        DEMOS_OpenWQ_print);
 
 }
 

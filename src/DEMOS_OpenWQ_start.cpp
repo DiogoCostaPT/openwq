@@ -19,20 +19,6 @@
 #include "DEMOS_OpenWQ_start.h"
 
 
-// Read JSON file to class
-void DEMOS_OpenWQ_start::read_JSON_2class(json & jsondata,const std::string& jsonfile)
-{
-        try{
-                std::ifstream i(jsonfile);
-                i >> (jsondata);
-
-        }catch (json::type_error){
-                std::cout << "An exception occurred parsing" << jsonfile << std::endl;
-                abort();
-        }
-}
-
-
 // Initialize memory of major variables: arma::field
 void DEMOS_OpenWQ_start::initmemory(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
         DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars)
@@ -183,20 +169,11 @@ void DEMOS_OpenWQ_start::readSetIC(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_Op
 }
 
 // Call function to (1) read JSONs
-void DEMOS_OpenWQ_start::initiate(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,const std::string configjson_file){
+void DEMOS_OpenWQ_start::initiate(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
+        const std::string configjson_file,
+        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars){
 
-        // Real all configuration files
-        read_JSON_2class(DEMOS_OpenWQ_json.Master,configjson_file); // master file
-        read_JSON_2class(DEMOS_OpenWQ_json.H2O,DEMOS_OpenWQ_json.Master["water_balance_setup_file"]); // H2O file
-        read_JSON_2class(DEMOS_OpenWQ_json.CMPI,DEMOS_OpenWQ_json.Master["cmp_interaction_file"]); // CMP file
-        read_JSON_2class(DEMOS_OpenWQ_json.WQ,DEMOS_OpenWQ_json.Master["wq_balance_setup_file"]); // WQ file
-        read_JSON_2class(DEMOS_OpenWQ_json.BGC,DEMOS_OpenWQ_json.Master["BGC_cycling_setup_file"]); // BGC file
-
-        // Assign the main arma::field variables
-        int numcmp = DEMOS_OpenWQ_json.H2O["compartments"].size(); // number of compartments
-        int numinteract = DEMOS_OpenWQ_json.CMPI["interactions"].size(); // number of interactions between compartments
-        DEMOS_OpenWQ_vars DEMOS_OpenWQ_vars(numcmp,numinteract);
-
+        
         // Initialize memmory for major arma::field variables
         initmemory(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars);
 

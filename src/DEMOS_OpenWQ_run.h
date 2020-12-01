@@ -32,18 +32,21 @@
 #include "readSetFluxes.h"
 #include "ADE_solver.h"
 
-
-#include "DEMOS_OpenWQ_global.h"
+#include "DEMOS_OpenWQ_start.h"
+#include "DEMOS_OpenWQ_run.h"
 #include "DEMOS_OpenWQ_chem.h"
 #include "DEMOS_OpenWQ_print.h"
-
-
 
 class DEMOS_OpenWQ_run{
 
     public:
 
-    void callrun(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json);
+    void callrun(
+        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
+        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
+        DEMOS_OpenWQ_start& DEMOS_OpenWQ_start,
+        DEMOS_OpenWQ_chem& DEMOS_OpenWQ_chem,
+        DEMOS_OpenWQ_print& DEMOS_OpenWQ_print);
 
 
     void ChemCompExchange(DEMOS_OpenWQ_json& JSONfile, DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int source, std::string kinetics, 

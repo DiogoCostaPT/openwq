@@ -1,5 +1,4 @@
 
-#ifndef DEMOS_OPENWQ_MODELCONFIGH_INCLUDED
 
 // Copyright 2020, Diogo Costa (diogo.pinhodacosta@canada.ca)
 // This file is part of OpenWQ model.
@@ -17,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+#ifndef DEMOS_OPENWQ_START_INCLUDED
 #define DEMOS_OPENWQ_START_INCLUDED
 
 
@@ -33,9 +32,9 @@ class DEMOS_OpenWQ_start{
     void initmemory(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
         DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
     
-    void read_JSON_2class(json& jsondata,const std::string& jsonfile);
-
-    void initiate(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,const std::string configjson_file);
+    void initiate(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
+        const std::string configjson_file,
+        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
 
     void read_file_3Dcoldata(json& filejson,arma::Cube<double>& to_cubedata, 
     int var_col,std::string filename);

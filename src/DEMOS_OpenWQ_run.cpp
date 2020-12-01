@@ -83,15 +83,14 @@ void DEMOS_OpenWQ_run::ChemCompExchange(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json, DE
 
 
 // main loop
-void DEMOS_OpenWQ_run::callrun(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json){
+void DEMOS_OpenWQ_run::callrun(
+    DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
+    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
+    DEMOS_OpenWQ_start& DEMOS_OpenWQ_start,
+    DEMOS_OpenWQ_chem& DEMOS_OpenWQ_chem,
+    DEMOS_OpenWQ_print& DEMOS_OpenWQ_print){
 
     
-    // Create objects
-    DEMOS_OpenWQ_vars DEMOS_OpenWQ_vars; 
-    DEMOS_OpenWQ_chem DEMOS_OpenWQ_chem;
-    DEMOS_OpenWQ_print DEMOS_OpenWQ_print;
-    
-
     int numspec;
     int icmpMob, tmpst_i;
     bool mobile;
