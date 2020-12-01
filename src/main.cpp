@@ -29,16 +29,17 @@ int main(int argc, char* argv[])
 {   
     std::string vtufilename;
 
+    // Configuration file (from argv)
+    std::string DEMOS_OpenWQ_configjson (argv[1]); 
+    
     // create object for input json files
     DEMOS_OpenWQ_json DEMOS_OpenWQ_json;
     
-    // Configuration file (from argv)
-    std::string DEMOS_OpenWQ_configjson (argv[1]); 
-
     // DEMOS_OpenWQ_start
     DEMOS_OpenWQ_start DEMOS_OpenWQ_start; // create an object of the DEMOS_OpenWQ class
 
-    DEMOS_OpenWQ_start.config(DEMOS_OpenWQ_json,DEMOS_OpenWQ_configjson);
+    DEMOS_OpenWQ_start.config(DEMOS_OpenWQ_json,
+            DEMOS_OpenWQ_configjson);
     
     // Transport solver
     //DEMOS_OpenWQ_vars DEMOS_OpenWQ_vars;

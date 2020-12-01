@@ -34,7 +34,8 @@ void DEMOS_OpenWQ_start::read_JSON_2class(json & jsondata,const std::string& jso
 
 
 // Initialize memory of major variables: arma::field
-void initmemory(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars)
+void DEMOS_OpenWQ_start::initmemory(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
+        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars)
 {
         // domain/water (number of compartments and grid dimensions)
         int numcmp = DEMOS_OpenWQ_json.H2O["compartments"].size();
@@ -81,7 +82,7 @@ void initmemory(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_Op
 }
 
 // read 3D col data from file at assign to variable
-void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col, 
+void DEMOS_OpenWQ_start::read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col, 
     std::string filename){
 
     // get necessary inf o from JSON file
@@ -155,7 +156,7 @@ void read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int v
 }
 
 // Initial conditions (water and chemical mass)
-void readSetIC(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars){
+void DEMOS_OpenWQ_start::readSetIC(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars){
 
     int numcmp = DEMOS_OpenWQ_json.H2O["compartments"].size();
     int numspec;
@@ -197,10 +198,10 @@ void DEMOS_OpenWQ_start::config(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,const std::
         DEMOS_OpenWQ_vars DEMOS_OpenWQ_vars(numcmp,numinteract);
 
         // Initialize memmory for major arma::field variables
-        //initmemory(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars);
+        initmemory(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars);
 
         // IC (water and chemical mass)
-        //readSetIC(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars);
+        readSetIC(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars);
 
 }
 
