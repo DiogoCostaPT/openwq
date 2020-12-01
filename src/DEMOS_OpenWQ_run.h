@@ -24,12 +24,16 @@
 #include "string.h"
 #include <algorithm>
 
+#include "exprtk.hpp"
+
+#include <cstdio>
+
 #include "DEMOS_OpenWQ_global.h"
 #include "utility.h"
 #include "readSetFluxes.h"
 #include "DEMOS_OpenWQ_run.h"
 #include "DEMOS_OpenWQ_print.h"
-#include "ChemTransf.h"
+
 #include "ADE_solver.h"
 
 class DEMOS_OpenWQ_run{

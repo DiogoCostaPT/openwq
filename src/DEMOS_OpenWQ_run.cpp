@@ -19,8 +19,6 @@
 #include "DEMOS_OpenWQ_run.h"
 
 
-#include "ChemTransf.h"
-
 // Compute chemical transformations
 void DEMOS_OpenWQ_run::ChemTransf(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int icmp){
 

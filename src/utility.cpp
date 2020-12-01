@@ -121,8 +121,8 @@ void read_file_CMPIcoldata(DEMOS_OpenWQ_json & DEMOS_OpenWQ_json,DEMOS_OpenWQ_va
                     std::vector<std::string> parameter_names = DEMOS_OpenWQ_json.CMPI[std::to_string(iteraction+1)]["mapping_file"]["parameter_names"];
                     std::vector<double> parameter_values = DEMOS_OpenWQ_json.CMPI[std::to_string(iteraction+1)]["mapping_file"]["parameter_values"];
 
-                    ChemCompExchange(DEMOS_OpenWQ_json, DEMOS_OpenWQ_vars, source, kinetics, 
-                        parameter_names, parameter_values,linedata,index_chem);
+                    //(DEMOS_OpenWQ_json, DEMOS_OpenWQ_vars, source, kinetics, 
+                    //    parameter_names, parameter_values,linedata,index_chem);
 
                     (to_matdata)(colIdx,8) = linedata[6]; // save
                 }
