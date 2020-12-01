@@ -20,7 +20,7 @@
 #include <string>
 
 #include "utility.h"
-#include "main_solver.h"
+#include "DEMOS_OpenWQ_run.h"
 
 #include "DEMOS_OpenWQ_global.h"
 #include "DEMOS_OpenWQ_start.h"
@@ -32,18 +32,17 @@ int main(int argc, char* argv[])
     // Configuration file (from argv)
     std::string DEMOS_OpenWQ_configjson (argv[1]); 
     
-    // create object for input json files
-    DEMOS_OpenWQ_json DEMOS_OpenWQ_json;
+    // Input JSON files
+    DEMOS_OpenWQ_json DEMOS_OpenWQ_json; // create object
     
     // DEMOS_OpenWQ_start
-    DEMOS_OpenWQ_start DEMOS_OpenWQ_start; // create an object of the DEMOS_OpenWQ class
-
+    DEMOS_OpenWQ_start DEMOS_OpenWQ_start; // create object
     DEMOS_OpenWQ_start.initiate(DEMOS_OpenWQ_json,
             DEMOS_OpenWQ_configjson);
     
-    // Transport solver
-    //DEMOS_OpenWQ_vars DEMOS_OpenWQ_vars;
-    //main_solver(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars);
+    // DEMOS_OpenWQ_run
+    DEMOS_OpenWQ_run DEMOS_OpenWQ_run; // create object
+    DEMOS_OpenWQ_run.callrun(DEMOS_OpenWQ_json);
 
 }
 
