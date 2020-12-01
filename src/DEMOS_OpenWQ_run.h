@@ -28,13 +28,16 @@
 
 #include <cstdio>
 
-#include "DEMOS_OpenWQ_global.h"
 #include "utility.h"
 #include "readSetFluxes.h"
-#include "DEMOS_OpenWQ_run.h"
+#include "ADE_solver.h"
+
+
+#include "DEMOS_OpenWQ_global.h"
+#include "DEMOS_OpenWQ_chem.h"
 #include "DEMOS_OpenWQ_print.h"
 
-#include "ADE_solver.h"
+
 
 class DEMOS_OpenWQ_run{
 
@@ -42,12 +45,6 @@ class DEMOS_OpenWQ_run{
 
     void callrun(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json);
 
-    
-    // Chemical transformations
-
-    void ChemTransf(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int icmp);
-
-    void Transf(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int icmp, int transi);
 
     void ChemCompExchange(DEMOS_OpenWQ_json& JSONfile, DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int source, std::string kinetics, 
         std::vector<std::string> parameter_names, std::vector<double> parameter_values,
