@@ -17,41 +17,53 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef DEMOS_OPENWQ_RUNH_INCLUDED
-#define DEMOS_OPENWQ_RUNH_INCLUDED
+#ifndef DEMOS_OpenWQ_watertranspH_INCLUDED
+#define DEMOS_OpenWQ_watertranspH_INCLUDED
 
 #include <armadillo>
 #include "string.h"
 #include <algorithm>
-
 #include "exprtk.hpp"
-
 #include <cstdio>
-
 #include "utility.h"
-#include "readSetFluxes.h"
-#include "ADE_solver.h"
+//#include "ADE_solver.h"
 
-#include "DEMOS_OpenWQ_start.h"
-#include "DEMOS_OpenWQ_run.h"
-#include "DEMOS_OpenWQ_chem.h"
-#include "DEMOS_OpenWQ_print.h"
+#include "DEMOS_OpenWQ_global.h"
+//#include "DEMOS_OpenWQ_initiate.h"
+//#include "DEMOS_OpenWQ_print.h"
 
-class DEMOS_OpenWQ_run{
+class DEMOS_OpenWQ_watertransp{
 
     public:
 
-    void callrun(
+    //void ChemCompExchange(
+    //    DEMOS_OpenWQ_json& JSONfile, 
+    //    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, 
+    //    int source, 
+    //    std::string kinetics, 
+    //    std::vector<std::string> parameter_names, 
+    //    std::vector<double> parameter_values,
+    //    std::array<double,7> & linedata, 
+    //    int & index_chem);
+
+
+    void Adv(
         DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
         DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
-        DEMOS_OpenWQ_start& DEMOS_OpenWQ_start,
-        DEMOS_OpenWQ_chem& DEMOS_OpenWQ_chem,
-        DEMOS_OpenWQ_print& DEMOS_OpenWQ_print);
+        int source,
+        int ix_s, 
+        int iy_s,
+        int iz_s,
+        int recipient,
+        int ix_r,
+        int iy_r,
+        int iz_r,
+        double wflux_s2r,
+        double wmass_recipient);
 
-
-    void ChemCompExchange(DEMOS_OpenWQ_json& JSONfile, DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int source, std::string kinetics, 
-        std::vector<std::string> parameter_names, std::vector<double> parameter_values,
-        std::array<double,7> & linedata, int & index_chem);
+    //void AdvDisp(
+    //    DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
+    //    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
 
 };
 

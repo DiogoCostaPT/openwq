@@ -52,9 +52,9 @@ class DEMOS_OpenWQ_vars
 
         try{
 
-            wmass = std::unique_ptr<arma::field<arma::Cube<double>>>(new arma::field<arma::cube>(numcmp)); // 1 field: water mass
-            wflux = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(numcmp)); // 1 field: flow within compartment
-            wchem_exch = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numinteract)); // 1 field: flow between compartments
+            // wmass = std::unique_ptr<arma::field<arma::Cube<double>>>(new arma::field<arma::cube>(numcmp)); // 1 field: water mass
+            // wflux = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(numcmp)); // 1 field: flow within compartment
+            // wchem_exch = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numinteract)); // 1 field: flow between compartments
             chemass = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(numcmp));  // multiple fields: one for eacg chem
         
         }catch(int e){
@@ -64,9 +64,10 @@ class DEMOS_OpenWQ_vars
     }
     size_t numcmp, numinteract;
 
-    std::unique_ptr<arma::field<arma::Cube<double>>>  wmass;
-    std::unique_ptr<arma::field<arma::Mat<double>>> wchem_exch;
-    std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> wflux,chemass; 
+    //std::unique_ptr<arma::field<arma::Cube<double>>>  wmass;
+    //std::unique_ptr<arma::field<arma::Mat<double>>> wchem_exch;
+    //std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> wflux
+    std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> chemass; 
 
 };
 

@@ -18,7 +18,7 @@
 
 #include "utility.h"
 
-
+/*
 // Read inter fluxes file data
 void read_file_CMPIcoldata(DEMOS_OpenWQ_json & DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int iteraction, int source, 
     int recipient, std::string filename, std::string exchange_type, int & index_chem){
@@ -105,7 +105,7 @@ void read_file_CMPIcoldata(DEMOS_OpenWQ_json & DEMOS_OpenWQ_json,DEMOS_OpenWQ_va
                     colIdx++; // Increment the column index
                 }
                 (to_matdata)(colIdx,0) = source;
-                (to_matdata)(colIdx,1) = linedata[0];
+                (to_matdata)(colIdx,1) = linedata[0]; // 
                 (to_matdata)(colIdx,2) = linedata[1];
                 (to_matdata)(colIdx,3) = linedata[2];
                 (to_matdata)(colIdx,4) = recipient;
@@ -136,7 +136,7 @@ void read_file_CMPIcoldata(DEMOS_OpenWQ_json & DEMOS_OpenWQ_json,DEMOS_OpenWQ_va
     // Close file
     thisFile.close();
 }
-
+*/
 
 
 // Read all files inside the folder

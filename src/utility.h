@@ -31,8 +31,10 @@ using json = nlohmann::json;
 
 void readSetFluxes(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
 
+/*
 void read_file_CMPIcoldata(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, int iteraction, int source, 
     int recipient, std::string filename, std::string exchange_type, int & index_chem);
+*/
 
 void GetFluxesFiles(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,std::vector<std::vector<std::string>> &fluxes_filenames);
 

@@ -16,8 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef DEMOS_OPENWQ_START_INCLUDED
-#define DEMOS_OPENWQ_START_INCLUDED
+#ifndef DEMOS_OPENWQ_INITIATEH_INCLUDED
+#define DEMOS_OPENWQ_INITIATEH_INCLUDED
 
 
 #include "DEMOS_OpenWQ_global.h"
@@ -25,21 +25,27 @@
 using json = nlohmann::json;
 
 
-class DEMOS_OpenWQ_start{
+class DEMOS_OpenWQ_initiate{
     
     public:
     
-    void initmemory(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
+    void initmemory(
+        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
         DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
     
-    void initiate(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
+    void initiate(
+        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
         const std::string configjson_file,
         DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
 
-    void read_file_3Dcoldata(json& filejson,arma::Cube<double>& to_cubedata, 
-    int var_col,std::string filename);
+    void read_file_3Dcoldata(
+        json& filejson,
+        arma::Cube<double>& to_cubedata, 
+        int var_col,std::string filename);
 
-    void readSetIC(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
+    void readSetIC(
+        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
+        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
 
 };
 
