@@ -17,8 +17,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef DEMOS_OpenWQ_watertranspH_INCLUDED
-#define DEMOS_OpenWQ_watertranspH_INCLUDED
+#ifndef OpenWQ_watertranspH_INCLUDED
+#define OpenWQ_watertranspH_INCLUDED
 
 #include <armadillo>
 #include "string.h"
@@ -28,17 +28,17 @@
 //#include "utility.h"
 //#include "ADE_solver.h"
 
-#include "DEMOS_OpenWQ_global.h"
-//#include "DEMOS_OpenWQ_initiate.h"
-//#include "DEMOS_OpenWQ_print.h"
+#include "OpenWQ_global.h"
+//#include "OpenWQ_initiate.h"
+//#include "OpenWQ_print.h"
 
-class DEMOS_OpenWQ_watertransp{
+class OpenWQ_watertransp{
 
     public:
 
     //void ChemCompExchange(
-    //    DEMOS_OpenWQ_json& JSONfile, 
-    //    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, 
+    //    OpenWQ_json& JSONfile, 
+    //    OpenWQ_vars& OpenWQ_vars, 
     //    int source, 
     //    std::string kinetics, 
     //    std::vector<std::string> parameter_names, 
@@ -48,8 +48,8 @@ class DEMOS_OpenWQ_watertransp{
 
 
     void Adv(
-        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_vars& OpenWQ_vars,
         int source,
         int ix_s, 
         int iy_s,
@@ -62,8 +62,8 @@ class DEMOS_OpenWQ_watertransp{
         double wmass_recipient);
 
     //void AdvDisp(
-    //    DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-    //    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
+    //    OpenWQ_json& OpenWQ_json,
+    //    OpenWQ_vars& OpenWQ_vars);
 
 };
 

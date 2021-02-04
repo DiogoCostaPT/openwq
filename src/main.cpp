@@ -21,19 +21,19 @@
 
 // #include "utility.h"
 
-#include "DEMOS_OpenWQ_global.h"
-#include "DEMOS_OpenWQ_load.h"
-#include "DEMOS_OpenWQ_initiate.h"
-#include "DEMOS_OpenWQ_chem.h"
-#include "DEMOS_OpenWQ_watertransp.h"
-//#include "DEMOS_OpenWQ_print.h"
+#include "OpenWQ_global.h"
+#include "OpenWQ_load.h"
+#include "OpenWQ_initiate.h"
+#include "OpenWQ_chem.h"
+#include "OpenWQ_watertransp.h"
+//#include "OpenWQ_print.h"
 
 int main(int argc, char* argv[]) 
 {   
     std::string vtufilename;
 
-    // Create Object: DEMOS_OpenWQ_hostModelconfig (link to host hydrological model)
-    DEMOS_OpenWQ_hostModelconfig DEMOS_OpenWQ_hostModelconfig;
+    // Create Object: OpenWQ_hostModelconfig (link to host hydrological model)
+    OpenWQ_hostModelconfig OpenWQ_hostModelconfig;
     // Link openWQ data strucuture indexes to hydrological model compartments 
     typedef std::tuple<int,std::string,int, int, int> hydroTuple;
     /* hydroTuple: 
@@ -43,39 +43,39 @@ int main(int argc, char* argv[])
     (4) number of cell in y-direction
     (5) number of cell in z-direction
     */
-    DEMOS_OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(0,"snow",100,50,1));
-    DEMOS_OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(1,"soil",100,50,1));
-    DEMOS_OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(2,"groundwater",100,50,1));
-    DEMOS_OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(3,"streams",100,50,1));
+    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(0,"snow",100,50,1));
+    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(1,"soil",100,50,1));
+    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(2,"groundwater",100,50,1));
+    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(3,"streams",100,50,1));
     // (add other compartments as needed)...
-    
-    int num_HydroComp = DEMOS_OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
+
+    int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
 
 
-    // Create Object: DEMOS_OpenWQ_json (Input JSON files)
-    DEMOS_OpenWQ_json DEMOS_OpenWQ_json; // create object
+    // Create Object: OpenWQ_json (Input JSON files)
+    OpenWQ_json OpenWQ_json; // create object
     
     // Load input data
-    DEMOS_OpenWQ_load DEMOS_OpenWQ_load; // create object: json files load modules
-    DEMOS_OpenWQ_load.loadinit(
-        DEMOS_OpenWQ_json);
+    OpenWQ_load OpenWQ_load; // create object: json files load modules
+    OpenWQ_load.loadinit(
+        OpenWQ_json);
     
-    // Create Object: DEMOS_OpenWQ_vars (openWQ variables)
-    DEMOS_OpenWQ_vars DEMOS_OpenWQ_vars(
+    // Create Object: OpenWQ_vars (openWQ variables)
+    OpenWQ_vars OpenWQ_vars(
         num_HydroComp);
    
-    // DEMOS_OpenWQ_initiate
-    DEMOS_OpenWQ_initiate DEMOS_OpenWQ_initiate; // create object: start modules e.g., initiate
-    DEMOS_OpenWQ_initiate.initiate(
-        DEMOS_OpenWQ_json,
-        DEMOS_OpenWQ_vars,
-        DEMOS_OpenWQ_hostModelconfig,
+    // OpenWQ_initiate
+    OpenWQ_initiate OpenWQ_initiate; // create object: start modules e.g., initiate
+    OpenWQ_initiate.initiate(
+        OpenWQ_json,
+        OpenWQ_vars,
+        OpenWQ_hostModelconfig,
         num_HydroComp);
     
-    // DEMOS_OpenWQ_watertransp
-    DEMOS_OpenWQ_watertransp DEMOS_OpenWQ_watertransp;   // create object: transport modules
-    DEMOS_OpenWQ_chem DEMOS_OpenWQ_chem;                 // create object: biochemistry modules
-    //DEMOS_OpenWQ_print DEMOS_OpenWQ_print;             // print modules
+    // OpenWQ_watertransp
+    OpenWQ_watertransp OpenWQ_watertransp;   // create object: transport modules
+    OpenWQ_chem OpenWQ_chem;                 // create object: biochemistry modules
+    //OpenWQ_print OpenWQ_print;             // print modules
     
     int ts_hosthydromod = 1000; // (timesteps) TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     
@@ -99,9 +99,9 @@ int main(int argc, char* argv[])
         ################################################################################### */ 
 
         // FUNCTION 1: Just Advection (Land Surface model)
-        DEMOS_OpenWQ_watertransp.Adv(
-            DEMOS_OpenWQ_json,
-            DEMOS_OpenWQ_vars,
+        OpenWQ_watertransp.Adv(
+            OpenWQ_json,
+            OpenWQ_vars,
             source,
             ix_s, 
             iy_s,
@@ -115,14 +115,14 @@ int main(int argc, char* argv[])
             );
 
         // FUNCTION 2: Advection and Dispersion (Aquatic Systems)
-        //DEMOS_OpenWQ_watertransp.AdvDisp(
-        //    DEMOS_OpenWQ_json,
-        //    DEMOS_OpenWQ_vars);
+        //OpenWQ_watertransp.AdvDisp(
+        //    OpenWQ_json,
+        //    OpenWQ_vars);
 
         //
-        //void DEMOS_OpenWQ_watertransp::ChemCompExchange(
-        //    DEMOS_OpenWQ_json& DEMOS_OpenWQ_json, 
-        //    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, 
+        //void OpenWQ_watertransp::ChemCompExchange(
+        //    OpenWQ_json& OpenWQ_json, 
+        //    OpenWQ_vars& OpenWQ_vars, 
         //    int source, std::string kinetics, 
         //    std::vector<std::string> parameter_names, 
         //    std::vector<double> parameter_values,
@@ -134,10 +134,10 @@ int main(int argc, char* argv[])
         Biogeochemistry
         ################################################################################### */ 
 
-        DEMOS_OpenWQ_chem.Run(
-            DEMOS_OpenWQ_json,
-            DEMOS_OpenWQ_vars,
-            DEMOS_OpenWQ_hostModelconfig);
+        OpenWQ_chem.Run(
+            OpenWQ_json,
+            OpenWQ_vars,
+            OpenWQ_hostModelconfig);
 
         /* ###################################################################################
         Sources and Sink
@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
         /* ###################################################################################
         Print Results
         ################################################################################### */ 
-        //DEMOS_OpenWQ_print.writeVTU(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars,num_HydroComp,0); 
+        //OpenWQ_print.writeVTU(OpenWQ_json,OpenWQ_vars,num_HydroComp,0); 
 
     }
     

@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef DEMOS_OPENWQ_CHEMH_INCLUDED
-#define DEMOS_OPENWQ_CHEMH_INCLUDED
+#ifndef OPENWQ_CHEMH_INCLUDED
+#define OPENWQ_CHEMH_INCLUDED
 
 #include <armadillo>
 #include "string.h"
@@ -28,23 +28,23 @@
 
 // #include "utility.h"
 
-#include "DEMOS_OpenWQ_global.h"
+#include "OpenWQ_global.h"
 
 // Biogeochemistry
 
-class DEMOS_OpenWQ_chem{
+class OpenWQ_chem{
 
     public:
 
     void Run(
-        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
-        DEMOS_OpenWQ_hostModelconfig& DEMOS_OpenWQ_hostModelconfig);
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig);
 
     void BGC_Transform(
-        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
-        DEMOS_OpenWQ_hostModelconfig& DEMOS_OpenWQ_hostModelconfig,
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         int icmp);
 
 };

@@ -1,6 +1,6 @@
 
-#ifndef DEMOS_OPENWQ_LOADH_INCLUDED
-#define DEMOS_OPENWQ_LOADH_INCLUDED
+#ifndef OPENWQ_LOADH_INCLUDED
+#define OPENWQ_LOADH_INCLUDED
 
 #include <armadillo>
 #include "string.h"
@@ -15,14 +15,14 @@ using json = nlohmann::json;
 
 //#include "utility.h"
 
-#include "DEMOS_OpenWQ_global.h"
+#include "OpenWQ_global.h"
 
-class DEMOS_OpenWQ_load{
+class OpenWQ_load{
 
     public:
 
     void loadinit(
-        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json);
+        OpenWQ_json& OpenWQ_json);
 
     void read_JSON_2class(
         json& jsondata,

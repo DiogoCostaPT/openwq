@@ -15,25 +15,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "DEMOS_OpenWQ_chem.h"
+#include "OpenWQ_chem.h"
 
 
 // Compute chemical transformations
-void DEMOS_OpenWQ_chem::Run(
-    DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
-    DEMOS_OpenWQ_hostModelconfig& DEMOS_OpenWQ_hostModelconfig){
+void OpenWQ_chem::Run(
+    OpenWQ_json& OpenWQ_json,
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig){
     
     // Local variable for num_HydroComp
-    int num_hydrocmp = DEMOS_OpenWQ_hostModelconfig.HydroComp.size();
+    int num_hydrocmp = OpenWQ_hostModelconfig.HydroComp.size();
 
     // Loop over number of compartments
     for (int icmp=0;icmp<num_hydrocmp;icmp++){
     
         BGC_Transform( // calls exprtk: parsing expression
-            DEMOS_OpenWQ_json,
-            DEMOS_OpenWQ_vars,
-            DEMOS_OpenWQ_hostModelconfig,
+            OpenWQ_json,
+            OpenWQ_vars,
+            OpenWQ_hostModelconfig,
             icmp); 
 
     }
@@ -41,10 +41,10 @@ void DEMOS_OpenWQ_chem::Run(
 
 
 // Compute each chemical transformation
-void DEMOS_OpenWQ_chem::BGC_Transform(
-    DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
-    DEMOS_OpenWQ_hostModelconfig& DEMOS_OpenWQ_hostModelconfig,
+void OpenWQ_chem::BGC_Transform(
+    OpenWQ_json& OpenWQ_json,
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     int icmp){
     
     // Local variables for expression evaluator: exprtk
@@ -64,7 +64,7 @@ void DEMOS_OpenWQ_chem::BGC_Transform(
     
     // Find compartment index in openWQ data structures
     // Get number transformations
-    int num_transf = DEMOS_OpenWQ_json.BGCcycling["list_transformations"].size();
+    int num_transf = OpenWQ_json.BGCcycling["list_transformations"].size();
 
     /* ########################################
     // Get cycling_frameworks for compartment icomp
@@ -72,10 +72,10 @@ void DEMOS_OpenWQ_chem::BGC_Transform(
 
     // Get compartment names in openW_config
     std::vector<std::string> CompNamesWithBGCcyling = 
-            DEMOS_OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"]; 
+            OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"]; 
 
     // Find location (loc_comp) of compartment icmp in CompNamesWithBGCcyling (from openWQ_config)
-    std::string openWQ_CompName_icmp = std::get<1>(DEMOS_OpenWQ_hostModelconfig.HydroComp.at(icmp)); // Compartment icomp name
+    std::string openWQ_CompName_icmp = std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // Compartment icomp name
     std::string json_CompName_n;
     int loc_comp; // location of desired compartment
 
@@ -96,7 +96,7 @@ void DEMOS_OpenWQ_chem::BGC_Transform(
 
     // Get cycling frameworks names for compartment icomp
     std::vector<std::string> cyclingFram_icomp = 
-            DEMOS_OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"]
+            OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"]
                 [CompNamesWithBGCcyling.at(loc_comp)]["cycling_framework"]; 
 
 
@@ -119,18 +119,18 @@ void DEMOS_OpenWQ_chem::BGC_Transform(
         for (int transi=0;transi<num_transf;transi++){
 
             // Get transformation transi info
-            std::string consumed_spec =  DEMOS_OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
+            std::string consumed_spec =  OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
                 [std::to_string(transi+1)]["consumed"];
-            std::string produced_spec =  DEMOS_OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
+            std::string produced_spec =  OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
                 [std::to_string(transi+1)]["produced"];
-            std::string expression_string = DEMOS_OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
+            std::string expression_string = OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
                 [std::to_string(transi+1)]["kinetics"];
-            std::vector<std::string> parameter_names = DEMOS_OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
+            std::vector<std::string> parameter_names = OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
                 [std::to_string(transi+1)]["parameter_names"];
             std::string expression_string_modif = expression_string;
             
             // Get chemical species in compartment
-            std::vector<std::string> chem_species = DEMOS_OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"];
+            std::vector<std::string> chem_species = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"];
             
             // Find species indexes: consumed, produced and in the expression
             for(int chemi=0;chemi<chem_species.size();chemi++){
@@ -163,7 +163,7 @@ void DEMOS_OpenWQ_chem::BGC_Transform(
             // Parmeters
             for (int i=0;i<parameter_names.size();i++){
                 index_i = expression_string_modif.find(parameter_names[i]);
-                param_val = DEMOS_OpenWQ_json.BGCcycling[std::to_string(transi+1)]["parameter_values"][parameter_names[i]];
+                param_val = OpenWQ_json.BGCcycling[std::to_string(transi+1)]["parameter_values"][parameter_names[i]];
                 expression_string_modif.replace(index_i,index_i + parameter_names[i].size(),std::to_string(param_val));
             }
 
@@ -182,9 +182,9 @@ void DEMOS_OpenWQ_chem::BGC_Transform(
             parser.compile(expression_string_modif,expression);
 
             // Loop over space
-            nx = std::get<2>(DEMOS_OpenWQ_hostModelconfig.HydroComp.at(icmp));
-            ny = std::get<3>(DEMOS_OpenWQ_hostModelconfig.HydroComp.at(icmp));
-            nz = std::get<4>(DEMOS_OpenWQ_hostModelconfig.HydroComp.at(icmp));
+            nx = std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(icmp));
+            ny = std::get<3>(OpenWQ_hostModelconfig.HydroComp.at(icmp));
+            nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icmp));
 
             for (int ix=0;ix<nx;ix++){
                 for (int iy=0;iy<ny;iy++){
@@ -192,17 +192,17 @@ void DEMOS_OpenWQ_chem::BGC_Transform(
                         
                         // loop to get all the variables inside the expression
                         for (int chem=0;chem<chemass_transf.size();chem++){
-                            chemass_transf[chem] = (*DEMOS_OpenWQ_vars.chemass)(icmp)(index_transf[chem])(ix,iy,iz);
+                            chemass_transf[chem] = (*OpenWQ_vars.chemass)(icmp)(index_transf[chem])(ix,iy,iz);
                         }
 
                         // mass transfered
                         double transf_mass = expression.value(); 
 
                         // mass consumed
-                        (*DEMOS_OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
+                        (*OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
 
                         // mass prod
-                        (*DEMOS_OpenWQ_vars.chemass)(icmp)(index_prod)(ix,iy,iz) += transf_mass;
+                        (*OpenWQ_vars.chemass)(icmp)(index_prod)(ix,iy,iz) += transf_mass;
 
                     }
                 }

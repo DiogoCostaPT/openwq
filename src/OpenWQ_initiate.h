@@ -16,8 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef DEMOS_OPENWQ_INITIATEH_INCLUDED
-#define DEMOS_OPENWQ_INITIATEH_INCLUDED
+#ifndef OPENWQ_INITIATEH_INCLUDED
+#define OPENWQ_INITIATEH_INCLUDED
 
 #include <tuple>
 #include <vector>
@@ -25,22 +25,22 @@
 
 using json = nlohmann::json;
 
-#include "DEMOS_OpenWQ_global.h"
+#include "OpenWQ_global.h"
 
-class DEMOS_OpenWQ_initiate{
+class OpenWQ_initiate{
     
     public:
     
     void initmemory(
-        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
-        DEMOS_OpenWQ_hostModelconfig& DEMOS_OpenWQ_hostModelconfig,
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         int num_HydroComp);
 
     void initiate(
-        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
-        DEMOS_OpenWQ_hostModelconfig& DEMOS_OpenWQ_hostModelconfig,
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         int num_HydroComp);
 
 
@@ -51,8 +51,8 @@ class DEMOS_OpenWQ_initiate{
         int var_col,std::string filename);
 
     void readSetIC(
-        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_vars& OpenWQ_vars);
     */
 
 };

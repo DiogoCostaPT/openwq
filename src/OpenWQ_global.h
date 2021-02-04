@@ -27,7 +27,7 @@ using json = nlohmann::json;
 
 
 // Project Master file
-class DEMOS_OpenWQ_json
+class OpenWQ_json
 {
     public:
 
@@ -38,7 +38,7 @@ class DEMOS_OpenWQ_json
 };
 
 // Link: openWQ to Host Hydrological Model
-class DEMOS_OpenWQ_hostModelconfig
+class OpenWQ_hostModelconfig
 {
     #include <tuple>
     #include <vector>
@@ -58,13 +58,13 @@ class DEMOS_OpenWQ_hostModelconfig
 };
 
 // General information about the project
-class DEMOS_OpenWQ_vars
+class OpenWQ_vars
 {
     public:
-    DEMOS_OpenWQ_vars(){
+    OpenWQ_vars(){
 
     }
-    DEMOS_OpenWQ_vars(size_t num_HydroComp){
+    OpenWQ_vars(size_t num_HydroComp){
 
         this-> num_HydroComp = num_HydroComp;
 

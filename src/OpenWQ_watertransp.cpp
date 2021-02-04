@@ -17,12 +17,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "DEMOS_OpenWQ_watertransp.h"
+#include "OpenWQ_watertransp.h"
 
 // Mass transport
-void DEMOS_OpenWQ_watertransp::Adv(
-        DEMOS_OpenWQ_json& JSONfiles,
-        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
+void OpenWQ_watertransp::Adv(
+        OpenWQ_json& JSONfiles,
+        OpenWQ_vars& OpenWQ_vars,
         int source,
         int ix_s, 
         int iy_s,
@@ -49,22 +49,22 @@ void DEMOS_OpenWQ_watertransp::Adv(
 
         // Chemical mass flux between source and recipient 
         chemass_flux = wflux_s2r / wmass_recipient *
-            (*DEMOS_OpenWQ_vars.chemass)(source)(ichem_mob)(ix_s,iy_s,iz_s);
+            (*OpenWQ_vars.chemass)(source)(ichem_mob)(ix_s,iy_s,iz_s);
         
         // Remove Chemical mass flux from SOURCE 
-        (*DEMOS_OpenWQ_vars.chemass)(source)(ichem_mob)(ix_s,iy_s,iz_s) -= chemass_flux;
+        (*OpenWQ_vars.chemass)(source)(ichem_mob)(ix_s,iy_s,iz_s) -= chemass_flux;
 
         // Add Chemical mass flux to RECIPIENT 
-        (*DEMOS_OpenWQ_vars.chemass)(recipient)(ichem_mob)(ix_r,iy_r,iz_r) += chemass_flux;
+        (*OpenWQ_vars.chemass)(recipient)(ichem_mob)(ix_r,iy_r,iz_r) += chemass_flux;
     }
                 
 }
 
 /*
 // Mass exchange between compartments
-void DEMOS_OpenWQ_watertransp::ChemCompExchange(
-    DEMOS_OpenWQ_json& DEMOS_OpenWQ_json, 
-    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, 
+void OpenWQ_watertransp::ChemCompExchange(
+    OpenWQ_json& OpenWQ_json, 
+    OpenWQ_vars& OpenWQ_vars, 
     int source, std::string kinetics, 
     std::vector<std::string> parameter_names, 
     std::vector<double> parameter_values,
@@ -84,7 +84,7 @@ void DEMOS_OpenWQ_watertransp::ChemCompExchange(
 
     
     // Get chemical species in the source compartment
-    std::vector<std::string> chem_species = DEMOS_OpenWQ_json.WQ["compartments"][std::to_string(source+1)]["chem_species"];
+    std::vector<std::string> chem_species = OpenWQ_json.WQ["compartments"][std::to_string(source+1)]["chem_species"];
 
    // Find chem of relevance
     int ii = 0;
@@ -120,7 +120,7 @@ void DEMOS_OpenWQ_watertransp::ChemCompExchange(
     parser_t parser;
     parser.compile(kinetics_modif,expression);
 
-    chemass_transf = (*DEMOS_OpenWQ_vars.chemass)(source)(index_chem)(linedata[0],linedata[1],linedata[2]);
+    chemass_transf = (*OpenWQ_vars.chemass)(source)(index_chem)(linedata[0],linedata[1],linedata[2]);
 
     // mass transfered
     linedata[6] = expression.value(); 
@@ -129,9 +129,9 @@ void DEMOS_OpenWQ_watertransp::ChemCompExchange(
 
 
 // main loop
-void DEMOS_OpenWQ_watertransp::AdvDisp(
-    DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars){
+void OpenWQ_watertransp::AdvDisp(
+    OpenWQ_json& OpenWQ_json,
+    OpenWQ_vars& OpenWQ_vars){
 
     int numspec;
     int icmpMob, tmpst_i;
@@ -140,23 +140,23 @@ void DEMOS_OpenWQ_watertransp::AdvDisp(
     std::vector<std::vector<double>> fluxes_filenames_num,compFluxInt_filenames_num,all_filenames_num;
     std::string fluxes_fileExtention,compFluxInt_fileExtention;
     std::vector<int> mobileCompt;
-    std::string res_folder = DEMOS_OpenWQ_json.Master["export_results_folder"];
+    std::string res_folder = OpenWQ_json.Master["export_results_folder"];
     std::vector<int>::iterator is_mobile; // to check if mobile in compartment loop
     
-    int num_HydroComp = DEMOS_OpenWQ_json.H2O["compartments"].size();
-    double disp_x = DEMOS_OpenWQ_json.WQ["dispersion"]["x-dir"];
-    double disp_y = DEMOS_OpenWQ_json.WQ["dispersion"]["y-dir"];
-    double disp_z = DEMOS_OpenWQ_json.WQ["dispersion"]["z-dir"];
+    int num_HydroComp = OpenWQ_json.H2O["compartments"].size();
+    double disp_x = OpenWQ_json.WQ["dispersion"]["x-dir"];
+    double disp_y = OpenWQ_json.WQ["dispersion"]["y-dir"];
+    double disp_z = OpenWQ_json.WQ["dispersion"]["z-dir"];
 
         
     is_mobile = find (mobileCompt.begin(), mobileCompt.end(), icmp);
     if (is_mobile != mobileCompt.end()){// if mobile
         // Run ADE_solver
         icmp = mobileCompt[icmp]; // get mobile compartments
-        std::vector<std::string> chemspec_i = DEMOS_OpenWQ_json.WQ["compartments"][std::to_string(icmp+1)]["chem_species"];
+        std::vector<std::string> chemspec_i = OpenWQ_json.WQ["compartments"][std::to_string(icmp+1)]["chem_species"];
         numspec = chemspec_i.size();
         for (int ichem=0;ichem<numspec;ichem++) 
-            ADE_solver_1(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars,icmp,ichem);                                       
+            ADE_solver_1(OpenWQ_json,OpenWQ_vars,icmp,ichem);                                       
     }
 }
 
