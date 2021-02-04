@@ -25,7 +25,7 @@ void DEMOS_OpenWQ_chem::Run(
     DEMOS_OpenWQ_hostModelconfig& DEMOS_OpenWQ_hostModelconfig){
     
     // Local variable for num_HydroComp
-    int num_hydrocmp = DEMOS_OpenWQ_hostModelconfig.num_HydroComp;
+    int num_hydrocmp = DEMOS_OpenWQ_hostModelconfig.HydroComp.size();
 
     // Loop over number of compartments
     for (int icmp=0;icmp<num_hydrocmp;icmp++){

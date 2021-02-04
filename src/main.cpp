@@ -47,7 +47,8 @@ int main(int argc, char* argv[])
     DEMOS_OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(1,"soil",100,50,1));
     DEMOS_OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(2,"groundwater",100,50,1));
     DEMOS_OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(3,"streams",100,50,1));
-    // ...
+    // (add other compartments as needed)...
+    
     int num_HydroComp = DEMOS_OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
 
 
@@ -76,9 +77,9 @@ int main(int argc, char* argv[])
     DEMOS_OpenWQ_chem DEMOS_OpenWQ_chem;                 // create object: biochemistry modules
     //DEMOS_OpenWQ_print DEMOS_OpenWQ_print;             // print modules
     
-    int ts_hosthydromod = DEMOS_OpenWQ_hostModelconfig.HydroComp.size(); // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    int ts_hosthydromod = 1000; // (timesteps) TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     
-    // Loop: Space and Time
+    // Loop: Time (space loop is inside the functions)
     for (int ts=0;ts<ts_hosthydromod;ts++){ // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
 
         int source = 1;                 // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
