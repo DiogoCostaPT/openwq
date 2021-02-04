@@ -18,8 +18,10 @@
 #include "DEMOS_OpenWQ_load.h"
 
 // Read JSON file to class
-void DEMOS_OpenWQ_load::read_JSON_2class(json & jsondata,const std::string& jsonfile)
-{
+void DEMOS_OpenWQ_load::read_JSON_2class(
+        json& jsondata,
+        const std::string& jsonfile){
+
         try{
                 std::ifstream i(jsonfile);
                 i >> (jsondata);
@@ -32,19 +34,22 @@ void DEMOS_OpenWQ_load::read_JSON_2class(json & jsondata,const std::string& json
 
 
  // Real all configuration files
-void DEMOS_OpenWQ_load::loadinit(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-    std::string& DEMOS_OpenWQ_configjson,
-    int& numcmp, 
-    int& numinteract){
+void DEMOS_OpenWQ_load::loadinit(
+        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json){
+        
+        // Read Master file name
+        const std::string DEMOS_OpenWQ_masterjson = "openWQ_master.json";
+        read_JSON_2class(
+                DEMOS_OpenWQ_json.Master,
+                DEMOS_OpenWQ_masterjson); // master file
 
-    read_JSON_2class(DEMOS_OpenWQ_json.Master,DEMOS_OpenWQ_configjson); // master file
-    read_JSON_2class(DEMOS_OpenWQ_json.H2O,DEMOS_OpenWQ_json.Master["water_balance_setup_file"]); // H2O file
-    read_JSON_2class(DEMOS_OpenWQ_json.CMPI,DEMOS_OpenWQ_json.Master["cmp_interaction_file"]); // CMP file
-    read_JSON_2class(DEMOS_OpenWQ_json.WQ,DEMOS_OpenWQ_json.Master["wq_balance_setup_file"]); // WQ file
-    read_JSON_2class(DEMOS_OpenWQ_json.BGC,DEMOS_OpenWQ_json.Master["BGC_cycling_setup_file"]); // BGC file
+        // Read other JSON configuration files defined in Master file 
+        read_JSON_2class(
+                DEMOS_OpenWQ_json.Config,
+                DEMOS_OpenWQ_json.Master["openWQ_config_file"]); // main confirguration
 
-    // Assign the main arma::field variables
-    numcmp = DEMOS_OpenWQ_json.H2O["compartments"].size(); // number of compartments
-    numinteract = DEMOS_OpenWQ_json.CMPI["interactions"].size(); // number of interactions between compartments
+        read_JSON_2class(
+                DEMOS_OpenWQ_json.BGCcycling,
+                DEMOS_OpenWQ_json.Master["openWQ_BGC_cycling_file"]); // BGCcycling cycling
 
 }

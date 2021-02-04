@@ -20,53 +20,54 @@
 
 
 // Initialize memory of major variables: arma::field
-void DEMOS_OpenWQ_initiate::initmemory(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars)
-{
-        // domain/water (number of compartments and grid dimensions)
-        int numcmp = DEMOS_OpenWQ_json.H2O["compartments"].size();
-        std::unique_ptr<unsigned int[]> n_xyz(new unsigned int[3]); // pointer to nx, ny, nx information
-        n_xyz[0] = 0;
-        n_xyz[1] = 0;
-        n_xyz[2] = 0;
-        int numInter = DEMOS_OpenWQ_json.CMPI["interactions"].size();
+void DEMOS_OpenWQ_initiate::initmemory(
+    DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
+    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
+    DEMOS_OpenWQ_hostModelconfig& DEMOS_OpenWQ_hostModelconfig,
+    int num_HydroComp){
 
-        // BGC
-        int numlistspec = DEMOS_OpenWQ_json.BGC["list_chemical_species"].size(); // size of list_chemical_speciess
-        int numspec_j;
+    // Pointer to nx, ny, nx information (grids or HRU)
+    std::unique_ptr<unsigned int[]> n_xyz(new unsigned int[3]); // pointer to nx, ny, nx information
+    n_xyz[0] = 0;
+    n_xyz[1] = 0;
+    n_xyz[2] = 0;
 
-        // Assign and  allocate memory: wflux,wmassk,chemass
-        for (int i=0;i<numcmp;i++){
-                
-            // dimensions
-            n_xyz[0] = DEMOS_OpenWQ_json.H2O[std::to_string(i+1)]["nx"];
-            n_xyz[1] = DEMOS_OpenWQ_json.H2O[std::to_string(i+1)]["ny"];
-            n_xyz[2] = DEMOS_OpenWQ_json.H2O[std::to_string(i+1)]["nz"];
+    // Local variables
+    std::string HydroCmpName;   // Hydrological compartment names as specified in main.cpp and 
+                                // DEMOS_OpenWQ_json.openWQ_config.json (they need to match)
+    
+    // Create arma for chemical species
+    int numspec = DEMOS_OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size(); // number of chemical species in BGCcycling
+    typedef arma::field<arma::Cube<double>> arma_fieldcube; // typedef data structure: used for domain_field
+
+    // Assign and  allocate memory to openWQ variables: chemass
+    for (int icomp=0;icomp<num_HydroComp;icomp++){
             
-            // wmass fluxes arma::cube
-            arma::Cube<double> domain_xyz(n_xyz[0],n_xyz[1],n_xyz[2]);
-            //(*DEMOS_OpenWQ_vars.wmass)(i) = domain_xyz; // fwater fluxes arma::cube
+        // Dimensions for compartment icomp
+        n_xyz[0] = std::get<2>(DEMOS_OpenWQ_hostModelconfig.HydroComp.at(icomp)); // num of x elements
+        n_xyz[1] = std::get<3>(DEMOS_OpenWQ_hostModelconfig.HydroComp.at(icomp)); // num of y elements
+        n_xyz[2] = std::get<4>(DEMOS_OpenWQ_hostModelconfig.HydroComp.at(icomp)); // num of z elements
+        
+        // Generate arma::cube of compartment icomp size
+        arma::Cube<double> domain_xyz(n_xyz[0],n_xyz[1],n_xyz[2]);
 
-            // wflux
-            arma::field<arma::Cube<double>> domain_field(3); // for x, y, z
-            for (int d=0;d<3;d++){ 
-                domain_field(d) = domain_xyz;
-            }
-            //    (*DEMOS_OpenWQ_vars.wflux)(i) = domain_field;
+        // Get number of species in compartment icomp
+        HydroCmpName = std::get<1>(DEMOS_OpenWQ_hostModelconfig.HydroComp.at(icomp));
+        
+        // Create arma for chemical species
+        // Needs to be reset because each compartment can have a different number of compartments
+        arma_fieldcube domain_field(numspec); // all species are simulated for all compartments
 
-            // chemass
-            numspec_j = DEMOS_OpenWQ_json.WQ["compartments"][std::to_string(i+1)]["chem_species"].size(); 
-
-            // creating arma::field of arma:c:cube of size numspec_j-> copies of domain_xyz for each species
-            arma::field<arma::Cube<double>> domain_field_2(numspec_j);
-            for (int s=0;s<numspec_j;s++){
-                domain_field_2(s) = domain_xyz;
-            }
-            (*DEMOS_OpenWQ_vars.chemass)(i) = domain_field_2;
+        // Push 3D arma::cube into the arma::field of each chemical species
+        for (int s=0;s<numspec;s++){
+            domain_field(s) = domain_xyz;
         }
+        (*DEMOS_OpenWQ_vars.chemass)(icomp) = domain_field;
+    }
 
 }
 
+/*
 // read 3D col data from file at assign to variable
 void DEMOS_OpenWQ_initiate::read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col, 
     std::string filename){
@@ -140,15 +141,17 @@ void DEMOS_OpenWQ_initiate::read_file_3Dcoldata(json & filejson,arma::Cube<doubl
     // Close file
     thisFile.close();
 }
+*/
 
+/*
 // Initial conditions (water and chemical mass)
 void DEMOS_OpenWQ_initiate::readSetIC(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars){
 
-    int numcmp = DEMOS_OpenWQ_json.H2O["compartments"].size();
+    int num_HydroComp = DEMOS_OpenWQ_json.H2O["compartments"].size();
     int numspec;
     std::string filepath;
     
-    for (int i=0;i<numcmp;i++){
+    for (int i=0;i<num_HydroComp;i++){
 
         // wmass
         //read_file_3Dcoldata(DEMOS_OpenWQ_json.H2O[std::to_string(i+1)]["IC_file"],
@@ -167,18 +170,27 @@ void DEMOS_OpenWQ_initiate::readSetIC(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,DEMOS
         }
     }
 }
+*/
 
-// Call function to (1) read JSONs
-void DEMOS_OpenWQ_initiate::initiate(DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-        const std::string configjson_file,
-        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars){
+// Reads JSON files and initiated data structures
+void DEMOS_OpenWQ_initiate::initiate(
+    DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
+    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
+    DEMOS_OpenWQ_hostModelconfig& DEMOS_OpenWQ_hostModelconfig,
+    int num_HydroComp){
+  
+    // Initialize memmory for major arma::field variables
+    DEMOS_OpenWQ_initiate::initmemory(
+        DEMOS_OpenWQ_json,
+        DEMOS_OpenWQ_vars,
+        DEMOS_OpenWQ_hostModelconfig,
+        num_HydroComp);
 
-        
-        // Initialize memmory for major arma::field variables
-        initmemory(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars);
-
-        // IC (water and chemical mass)
-        readSetIC(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars);
+    /*
+    // IC (water and chemical mass)
+    readSetIC(
+        DEMOS_OpenWQ_json,
+        DEMOS_OpenWQ_vars);
+    */
 
 }
-

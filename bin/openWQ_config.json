@@ -1,0 +1,21 @@
+{
+    "TRANSPORT_CONFIGURATION": {
+        "disperson_x_m2/s": 0.3,
+        "disperson_y_m2/s": 0.3,
+        "disperson_z_m2/s": 0.3
+    },
+    "BIOGEOCHEMISTRY_CONFIGURATION":{
+        "Snow":{
+            "cycling_framework": ["N_general","P_general"]
+        },
+        "Soil":{
+            "cycling_framework": ["N_soil","P_soil"]
+        },
+        "Groundwater":{
+            "cycling_framework": ["N_general","P_general"]
+        },
+        "Streams":{
+            "cycling_framework": ["N_general","P_general"]
+        }
+    } 
+}

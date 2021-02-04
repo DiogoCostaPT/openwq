@@ -19,12 +19,12 @@
 #include <armadillo>
 #include <string>
 
-#include "utility.h"
+// #include "utility.h"
 
 #include "DEMOS_OpenWQ_global.h"
 #include "DEMOS_OpenWQ_load.h"
 #include "DEMOS_OpenWQ_initiate.h"
-//#include "DEMOS_OpenWQ_chem.h"
+#include "DEMOS_OpenWQ_chem.h"
 #include "DEMOS_OpenWQ_watertransp.h"
 //#include "DEMOS_OpenWQ_print.h"
 
@@ -32,37 +32,51 @@ int main(int argc, char* argv[])
 {   
     std::string vtufilename;
 
-    // Configuration file (from argv)
-    std::string DEMOS_OpenWQ_configjson (argv[1]); 
-    
+    // Create Object: DEMOS_OpenWQ_hostModelconfig (link to host hydrological model)
+    DEMOS_OpenWQ_hostModelconfig DEMOS_OpenWQ_hostModelconfig;
+    // Link openWQ data strucuture indexes to hydrological model compartments 
+    typedef std::tuple<int,std::string,int, int, int> hydroTuple;
+    /* hydroTuple: 
+    (1) index in openWQ variable, 
+    (2) name identifier in openWQ_config.json, 
+    (3) number of cell in x-direction
+    (4) number of cell in y-direction
+    (5) number of cell in z-direction
+    */
+    DEMOS_OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(0,"snow",100,50,1));
+    DEMOS_OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(1,"soil",100,50,1));
+    DEMOS_OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(2,"groundwater",100,50,1));
+    DEMOS_OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(3,"streams",100,50,1));
+    // ...
+    int num_HydroComp = DEMOS_OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
+
+
     // Create Object: DEMOS_OpenWQ_json (Input JSON files)
     DEMOS_OpenWQ_json DEMOS_OpenWQ_json; // create object
     
     // Load input data
-    int numcmp;
-    int numinteract;
     DEMOS_OpenWQ_load DEMOS_OpenWQ_load; // create object: json files load modules
-    DEMOS_OpenWQ_load.loadinit(DEMOS_OpenWQ_json,
-        DEMOS_OpenWQ_configjson,
-        numcmp,
-        numinteract);
+    DEMOS_OpenWQ_load.loadinit(
+        DEMOS_OpenWQ_json);
     
-    // Create Object: DEMOS_OpenWQ_vars (opernWQ variables)
-    DEMOS_OpenWQ_vars DEMOS_OpenWQ_vars(numcmp,numinteract);
-
+    // Create Object: DEMOS_OpenWQ_vars (openWQ variables)
+    DEMOS_OpenWQ_vars DEMOS_OpenWQ_vars(
+        num_HydroComp);
+   
     // DEMOS_OpenWQ_initiate
     DEMOS_OpenWQ_initiate DEMOS_OpenWQ_initiate; // create object: start modules e.g., initiate
     DEMOS_OpenWQ_initiate.initiate(
         DEMOS_OpenWQ_json,
-        DEMOS_OpenWQ_configjson,
-        DEMOS_OpenWQ_vars);
+        DEMOS_OpenWQ_vars,
+        DEMOS_OpenWQ_hostModelconfig,
+        num_HydroComp);
     
     // DEMOS_OpenWQ_watertransp
-    //DEMOS_OpenWQ_chem DEMOS_OpenWQ_chem;    // create object: biochemistry modules
-    //DEMOS_OpenWQ_print DEMOS_OpenWQ_print;  // print modules
-    DEMOS_OpenWQ_watertransp DEMOS_OpenWQ_watertransp;      // create object: transport modules
+    DEMOS_OpenWQ_watertransp DEMOS_OpenWQ_watertransp;   // create object: transport modules
+    DEMOS_OpenWQ_chem DEMOS_OpenWQ_chem;                 // create object: biochemistry modules
+    //DEMOS_OpenWQ_print DEMOS_OpenWQ_print;             // print modules
     
-    int ts_hosthydromod = 10; // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    int ts_hosthydromod = DEMOS_OpenWQ_hostModelconfig.HydroComp.size(); // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     
     // Loop: Space and Time
     for (int ts=0;ts<ts_hosthydromod;ts++){ // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
@@ -116,10 +130,13 @@ int main(int argc, char* argv[])
 
 
         /* ###################################################################################
-        Biogeochemistrys
+        Biogeochemistry
         ################################################################################### */ 
 
-        DEMOS_OpenWQ_chem.ChemTransf(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars,icmp);
+        DEMOS_OpenWQ_chem.Run(
+            DEMOS_OpenWQ_json,
+            DEMOS_OpenWQ_vars,
+            DEMOS_OpenWQ_hostModelconfig);
 
         /* ###################################################################################
         Sources and Sink
@@ -130,7 +147,7 @@ int main(int argc, char* argv[])
         /* ###################################################################################
         Print Results
         ################################################################################### */ 
-        //DEMOS_OpenWQ_print.writeVTU(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars,numcmp,0); 
+        //DEMOS_OpenWQ_print.writeVTU(DEMOS_OpenWQ_json,DEMOS_OpenWQ_vars,num_HydroComp,0); 
 
     }
     

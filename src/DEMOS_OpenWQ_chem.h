@@ -1,5 +1,4 @@
 
-
 // Copyright 2020, Diogo Costa, diogo.pinhodacosta@canada.ca
 // This file is part of OpenWQ model.
 
@@ -17,53 +16,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef DEMOS_OpenWQ_watertranspH_INCLUDED
-#define DEMOS_OpenWQ_watertranspH_INCLUDED
+#ifndef DEMOS_OPENWQ_CHEMH_INCLUDED
+#define DEMOS_OPENWQ_CHEMH_INCLUDED
 
 #include <armadillo>
 #include "string.h"
 #include <algorithm>
 #include "exprtk.hpp"
 #include <cstdio>
-//#include "utility.h"
-//#include "ADE_solver.h"
+#include <tuple>
+
+// #include "utility.h"
 
 #include "DEMOS_OpenWQ_global.h"
-//#include "DEMOS_OpenWQ_initiate.h"
-//#include "DEMOS_OpenWQ_print.h"
 
-class DEMOS_OpenWQ_watertransp{
+// Biogeochemistry
+
+class DEMOS_OpenWQ_chem{
 
     public:
 
-    //void ChemCompExchange(
-    //    DEMOS_OpenWQ_json& JSONfile, 
-    //    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars, 
-    //    int source, 
-    //    std::string kinetics, 
-    //    std::vector<std::string> parameter_names, 
-    //    std::vector<double> parameter_values,
-    //    std::array<double,7> & linedata, 
-    //    int & index_chem);
-
-
-    void Adv(
+    void Run(
         DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
         DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
-        int source,
-        int ix_s, 
-        int iy_s,
-        int iz_s,
-        int recipient,
-        int ix_r,
-        int iy_r,
-        int iz_r,
-        double wflux_s2r,
-        double wmass_recipient);
+        DEMOS_OpenWQ_hostModelconfig& DEMOS_OpenWQ_hostModelconfig);
 
-    //void AdvDisp(
-    //    DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-    //    DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
+    void BGC_Transform(
+        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
+        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
+        DEMOS_OpenWQ_hostModelconfig& DEMOS_OpenWQ_hostModelconfig,
+        int icmp);
 
 };
 

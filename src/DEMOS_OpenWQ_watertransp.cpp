@@ -38,14 +38,14 @@ void DEMOS_OpenWQ_watertransp::Adv(
     int ichem_mob;
 
     // CHANGE THE LINE BELOW: see my notes -> there should be no icmp because all compartments should have the same number of mobile species
-    std::vector<int> chemspec_mobile = JSONfiles.BGC["chemical_species"]["mobile_species"];
+    std::vector<int> chemspec_mobile = JSONfiles.BGCcycling["CHEMICAL_SPECIES"]["mobile_species"];
     int numspec = chemspec_mobile.size();
 
     // Loop for mobile chemical species
     for (int c=0;c<numspec;c++){
 
         // mobile chemical species index
-        ichem_mob = chemspec_mobile[c]; 
+        ichem_mob = chemspec_mobile[c] - 1; // because C array indexing starts in 0 
 
         // Chemical mass flux between source and recipient 
         chemass_flux = wflux_s2r/wmass_recipient *
@@ -143,7 +143,7 @@ void DEMOS_OpenWQ_watertransp::AdvDisp(
     std::string res_folder = DEMOS_OpenWQ_json.Master["export_results_folder"];
     std::vector<int>::iterator is_mobile; // to check if mobile in compartment loop
     
-    int numcmp = DEMOS_OpenWQ_json.H2O["compartments"].size();
+    int num_HydroComp = DEMOS_OpenWQ_json.H2O["compartments"].size();
     double disp_x = DEMOS_OpenWQ_json.WQ["dispersion"]["x-dir"];
     double disp_y = DEMOS_OpenWQ_json.WQ["dispersion"]["y-dir"];
     double disp_z = DEMOS_OpenWQ_json.WQ["dispersion"]["z-dir"];

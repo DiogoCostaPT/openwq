@@ -20,23 +20,42 @@
 #include <string>
 #include <armadillo>
 #include <memory> 
+
+
 #include "jnlohmann/json.h"
 using json = nlohmann::json;
 
 
-// Project Information
+// Project Master file
 class DEMOS_OpenWQ_json
 {
     public:
 
     json Master;
-    json H2O;
-    json CMPI;
-    json WQ;
-    json BGC;
+    json Config;
+    json BGCcycling;
 
 };
 
+// Link: openWQ to Host Hydrological Model
+class DEMOS_OpenWQ_hostModelconfig
+{
+    #include <tuple>
+    #include <vector>
+
+    typedef std::tuple<int,std::string,int, int, int> hydroTuple;
+    
+    public: 
+    // Add host_hydrological_model compartment:
+    // (1) index in openWQ 
+    // (2) reference name in JSON file
+    std::vector<hydroTuple> HydroComp;
+    
+    // Number of hydrological compartments (that can store and transport water)
+    int num_HydroComp;
+   
+
+};
 
 // General information about the project
 class DEMOS_OpenWQ_vars
@@ -45,24 +64,23 @@ class DEMOS_OpenWQ_vars
     DEMOS_OpenWQ_vars(){
 
     }
-    DEMOS_OpenWQ_vars(size_t numcmp, size_t numinteract){
+    DEMOS_OpenWQ_vars(size_t num_HydroComp){
 
-        this-> numcmp = numcmp;
-        this-> numinteract = numinteract;
+        this-> num_HydroComp = num_HydroComp;
 
         try{
 
-            // wmass = std::unique_ptr<arma::field<arma::Cube<double>>>(new arma::field<arma::cube>(numcmp)); // 1 field: water mass
-            // wflux = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(numcmp)); // 1 field: flow within compartment
+            // wmass = std::unique_ptr<arma::field<arma::Cube<double>>>(new arma::field<arma::cube>(num_HydroComp)); // 1 field: water mass
+            // wflux = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp)); // 1 field: flow within compartment
             // wchem_exch = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numinteract)); // 1 field: flow between compartments
-            chemass = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(numcmp));  // multiple fields: one for eacg chem
+            chemass = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));  // multiple fields: one for eacg chem
         
         }catch(int e){
             std::cout << "An exception occurred creating the domain: ERR " << std::to_string(e) << std::endl;
         }
 
     }
-    size_t numcmp, numinteract;
+    size_t num_HydroComp;
 
     //std::unique_ptr<arma::field<arma::Cube<double>>>  wmass;
     //std::unique_ptr<arma::field<arma::Mat<double>>> wchem_exch;
@@ -70,5 +88,7 @@ class DEMOS_OpenWQ_vars
     std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> chemass; 
 
 };
+
+
 
 #endif

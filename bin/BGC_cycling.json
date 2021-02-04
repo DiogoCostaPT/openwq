@@ -1,0 +1,68 @@
+{
+    "CHEMICAL_SPECIES": {
+        "list": {
+            "1": "NO3",
+            "2": "NH4",
+            "3": "N2",
+            "4": "labileN",
+            "5": "DON",
+            "6": "refracN",
+            "7": "SRP",
+            "8": "DOP",
+            "9": "partP",
+            "10": "labileP",
+            "11": "refractoryP"
+        },
+        "mobile_species": [1,2,4,6,7,8]
+    },
+    "CYCLING_FRAMEWORKS": {
+        "N_general": {
+            "list_transformations":{
+                "1": "nitrification",
+                "2": "denitrification"
+            },
+            "1":{
+                "consumed": "NH4",
+                "produced": "NO3",
+                "kinetics": "NH4 * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.00
+                }
+            },
+            "2":{
+                "consumed": "NO3",
+                "produced": "N2",
+                "kinetics": "NO3 * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.00
+                }
+            }
+        },
+        "N_soil_add": {
+            "list_transformations":{
+                "1": "mineralization",
+                "2": "degradation"
+            },
+            "1":{
+                "consumed": "labileN",
+                "produced": "NH4",
+                "kinetics": "labileN * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.00
+                }
+            },
+            "2":{
+                "consumed": "refractory",
+                "produced": "labileN",
+                "kinetics": "refractory * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.00
+                }
+            }
+        }
+    }
+}

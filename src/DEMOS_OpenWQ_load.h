@@ -10,7 +10,10 @@
 
 #include <cstdio>
 
-#include "utility.h"
+#include "jnlohmann/json.h"
+using json = nlohmann::json;
+
+//#include "utility.h"
 
 #include "DEMOS_OpenWQ_global.h"
 
@@ -19,10 +22,7 @@ class DEMOS_OpenWQ_load{
     public:
 
     void loadinit(
-        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-        std::string& DEMOS_OpenWQ_configjson,
-        int& numcmp, 
-        int& numinteract);
+        DEMOS_OpenWQ_json& DEMOS_OpenWQ_json);
 
     void read_JSON_2class(
         json& jsondata,

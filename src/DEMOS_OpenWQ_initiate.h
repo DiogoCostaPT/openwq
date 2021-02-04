@@ -19,11 +19,13 @@
 #ifndef DEMOS_OPENWQ_INITIATEH_INCLUDED
 #define DEMOS_OPENWQ_INITIATEH_INCLUDED
 
-
-#include "DEMOS_OpenWQ_global.h"
+#include <tuple>
+#include <vector>
+#include "jnlohmann/json.h"
 
 using json = nlohmann::json;
 
+#include "DEMOS_OpenWQ_global.h"
 
 class DEMOS_OpenWQ_initiate{
     
@@ -31,13 +33,18 @@ class DEMOS_OpenWQ_initiate{
     
     void initmemory(
         DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
-    
+        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
+        DEMOS_OpenWQ_hostModelconfig& DEMOS_OpenWQ_hostModelconfig,
+        int num_HydroComp);
+
     void initiate(
         DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
-        const std::string configjson_file,
-        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
+        DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars,
+        DEMOS_OpenWQ_hostModelconfig& DEMOS_OpenWQ_hostModelconfig,
+        int num_HydroComp);
 
+
+    /*
     void read_file_3Dcoldata(
         json& filejson,
         arma::Cube<double>& to_cubedata, 
@@ -46,6 +53,7 @@ class DEMOS_OpenWQ_initiate{
     void readSetIC(
         DEMOS_OpenWQ_json& DEMOS_OpenWQ_json,
         DEMOS_OpenWQ_vars& DEMOS_OpenWQ_vars);
+    */
 
 };
 
