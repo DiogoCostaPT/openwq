@@ -6,16 +6,16 @@
     },
     "BIOGEOCHEMISTRY_CONFIGURATION":{
         "Snow":{
-            "cycling_framework": ["N_general","P_general"]
+            "cycling_framework": ["N_inorg","P_inorg"]
         },
         "Soil":{
-            "cycling_framework": ["N_soil","N_soil_add","P_soil"]
+            "cycling_framework": ["N_inorg","P_inorg","N_soil_org","P_soil_org"]
         },
         "Groundwater":{
-            "cycling_framework": ["N_general","P_general"]
+            "cycling_framework": ["N_inorg","P_inorg"]
         },
         "Streams":{
-            "cycling_framework": ["N_general","P_general"]
+            "cycling_framework": ["N_inorg","P_inorg"]
         }
     } 
 }
