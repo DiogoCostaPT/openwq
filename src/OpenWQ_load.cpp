@@ -26,7 +26,7 @@ void OpenWQ_load::read_JSON_2class(
                 std::ifstream i(jsonfile);
                 i >> (jsondata);
 
-        }catch (json::type_error){
+        }catch (const std::runtime_error& e){
                 std::cout << "An exception occurred parsing" << jsonfile << std::endl;
                 abort();
         }
