@@ -58,16 +58,13 @@ void OpenWQ_chem::BGC_Transform(
     int index_cons,index_prod; // indexed for consumed and produced chemical
     int index_i; // iteractive index
     double param_val; // prameter value
-    std::vector<int> index_transf; // index for transformations in BGC_cycling json
     int num_BGCcycles; // number of BGC frameworks in comparment icmp
     int num_transf; // number of transformation in biogeochemical cycle bgci
     int num_chem; // number of chemical species
     int nx = std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in x-direction
     int ny = std::get<3>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in y-direction
     int nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in z-direction
-    std::string cyclingFrame_i; // BGC Cycling name i of compartment icmp
-    std::vector<double> chemass_transf; // chemical mass involved in transformation
-    
+    std::string cyclingFrame_i; // BGC Cycling name i of compartment icmp   
 
     // Find compartment icmp name from code (host hydrological model)
     std::string CompName_icmp = std::get<1>(
@@ -106,7 +103,10 @@ void OpenWQ_chem::BGC_Transform(
         /* ########################################
         // Loop over transformations in biogeochemical cycle bgci
         ######################################## */
+        
         for (int transi=0;transi<num_transf;transi++){
+
+            std::vector<int> index_transf; // index of chemical in transformation equation (needs to be here for loop reset)
 
             // Get transformation transi info
             std::string consumed_spec =  OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
@@ -144,7 +144,7 @@ void OpenWQ_chem::BGC_Transform(
                     expression_string_modif.replace(
                         index_i,
                         index_i + chemname.size(),
-                        "chemass_transf["+std::to_string(ii)+"]");
+                        "chemass_InTransfEq["+std::to_string(ii)+"]");
                     ii++;
                 }
             }
@@ -159,10 +159,11 @@ void OpenWQ_chem::BGC_Transform(
 
             // Add variables to symbol_table
             symbol_table_t symbol_table;
+            std::vector<double> chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
             for (int i=0;i<index_transf.size();i++){
-                chemass_transf.push_back(0); // creating the vector
+                chemass_InTransfEq.push_back(0); // creating the vector
             }
-            symbol_table.add_vector("chemass_transf",chemass_transf);
+            symbol_table.add_vector("chemass_InTransfEq",chemass_InTransfEq);
             // symbol_table.add_constants();
 
             // Create Object
@@ -181,8 +182,8 @@ void OpenWQ_chem::BGC_Transform(
                     for (int iz=0;iz<nz;iz++){
                         
                         // loop to get all the variables inside the expression
-                        for (int chem=0;chem<chemass_transf.size();chem++){
-                            chemass_transf[chem] = (*OpenWQ_vars.chemass)(icmp)(index_transf[chem])(ix,iy,iz);
+                        for (int chem=0;chem<chemass_InTransfEq.size();chem++){
+                            chemass_InTransfEq[chem] = (*OpenWQ_vars.chemass)(icmp)(index_transf[chem])(ix,iy,iz);
                         }
 
                         // Mass transfered: Consumed -> Produced
