@@ -185,13 +185,13 @@ void OpenWQ_chem::BGC_Transform(
                             chemass_transf[chem] = (*OpenWQ_vars.chemass)(icmp)(index_transf[chem])(ix,iy,iz);
                         }
 
-                        // mass transfered
+                        // Mass transfered: Consumed -> Produced
                         double transf_mass = expression.value(); 
 
-                        // mass consumed
+                        // New mass of consumed chemical
                         (*OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
 
-                        // mass produced
+                        // New mass of produced chemical
                         (*OpenWQ_vars.chemass)(icmp)(index_prod)(ix,iy,iz) += transf_mass;
 
                     }
