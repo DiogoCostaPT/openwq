@@ -79,11 +79,6 @@ void OpenWQ_chem::BGC_Transform(
         OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"]
             [CompName_icmp]["cycling_framework"];
 
-
-    /* ########################################
-    // Loop over biogeochemical cycling frameworks
-    ######################################## */
-
     // Get number of BGC frameworks in comparment icmp
     num_BGCcycles = BGCcycles_icmp.size();
         
@@ -94,7 +89,10 @@ void OpenWQ_chem::BGC_Transform(
         chem_species_list.push_back(OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]
             ["list"][std::to_string(chemi+1)]);
     }
-    
+
+    /* ########################################
+    // Loop over biogeochemical cycling frameworks
+    ######################################## */
 
     for (int bgci=0;bgci<num_BGCcycles;bgci++){
 
@@ -106,7 +104,7 @@ void OpenWQ_chem::BGC_Transform(
             [cyclingFrame_i]["list_transformations"].size();
 
         /* ########################################
-        // Looping over transformations
+        // Loop over transformations in biogeochemical cycle bgci
         ######################################## */
         for (int transi=0;transi<num_transf;transi++){
 
@@ -121,7 +119,6 @@ void OpenWQ_chem::BGC_Transform(
                 [std::to_string(transi+1)]["parameter_names"];
             std::string expression_string_modif = expression_string;
             
-             
             // Find species indexes: consumed, produced and in the expression
             for(int chemi=0;chemi<num_chem;chemi++){
                 
@@ -150,10 +147,9 @@ void OpenWQ_chem::BGC_Transform(
                         "chemass_transf["+std::to_string(ii)+"]");
                     ii++;
                 }
-
             }
 
-            // Parmeters
+            // Replace parameter name by value in expression
             for (int i=0;i<parameter_names.size();i++){
                 index_i = expression_string_modif.find(parameter_names[i]);
                 param_val = OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
@@ -169,14 +165,17 @@ void OpenWQ_chem::BGC_Transform(
             symbol_table.add_vector("chemass_transf",chemass_transf);
             // symbol_table.add_constants();
 
+            // Create Object
             expression_t expression;
             expression.register_symbol_table(symbol_table);
 
+            // Parse expression and compile 
             parser_t parser;
             parser.compile(expression_string_modif,expression);
 
-            // Loop over space
-
+            /* ########################################
+            // Loop over space: nx, ny, nz
+            ######################################## */
             for (int ix=0;ix<nx;ix++){
                 for (int iy=0;iy<ny;iy++){
                     for (int iz=0;iz<nz;iz++){
