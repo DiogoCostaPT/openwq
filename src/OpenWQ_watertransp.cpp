@@ -48,8 +48,9 @@ void OpenWQ_watertransp::Adv(
         ichem_mob = chemspec_mobile[c] - 1; // because C array indexing starts in 0 
 
         // Chemical mass flux between source and recipient 
-        chemass_flux = wflux_s2r / wmass_recipient *
-            (*OpenWQ_vars.chemass)(source)(ichem_mob)(ix_s,iy_s,iz_s);
+        chemass_flux = wflux_s2r *
+            (*OpenWQ_vars.chemass)(source)(ichem_mob)(ix_s,iy_s,iz_s) / // concentration calculation
+            wmass_recipient;
         
         // Remove Chemical mass flux from SOURCE 
         (*OpenWQ_vars.chemass)(source)(ichem_mob)(ix_s,iy_s,iz_s) -= chemass_flux;
