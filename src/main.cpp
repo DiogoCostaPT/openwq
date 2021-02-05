@@ -43,10 +43,10 @@ int main(int argc, char* argv[])
     (4) number of cell in y-direction
     (5) number of cell in z-direction
     */
-    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(0,"snow",100,50,1));
-    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(1,"soil",100,50,1));
-    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(2,"groundwater",100,50,1));
-    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(3,"streams",100,50,1));
+    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(0,"Snow",100,50,1));
+    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(1,"Soil",100,50,1));
+    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(2,"Groundwater",100,50,1));
+    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(3,"Streams",100,50,1));
     // (add other compartments as needed)...
 
     int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model

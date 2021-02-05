@@ -9,7 +9,7 @@
             "cycling_framework": ["N_general","P_general"]
         },
         "Soil":{
-            "cycling_framework": ["N_soil","P_soil"]
+            "cycling_framework": ["N_soil","N_soil_add","P_soil"]
         },
         "Groundwater":{
             "cycling_framework": ["N_general","P_general"]
