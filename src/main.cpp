@@ -69,8 +69,7 @@ int main(int argc, char* argv[])
     OpenWQ_initiate.initiate(
         OpenWQ_json,
         OpenWQ_vars,
-        OpenWQ_hostModelconfig,
-        num_HydroComp);
+        OpenWQ_hostModelconfig);
     
     // OpenWQ_watertransp
     OpenWQ_watertransp OpenWQ_watertransp;   // create object: transport modules

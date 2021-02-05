@@ -34,14 +34,12 @@ class OpenWQ_initiate{
     void initmemory(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        int num_HydroComp);
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig);
 
     void initiate(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        int num_HydroComp);
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig);
 
 
     /*

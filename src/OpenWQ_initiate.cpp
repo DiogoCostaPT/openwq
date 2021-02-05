@@ -23,8 +23,7 @@
 void OpenWQ_initiate::initmemory(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
-    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-    int num_HydroComp){
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig){
 
     // Pointer to nx, ny, nx information (grids or HRU)
     std::unique_ptr<unsigned int[]> n_xyz(new unsigned int[3]); // pointer to nx, ny, nx information
@@ -35,6 +34,7 @@ void OpenWQ_initiate::initmemory(
     // Local variables
     std::string HydroCmpName;   // Hydrological compartment names as specified in main.cpp and 
                                 // OpenWQ_json.openWQ_config.json (they need to match)
+    int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
     
     // Create arma for chemical species
     int numspec = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size(); // number of chemical species in BGCcycling
@@ -176,21 +176,19 @@ void OpenWQ_initiate::readSetIC(OpenWQ_json& OpenWQ_json,OpenWQ_vars& OpenWQ_var
 void OpenWQ_initiate::initiate(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
-    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-    int num_HydroComp){
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig){
   
     // Initialize memmory for major arma::field variables
     OpenWQ_initiate::initmemory(
         OpenWQ_json,
         OpenWQ_vars,
-        OpenWQ_hostModelconfig,
-        num_HydroComp);
+        OpenWQ_hostModelconfig);
 
     /*
     // IC (water and chemical mass)
-    readSetIC(
+    OpenWQ_initiate::readSetIC(
         OpenWQ_json,
         OpenWQ_vars);
-    */
+        */
 
 }
