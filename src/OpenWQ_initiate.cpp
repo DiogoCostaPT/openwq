@@ -112,7 +112,10 @@ void OpenWQ_initiate::readSetIC(
 
         // Get tuple with IC information for compartment CompName_icmp and chemical chemname
         // If not found in compartment icmp, it's because IC were not defined - set to zero.
-        try{ // IC conditions provided
+        /* ########################################
+        // IC conditions provided
+        ######################################## */
+        try{ 
             ic_info_i = 
                 OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
                 ["initial_conditions"][chemname];
@@ -142,11 +145,16 @@ void OpenWQ_initiate::readSetIC(
                     * igridcell_volume; // passed in m3
             }
 
-        }catch(json::type_error& e){ // If IC conditions are not provided
-            std::cout << "IC conditions: not defined " 
+        }
+        /* ########################################
+        // IC conditions NOT provided set to ZERO
+        ######################################## */
+        catch(json::type_error& e){ 
+            std::cout << "IC conditions not defined: set to zero " 
                     << "(compartment: " << CompName_icmp << ", " 
                     << "chemical: " << chemname << ")"
                     << std::endl;
+            (*OpenWQ_vars.chemass)(icmp)(chemi)(ix,iy,iz) = 0.0f;
         }  
     }
 }
