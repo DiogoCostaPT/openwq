@@ -79,8 +79,8 @@ void OpenWQ_initiate::readSetIC(
     const int ix,
     const int iy,
     const int iz,
-    const double igridcell_volume,
-    const double iwater_volume){
+    const double igridcell_volume,  // all calculations assume unit = m3
+    const double iwater_volume){    // all calculations assume unit = m3
     
     // Local variables
     int num_chem = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size(); // number of chemical species
@@ -117,9 +117,9 @@ void OpenWQ_initiate::readSetIC(
                 OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
                 ["initial_conditions"][chemname];
 
-            ic_value = std::get<0>(ic_info_i);      // get value
-            ic_type = std::get<1>(ic_info_i);       // get type
-            ic_units = std::get<2>(ic_info_i);      // get units 
+            ic_value = std::get<0>(ic_info_i);      // get IC value
+            ic_type = std::get<1>(ic_info_i);       // get IC type
+            ic_units = std::get<2>(ic_info_i);      // get IC units 
 
             // Transform units based on info provided
             OpenWQ_initiate::Transform_Units(
@@ -127,8 +127,20 @@ void OpenWQ_initiate::readSetIC(
                 ic_type,
                 ic_units);
 
-            // Apply IC conditons
-           // if(ic_type.compare("concentration") == 0){
+            // Apply IC conditons (no need to handle error
+            // Already done in OpenWQ_initiate::Transform_Units)
+            // if CONCENTRATION
+            if(ic_type.compare("concentration") == 0){
+                (*OpenWQ_vars.chemass)(icmp)(chemi)(ix,iy,iz) =// units: g (basic units of MASS in openWQ)
+                    ic_value // converted to mg/l (or g/m3) in OpenWQ_initiate::Transform_Units
+                    * iwater_volume; // passed in m3
+            }
+            // if MASS
+            else if(ic_type.compare("mass") == 0){
+                (*OpenWQ_vars.chemass)(icmp)(chemi)(ix,iy,iz) =// units: g (basic units of MASS in openWQ)
+                    ic_value // converted to mg/l (or g/m3) in OpenWQ_initiate::Transform_Units
+                    * igridcell_volume; // passed in m3
+            }
 
         }catch(json::type_error& e){ // If IC conditions are not provided
             std::cout << "IC conditions: not defined " 
@@ -163,10 +175,10 @@ void OpenWQ_initiate::Transform_Units(
     // Check type of IC (concentration or mass)
     ########################################## */
 
-    // CONCENTRATION
+    // CONCENTRATION (Goal: convert to mg/l or g/m3 => openWQ internal units)
     if(ic_type.compare("concentration") == 0){
         
-        // Default units of openWQ = mg/l or g/m3
+        // Default concentration units = mg/l or g/m3 (openWQ internal units)
         if (ic_unit.compare("mg/l") == 0 || ic_unit.compare("g/m3") == 0){
             unit_convert_k = 1.0f;
         }else if (ic_unit.compare("ug/l") == 0){
@@ -175,10 +187,11 @@ void OpenWQ_initiate::Transform_Units(
             unit_unkown_flag = true;
         }
     }
-    // MASS
+    // MASS (Goal: convert to g => openWQ internal units)
     else if(ic_type.compare("mass") == 0){
         
-        if (ic_unit.compare("g/m3") == 0){
+        // Default mass units = g (openWQ internal units)
+        if (ic_unit.compare("g/m3") == 0){ 
             unit_convert_k = 1.0f;
         }else if (ic_unit.compare("kg/m3") == 0){
             unit_convert_k = 1000;
