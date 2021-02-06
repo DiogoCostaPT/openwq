@@ -53,11 +53,11 @@ void OpenWQ_readjson::read_all(
         // SinkSource
         int num_ssf = OpenWQ_json.Master["openWQ_INPUT"]["SinkSource_files"].size();
         for (int ssf=0;ssf<num_ssf;ssf++){
-        read_JSON_2class(
-                OpenWQ_json.SinkSource,
-                true,
-                std::to_string(ssf),
-                OpenWQ_json.Master["openWQ_INPUT"]["SinkSource_files"][std::to_string(ssf+1)]["filepath"]); 
+                read_JSON_2class(
+                        OpenWQ_json.SinkSource,
+                        true,
+                        std::to_string(ssf+1),
+                        OpenWQ_json.Master["openWQ_INPUT"]["SinkSource_files"][std::to_string(ssf+1)]["filepath"]); 
         }
 
 }

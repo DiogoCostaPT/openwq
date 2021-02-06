@@ -1,20 +1,29 @@
 {
 	"METADATA": {
-		"Comment": "NO3-N loading from fertilizer",
+		"Comment": "N loading from fertilizer",
 		"Source": "bla bla"
 	},
-	"NO3": {
+	"1": {
+		"Chemical_name": "NO3",
+		"Compartment": "Soil",
 		"Type": "source",
-		"Load": {
-			"1": [2001,05,20,"Soil",1,1,1,20,"kg"],
-			"2": [2001,05,20,"Soil",1,1,1,20,"kg"]
+		"Units": "kg",
+		"Data": {
+			"1": [2001,5,20,12,1,1,1,20],
+			"2": [2001,5,20,12,1,1,1,20],
+			"3": [2001,5,20,12,1,1,1,20]
+
 		}
 	},
-	"NH4": {
+	"2": {
+		"Chemical_name": "NH4",
+		"Compartment": "Soil",
 		"Type": "source",
-		"Load": {
-			"1": [2001,05,20,"Soil",1,1,1,20,"kg"],
-			"2": [2001,05,20,"Soil",1,1,1,20,"kg"]
+		"Units": "kg",
+		"Data": {
+			"1": [2001,5,20,12,1,1,1,20],
+			"2": [2001,5,20,12,1,1,1,20]
+
 		}
 	}
 }

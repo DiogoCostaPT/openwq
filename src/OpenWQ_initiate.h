@@ -52,7 +52,7 @@ class OpenWQ_initiate{
         arma::Cube<double>& to_cubedata, 
         int var_col,std::string filename);
     */
-   void Transform_Units(
+   void Transform_IC_Units(
         double &ic_value, // IC value of chemical (passed by reference)
         std::string ic_type, // IC value type of chemical (mass or concentration)
         std::string ic_units);

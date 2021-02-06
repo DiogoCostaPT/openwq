@@ -135,7 +135,7 @@ void OpenWQ_initiate::readSetIC(
             ic_units = std::get<2>(ic_info_i);      // get IC units 
 
             // Transform units based on info provided
-            OpenWQ_initiate::Transform_Units(
+            OpenWQ_initiate::Transform_IC_Units(
                 ic_value, // ic_value passed by reference so that it can be changed
                 ic_type,
                 ic_units);
@@ -176,7 +176,7 @@ void OpenWQ_initiate::readSetIC(
 /* #################################################
 // Transform units of IC
 ################################################# */
-void OpenWQ_initiate::Transform_Units(
+void OpenWQ_initiate::Transform_IC_Units(
     double &ic_value, // IC value of chemical (passed by reference)
     std::string ic_type, // IC value type of chemical (mass or concentration)
     std::string ic_unit){ // // IC value units of chemical (e.g, kg/m3, mg/l))

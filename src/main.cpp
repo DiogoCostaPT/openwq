@@ -111,10 +111,19 @@ int main(int argc, char* argv[])
         /* ########################################
          Sources and Sinks (doesn't need space loop => it's inside the function)
         ######################################## */ 
+        unsigned int YYYY = 2001;              // current model step: year (TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+        unsigned int MM = 5;                   // current model step: month (TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+        unsigned int DD = 20;                  // current model step: day (TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+        unsigned int HH = 12;                  // current model step: hour (TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+
         OpenWQ_sinksource.CheckApply(
             OpenWQ_json,
             OpenWQ_vars,
-            OpenWQ_hostModelconfig);
+            OpenWQ_hostModelconfig,
+            YYYY,
+            MM,
+            DD,
+            HH);
 
         /* ########################################
         Transport with water fluxes (No space loop: needs to be called for every water flux)
