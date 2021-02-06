@@ -17,8 +17,9 @@
 
 #include "OpenWQ_chem.h"
 
-
+/* #################################################
 // Compute chemical transformations
+################################################# */
 void OpenWQ_chem::Run(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
@@ -39,8 +40,9 @@ void OpenWQ_chem::Run(
     }
 }
 
-
+/* #################################################
 // Compute each chemical transformation
+################################################# */
 void OpenWQ_chem::BGC_Transform(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,

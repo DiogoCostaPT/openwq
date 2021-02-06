@@ -25,8 +25,9 @@
 #include "jnlohmann/json.h"
 using json = nlohmann::json;
 
-
-// Project Master file
+/* #################################################
+// Project JSON files
+################################################# */
 class OpenWQ_json
 {
     public:
@@ -37,18 +38,24 @@ class OpenWQ_json
 
 };
 
+/* #################################################
 // Link: openWQ to Host Hydrological Model
+################################################# */
 class OpenWQ_hostModelconfig
 {
     #include <tuple>
     #include <vector>
 
     typedef std::tuple<int,std::string,int, int, int> hydroTuple;
+    // Add host_hydrological_model compartment:
+    // (1) int => index in openWQ 
+    // (2) std::string => reference name in JSON file
+    // (3) int => number of cells in x-direction
+    // (4) int => number of cells in y-direction
+    // (5) int => number of cells in z-direction
     
     public: 
-    // Add host_hydrological_model compartment:
-    // (1) index in openWQ 
-    // (2) reference name in JSON file
+    
     std::vector<hydroTuple> HydroComp;
     
     // Number of hydrological compartments (that can store and transport water)
@@ -57,7 +64,9 @@ class OpenWQ_hostModelconfig
 
 };
 
+/* #################################################
 // General information about the project
+################################################# */
 class OpenWQ_vars
 {
     public:
@@ -70,13 +79,18 @@ class OpenWQ_vars
 
         try{
 
-            // wmass = std::unique_ptr<arma::field<arma::Cube<double>>>(new arma::field<arma::cube>(num_HydroComp)); // 1 field: water mass
-            // wflux = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp)); // 1 field: flow within compartment
-            // wchem_exch = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numinteract)); // 1 field: flow between compartments
-            chemass = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));  // multiple fields: one for eacg chem
+            // Units of chemass are in: g (grams)
+            // Thus, concentrations are in mg/l (or g/m3) and volume in m3
+            chemass = std::unique_ptr<
+                arma::field< // Compartments
+                arma::field< // Chemical Species
+                arma::Cube<  // Dimensions: nx, ny, nz
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp)); 
         
         }catch(const std::exception& e){
-            std::cout << "ERROR: An exception occured during memory allocation (openWQ_global.h)" << std::endl;
+            std::cout << 
+                "ERROR: An exception occured during memory allocation (openWQ_global.h)" 
+                << std::endl;
             exit (EXIT_FAILURE);
         }
 

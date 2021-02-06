@@ -89,8 +89,8 @@ int main(int argc, char* argv[])
         ix,
         iy,
         iz,
-        igridcell_volume,   // asssuming units = m3
-        iwater_volume);     // asssuming units = m3
+        igridcell_volume,   // all calculations assume unit = m3
+        iwater_volume);     // all calculations assume unit = m3
 
     // OpenWQ_watertransp
     OpenWQ_watertransp OpenWQ_watertransp;   // create object: transport modules

@@ -18,8 +18,9 @@
 
 #include "OpenWQ_initiate.h"
 
-
+/* #################################################
 // Initialize memory of major variables: arma::field
+################################################# */
 void OpenWQ_initiate::initmemory(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
@@ -67,8 +68,9 @@ void OpenWQ_initiate::initmemory(
 
 }
 
-
+/* #################################################
 // Initial conditions (water and chemical mass)
+################################################# */
 void OpenWQ_initiate::readSetIC(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
@@ -137,6 +139,9 @@ void OpenWQ_initiate::readSetIC(
     }
 }
 
+/* #################################################
+// Transform units of IC
+################################################# */
 void OpenWQ_initiate::Transform_Units(
     double &ic_value, // IC value of chemical (passed by reference)
     std::string ic_type, // IC value type of chemical (mass or concentration)

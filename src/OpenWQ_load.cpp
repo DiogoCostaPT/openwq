@@ -17,7 +17,9 @@
 
 #include "OpenWQ_load.h"
 
+/* #################################################
 // Read JSON file to class
+################################################# */
 void OpenWQ_load::read_JSON_2class(
         json& jsondata,
         const std::string& jsonfile){
@@ -32,8 +34,9 @@ void OpenWQ_load::read_JSON_2class(
         }
 }
 
-
+/* #################################################
  // Real all configuration files
+ ################################################# */
 void OpenWQ_load::loadinit(
         OpenWQ_json& OpenWQ_json){
         
