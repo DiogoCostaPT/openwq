@@ -18,6 +18,40 @@
 #include "OpenWQ_load.h"
 
 /* #################################################
+ // Real all configuration files
+ ################################################# */
+void OpenWQ_load::loadinit(
+        OpenWQ_json& OpenWQ_json){
+        
+        /* ########################
+        // Read Master file name
+        ######################## */
+        const std::string OpenWQ_masterjson = "openWQ_master.json";
+        read_JSON_2class(
+                OpenWQ_json.Master,
+                OpenWQ_masterjson); // master file
+
+        /* ########################
+        // // Read other JSON configuration files defined in Master file 
+        ######################## */
+        // Main confirguration
+        read_JSON_2class(
+                OpenWQ_json.Config,
+                OpenWQ_json.Master["openWQ_INPUT"]["Config_file"]); 
+
+        // BGCcycling cycling
+        read_JSON_2class(
+                OpenWQ_json.BGCcycling,
+                OpenWQ_json.Master["openWQ_INPUT"]["BGC_cycles_file"]); 
+
+        // SinkSource
+        read_JSON_2class(
+                OpenWQ_json.SinkSource,
+                OpenWQ_json.Master["openWQ_INPUT"]["SinkSource_file"]); 
+                
+}
+
+/* #################################################
 // Read JSON file to class
 ################################################# */
 void OpenWQ_load::read_JSON_2class(
@@ -32,27 +66,4 @@ void OpenWQ_load::read_JSON_2class(
                 std::cout << "ERROR: An exception occurred parsing JSON file: " << jsonfile << std::endl;
                 exit (EXIT_FAILURE);
         }
-}
-
-/* #################################################
- // Real all configuration files
- ################################################# */
-void OpenWQ_load::loadinit(
-        OpenWQ_json& OpenWQ_json){
-        
-        // Read Master file name
-        const std::string OpenWQ_masterjson = "openWQ_master.json";
-        read_JSON_2class(
-                OpenWQ_json.Master,
-                OpenWQ_masterjson); // master file
-
-        // Read other JSON configuration files defined in Master file 
-        read_JSON_2class(
-                OpenWQ_json.Config,
-                OpenWQ_json.Master["openWQ_config_file"]); // main confirguration
-
-        read_JSON_2class(
-                OpenWQ_json.BGCcycling,
-                OpenWQ_json.Master["openWQ_BGC_cycling_file"]); // BGCcycling cycling
-
 }

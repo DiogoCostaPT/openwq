@@ -35,6 +35,7 @@ class OpenWQ_json
     json Master;
     json Config;
     json BGCcycling;
+    json SinkSource;
 
 };
 

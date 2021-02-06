@@ -4,7 +4,12 @@
     "Authors": "Diogo Costa",
     "Date": "May_2020",
     "Comment": "Default file for testing purposes",
-    "Export_results_folder": "bin/Results",
-    "openWQ_config_file": "bin/openWQ_config.json",
-    "openWQ_BGC_cycling_file": "bin/BGC_cycling.json"
+    "openWQ_INPUT": {
+    	"Config_file": "bin/openWQ_config.json",
+    	"BGC_cycles_file": "bin/openWQ_BGC_cycling.json",
+    	"SinkSource_file": "bin/openWQ_SinkSource.json"
+	},
+	"openWQ_OUTPUT": {
+		"Results_folder": "bin/Results"
+	}
 }
