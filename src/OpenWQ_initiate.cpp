@@ -132,13 +132,17 @@ void OpenWQ_initiate::readSetIC(
 
             // Apply IC conditons (no need to handle error
             // Already done in OpenWQ_initiate::Transform_Units)
+            /* ########################################
             // if CONCENTRATION
+            ######################################## */
             if(ic_type.compare("concentration") == 0){
                 (*OpenWQ_vars.chemass)(icmp)(chemi)(ix,iy,iz) =// units: g (basic units of MASS in openWQ)
                     ic_value // converted to mg/l (or g/m3) in OpenWQ_initiate::Transform_Units
                     * iwater_volume; // passed in m3
             }
+            /* ########################################
             // if MASS
+            ######################################## */
             else if(ic_type.compare("mass") == 0){
                 (*OpenWQ_vars.chemass)(icmp)(chemi)(ix,iy,iz) =// units: g (basic units of MASS in openWQ)
                     ic_value // converted to mg/l (or g/m3) in OpenWQ_initiate::Transform_Units
@@ -179,11 +183,11 @@ void OpenWQ_initiate::Transform_Units(
     std::transform(ic_unit.begin(), ic_unit.end(), ic_unit.begin(),
         [](unsigned char c){ return std::tolower(c); });
 
-    /* ########################################
-    // Check type of IC (concentration or mass)
-    ########################################## */
 
+    // Check type of IC (concentration or mass)
+    /* ########################################
     // CONCENTRATION (Goal: convert to mg/l or g/m3 => openWQ internal units)
+    ######################################## */
     if(ic_type.compare("concentration") == 0){
         
         // Default concentration units = mg/l or g/m3 (openWQ internal units)
@@ -195,7 +199,9 @@ void OpenWQ_initiate::Transform_Units(
             unit_unkown_flag = true;
         }
     }
+    /* ########################################
     // MASS (Goal: convert to g => openWQ internal units)
+    ######################################## */
     else if(ic_type.compare("mass") == 0){
         
         // Default mass units = g (openWQ internal units)
@@ -207,7 +213,9 @@ void OpenWQ_initiate::Transform_Units(
             unit_unkown_flag = true;
         }
     } 
+    /* ########################################
     // ERROR: ic_type nkown
+    ######################################## */
     else{
         type_unkown_flag = true;
     }
