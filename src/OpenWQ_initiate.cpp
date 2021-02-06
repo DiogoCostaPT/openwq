@@ -41,29 +41,39 @@ void OpenWQ_initiate::initmemory(
     int numspec = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size(); // number of chemical species in BGCcycling
     typedef arma::field<arma::Cube<double>> arma_fieldcube; // typedef data structure: used for domain_field
 
+    /* ########################################
+    // Loop over compartments
     // Assign and  allocate memory to openWQ variables: chemass
-    for (int icomp=0;icomp<num_HydroComp;icomp++){
+    ######################################## */
+    for (int icmp=0;icmp<num_HydroComp;icmp++){
             
-        // Dimensions for compartment icomp
-        n_xyz[0] = std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(icomp)); // num of x elements
-        n_xyz[1] = std::get<3>(OpenWQ_hostModelconfig.HydroComp.at(icomp)); // num of y elements
-        n_xyz[2] = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icomp)); // num of z elements
+        // Dimensions for compartment icmp
+        n_xyz[0] = std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // num of x elements
+        n_xyz[1] = std::get<3>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // num of y elements
+        n_xyz[2] = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // num of z elements
         
-        // Generate arma::cube of compartment icomp size
+        // Generate arma::cube of compartment icmp size
         arma::Cube<double> domain_xyz(n_xyz[0],n_xyz[1],n_xyz[2]);
 
-        // Get number of species in compartment icomp
-        HydroCmpName = std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icomp));
+        // Get number of species in compartment icmp
+        HydroCmpName = std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp));
         
         // Create arma for chemical species
         // Needs to be reset because each compartment can have a different number of compartments
         arma_fieldcube domain_field(numspec); // all species are simulated for all compartments
 
+        /* ########################################
+        // Loop over dimensions of compartment icmp
         // Push 3D arma::cube into the arma::field of each chemical species
+        ######################################## */
         for (int s=0;s<numspec;s++){
             domain_field(s) = domain_xyz;
         }
-        (*OpenWQ_vars.chemass)(icomp) = domain_field;
+
+        /* ########################################
+        // Allocate Memory
+        ######################################## */
+        (*OpenWQ_vars.chemass)(icmp) = domain_field;
     }
 
 }
