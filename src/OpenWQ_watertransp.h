@@ -21,7 +21,7 @@
 #define OpenWQ_watertranspH_INCLUDED
 
 #include <armadillo>
-#include "string.h"
+#include <string>
 #include <algorithm>
 #include "exprtk.hpp"
 #include <cstdio>

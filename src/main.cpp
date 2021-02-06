@@ -22,10 +22,11 @@
 // #include "utility.h"
 
 #include "OpenWQ_global.h"
-#include "OpenWQ_load.h"
+#include "OpenWQ_readjson.h"
 #include "OpenWQ_initiate.h"
 #include "OpenWQ_chem.h"
 #include "OpenWQ_watertransp.h"
+#include "OpenWQ_sinksource.h"
 //#include "OpenWQ_print.h"
 
 int main(int argc, char* argv[]) 
@@ -55,9 +56,9 @@ int main(int argc, char* argv[])
     // Create Object: OpenWQ_json (Input JSON files)
     OpenWQ_json OpenWQ_json; // create object
     
-    // Load input data
-    OpenWQ_load OpenWQ_load; // create object: json files load modules
-    OpenWQ_load.loadinit(
+    // Read JSON file
+    OpenWQ_readjson OpenWQ_readjson; // create object: json files load modules
+    OpenWQ_readjson.read_all(
         OpenWQ_json);
     
     // Create Object: OpenWQ_vars (openWQ variables)
@@ -92,17 +93,32 @@ int main(int argc, char* argv[])
         igridcell_volume,   // all calculations assume unit = m3
         iwater_volume);     // all calculations assume unit = m3
 
-    // OpenWQ_watertransp
-    OpenWQ_watertransp OpenWQ_watertransp;   // create object: transport modules
-    OpenWQ_chem OpenWQ_chem;                 // create object: biochemistry modules
-    //OpenWQ_print OpenWQ_print;             // print modules
+    // Create objects 
+    OpenWQ_watertransp OpenWQ_watertransp;      // transport modules
+    OpenWQ_chem OpenWQ_chem;                    // biochemistry modules
+    OpenWQ_sinksource OpenWQ_sinksource;        // sink and source modules
+    //OpenWQ_print OpenWQ_print;                // print modules
     
     int ts_hosthydromod = 1000; // (timesteps) TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     
+    /* #################################################
     // Loop: Time 
     // Space loop is inside OpenWQ_chem.Run function
     // No space loop for OpenWQ_watertransp.Adv: it needs to be called throughout the host model code
+    ################################################# */
     for (int ts=0;ts<ts_hosthydromod;ts++){ // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+
+        /* ########################################
+         Sources and Sinks (doesn't need space loop => it's inside the function)
+        ######################################## */ 
+        OpenWQ_sinksource.CheckApply(
+            OpenWQ_json,
+            OpenWQ_vars,
+            OpenWQ_hostModelconfig);
+
+        /* ########################################
+        Transport with water fluxes (No space loop: needs to be called for every water flux)
+        ######################################## */ 
 
         int source = 1;                 // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
         int ix_s = 1;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
@@ -115,10 +131,6 @@ int main(int argc, char* argv[])
         double wflux_s2r = 0.01;        // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
         double wmass_recipient = 0.1;   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
 
-
-        /* ###################################################################################
-        Transport with water fluxes
-        ################################################################################### */ 
 
         // FUNCTION 1: Just Advection (Land Surface model)
         OpenWQ_watertransp.Adv(
@@ -152,24 +164,18 @@ int main(int argc, char* argv[])
         //    int & index_chem){
 
 
-        /* ###################################################################################
-        Biogeochemistry
-        ################################################################################### */ 
+         /* ########################################
+         Biogeochemistry (doesn't need space loop => it's inside the function)
+        ######################################## */ 
 
         OpenWQ_chem.Run(
             OpenWQ_json,
             OpenWQ_vars,
             OpenWQ_hostModelconfig);
 
-        /* ###################################################################################
-        Sources and Sink
-        ################################################################################### */ 
-
-        // Need to create functions for this
-
-        /* ###################################################################################
-        Print Results
-        ################################################################################### */ 
+         /* ########################################
+         Print Results
+        ######################################## */ 
         //OpenWQ_print.writeVTU(OpenWQ_json,OpenWQ_vars,num_HydroComp,0); 
 
     }

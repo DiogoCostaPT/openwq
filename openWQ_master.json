@@ -7,7 +7,16 @@
     "openWQ_INPUT": {
     	"Config_file": "bin/openWQ_config.json",
     	"BGC_cycles_file": "bin/openWQ_BGC_cycling.json",
-    	"SinkSource_file": "bin/openWQ_SinkSource.json"
+    	"SinkSource_files": {
+    		"1": {
+    			"label": "fertilizer_N",
+    			"filepath": "bin/openWQ_source_fertN.json"
+    		},
+    		"2": {
+    			"label": "fertilizer_P",
+    			"filepath": "bin/openWQ_source_fertP.json"
+    		}
+    	}
 	},
 	"openWQ_OUTPUT": {
 		"Results_folder": "bin/Results"

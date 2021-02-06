@@ -15,38 +15,38 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-#ifndef OPENWQ_CHEMH_INCLUDED
-#define OPENWQ_CHEMH_INCLUDED
+#ifndef OpenWQ_READJSONH_INCLUDED
+#define OpenWQ_READJSONH_INCLUDED
 
 #include <armadillo>
 #include <string>
 #include <algorithm>
-#include "exprtk.hpp"
-#include <cstdio>
-#include <tuple>
 
-// #include "utility.h"
+#include "exprtk.hpp"
+
+#include <cstdio>
+
+#include "jnlohmann/json.h"
+using json = nlohmann::json;
+
+//#include "utility.h"
 
 #include "OpenWQ_global.h"
 
-// Biogeochemistry
-
-class OpenWQ_chem{
+class OpenWQ_readjson{
 
     public:
 
-    void Run(
-        OpenWQ_json& OpenWQ_json,
-        OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig);
+    void read_all(
+        OpenWQ_json& OpenWQ_json);
 
-    void BGC_Transform(
-        OpenWQ_json& OpenWQ_json,
-        OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        int icmp);
+    void read_JSON_2class(
+        json& jsondata,                         // JSON structure to save to
+        const bool substruc_flag,               // Save in subfield of JSON structure? only if multiple files (e.g., source and sinks)        
+        const std::string JsonSubStruct_name,    // if true, name of subfield    
+        const std::string jsonfile);            // Name of JSON file
 
 };
 
 #endif
+

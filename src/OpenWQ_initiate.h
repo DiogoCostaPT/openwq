@@ -22,7 +22,6 @@
 #include <tuple>
 #include <vector>
 #include "jnlohmann/json.h"
-
 using json = nlohmann::json;
 
 #include "OpenWQ_global.h"

@@ -1,0 +1,20 @@
+{
+	"METADATA": {
+		"Comment": "NO3-N loading from fertilizer",
+		"Source": "bla bla"
+	},
+	"NO3": {
+		"Type": "source",
+		"Load": {
+			"1": [2001,05,20,"Soil",1,1,1,20,"kg"],
+			"2": [2001,05,20,"Soil",1,1,1,20,"kg"]
+		}
+	},
+	"NH4": {
+		"Type": "source",
+		"Load": {
+			"1": [2001,05,20,"Soil",1,1,1,20,"kg"],
+			"2": [2001,05,20,"Soil",1,1,1,20,"kg"]
+		}
+	}
+}
