@@ -67,6 +67,145 @@ void OpenWQ_initiate::initmemory(
 
 }
 
+
+// Initial conditions (water and chemical mass)
+void OpenWQ_initiate::readSetIC(
+    OpenWQ_json& OpenWQ_json,
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    const int icmp,
+    const int ix,
+    const int iy,
+    const int iz,
+    const double igridcell_volume,
+    const double iwater_volume){
+    
+    // Local variables
+    int num_chem = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size(); // number of chemical species
+    std::string chemname; // chemical name
+    std::tuple<int,std::string,std::string> ic_info_i; // IC information in config file
+    double ic_value; // IC value of chemical i
+    std::string ic_type; // IC value type of chemical (mass or concentration)
+    std::string ic_units; // // IC value units of chemical (e.g, kg/m3, mg/l))
+
+     // Get chemical species list from BGC_json
+    num_chem = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size();
+    std::vector<std::string> chem_species_list;
+    for (int chemi=0;chemi<num_chem;chemi++){
+        chem_species_list.push_back(OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]
+            ["list"][std::to_string(chemi+1)]);
+    }
+
+    // Find compartment icmp name from code (host hydrological model)
+    std::string CompName_icmp = std::get<1>(
+        OpenWQ_hostModelconfig.HydroComp.at(icmp)); // Compartment icomp name
+
+    /* ########################################
+    // Loop over chemical species
+    ######################################## */
+
+    for (int chemi=0;chemi<num_chem;chemi++){
+
+        chemname = chem_species_list[chemi]; // chemical name in BGC-json list
+
+        // Get tuple with IC information for compartment CompName_icmp and chemical chemname
+        // If not found in compartment icmp, it's because IC were not defined - set to zero.
+        try{ // IC conditions provided
+            ic_info_i = 
+                OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
+                ["initial_conditions"][chemname];
+
+            ic_value = std::get<0>(ic_info_i);      // get value
+            ic_type = std::get<1>(ic_info_i);       // get type
+            ic_units = std::get<2>(ic_info_i);      // get units 
+
+            // Transform units based on info provided
+            OpenWQ_initiate::Transform_Units(
+                ic_value, // ic_value passed by reference so that it can be changed
+                ic_type,
+                ic_units);
+
+            // Apply IC conditons
+           // if(ic_type.compare("concentration") == 0){
+
+        }catch(json::type_error& e){ // If IC conditions are not provided
+            std::cout << "IC conditions: not defined " 
+                    << "(compartment: " << CompName_icmp << ", " 
+                    << "chemical: " << chemname << ")"
+                    << std::endl;
+        }  
+    }
+}
+
+void OpenWQ_initiate::Transform_Units(
+    double &ic_value, // IC value of chemical (passed by reference)
+    std::string ic_type, // IC value type of chemical (mass or concentration)
+    std::string ic_unit){ // // IC value units of chemical (e.g, kg/m3, mg/l))
+
+    // Local Variales
+    double unit_convert_k = 1.0f;
+    bool type_unkown_flag = false;
+    bool unit_unkown_flag = false;
+
+
+    // Convert ic_type and ic_unit to lower case to guarantee match
+    std::transform(ic_type.begin(), ic_type.end(), ic_type.begin(),
+        [](unsigned char c){ return std::tolower(c); });
+    std::transform(ic_unit.begin(), ic_unit.end(), ic_unit.begin(),
+        [](unsigned char c){ return std::tolower(c); });
+
+    /* ########################################
+    // Check type of IC (concentration or mass)
+    ########################################## */
+
+    // CONCENTRATION
+    if(ic_type.compare("concentration") == 0){
+        
+        // Default units of openWQ = mg/l or g/m3
+        if (ic_unit.compare("mg/l") == 0 || ic_unit.compare("g/m3") == 0){
+            unit_convert_k = 1.0f;
+        }else if (ic_unit.compare("ug/l") == 0){
+            unit_convert_k = 0.001;
+        }else{ // ERROR: ic_unit unkown
+            unit_unkown_flag = true;
+        }
+    }
+    // MASS
+    else if(ic_type.compare("mass") == 0){
+        
+        if (ic_unit.compare("g/m3") == 0){
+            unit_convert_k = 1.0f;
+        }else if (ic_unit.compare("kg/m3") == 0){
+            unit_convert_k = 1000;
+        }else{ // ERROR: ic_tunit unkown
+            unit_unkown_flag = true;
+        }
+    } 
+    // ERROR: ic_type nkown
+    else{
+        type_unkown_flag = true;
+    }
+
+    /* ########################################
+    // Error Handling
+    ########################################## */
+    if (type_unkown_flag || unit_unkown_flag){
+        
+        if (type_unkown_flag) 
+            std::cout << "ERROR: Initial conditions type: unkown (" << ic_type << ")" << std::endl;
+        if (unit_unkown_flag) 
+            std::cout << "ERROR: Initial conditions unit: unkown (" << ic_unit << ")" << std::endl;
+        exit (EXIT_FAILURE);
+    }   
+
+    /* ########################################
+    // Convert units using unit_convert_k (ic_value passed by reference)
+     ########################################## */
+    ic_value *= unit_convert_k;
+
+}
+
+
 /*
 // read 3D col data from file at assign to variable
 void OpenWQ_initiate::read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col, 
@@ -142,53 +281,3 @@ void OpenWQ_initiate::read_file_3Dcoldata(json & filejson,arma::Cube<double> & t
     thisFile.close();
 }
 */
-
-/*
-// Initial conditions (water and chemical mass)
-void OpenWQ_initiate::readSetIC(OpenWQ_json& OpenWQ_json,OpenWQ_vars& OpenWQ_vars){
-
-    int num_HydroComp = OpenWQ_json.H2O["compartments"].size();
-    int numspec;
-    std::string filepath;
-    
-    for (int i=0;i<num_HydroComp;i++){
-
-        // wmass
-        //read_file_3Dcoldata(OpenWQ_json.H2O[std::to_string(i+1)]["IC_file"],
-        //    (*OpenWQ_vars.wmass)(i),OpenWQ_json.H2O[std::to_string(i+1)]["IC_file"]["var_col"],
-        //    OpenWQ_json.H2O[std::to_string(i+1)]["IC_file"]["file_path"]);
-        
-        // chemass
-        numspec = OpenWQ_json.WQ["compartments"][std::to_string(i+1)]["chem_species"].size();
-        std::vector<std::string> chemnames = 
-            OpenWQ_json.WQ["compartments"][std::to_string(i+1)]["chem_species"]; //chem species # within compartment icmp (from JSON.WQ)
-        
-        for (int chem_i=0;chem_i<numspec;chem_i++){
-            read_file_3Dcoldata(OpenWQ_json.WQ["compartments"][std::to_string(i+1)][std::to_string(chem_i+1)]["IC_file"],(*OpenWQ_vars.chemass)(i)(chem_i),
-                OpenWQ_json.WQ["compartments"][std::to_string(i+1)][std::to_string(chem_i+1)]["IC_file"]["var_col"],
-                OpenWQ_json.WQ["compartments"][std::to_string(i+1)][std::to_string(chem_i+1)]["IC_file"]["file_path"]);
-        }
-    }
-}
-*/
-
-// Reads JSON files and initiated data structures
-void OpenWQ_initiate::initiate(
-    OpenWQ_json& OpenWQ_json,
-    OpenWQ_vars& OpenWQ_vars,
-    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig){
-  
-    // Initialize memmory for major arma::field variables
-    OpenWQ_initiate::initmemory(
-        OpenWQ_json,
-        OpenWQ_vars,
-        OpenWQ_hostModelconfig);
-
-    /*
-    // IC (water and chemical mass)
-    OpenWQ_initiate::readSetIC(
-        OpenWQ_json,
-        OpenWQ_vars);
-        */
-
-}

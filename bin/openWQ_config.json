@@ -8,7 +8,7 @@
         "Snow":{
             "cycling_framework": ["N_inorg","P_inorg"],
             "initial_conditions":{
-                "NO3": [2,"concentration","mg/l"],
+                "NO3": [2,"concentration","ug/l"],
                 "NH4": [2,"concentration","mg/l"],
                 "N2": [2,"concentration","mg/l"],
                 "DON": [2,"concentration","mg/l"],
@@ -18,7 +18,7 @@
                 "DOP": [100,"mass","kg/m3"],
                 "partP": [100,"mass","kg/m3"],
                 "labile_orgP": [100,"mass","kg/m3"],
-                "refractory_orgP": [100,"mass","kg/m3"],
+                "refractory_orgP": [100,"mass","kg/m3"]
             }
         },
         "Soil":{

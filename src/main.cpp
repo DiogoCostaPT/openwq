@@ -66,11 +66,32 @@ int main(int argc, char* argv[])
    
     // OpenWQ_initiate
     OpenWQ_initiate OpenWQ_initiate; // create object: start modules e.g., initiate
-    OpenWQ_initiate.initiate(
+    
+    // Allocate memory: set variable sizes
+    OpenWQ_initiate.initmemory(
         OpenWQ_json,
         OpenWQ_vars,
         OpenWQ_hostModelconfig);
     
+    // Read and Set Initial Conditions 
+    // Needs loop in host model because it requires grid-cell volume (mass IC) or water volume (concentration IC))
+    int icmp = 0;                    // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    int ix = 1;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    int iy = 1;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    int iz = 0;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    double igridcell_volume = 1;     // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    double iwater_volume = 0.5;      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    OpenWQ_initiate.readSetIC(
+        OpenWQ_json,
+        OpenWQ_vars,
+        OpenWQ_hostModelconfig,
+        icmp,
+        ix,
+        iy,
+        iz,
+        igridcell_volume,   // asssuming units = m3
+        iwater_volume);     // asssuming units = m3
+
     // OpenWQ_watertransp
     OpenWQ_watertransp OpenWQ_watertransp;   // create object: transport modules
     OpenWQ_chem OpenWQ_chem;                 // create object: biochemistry modules
@@ -78,7 +99,9 @@ int main(int argc, char* argv[])
     
     int ts_hosthydromod = 1000; // (timesteps) TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     
-    // Loop: Time (space loop is inside the functions)
+    // Loop: Time 
+    // Space loop is inside OpenWQ_chem.Run function
+    // No space loop for OpenWQ_watertransp.Adv: it needs to be called throughout the host model code
     for (int ts=0;ts<ts_hosthydromod;ts++){ // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
 
         int source = 1;                 // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL

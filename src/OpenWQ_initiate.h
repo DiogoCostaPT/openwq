@@ -36,22 +36,27 @@ class OpenWQ_initiate{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig);
 
-    void initiate(
+    void readSetIC(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig);
-
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        const int icmp,
+        const int ix,
+        const int iy,
+        const int iz,
+        const double igridcell_volume,
+        const double iwater_volume);
 
     /*
     void read_file_3Dcoldata(
         json& filejson,
         arma::Cube<double>& to_cubedata, 
         int var_col,std::string filename);
-
-    void readSetIC(
-        OpenWQ_json& OpenWQ_json,
-        OpenWQ_vars& OpenWQ_vars);
     */
+   void Transform_Units(
+        double &ic_value, // IC value of chemical (passed by reference)
+        std::string ic_type, // IC value type of chemical (mass or concentration)
+        std::string ic_units);
 
 };
 
