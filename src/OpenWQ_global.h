@@ -75,8 +75,9 @@ class OpenWQ_vars
             // wchem_exch = std::unique_ptr<arma::field<arma::Mat<double>>>(new arma::field<arma::mat>(numinteract)); // 1 field: flow between compartments
             chemass = std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));  // multiple fields: one for eacg chem
         
-        }catch(int e){
-            std::cout << "An exception occurred creating the domain: ERR " << std::to_string(e) << std::endl;
+        }catch(const std::exception& e){
+            std::cout << "ERROR: An exception occured during memory allocation (openWQ_global.h)" << std::endl;
+            exit (EXIT_FAILURE);
         }
 
     }
