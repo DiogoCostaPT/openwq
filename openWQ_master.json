@@ -19,6 +19,6 @@
     	}
 	},
 	"openWQ_OUTPUT": {
-		"Results_folder": "bin/Results"
+		"Results_folder": "bin/Output"
 	}
 }

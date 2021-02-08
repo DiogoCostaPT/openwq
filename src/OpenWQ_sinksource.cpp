@@ -245,7 +245,7 @@ void OpenWQ_sinksource::CheckApply(
                         OpenWQ_sinksource::Apply_Sink(
                             OpenWQ_vars,
                             cmpi_ssi,           // compartment model index
-                            chemi_ssi,       // chemical model index    
+                            chemi_ssi,          // chemical model index    
                             ix_json,            // compartment model ix
                             iy_json,            // compartment model iy
                             iz_json,            // compartment model iz

@@ -32,8 +32,9 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
     unsigned int nx, ny, nz;                // compartment dimensions
     unsigned int numchem;                   // number of chemical species
     unsigned int index_i;                   // iteractive index
+    unsigned int numvert, nnumel;           // iteractive variables for VTK
     std::string CompName_icmp;              // compartment name (iteractive)
-    int numvert, nnumel;                    // iteractive variables for VTK
+    
 
     // Get number of species for compartment icmp
     unsigned int numspec = OpenWQ_json.BGCcycling
@@ -51,7 +52,9 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
     // Chemical names
     std::vector<std::string> chemnames = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"];
 
-    // loop over compartments
+    /* ########################################
+    // Loop over comparments
+    ######################################## */
     for (unsigned int icmp=0;icmp<num_HydroComp;icmp++){
 
         // Compartment info
@@ -76,7 +79,9 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
         numvert = (nx+1)*(ny+1)*(nz+1);
         nnumel = nx * ny * nz;
         
+        /* ########################################
         // Determine the all the vertices (assuming a spacing of 1 m for now)
+        ######################################## */
         double x[numvert][3];
         index_i = 0;
         for (unsigned int iz=0;iz<=nz;iz++){   
@@ -89,8 +94,10 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
                 }
             }
         }
-    
-    // Determine the faces of each element/hexahedron
+
+        /* ########################################
+        // Determine the faces of each element/hexahedron
+        ######################################## */
         vtkIdType pts[nnumel][8];
         index_i = 0;
         for (unsigned int iz=0;iz<nz;iz++){   
@@ -123,6 +130,9 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
 
         ugrid->SetPoints(points);
 
+        /* ########################################
+        // Loop over chemical species
+        ######################################## */
         for (unsigned int ichem=0;ichem<numchem;ichem++){ // all chemical species
 
             vtkSmartPointer<vtkDoubleArray> varexpot = vtkSmartPointer<vtkDoubleArray>::New();
@@ -132,6 +142,9 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
             chemname = chemnames[ichem];
             varexpot->SetName(chemname.c_str());
 
+            /* ########################################
+            // Loop dimensions
+            ######################################## */
             index_i = 0;
             for (unsigned int iz=0;iz<=nz;iz++){   
                     for (unsigned int ix=0;ix<=nx;ix++){
