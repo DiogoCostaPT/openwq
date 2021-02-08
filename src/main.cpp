@@ -27,7 +27,8 @@
 #include "OpenWQ_chem.h"
 #include "OpenWQ_watertransp.h"
 #include "OpenWQ_sinksource.h"
-//#include "OpenWQ_print.h"
+#include "OpenWQ_output.h"
+
 
 int main(int argc, char* argv[]) 
 {   
@@ -97,7 +98,7 @@ int main(int argc, char* argv[])
     OpenWQ_watertransp OpenWQ_watertransp;      // transport modules
     OpenWQ_chem OpenWQ_chem;                    // biochemistry modules
     OpenWQ_sinksource OpenWQ_sinksource;        // sink and source modules
-    //OpenWQ_print OpenWQ_print;                // print modules
+    OpenWQ_output OpenWQ_output;                // print modules
     
     unsigned int ts_hosthydromod = 1000; // (timesteps) TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     
@@ -183,10 +184,14 @@ int main(int argc, char* argv[])
             OpenWQ_vars,
             OpenWQ_hostModelconfig);
 
-         /* ########################################
-         Print Results
+        /* ########################################
+         Output Results
         ######################################## */ 
-        //OpenWQ_print.writeVTU(OpenWQ_json,OpenWQ_vars,num_HydroComp,0); 
+        OpenWQ_output.writeVTU(
+            OpenWQ_json,
+            OpenWQ_vars,
+            OpenWQ_hostModelconfig,
+            ts); 
 
     }
     
