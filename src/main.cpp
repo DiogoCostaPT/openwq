@@ -175,7 +175,8 @@ int main(int argc, char* argv[])
 
          /* ########################################
          Biogeochemistry (doesn't need space loop => it's inside the function)
-        ######################################## */ 
+        ###########################
+        ############# */ 
 
         OpenWQ_chem.Run(
             OpenWQ_json,
