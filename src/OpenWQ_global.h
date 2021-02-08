@@ -60,7 +60,7 @@ class OpenWQ_hostModelconfig
     std::vector<hydroTuple> HydroComp;
     
     // Number of hydrological compartments (that can store and transport water)
-    int num_HydroComp;
+    unsigned int num_HydroComp;
    
 
 };

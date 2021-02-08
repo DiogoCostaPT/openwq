@@ -45,7 +45,7 @@ class OpenWQ_chem{
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        int icmp);
+        unsigned int icmp);
 
 };
 

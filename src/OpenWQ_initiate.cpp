@@ -35,17 +35,17 @@ void OpenWQ_initiate::initmemory(
     // Local variables
     std::string HydroCmpName;   // Hydrological compartment names as specified in main.cpp and 
                                 // OpenWQ_json.openWQ_config.json (they need to match)
-    int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
+    unsigned int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
     
     // Create arma for chemical species
-    int numspec = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size(); // number of chemical species in BGCcycling
+    unsigned int numspec = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size(); // number of chemical species in BGCcycling
     typedef arma::field<arma::Cube<double>> arma_fieldcube; // typedef data structure: used for domain_field
 
     /* ########################################
     // Loop over compartments
     // Assign and  allocate memory to openWQ variables: chemass
     ######################################## */
-    for (int icmp=0;icmp<num_HydroComp;icmp++){
+    for (unsigned int icmp=0;icmp<num_HydroComp;icmp++){
             
         // Dimensions for compartment icmp
         n_xyz[0] = std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // num of x elements
@@ -66,7 +66,7 @@ void OpenWQ_initiate::initmemory(
         // Loop over dimensions of compartment icmp
         // Push 3D arma::cube into the arma::field of each chemical species
         ######################################## */
-        for (int s=0;s<numspec;s++){
+        for (unsigned int s=0;s<numspec;s++){
             domain_field(s) = domain_xyz;
         }
 
@@ -89,13 +89,13 @@ void OpenWQ_initiate::readSetIC(
     const int ix,
     const int iy,
     const int iz,
-    const double igridcell_volume,  // all calculations assume unit = m3
-    const double iwater_volume){    // all calculations assume unit = m3
+    double igridcell_volume,  // all calculations assume unit = m3
+    double iwater_volume){    // all calculations assume unit = m3
     
     // Local variables
-    int num_chem = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size(); // number of chemical species
+    unsigned int num_chem = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size(); // number of chemical species
     std::string chemname; // chemical name
-    std::tuple<int,std::string,std::string> ic_info_i; // IC information in config file
+    std::tuple<unsigned int,std::string,std::string> ic_info_i; // IC information in config file
     double ic_value; // IC value of chemical i
     std::string ic_type; // IC value type of chemical (mass or concentration)
     std::string ic_units; // // IC value units of chemical (e.g, kg/m3, mg/l))
@@ -103,7 +103,7 @@ void OpenWQ_initiate::readSetIC(
      // Get chemical species list from BGC_json
     num_chem = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size();
     std::vector<std::string> chem_species_list;
-    for (int chemi=0;chemi<num_chem;chemi++){
+    for (unsigned int chemi=0;chemi<num_chem;chemi++){
         chem_species_list.push_back(OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]
             ["list"][std::to_string(chemi+1)]);
     }
@@ -116,7 +116,7 @@ void OpenWQ_initiate::readSetIC(
     // Loop over chemical species
     ######################################## */
 
-    for (int chemi=0;chemi<num_chem;chemi++){
+    for (unsigned int chemi=0;chemi<num_chem;chemi++){
 
         chemname = chem_species_list[chemi]; // chemical name in BGC-json list
 

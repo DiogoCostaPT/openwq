@@ -51,8 +51,8 @@ void OpenWQ_readjson::read_all(
                 OpenWQ_json.Master["openWQ_INPUT"]["BGC_cycles_file"]); 
 
         // SinkSource
-        int num_ssf = OpenWQ_json.Master["openWQ_INPUT"]["SinkSource_files"].size();
-        for (int ssf=0;ssf<num_ssf;ssf++){
+        unsigned int num_ssf = OpenWQ_json.Master["openWQ_INPUT"]["SinkSource_files"].size();
+        for (unsigned int ssf=0;ssf<num_ssf;ssf++){
                 read_JSON_2class(
                         OpenWQ_json.SinkSource,
                         true,

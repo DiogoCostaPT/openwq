@@ -76,10 +76,10 @@ int main(int argc, char* argv[])
     
     // Read and Set Initial Conditions 
     // Needs loop in host model because it requires grid-cell volume (mass IC) or water volume (concentration IC))
-    int icmp = 0;                    // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
-    int ix = 1;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
-    int iy = 1;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
-    int iz = 0;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    unsigned int icmp = 0;                    // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    unsigned int ix = 1;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    unsigned int iy = 1;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    unsigned int iz = 0;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     double igridcell_volume = 1;     // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     double iwater_volume = 0.5;      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     OpenWQ_initiate.readSetIC(
@@ -99,14 +99,14 @@ int main(int argc, char* argv[])
     OpenWQ_sinksource OpenWQ_sinksource;        // sink and source modules
     //OpenWQ_print OpenWQ_print;                // print modules
     
-    int ts_hosthydromod = 1000; // (timesteps) TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    unsigned int ts_hosthydromod = 1000; // (timesteps) TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     
     /* #################################################
     // Loop: Time 
     // Space loop is inside OpenWQ_chem.Run function
     // No space loop for OpenWQ_watertransp.Adv: it needs to be called throughout the host model code
     ################################################# */
-    for (int ts=0;ts<ts_hosthydromod;ts++){ // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    for (unsigned int ts=0;ts<ts_hosthydromod;ts++){ // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
 
         /* ########################################
          Sources and Sinks (doesn't need space loop => it's inside the function)
@@ -129,14 +129,14 @@ int main(int argc, char* argv[])
         Transport with water fluxes (No space loop: needs to be called for every water flux)
         ######################################## */ 
 
-        int source = 1;                 // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
-        int ix_s = 1;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
-        int iy_s = 1;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
-        int iz_s = 0;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
-        int recipient = 2;              // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
-        int ix_r = 1;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
-        int iy_r = 1;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
-        int iz_r = 0;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+        unsigned int source = 1;                 // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+        unsigned int ix_s = 1;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+        unsigned int iy_s = 1;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+        unsigned int iz_s = 0;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+        unsigned int recipient = 2;              // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+        unsigned int ix_r = 1;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+        unsigned int iy_r = 1;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+        unsigned int iz_r = 0;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
         double wflux_s2r = 0.01;        // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
         double wmass_recipient = 0.1;   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
 

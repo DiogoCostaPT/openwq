@@ -43,8 +43,8 @@ class OpenWQ_initiate{
         const int ix,
         const int iy,
         const int iz,
-        const double igridcell_volume,
-        const double iwater_volume);
+        double igridcell_volume,
+        double iwater_volume);
 
     /*
     void read_file_3Dcoldata(

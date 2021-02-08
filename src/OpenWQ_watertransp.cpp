@@ -33,18 +33,18 @@ void OpenWQ_watertransp::Adv(
         const int ix_r,
         const int iy_r,
         const int iz_r,
-        const double wflux_s2r,
-        const double wmass_recipient){
+        double wflux_s2r,
+        double wmass_recipient){
 
     double chemass_flux;
-    int ichem_mob;
+    unsigned int ichem_mob;
 
     // CHANGE THE LINE BELOW: see my notes -> there should be no icmp because all compartments should have the same number of mobile species
-    std::vector<int> chemspec_mobile = JSONfiles.BGCcycling["CHEMICAL_SPECIES"]["mobile_species"];
-    int numspec = chemspec_mobile.size();
+    std::vector<unsigned int> chemspec_mobile = JSONfiles.BGCcycling["CHEMICAL_SPECIES"]["mobile_species"];
+    unsigned int numspec = chemspec_mobile.size();
 
     // Loop for mobile chemical species
-    for (int c=0;c<numspec;c++){
+    for (unsigned int c=0;c<numspec;c++){
 
         // mobile chemical species index
         ichem_mob = chemspec_mobile[c] - 1; // because C array indexing starts in 0 
