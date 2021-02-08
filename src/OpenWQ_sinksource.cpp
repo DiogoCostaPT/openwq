@@ -54,13 +54,7 @@ void OpenWQ_sinksource::CheckApply(
     std::vector<std::string> chem_species_list; // model chemical list
     std::vector<std::string> cmp_list;      // model compartment list
 
-    // Get chemical species list from BGC_json (this is repeated in chem function; maybe save in global)
-    unsigned int num_chem = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size();
-    for (unsigned int chemi=0;chemi<num_chem;chemi++){
-        chem_species_list.push_back(OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]
-            ["list"][std::to_string(chemi+1)]);
-    }
-
+ 
     // Get model comparment names list
     unsigned int num_cmp = OpenWQ_hostModelconfig.HydroComp.size();
     for (unsigned int ci=0;ci<num_cmp;ci++){
@@ -198,7 +192,12 @@ void OpenWQ_sinksource::CheckApply(
                     ss_units_json = OpenWQ_json.SinkSource // sink/source data
                         [std::to_string(ssf+1)]
                         [std::to_string(ssi+1)]
-                        ["Units"];    
+                        ["Units"]; 
+
+                    // Need to "- 1" for ix_json, iy_json, and iz_json because c++ starts at zero
+                    ix_json -= 1;
+                    iy_json -= 1;
+                    iz_json -= 1;
 
                     // Get compartment index
                     find_i = 

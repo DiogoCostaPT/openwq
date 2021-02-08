@@ -85,6 +85,7 @@ void OpenWQ_initiate::readSetIC(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
     const int icmp,
     const int ix,
     const int iy,
@@ -93,20 +94,11 @@ void OpenWQ_initiate::readSetIC(
     double iwater_volume){    // all calculations assume unit = m3
     
     // Local variables
-    unsigned int num_chem = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size(); // number of chemical species
     std::string chemname; // chemical name
     std::tuple<unsigned int,std::string,std::string> ic_info_i; // IC information in config file
     double ic_value; // IC value of chemical i
     std::string ic_type; // IC value type of chemical (mass or concentration)
     std::string ic_units; // // IC value units of chemical (e.g, kg/m3, mg/l))
-
-     // Get chemical species list from BGC_json
-    num_chem = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size();
-    std::vector<std::string> chem_species_list;
-    for (unsigned int chemi=0;chemi<num_chem;chemi++){
-        chem_species_list.push_back(OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]
-            ["list"][std::to_string(chemi+1)]);
-    }
 
     // Find compartment icmp name from code (host hydrological model)
     std::string CompName_icmp = std::get<1>(
@@ -116,9 +108,9 @@ void OpenWQ_initiate::readSetIC(
     // Loop over chemical species
     ######################################## */
 
-    for (unsigned int chemi=0;chemi<num_chem;chemi++){
+    for (unsigned int chemi=0;chemi<(*OpenWQ_wqconfig.num_chem);chemi++){
 
-        chemname = chem_species_list[chemi]; // chemical name in BGC-json list
+        chemname = (*OpenWQ_wqconfig.chem_species_list)[chemi]; // chemical name in BGC-json list
 
         // Get tuple with IC information for compartment CompName_icmp and chemical chemname
         // If not found in compartment icmp, it's because IC were not defined - set to zero.

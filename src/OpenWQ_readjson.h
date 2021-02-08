@@ -38,7 +38,8 @@ class OpenWQ_readjson{
     public:
 
     void read_all(
-        OpenWQ_json& OpenWQ_json);
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_wqconfig& OpenWQ_wqconfig);
 
     void read_JSON_2class(
         json& jsondata,                         // JSON structure to save to

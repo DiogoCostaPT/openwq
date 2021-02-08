@@ -23,6 +23,7 @@
 void OpenWQ_chem::Run(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig){
     
     // Local variable for num_HydroComp
@@ -35,6 +36,7 @@ void OpenWQ_chem::Run(
             OpenWQ_json,
             OpenWQ_vars,
             OpenWQ_hostModelconfig,
+            OpenWQ_wqconfig,
             icmp); 
 
     }
@@ -47,6 +49,7 @@ void OpenWQ_chem::BGC_Transform(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
     unsigned int icmp){
     
     // Local variables for expression evaluator: exprtk
@@ -62,7 +65,6 @@ void OpenWQ_chem::BGC_Transform(
     double param_val; // prameter value
     unsigned int num_BGCcycles; // number of BGC frameworks in comparment icmp
     unsigned int num_transf; // number of transformation in biogeochemical cycle bgci
-    unsigned int num_chem; // number of chemical species
     unsigned int nx = std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in x-direction
     unsigned int ny = std::get<3>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in y-direction
     unsigned int nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in z-direction
@@ -82,13 +84,6 @@ void OpenWQ_chem::BGC_Transform(
     // Get number of BGC frameworks in comparment icmp
     num_BGCcycles = BGCcycles_icmp.size();
         
-    // Get chemical species list from BGC_json
-    num_chem = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size();
-    std::vector<std::string> chem_species_list;
-    for (unsigned int chemi=0;chemi<num_chem;chemi++){
-        chem_species_list.push_back(OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]
-            ["list"][std::to_string(chemi+1)]);
-    }
 
     /* ########################################
     // Loop over biogeochemical cycling frameworks
@@ -124,9 +119,10 @@ void OpenWQ_chem::BGC_Transform(
             
             // Find species indexes: consumed, produced and in the expression
             
-            for(unsigned int chemi=0;chemi<num_chem;chemi++){
+            for(unsigned int chemi=0;chemi<(*OpenWQ_wqconfig.num_chem);chemi++){
                 
-                chemname = chem_species_list[chemi];
+                // Get chemical species name
+                chemname = (*OpenWQ_wqconfig.chem_species_list)[chemi];
 
                 // Consumedchemass_consumed, chemass_produced;ty()) 
                 index_i = consumed_spec.find(chemname);

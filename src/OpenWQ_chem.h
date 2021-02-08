@@ -39,12 +39,14 @@ class OpenWQ_chem{
     void Run(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig);
 
     void BGC_Transform(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         unsigned int icmp);
 
 };

@@ -39,11 +39,12 @@ class OpenWQ_initiate{
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         const int icmp,
         const int ix,
         const int iy,
         const int iz,
-        double igridcell_volume,
+        double igridcell_volume,  // all calculations assume unit = m3
         double iwater_volume);
 
     /*

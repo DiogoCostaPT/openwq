@@ -26,11 +26,11 @@
 int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
     unsigned int ts){ // time step (in seconds)
 
     // Local Variables
     unsigned int nx, ny, nz;                // compartment dimensions
-    unsigned int numchem;                   // number of chemical species
     unsigned int index_i;                   // iteractive index
     unsigned int numvert, nnumel;           // iteractive variables for VTK
     std::string CompName_icmp;              // compartment name (iteractive)
@@ -48,9 +48,6 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
 
     // Number of hydrological compartments in host model
     unsigned int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); 
-
-    // Chemical names
-    std::vector<std::string> chemnames = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"];
 
     /* ########################################
     // Loop over comparments
@@ -133,13 +130,16 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
         /* ########################################
         // Loop over chemical species
         ######################################## */
-        for (unsigned int ichem=0;ichem<numchem;ichem++){ // all chemical species
+        for (unsigned int ichem=0;ichem<(*OpenWQ_wqconfig.num_chem);ichem++){ // all chemical species
 
             vtkSmartPointer<vtkDoubleArray> varexpot = vtkSmartPointer<vtkDoubleArray>::New();
             varexpot->SetNumberOfValues(numvert);
 
             // Set name of array (chem variable name)
-            chemname = chemnames[ichem];
+            // Get chemical species name
+            chemname = (*OpenWQ_wqconfig.chem_species_list)[ichem];
+
+            // Assign chem name to variable exported
             varexpot->SetName(chemname.c_str());
 
             /* ########################################

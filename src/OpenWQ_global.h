@@ -61,12 +61,28 @@ class OpenWQ_hostModelconfig
     
     // Number of hydrological compartments (that can store and transport water)
     unsigned int num_HydroComp;
-   
 
 };
 
 /* #################################################
-// General information about the project
+// General information for openWQ about the project
+################################################# */
+class OpenWQ_wqconfig
+{
+
+    public:
+
+    // Chemical species
+    std::unique_ptr
+        <std::vector
+        <std::string>> chem_species_list;    // list
+    std::unique_ptr
+        <unsigned int> num_chem;             // number of chemical species         
+
+};
+
+/* #################################################
+// Main openWQ data structures
 ################################################# */
 class OpenWQ_vars
 {
@@ -87,7 +103,7 @@ class OpenWQ_vars
                 arma::field< // Chemical Species
                 arma::Cube<  // Dimensions: nx, ny, nz
                 double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp)); 
-        
+
         }catch(const std::exception& e){
             std::cout << 
                 "ERROR: An exception occured during memory allocation (openWQ_global.h)" 
@@ -98,11 +114,8 @@ class OpenWQ_vars
     }
     size_t num_HydroComp;
 
-    //std::unique_ptr<arma::field<arma::Cube<double>>>  wmass;
-    //std::unique_ptr<arma::field<arma::Mat<double>>> wchem_exch;
-    //std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> wflux
     std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> chemass; 
-
+    
 };
 
 

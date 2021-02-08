@@ -21,7 +21,8 @@
  // Real all configuration files
  ################################################# */
 void OpenWQ_readjson::read_all(
-        OpenWQ_json& OpenWQ_json){
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_wqconfig& OpenWQ_wqconfig){
         
         /* ########################
         // Read Master file name
@@ -59,6 +60,15 @@ void OpenWQ_readjson::read_all(
                         std::to_string(ssf+1),
                         OpenWQ_json.Master["openWQ_INPUT"]["SinkSource_files"][std::to_string(ssf+1)]["filepath"]); 
         }
+        
+        // Get number of chemical species from BGC_json
+        (*OpenWQ_wqconfig.num_chem) = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size();
+        
+        // Get chemical species list from BGC_json
+        for (unsigned int chemi=0;chemi<(*OpenWQ_wqconfig.num_chem);chemi++){
+                (*OpenWQ_wqconfig.chem_species_list).push_back(OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]
+                ["list"][std::to_string(chemi+1)]);
+    }
 
 }
 

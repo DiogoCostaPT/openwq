@@ -54,13 +54,15 @@ int main(int argc, char* argv[])
     int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
 
 
-    // Create Object: OpenWQ_json (Input JSON files)
-    OpenWQ_json OpenWQ_json; // create object
+    // Create Object: OpenWQ_json (Input JSON files) and wqconfig
+    OpenWQ_json OpenWQ_json;            // create OpenWQ_json object
+    OpenWQ_wqconfig OpenWQ_wqconfig;    // create OpenWQ_wqconfig object
     
     // Read JSON file
     OpenWQ_readjson OpenWQ_readjson; // create object: json files load modules
     OpenWQ_readjson.read_all(
-        OpenWQ_json);
+        OpenWQ_json,
+        OpenWQ_wqconfig);
     
     // Create Object: OpenWQ_vars (openWQ variables)
     OpenWQ_vars OpenWQ_vars(
@@ -83,10 +85,12 @@ int main(int argc, char* argv[])
     unsigned int iz = 0;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     double igridcell_volume = 1;     // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     double iwater_volume = 0.5;      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+
     OpenWQ_initiate.readSetIC(
         OpenWQ_json,
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig,
         icmp,
         ix,
         iy,
@@ -182,6 +186,7 @@ int main(int argc, char* argv[])
         OpenWQ_chem.Run(
             OpenWQ_json,
             OpenWQ_vars,
+            OpenWQ_wqconfig,
             OpenWQ_hostModelconfig);
 
         /* ########################################
@@ -191,6 +196,7 @@ int main(int argc, char* argv[])
             OpenWQ_json,
             OpenWQ_vars,
             OpenWQ_hostModelconfig,
+            OpenWQ_wqconfig,
             ts); 
 
     }
