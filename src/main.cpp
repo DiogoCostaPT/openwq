@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
     OpenWQ_sinksource OpenWQ_sinksource;        // sink and source modules
     OpenWQ_output OpenWQ_output;                // print modules
     
-    unsigned int ts_hosthydromod = 1000; // (timesteps) TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    unsigned int ts_hosthydromod = 5000; // (timesteps) TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     
     /* #################################################
     // Loop: Time 

@@ -33,7 +33,7 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
     /* ########################################
     // Return if not time to print yet
     ######################################## */
-    if (ts > OpenWQ_wqconfig.nexttime_out)
+    if (ts < OpenWQ_wqconfig.nexttime_out)
         return EXIT_SUCCESS;
     else
         OpenWQ_wqconfig.nexttime_out += OpenWQ_wqconfig.timetep_out;
