@@ -29,6 +29,16 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     unsigned int ts){ // time step (in seconds)
 
+
+    /* ########################################
+    // Return if not time to print yet
+    ######################################## */
+    if (ts < OpenWQ_wqconfig.nexttime_out)
+        return EXIT_SUCCESS;
+    else
+        OpenWQ_wqconfig.nexttime_out += OpenWQ_wqconfig.timetep_out;
+
+
     // Local Variables
     unsigned int nx, ny, nz;                // compartment dimensions
     unsigned int index_i;                   // iteractive index
@@ -130,14 +140,14 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
         /* ########################################
         // Loop over chemical species
         ######################################## */
-        for (unsigned int ichem=0;ichem<(*OpenWQ_wqconfig.num_chem);ichem++){ // all chemical species
+        for (unsigned int ichem=0;ichem<(OpenWQ_wqconfig.num_chem);ichem++){ // all chemical species
 
             vtkSmartPointer<vtkDoubleArray> varexpot = vtkSmartPointer<vtkDoubleArray>::New();
             varexpot->SetNumberOfValues(numvert);
 
             // Set name of array (chem variable name)
             // Get chemical species name
-            chemname = (*OpenWQ_wqconfig.chem_species_list)[ichem];
+            chemname = (OpenWQ_wqconfig.chem_species_list)[ichem];
 
             // Assign chem name to variable exported
             varexpot->SetName(chemname.c_str());

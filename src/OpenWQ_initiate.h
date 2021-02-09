@@ -25,27 +25,32 @@
 using json = nlohmann::json;
 
 #include "OpenWQ_global.h"
+#include "OpenWQ_units.h"
+
 
 class OpenWQ_initiate{
     
     public:
     
+    // Allocate Memory
     void initmemory(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig);
 
+    // Read IC conditions
     void readSetIC(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units,
         const int icmp,
         const int ix,
         const int iy,
         const int iz,
         double igridcell_volume,  // all calculations assume unit = m3
-        double iwater_volume);
+        double iwater_volume);    // all calculations assume unit = m3
 
     /*
     void read_file_3Dcoldata(
@@ -53,10 +58,6 @@ class OpenWQ_initiate{
         arma::Cube<double>& to_cubedata, 
         int var_col,std::string filename);
     */
-   void Transform_IC_Units(
-        double &ic_value, // IC value of chemical (passed by reference)
-        std::string ic_type, // IC value type of chemical (mass or concentration)
-        std::string ic_units);
 
 };
 

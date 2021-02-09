@@ -15,40 +15,39 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OpenWQ_READJSONH_INCLUDED
-#define OpenWQ_READJSONH_INCLUDED
+#ifndef OPENWQ_UNITSH_INCLUDED
+#define OPENWQ_UNITSH_INCLUDED
 
-#include <armadillo>
-#include <string>
-#include <algorithm>
-
-#include "exprtk.hpp"
-
-#include <cstdio>
-
+#include <tuple>
+#include <vector>
 #include "jnlohmann/json.h"
 using json = nlohmann::json;
 
-//#include "utility.h"
-
 #include "OpenWQ_global.h"
-#include "OpenWQ_units.h"
 
-class OpenWQ_readjson{
+/* #################################################
+// Functions to convert input units
+// Both internal openWQ and host hydrological model units
+################################################# */
+class OpenWQ_units{
 
-    public:
+    public: 
 
-    void read_all(
-        OpenWQ_json& OpenWQ_json,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_units& OpenWQ_units);
+    // IC conditions
+    void Convert_IC_Units(
+        double &ic_value,       // IC value of chemical (passed by reference)
+        std::string ic_type,    // IC value type of chemical (mass or concentration)
+        std::string ic_units);
 
-    void read_JSON_2class(
-        json& jsondata,                         // JSON structure to save to
-        const bool substruc_flag,               // Save in subfield of JSON structure? only if multiple files (e.g., source and sinks)        
-        const std::string JsonSubStruct_name,   // if true, name of subfield    
-        const std::string jsonfile);            // Name of JSON file
+    // Sink & Source
+    void Convert_SS_Units(
+        double &ss_value,       // SS value
+        std::string ss_unit);   // SS unit
+
+    // Time step
+    void Convert_Time_Units(
+        double &time_value,      // SS value
+        std::string time_unit);
 
 };
 

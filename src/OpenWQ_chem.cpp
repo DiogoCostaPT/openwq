@@ -119,10 +119,10 @@ void OpenWQ_chem::BGC_Transform(
             
             // Find species indexes: consumed, produced and in the expression
             
-            for(unsigned int chemi=0;chemi<(*OpenWQ_wqconfig.num_chem);chemi++){
+            for(unsigned int chemi=0;chemi<(OpenWQ_wqconfig.num_chem);chemi++){
                 
                 // Get chemical species name
-                chemname = (*OpenWQ_wqconfig.chem_species_list)[chemi];
+                chemname = (OpenWQ_wqconfig.chem_species_list)[chemi];
 
                 // Consumedchemass_consumed, chemass_produced;ty()) 
                 index_i = consumed_spec.find(chemname);

@@ -1,5 +1,4 @@
 
-
 // Copyright 2020, Diogo Costa, diogo.pinhodacosta@canada.ca
 // This file is part of OpenWQ model.
 
@@ -25,6 +24,8 @@ void OpenWQ_sinksource::CheckApply(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_units& OpenWQ_units,
     const unsigned int YYYY,                       // current model step: Year
     const unsigned int MM,                         // current model step: month
     const unsigned int DD,                         // current model step: day
@@ -51,7 +52,6 @@ void OpenWQ_sinksource::CheckApply(
     double ss_data_json;            // data (sink or source) from row data
     std::string ss_units_json;      // units of row data
     std::vector<std::string>::iterator find_i; // iteractor used to store the position or searched element
-    std::vector<std::string> chem_species_list; // model chemical list
     std::vector<std::string> cmp_list;      // model compartment list
 
  
@@ -91,13 +91,13 @@ void OpenWQ_sinksource::CheckApply(
 
                 // Look if that chemical name is in chem_species_list
                 find_i = 
-                    std::find(chem_species_list.begin(), 
-                    chem_species_list.end(), 
+                    std::find((OpenWQ_wqconfig.chem_species_list).begin(), 
+                    (OpenWQ_wqconfig.chem_species_list).end(), 
                     chemname_ssi);
 
                 // Find chemical model index
-                if (find_i != chem_species_list.end()){
-                    chemi_ssi =   find_i - chem_species_list.begin();
+                if (find_i != (OpenWQ_wqconfig.chem_species_list).end()){
+                    chemi_ssi =   find_i - (OpenWQ_wqconfig.chem_species_list).begin();
                 }else{
                      std::cout 
                         << "ERROR (entry skipped): Chemical_name in source-sink file unkown: " 
@@ -218,7 +218,7 @@ void OpenWQ_sinksource::CheckApply(
 
                     // Convert units
                     // Source/sink units (g -> default model mass units)
-                    OpenWQ_sinksource::Transform_SS_Units(
+                    OpenWQ_units.Convert_SS_Units(
                         ss_data_json,      // SS value
                         ss_units_json);  // SS unit
 
@@ -298,52 +298,5 @@ void OpenWQ_sinksource::Apply_Sink(
     
     // Add mass load (already converted to g units)
     (*OpenWQ_vars.chemass)(cmpi)(chemi)(ix,iy,iz) -= mass_sink;
-
-}
-
-/* #################################################
-// Transform units of Source & Sinks
-################################################# */
-void OpenWQ_sinksource::Transform_SS_Units(
-        double &ss_value,      // SS value
-        std::string ss_unit){  // SS unit{      // model time step (in seconds)
-
-    // Local Variales
-    double unit_convert_k = 1.0f;
-    bool unit_unkown_flag = false;
-
-    // Convert ss_unit to lower case to guarantee match
-    std::transform(ss_unit.begin(), ss_unit.end(), ss_unit.begin(),
-        [](unsigned char c){ return std::tolower(c); });
-
-    /* ########################################
-    // Check Units
-    ######################################### */
-    // Default source/sink loads units = g (openWQ internal units of mass)
-    if (ss_unit.compare("g") == 0){
-        unit_convert_k = 1.0f;
-    }else if (ss_unit.compare("kg") == 0){
-        unit_convert_k = 1000.0f;;
-    }else{ // ERROR: ss_unit unkown
-        unit_unkown_flag = true;
-    }
-
-    /* ########################################
-    // Error Handling
-    ########################################## */
-    if (unit_unkown_flag){
-        std::cout 
-            << "ERROR: Initial conditions unit: unkown (" 
-            << ss_unit 
-            << ")"
-            << std::endl;
-        exit (EXIT_FAILURE);
-    }
-  
-
-    /* ########################################
-    // Convert units using unit_convert_k (ic_value passed by reference)
-     ########################################## */
-    ss_value *= unit_convert_k;
 
 }

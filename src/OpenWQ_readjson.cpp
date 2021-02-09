@@ -22,36 +22,39 @@
  ################################################# */
 void OpenWQ_readjson::read_all(
         OpenWQ_json& OpenWQ_json,
-        OpenWQ_wqconfig& OpenWQ_wqconfig){
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units){
         
         /* ########################
-        // Read Master file name
+        // Read JSON files
         ######################## */
+
+        // Local Variables
         const std::string OpenWQ_masterjson = "openWQ_master.json";
+
+        // Master file json (read)
         read_JSON_2class(
                 OpenWQ_json.Master,      // JSON structure to save to
                 false,                  // Save in subfield of JSON structure? only if multiple files (e.g., source and sinks)   
                 "",                     // if above true, provide name of subfield        
                 OpenWQ_masterjson);     // Name of JSON file
 
-        /* ########################
-        // // Read other JSON configuration files defined in Master file 
-        ######################## */
-        // Main confirguration
+        // Main confirguration json (read)
         read_JSON_2class(
                 OpenWQ_json.Config,                                     
                 false,                                                  
                 "",                                                                        
                 OpenWQ_json.Master["openWQ_INPUT"]["Config_file"]);     
 
-        // BGCcycling cycling
+        // BGCcycling cycling json (read)
         read_JSON_2class(
                 OpenWQ_json.BGCcycling,                                 
                 false,
                 "",
                 OpenWQ_json.Master["openWQ_INPUT"]["BGC_cycles_file"]); 
 
-        // SinkSource
+        // SinkSource json (read)
         unsigned int num_ssf = OpenWQ_json.Master["openWQ_INPUT"]["SinkSource_files"].size();
         for (unsigned int ssf=0;ssf<num_ssf;ssf++){
                 read_JSON_2class(
@@ -61,14 +64,36 @@ void OpenWQ_readjson::read_all(
                         OpenWQ_json.Master["openWQ_INPUT"]["SinkSource_files"][std::to_string(ssf+1)]["filepath"]); 
         }
         
+
+         /* ########################
+        // Process some of the openWQ config info
+        ######################## */
+        
+        // Local Variables
+        std::tuple<unsigned int,std::string> time_tuple; // IC information in config file
+
+        // CHEMISTRY 
+
         // Get number of chemical species from BGC_json
-        (*OpenWQ_wqconfig.num_chem) = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size();
+        (OpenWQ_wqconfig.num_chem) = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size();
         
         // Get chemical species list from BGC_json
-        for (unsigned int chemi=0;chemi<(*OpenWQ_wqconfig.num_chem);chemi++){
-                (*OpenWQ_wqconfig.chem_species_list).push_back(OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]
+        for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.num_chem);chemi++){
+                (OpenWQ_wqconfig.chem_species_list).push_back(OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]
                 ["list"][std::to_string(chemi+1)]);
-    }
+        }
+
+        // TIME STEP
+
+        // Get print/output timestep AND convert to seconds
+        time_tuple = OpenWQ_json.Master["openWQ_OUTPUT"]["Timestep"];    // Get tuple (value, unit)
+        (OpenWQ_wqconfig.timetep_out) = std::get<0>(time_tuple);         // Get value
+        (OpenWQ_wqconfig.timestep_out_unit) = std::get<1>(time_tuple);   // Get units
+
+        // Convert time units to host model units
+        OpenWQ_units.Convert_Time_Units(
+                OpenWQ_wqconfig.timetep_out,
+                OpenWQ_wqconfig.timestep_out_unit);
 
 }
 
@@ -107,3 +132,4 @@ void OpenWQ_readjson::read_JSON_2class(
                 exit (EXIT_FAILURE);
         }
 }
+

@@ -28,10 +28,12 @@
 #include "OpenWQ_watertransp.h"
 #include "OpenWQ_sinksource.h"
 #include "OpenWQ_output.h"
+#include "OpenWQ_units.h"
 
 
 int main(int argc, char* argv[]) 
 {   
+    // Initiate output VTU file name string 
     std::string vtufilename;
 
     // Create Object: OpenWQ_hostModelconfig (link to host hydrological model)
@@ -57,17 +59,20 @@ int main(int argc, char* argv[])
     // Create Object: OpenWQ_json (Input JSON files) and wqconfig
     OpenWQ_json OpenWQ_json;            // create OpenWQ_json object
     OpenWQ_wqconfig OpenWQ_wqconfig;    // create OpenWQ_wqconfig object
+    OpenWQ_units OpenWQ_units;          // functions for unit conversion
     
     // Read JSON file
     OpenWQ_readjson OpenWQ_readjson; // create object: json files load modules
     OpenWQ_readjson.read_all(
         OpenWQ_json,
-        OpenWQ_wqconfig);
+        OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig,
+        OpenWQ_units);
     
     // Create Object: OpenWQ_vars (openWQ variables)
     OpenWQ_vars OpenWQ_vars(
         num_HydroComp);
-   
+
     // OpenWQ_initiate
     OpenWQ_initiate OpenWQ_initiate; // create object: start modules e.g., initiate
     
@@ -91,6 +96,7 @@ int main(int argc, char* argv[])
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
+        OpenWQ_units,
         icmp,
         ix,
         iy,
@@ -121,14 +127,18 @@ int main(int argc, char* argv[])
         unsigned int DD = 20;                  // current model step: day (TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
         unsigned int HH = 12;                  // current model step: hour (TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
 
+        
         OpenWQ_sinksource.CheckApply(
             OpenWQ_json,
             OpenWQ_vars,
             OpenWQ_hostModelconfig,
+            OpenWQ_wqconfig,
+            OpenWQ_units,
             YYYY,
             MM,
             DD,
             HH);
+        
 
         /* ########################################
         Transport with water fluxes (No space loop: needs to be called for every water flux)
@@ -191,7 +201,7 @@ int main(int argc, char* argv[])
 
         /* ########################################
          Output Results
-        ######################################## */ 
+        ######################################## */
         OpenWQ_output.writeVTU(
             OpenWQ_json,
             OpenWQ_vars,

@@ -19,6 +19,7 @@
     	}
 	},
 	"openWQ_OUTPUT": {
-		"Results_folder": "bin/Output"
+		"Results_folder": "bin/Output",
+		"Timestep": [1,"h"]
 	}
 }

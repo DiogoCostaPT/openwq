@@ -86,6 +86,7 @@ void OpenWQ_initiate::readSetIC(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_units& OpenWQ_units,
     const int icmp,
     const int ix,
     const int iy,
@@ -108,9 +109,9 @@ void OpenWQ_initiate::readSetIC(
     // Loop over chemical species
     ######################################## */
 
-    for (unsigned int chemi=0;chemi<(*OpenWQ_wqconfig.num_chem);chemi++){
+    for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.num_chem);chemi++){
 
-        chemname = (*OpenWQ_wqconfig.chem_species_list)[chemi]; // chemical name in BGC-json list
+        chemname = (OpenWQ_wqconfig.chem_species_list)[chemi]; // chemical name in BGC-json list
 
         // Get tuple with IC information for compartment CompName_icmp and chemical chemname
         // If not found in compartment icmp, it's because IC were not defined - set to zero.
@@ -127,7 +128,7 @@ void OpenWQ_initiate::readSetIC(
             ic_units = std::get<2>(ic_info_i);      // get IC units 
 
             // Transform units based on info provided
-            OpenWQ_initiate::Transform_IC_Units(
+            OpenWQ_units.Convert_IC_Units(
                 ic_value, // ic_value passed by reference so that it can be changed
                 ic_type,
                 ic_units);
@@ -163,82 +164,6 @@ void OpenWQ_initiate::readSetIC(
             (*OpenWQ_vars.chemass)(icmp)(chemi)(ix,iy,iz) = 0.0f;
         }  
     }
-}
-
-/* #################################################
-// Transform units of IC
-################################################# */
-void OpenWQ_initiate::Transform_IC_Units(
-    double &ic_value, // IC value of chemical (passed by reference)
-    std::string ic_type, // IC value type of chemical (mass or concentration)
-    std::string ic_unit){ // // IC value units of chemical (e.g, kg/m3, mg/l))
-
-    // Local Variales
-    double unit_convert_k = 1.0f;
-    bool type_unkown_flag = false;
-    bool unit_unkown_flag = false;
-
-
-    // Convert ic_type and ic_unit to lower case to guarantee match
-    std::transform(ic_type.begin(), ic_type.end(), ic_type.begin(),
-        [](unsigned char c){ return std::tolower(c); });
-    std::transform(ic_unit.begin(), ic_unit.end(), ic_unit.begin(),
-        [](unsigned char c){ return std::tolower(c); });
-
-
-    // Check type of IC (concentration or mass)
-    /* ########################################
-    // CONCENTRATION (Goal: convert to mg/l or g/m3 => openWQ internal units)
-    ######################################## */
-    if(ic_type.compare("concentration") == 0){
-        
-        // Default concentration units = mg/l or g/m3 (openWQ internal units)
-        if (ic_unit.compare("mg/l") == 0 || ic_unit.compare("g/m3") == 0){
-            unit_convert_k = 1.0f;
-        }else if (ic_unit.compare("ug/l") == 0){
-            unit_convert_k = 0.001;
-        }else{ // ERROR: ic_unit unkown
-            unit_unkown_flag = true;
-        }
-    }
-    /* ########################################
-    // MASS (Goal: convert to g => openWQ internal units)
-    ######################################## */
-    else if(ic_type.compare("mass") == 0){
-        
-        // Default mass units = g (openWQ internal units)
-        if (ic_unit.compare("g/m3") == 0){ 
-            unit_convert_k = 1.0f;
-        }else if (ic_unit.compare("kg/m3") == 0){
-            unit_convert_k = 1000;
-        }else{ // ERROR: ic_tunit unkown
-            unit_unkown_flag = true;
-        }
-    } 
-    /* ########################################
-    // ERROR: ic_type nkown
-    ######################################## */
-    else{
-        type_unkown_flag = true;
-    }
-
-    /* ########################################
-    // Error Handling
-    ########################################## */
-    if (type_unkown_flag || unit_unkown_flag){
-        
-        if (type_unkown_flag) 
-            std::cout << "ERROR: Initial conditions type: unkown (" << ic_type << ")" << std::endl;
-        if (unit_unkown_flag) 
-            std::cout << "ERROR: Initial conditions unit: unkown (" << ic_unit << ")" << std::endl;
-        exit (EXIT_FAILURE);
-    }   
-
-    /* ########################################
-    // Convert units using unit_convert_k (ic_value passed by reference)
-     ########################################## */
-    ic_value *= unit_convert_k;
-
 }
 
 

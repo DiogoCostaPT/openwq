@@ -26,6 +26,7 @@
 using json = nlohmann::json;
 
 #include "OpenWQ_global.h"
+#include "OpenWQ_units.h"
 
 class OpenWQ_sinksource{
 
@@ -35,6 +36,8 @@ class OpenWQ_sinksource{
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units,
         const unsigned int YYYY,                       // current model step: Year
         const unsigned int MM,                         // current model step: month
         const unsigned int DD,                         // current model step: day
@@ -58,7 +61,7 @@ class OpenWQ_sinksource{
         const unsigned int iz_json,             // compartment model iz
         const double ss_data_json);             // source load
 
-    void Transform_SS_Units(
+    void Convert_Mass_Units(
         double &ss_value,     // SS value
         std::string ss_unit);  // SS unit
 

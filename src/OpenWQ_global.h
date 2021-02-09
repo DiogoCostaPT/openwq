@@ -72,12 +72,20 @@ class OpenWQ_wqconfig
 
     public:
 
-    // Chemical species
-    std::unique_ptr
-        <std::vector
-        <std::string>> chem_species_list;    // list
-    std::unique_ptr
-        <unsigned int> num_chem;             // number of chemical species         
+    // General set up
+    double timetep_out;             // time step
+    std::string timestep_out_unit;  // time step unit
+    double nexttime_out = 0.0f;     // iteractive next printing time
+    
+    // Chemistry
+    unsigned int num_chem;                  //Number of chemical species  
+    std::vector
+        <std::string> chem_species_list;    // Chemical species list
+    
+
+    
+    
+                
 
 };
 
