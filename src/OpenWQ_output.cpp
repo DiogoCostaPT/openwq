@@ -33,7 +33,7 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
     /* ########################################
     // Return if not time to print yet
     ######################################## */
-    if (ts < OpenWQ_wqconfig.nexttime_out)
+    if (ts >= OpenWQ_wqconfig.nexttime_out)
         return EXIT_SUCCESS;
     else
         OpenWQ_wqconfig.nexttime_out += OpenWQ_wqconfig.timetep_out;
@@ -44,6 +44,7 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
     unsigned int index_i;                   // iteractive index
     unsigned int numvert, nnumel;           // iteractive variables for VTK
     std::string CompName_icmp;              // compartment name (iteractive)
+    std::string filename;                   // iteractive output file name
     
 
     // Get number of species for compartment icmp
@@ -52,7 +53,7 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
         ["list"].size(); // number of chemical species in BGCcycling
 
     // Get export folder
-    std::string filename = OpenWQ_json.Master
+    std::string output_dir = OpenWQ_json.Master
         ["openWQ_OUTPUT"]
         ["Results_folder"]; 
 
@@ -74,6 +75,8 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
         nz = std::get<4>(
             OpenWQ_hostModelconfig.HydroComp.at(icmp));
 
+        // Reset file name for each compartment
+        filename = output_dir;
 
         filename.append("/");
         filename.append(CompName_icmp);
