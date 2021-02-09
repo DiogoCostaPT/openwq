@@ -82,6 +82,7 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
         filename.append(CompName_icmp);
         filename.append("_");
         filename.append(std::to_string(ts)); // time stamp
+        filename.append("sec");
         filename.append(".vtu");
         std::string chemname;        
 
