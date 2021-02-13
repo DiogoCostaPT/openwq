@@ -61,7 +61,8 @@ void OpenWQ_units::Convert_IC_Units(
         // Default mass units = g (openWQ internal units)
         if (ic_unit.compare("g/m3") == 0){ 
             unit_convert_k = 1.0f;
-        }else if (ic_unit.compare("kg/m3") == 0){
+        }else if (ic_unit.compare("kg/m3") == 0 ||
+            ic_unit.compare("kg/m2") == 0){
             unit_convert_k = 1000;
         }else{ // ERROR: ic_tunit unkown
             unit_unkown_flag = true;
