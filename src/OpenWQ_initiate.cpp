@@ -157,7 +157,7 @@ void OpenWQ_initiate::readSetIC(
         // IC conditions NOT provided set to ZERO
         ######################################## */
         catch(json::type_error& e){ 
-            std::cout << "IC conditions not defined: set to zero " 
+            std::cout << "<OpenWQ> IC conditions not defined: set to zero " 
                     << "(compartment: " << CompName_icmp << ", " 
                     << "chemical: " << chemname << ")"
                     << std::endl;

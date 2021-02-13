@@ -100,7 +100,7 @@ void OpenWQ_sinksource::CheckApply(
                     chemi_ssi =   find_i - (OpenWQ_wqconfig.chem_species_list).begin();
                 }else{
                      std::cout 
-                        << "ERROR (entry skipped): Chemical_name in source-sink file unkown: " 
+                        << "<OpenWQ> ERROR (entry skipped): Chemical_name in source-sink file unkown: " 
                         << chemname_ssi 
                         << std::endl;
                 }
@@ -210,7 +210,7 @@ void OpenWQ_sinksource::CheckApply(
                         cmpi_ssi =   find_i - cmp_list.begin();
                     }else{
                         std::cout 
-                            << "ERROR (entry skipped): Compartment name in source-sink file unkown: " 
+                            << "<OpenWQ> ERROR (entry skipped): Compartment name in source-sink file unkown: " 
                             << compartment_name 
                             << std::endl;
                         continue;   
@@ -252,7 +252,7 @@ void OpenWQ_sinksource::CheckApply(
                     }
                     // if none of the above (throw error)
                     else {
-                        std::cout << "ERROR: Sink_Source type unkown: " << ssType_ssi << std::endl;
+                        std::cout << "<OpenWQ> ERROR: Sink_Source type unkown: " << ssType_ssi << std::endl;
                         exit (EXIT_FAILURE);  
                     }
                 }

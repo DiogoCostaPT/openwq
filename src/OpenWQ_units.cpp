@@ -80,9 +80,9 @@ void OpenWQ_units::Convert_IC_Units(
     if (type_unkown_flag || unit_unkown_flag){
         
         if (type_unkown_flag) 
-            std::cout << "ERROR: Initial conditions type: unkown (" << ic_type << ")" << std::endl;
+            std::cout << "<OpenWQ> ERROR: Initial conditions type: unkown (" << ic_type << ")" << std::endl;
         if (unit_unkown_flag) 
-            std::cout << "ERROR: Initial conditions unit: unkown (" << ic_unit << ")" << std::endl;
+            std::cout << "<OpenWQ> ERROR: Initial conditions unit: unkown (" << ic_unit << ")" << std::endl;
         exit (EXIT_FAILURE);
     }   
 
@@ -125,7 +125,7 @@ void OpenWQ_units::Convert_SS_Units(
     ########################################## */
     if (unit_unkown_flag){
         std::cout 
-            << "ERROR: Initial conditions unit: unkown (" 
+            << "<OpenWQ> ERROR: Initial conditions unit: unkown (" 
             << ss_unit 
             << ")"
             << std::endl;
@@ -176,7 +176,7 @@ void OpenWQ_units::Convert_Time_Units(
     ########################################## */
     if (unit_unkown_flag){
         std::cout 
-            << "ERROR: Initial conditions unit: unkown (" 
+            << "<OpenWQ> ERROR: Initial conditions unit: unkown (" 
             << time_unit 
             << ")"
             << std::endl;

@@ -128,7 +128,7 @@ void OpenWQ_readjson::read_JSON_2class(
         // Handle exceptions 
         #################################### */
         catch (const std::exception& e){
-                std::cout << "ERROR: An exception occurred parsing JSON file: " << jsonfile << std::endl;
+                std::cout << "<OpenWQ> ERROR: An exception occurred parsing JSON file: " << jsonfile << std::endl;
                 exit (EXIT_FAILURE);
         }
 }
