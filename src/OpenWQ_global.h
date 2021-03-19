@@ -89,11 +89,12 @@ class OpenWQ_wqconfig
     typedef exprtk::expression<double> expression_t;
     std::vector<
         std::tuple<
-            std::string,                    // Biogeochemical cycle name
-            std::string,                    // Transformation name
-            std::string,                    // kinetic equation provided
-            unsigned int,                   // index of consumed species       
-            unsigned int                    // index of produced species
+            std::string,                // Biogeochemical cycle name
+            std::string,                // Transformation name
+            std::string,                // kinetic equation provided
+            unsigned int,               // index of consumed species       
+            unsigned int,               // index of produced species
+            std::vector<unsigned int>   // index of chemical in transformation equation (needs to be here for loop reset)
         >> BGCexpressions_info;
     std::vector<
         exprtk::expression<double>     // Expression (exprtk) parsed
