@@ -188,12 +188,6 @@ void OpenWQ_chem::setBGCexpressions(
                     index_prod));
             OpenWQ_wqconfig.BGCexpressions_eq.push_back(expression);
 
-            std::cout << BGCcycles_name << std::endl;
-            std::cout << Transf_name << std::endl;
-            std::cout << expression_string << std::endl;
-            std::cout << std::to_string(index_cons) << std::endl;
-            std::cout << std::to_string(index_prod) << std::endl;
-
         }
     }
 }
