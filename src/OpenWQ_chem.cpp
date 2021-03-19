@@ -17,6 +17,188 @@
 
 #include "OpenWQ_chem.h"
 
+
+/* #################################################
+// Parse biogeochemical expressions
+################################################# */
+void OpenWQ_chem::setBGCexpressions(
+    OpenWQ_json& OpenWQ_json,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_vars& OpenWQ_vars){
+
+    // Local variables for expression evaluator: exprtk
+    std::string 
+        chemname,                   // chemical name
+        consumed_spec,
+        produced_spec,
+        expression_string,          // expression string
+        expression_string_modif;    // expression string replaced by variable in code
+    typedef exprtk::symbol_table<double> symbol_table_t;
+    typedef exprtk::expression<double> expression_t;
+    typedef exprtk::parser<double> parser_t;
+    
+    // Other local variables
+    typedef std::tuple<
+        std::string,                    // Biogeochemical cycle name
+        std::string,                    // Transformation name
+        std::string,                    // kinetic equation provided
+        unsigned int,                   // index of consumed species       
+        unsigned int                    // index of produced species
+        > BGCTransfTuple_info;    // Tuple with info and expression for BGC cyling
+    int num_BGCcycles, 
+        num_transf,
+        index_i; // iteractive index (can be zero because it is determined in a .find())
+    std::vector<std::string> BGCcycles_namelist;
+    std::string BGCcycles_name, Transf_name;
+    unsigned int 
+        index_cons,index_prod, // indexed for consumed and produced chemical
+        index_express; // iteractive index for expression evaluator  
+    double param_val; // prameter value
+
+
+    // Number of BCG cycles defined    
+    num_BGCcycles = OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"].size();
+
+    // Get all biogeochemical cycling names
+    for (auto it: OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"].items())
+    {
+        BGCcycles_namelist.push_back(it.key());
+    }
+
+    /* ########################################
+    // Loop over biogeochemical cycling frameworks
+    ######################################## */
+    for (unsigned int bgci=0;bgci<num_BGCcycles;bgci++){
+
+        /* ########################################
+        // Loop over transformations in biogeochemical cycle bgci
+        ######################################## */
+
+        // Get BGC cycle name
+        BGCcycles_name = BGCcycles_namelist[bgci];
+
+        // Get number of transformations inside BGCcycles_name
+        num_transf = OpenWQ_json.BGCcycling
+            ["CYCLING_FRAMEWORKS"]
+            [BGCcycles_name]
+            ["list_transformations"].size();
+        
+        for (unsigned int transi=0;transi<num_transf;transi++){
+
+            // Get Transformation name
+            Transf_name = OpenWQ_json.BGCcycling
+                ["CYCLING_FRAMEWORKS"]
+                [BGCcycles_name]
+                ["list_transformations"]
+                [std::to_string(transi+1)];
+
+            std::vector<unsigned int> index_transf; // index of chemical in transformation equation (needs to be here for loop reset)
+
+            // Get transformation transi info
+            consumed_spec =  OpenWQ_json.BGCcycling
+                ["CYCLING_FRAMEWORKS"]
+                [BGCcycles_name]
+                [std::to_string(transi+1)]
+                ["consumed"];
+            produced_spec =  OpenWQ_json.BGCcycling
+                ["CYCLING_FRAMEWORKS"]
+                [BGCcycles_name]
+                [std::to_string(transi+1)]
+                ["produced"];
+            expression_string = OpenWQ_json.BGCcycling
+                ["CYCLING_FRAMEWORKS"]
+                [BGCcycles_name]
+                [std::to_string(transi+1)]
+                ["kinetics"];
+            std::vector<std::string> parameter_names = OpenWQ_json.BGCcycling
+                ["CYCLING_FRAMEWORKS"]
+                [BGCcycles_name]
+                [std::to_string(transi+1)]
+                ["parameter_names"];
+            expression_string_modif = expression_string;
+            
+            // Find species indexes: consumed, produced and in the expression
+            
+            for(unsigned int chemi=0;chemi<(OpenWQ_wqconfig.num_chem);chemi++){
+                
+                // Get chemical species name
+                chemname = (OpenWQ_wqconfig.chem_species_list)[chemi];
+
+                // Consumedchemass_consumed, chemass_produced;ty()) 
+                index_i = consumed_spec.find(chemname);
+                if (index_i!=-1 && !consumed_spec.empty()){
+                    index_cons = chemi; // index
+                }
+
+                // Produced
+                index_i = produced_spec.find(chemname);
+                if (index_i!=-1 && !produced_spec.empty()){
+                    index_prod = chemi; // index
+                }
+
+                // In expression
+                index_i = expression_string.find(chemname);
+                index_express = 0; // reset needed for every new equation
+                if (index_i!=-1 && !expression_string.empty()){
+                    index_transf.push_back(chemi); // index
+                    expression_string_modif.replace(
+                        index_i,
+                        index_i + chemname.size(),
+                        "chemass_InTransfEq["+std::to_string(index_express)+"]");
+                    index_express++;
+                }
+            }
+
+            // Replace parameter name by value in expression
+            for (unsigned int i=0;i<parameter_names.size();i++){
+                index_i = expression_string_modif.find(parameter_names[i]);
+                param_val = OpenWQ_json.BGCcycling
+                    ["CYCLING_FRAMEWORKS"]
+                    [BGCcycles_name]
+                    [std::to_string(transi+1)]
+                    ["parameter_values"]
+                    [parameter_names[i]];
+                expression_string_modif.replace(index_i,index_i + parameter_names[i].size(),std::to_string(param_val));
+            }
+
+            // Add variables to symbol_table
+            symbol_table_t symbol_table;
+            std::vector<double> chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
+            for (unsigned int i=0;i<index_transf.size();i++){
+                chemass_InTransfEq.push_back(0); // creating the vector
+            }
+            symbol_table.add_vector("chemass_InTransfEq",chemass_InTransfEq);
+            // symbol_table.add_constants();
+
+            // Create Object
+            expression_t expression;
+            expression.register_symbol_table(symbol_table);
+
+            // Parse expression and compile 
+            parser_t parser;
+            parser.compile(expression_string_modif,expression);
+
+            // Save expressions in BGCexpressions_info and BGCexpressions_eq
+            OpenWQ_wqconfig.BGCexpressions_info.push_back(
+                BGCTransfTuple_info(
+                    BGCcycles_name,
+                    Transf_name,
+                    expression_string,
+                    index_cons,
+                    index_prod));
+            OpenWQ_wqconfig.BGCexpressions_eq.push_back(expression);
+
+            std::cout << BGCcycles_name << std::endl;
+            std::cout << Transf_name << std::endl;
+            std::cout << expression_string << std::endl;
+            std::cout << std::to_string(index_cons) << std::endl;
+            std::cout << std::to_string(index_prod) << std::endl;
+
+        }
+    }
+}
+
+
 /* #################################################
 // Compute chemical transformations
 ################################################# */
@@ -104,75 +286,7 @@ void OpenWQ_chem::BGC_Transform(
         
         for (unsigned int transi=0;transi<num_transf;transi++){
 
-            std::vector<unsigned int> index_transf; // index of chemical in transformation equation (needs to be here for loop reset)
-
-            // Get transformation transi info
-            std::string consumed_spec =  OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
-                [std::to_string(transi+1)]["consumed"];
-            std::string produced_spec =  OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
-                [std::to_string(transi+1)]["produced"];
-            std::string expression_string = OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
-                [std::to_string(transi+1)]["kinetics"];
-            std::vector<std::string> parameter_names = OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
-                [std::to_string(transi+1)]["parameter_names"];
-            std::string expression_string_modif = expression_string;
             
-            // Find species indexes: consumed, produced and in the expression
-            
-            for(unsigned int chemi=0;chemi<(OpenWQ_wqconfig.num_chem);chemi++){
-                
-                // Get chemical species name
-                chemname = (OpenWQ_wqconfig.chem_species_list)[chemi];
-
-                // Consumedchemass_consumed, chemass_produced;ty()) 
-                index_i = consumed_spec.find(chemname);
-                if (index_i!=-1 && !consumed_spec.empty()){
-                    index_cons = chemi; // index
-                }
-
-                // Produced
-                index_i = produced_spec.find(chemname);
-                if (index_i!=-1 && !produced_spec.empty()){
-                    index_prod = chemi; // index
-                }
-
-                // In expression
-                index_i = expression_string.find(chemname);
-                index_express = 0; // reset needed for every new equation
-                if (index_i!=-1 && !expression_string.empty()){
-                    index_transf.push_back(chemi); // index
-                    expression_string_modif.replace(
-                        index_i,
-                        index_i + chemname.size(),
-                        "chemass_InTransfEq["+std::to_string(index_express)+"]");
-                    index_express++;
-                }
-            }
-
-            // Replace parameter name by value in expression
-            for (unsigned int i=0;i<parameter_names.size();i++){
-                index_i = expression_string_modif.find(parameter_names[i]);
-                param_val = OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"][cyclingFrame_i]
-                    [std::to_string(transi+1)]["parameter_values"][parameter_names[i]];
-                expression_string_modif.replace(index_i,index_i + parameter_names[i].size(),std::to_string(param_val));
-            }
-
-            // Add variables to symbol_table
-            symbol_table_t symbol_table;
-            std::vector<double> chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
-            for (unsigned int i=0;i<index_transf.size();i++){
-                chemass_InTransfEq.push_back(0); // creating the vector
-            }
-            symbol_table.add_vector("chemass_InTransfEq",chemass_InTransfEq);
-            // symbol_table.add_constants();
-
-            // Create Object
-            expression_t expression;
-            expression.register_symbol_table(symbol_table);
-
-            // Parse expression and compile 
-            parser_t parser;
-            parser.compile(expression_string_modif,expression);
 
             /* ########################################
             // Loop over space: nx, ny, nz

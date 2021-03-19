@@ -38,8 +38,8 @@ class OpenWQ_initiate{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig);
 
-    // Read IC conditions
-    void readSetIC(
+    // Read and set simulation conditions and options
+    void readSet(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -52,12 +52,18 @@ class OpenWQ_initiate{
         double igridcell_volume,  // all calculations assume unit = m3
         double iwater_volume);    // all calculations assume unit = m3
 
-    /*
-    void read_file_3Dcoldata(
-        json& filejson,
-        arma::Cube<double>& to_cubedata, 
-        int var_col,std::string filename);
-    */
+    void setIC(
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units,
+        const int icmp,
+        const int ix,
+        const int iy,
+        const int iz,
+        double igridcell_volume,  // all calculations assume unit = m3
+        double iwater_volume);    // all calculations assume unit = m3
 
 };
 

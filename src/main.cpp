@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
     double igridcell_volume = 1;     // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     double iwater_volume = 0.5;      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
 
-    OpenWQ_initiate.readSetIC(
+    OpenWQ_initiate.readSet(
         OpenWQ_json,
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
@@ -110,6 +110,14 @@ int main(int argc, char* argv[])
     OpenWQ_sinksource OpenWQ_sinksource;        // sink and source modules
     OpenWQ_output OpenWQ_output;                // print modules
     
+    /* #################################################
+    // Parse biogeochemical expressions (and save in global)
+    ################################################# */
+    OpenWQ_chem.setBGCexpressions(
+        OpenWQ_json,
+        OpenWQ_wqconfig,
+        OpenWQ_vars);
+
     unsigned int ts_hosthydromod = 5000; // (timesteps) TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     
     /* #################################################

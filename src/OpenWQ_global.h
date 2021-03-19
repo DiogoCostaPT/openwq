@@ -20,6 +20,9 @@
 #include <string>
 #include <armadillo>
 #include <memory> 
+#include <tuple>
+#include <vector>
+#include "exprtk.hpp"
 
 
 #include "jnlohmann/json.h"
@@ -44,8 +47,6 @@ class OpenWQ_json
 ################################################# */
 class OpenWQ_hostModelconfig
 {
-    #include <tuple>
-    #include <vector>
 
     typedef std::tuple<int,std::string,int, int, int> hydroTuple;
     // Add host_hydrological_model compartment:
@@ -81,12 +82,23 @@ class OpenWQ_wqconfig
     unsigned int num_chem;                  //Number of chemical species  
     std::vector
         <std::string> chem_species_list;    // Chemical species list
-    
 
+    // BGC kinetic formulas (tuple with all the info needed)
+    // It includes also the formulas parsed and ready to be used
+    // for each BGC cyle provided by the user
+    typedef exprtk::expression<double> expression_t;
+    std::vector<
+        std::tuple<
+            std::string,                    // Biogeochemical cycle name
+            std::string,                    // Transformation name
+            std::string,                    // kinetic equation provided
+            unsigned int,                   // index of consumed species       
+            unsigned int                    // index of produced species
+        >> BGCexpressions_info;
+    std::vector<
+        exprtk::expression<double>     // Expression (exprtk) parsed
+        >BGCexpressions_eq;   // BGC kinetic formulas
     
-    
-                
-
 };
 
 /* #################################################

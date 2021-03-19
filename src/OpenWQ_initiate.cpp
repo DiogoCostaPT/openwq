@@ -79,9 +79,9 @@ void OpenWQ_initiate::initmemory(
 }
 
 /* #################################################
-// Initial conditions (water and chemical mass)
+// Read and Set simulations conditions and options
 ################################################# */
-void OpenWQ_initiate::readSetIC(
+void OpenWQ_initiate::readSet(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -94,6 +94,40 @@ void OpenWQ_initiate::readSetIC(
     double igridcell_volume,  // all calculations assume unit = m3
     double iwater_volume){    // all calculations assume unit = m3
     
+    /* #################################################
+    // Read and set IC conditions
+    ################################################# */
+    setIC(
+        OpenWQ_json,
+        OpenWQ_vars,
+        OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig,
+        OpenWQ_units,
+        icmp,
+        ix,
+        iy,
+        iz,
+        igridcell_volume,   // all calculations assume unit = m3
+        iwater_volume);     // all calculations assume unit = m3
+
+}
+
+/* #################################################
+// Read and set IC conditions
+################################################# */
+void OpenWQ_initiate::setIC(
+    OpenWQ_json& OpenWQ_json,
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_units& OpenWQ_units,
+    const int icmp,
+    const int ix,
+    const int iy,
+    const int iz,
+    double igridcell_volume,  // all calculations assume unit = m3
+    double iwater_volume){    // all calculati
+
     // Local variables
     std::string chemname; // chemical name
     std::tuple<unsigned int,std::string,std::string> ic_info_i; // IC information in config file
@@ -165,80 +199,3 @@ void OpenWQ_initiate::readSetIC(
         }  
     }
 }
-
-
-/*
-// read 3D col data from file at assign to variable
-void OpenWQ_initiate::read_file_3Dcoldata(json & filejson,arma::Cube<double> & to_cubedata, int var_col, 
-    std::string filename){
-
-    // get necessary inf o from JSON file
-    int skiprows_num = filejson["skip_header_rows"];
-    std::string deliminter = filejson["deliminter"];
-    std::vector<int> grid_col = filejson["grid_col"];
-    double unit_convertion_multipler = filejson["unit_convertion_multipler"];
-    
-
-    const char * cdeliminter = deliminter.c_str();
-    std::vector<int>::iterator it;
-
-    // all relevant columns: grid and var
-    std::vector<int> allcols_2search;
-    allcols_2search.insert(allcols_2search.begin(),grid_col.begin(),grid_col.end());
-    allcols_2search.insert(allcols_2search.end(),var_col); 
-
-    // Create a vector of <string, int vector> pairs to store the FileData_extract
-    std::vector<std::pair<std::string, std::vector<double>>> FileData_extract;
-
-    // Create an input filestream
-    std::ifstream thisFile(filename);
-
-    // Make sure the file is open
-    if(!thisFile.is_open()) throw std::runtime_error("Could not open file:" + filename);
-
-    // Helper vars
-    std::string line, fieldi;
-    int line_i = 0;
-
-        // Read data, line by line AND save to FileData_extrac (for proper debug) and to final to_cubedata
-    int colIdx,colIdx_res;
-    std::array<double,4> linedata; linedata.fill(0.0f);
-
-     if(thisFile.good())
-    {
-
-        while(std::getline(thisFile, line))
-        {
-            // Create a stringstream of the current line
-            std::stringstream ss(line);
-        
-            // Keep track of the current column index
-            colIdx = 1; 
-            colIdx_res = 0;
-
-            if (line_i>=skiprows_num){ // skip header
-            
-                // Extract each integer
-                while(std::getline(ss, fieldi, *cdeliminter)){
-                    
-                    it = std::find(allcols_2search.begin(), allcols_2search.end(), colIdx); // check if column of interest
-
-                    // Add the current integer to the 'colIdx' column's values vector
-                    if (it != allcols_2search.end()){  // skip header
-                                               
-                        linedata[std::distance(allcols_2search.begin(),it)] = std::stod(fieldi);
-                        colIdx_res++;
-                    }                             
-                    
-                    colIdx++; // Increment the column index
-                }
-                (to_cubedata)(linedata[0],linedata[1],linedata[2]) = linedata[3] * unit_convertion_multipler; // save to to_cubedata
-            }
-            line_i++;
-        }
-    }
-
-    // Close file
-    thisFile.close();
-}
-*/
