@@ -273,16 +273,15 @@ void OpenWQ_chem::BGC_Transform(
         BGCcycles_name_icmp = BGCcycles_icmp.at(bgci);
 
         // Get number transformations in biogeochemical cycle BGCcycles_name_icmp
+        std::vector<double> transf_index;
         for (unsigned int index_j=0;index_j<OpenWQ_wqconfig.BGCexpressions_info.size();index_j++){
             BGCcycles_name_list = std::get<0>(OpenWQ_wqconfig.BGCexpressions_info.at(index_j)); // get BGC cycle from OpenWQ_wqconfig.BGCexpressions_info
             if(BGCcycles_name_list.compare(BGCcycles_name_icmp) == 0){
-                num_transf = index_j;
-                break;
+                transf_index.push_back(index_j);
             }
         }
-        num_transf = OpenWQ_json.BGCcycling["CYCLING_FRAMEWORKS"]
-            [BGCcycles_name_icmp]["list_transformations"].size();
-
+        
+        num_transf = transf_index.size(); // number of transformation for this BGC cycle (as identified in BGCexpressions_info)
 
         /* ########################################
         // Loop over transformations in biogeochemical cycle bgci
@@ -299,7 +298,9 @@ void OpenWQ_chem::BGC_Transform(
                     for (unsigned int iz=0;iz<nz;iz++){
                         
                         // Get indexes of chemicals in transformation equation (needs to be here for loop reset)
-                        std::vector<unsigned int> index_transf = std::get<5>(OpenWQ_wqconfig.BGCexpressions_info.at(transi));
+                        std::vector<unsigned int> index_transf = 
+                            std::get<5>(
+                                OpenWQ_wqconfig.BGCexpressions_info.at(transf_index[transi]));
                         
                         std::vector<double> chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
 
