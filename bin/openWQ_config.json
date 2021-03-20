@@ -8,9 +8,9 @@
         "Snow":{
             "cycling_framework": ["N_inorg","P_inorg"],
             "initial_conditions":{
-                "NO3": [2,"concentration","ug/l"],
-                "NH4": [2,"concentration","mg/l"],
-                "N2": [2,"concentration","mg/l"],
+                "NO3": [7,"concentration","mg/l"],
+                "NH4": [11,"concentration","mg/l"],
+                "N2": [2,"concentration","ug/l"],
                 "DON": [2,"concentration","mg/l"],
                 "labile_orgN": [100,"mass","kg/m3"],
                 "refractory_orgN": [100,"mass","kg/m3"],

@@ -85,8 +85,8 @@ int main(int argc, char* argv[])
     // Read and Set Initial Conditions 
     // Needs loop in host model because it requires grid-cell volume (mass IC) or water volume (concentration IC))
     unsigned int icmp = 0;                    // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
-    unsigned int ix = 1;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
-    unsigned int iy = 1;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    unsigned int ix = 0;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
+    unsigned int iy = 0;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     unsigned int iz = 0;                      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     double igridcell_volume = 1;     // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     double iwater_volume = 0.5;      // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL

@@ -49,7 +49,8 @@ void OpenWQ_chem::setBGCexpressions(
     int num_BGCcycles, 
         num_transf,
         index_i,                         // iteractive index (can be zero because it is determined in a .find())
-        index_cons,index_prod;          // indexed for consumed and produced chemical
+        index_cons,index_prod,           // indexed for consumed and produced chemical
+        index_new_chemass_InTransfEq;    // interactive index to build index_new_chemass_InTransfEq
     std::vector<std::string> BGCcycles_namelist;
     std::string BGCcycles_name, Transf_name;
     double param_val; // prameter value
@@ -122,6 +123,7 @@ void OpenWQ_chem::setBGCexpressions(
             // these indexes need to be reset here
             index_cons = -1;
             index_prod = -1; // indexed for consumed and produced chemical
+            index_new_chemass_InTransfEq = 0;
 
             for(unsigned int chemi=0;chemi<(OpenWQ_wqconfig.num_chem);chemi++){
                 
@@ -147,7 +149,8 @@ void OpenWQ_chem::setBGCexpressions(
                     expression_string_modif.replace(
                         index_i,    // start position
                         chemname.size(),    // length
-                        "chemass_InTransfEq["+std::to_string(chemi)+"]"); // string to replace by
+                        "chemass_InTransfEq["+std::to_string(index_new_chemass_InTransfEq)+"]"); // string to replace by
+                    index_new_chemass_InTransfEq ++;    
                 }
             }
 
@@ -165,7 +168,6 @@ void OpenWQ_chem::setBGCexpressions(
                     parameter_names[i].size(),
                     std::to_string(param_val));
             }
-            std::cout << expression_string_modif << std::endl;
 
             // Add variables to symbol_table
             symbol_table_t symbol_table;
@@ -253,6 +255,7 @@ void OpenWQ_chem::BGC_Transform(
     unsigned int nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in z-direction
     std::string BGCcycles_name_icmp,BGCcycles_name_list; // BGC Cycling name i of compartment icmp 
     unsigned int index_express; // iteractive index for expression evaluator  
+    double transf_mass;         // interactive mass to transfer between species
 
     // Find compartment icmp name from code (host hydrological model)
     std::string CompName_icmp = std::get<1>(
@@ -278,7 +281,7 @@ void OpenWQ_chem::BGC_Transform(
         BGCcycles_name_icmp = BGCcycles_icmp.at(bgci);
 
         // Get number transformations in biogeochemical cycle BGCcycles_name_icmp
-        std::vector<double> transf_index;
+        std::vector<unsigned int> transf_index;
         for (unsigned int index_j=0;index_j<OpenWQ_wqconfig.BGCexpressions_info.size();index_j++){
             BGCcycles_name_list = std::get<0>(OpenWQ_wqconfig.BGCexpressions_info.at(index_j)); // get BGC cycle from OpenWQ_wqconfig.BGCexpressions_info
             if(BGCcycles_name_list.compare(BGCcycles_name_icmp) == 0){
@@ -294,31 +297,40 @@ void OpenWQ_chem::BGC_Transform(
         
         for (unsigned int transi=0;transi<num_transf;transi++){
 
+            index_cons = std::get<3>(OpenWQ_wqconfig.BGCexpressions_info.at(transf_index[transi]));
+            index_prod = std::get<4>(OpenWQ_wqconfig.BGCexpressions_info.at(transf_index[transi]));
+
+            // Get indexes of chemicals in transformation equation (needs to be here for loop reset)
+            std::vector<unsigned int> index_chemtransf = 
+                std::get<5>(
+                    OpenWQ_wqconfig.BGCexpressions_info.at(transf_index[transi]));
+
             /* ########################################
             // Loop over space: nx, ny, nz
             ######################################## */
             for (unsigned int ix=0;ix<nx;ix++){
                 for (unsigned int iy=0;iy<ny;iy++){
-                    for (unsigned int iz=0;iz<nz;iz++){
-                        
-                        // Get indexes of chemicals in transformation equation (needs to be here for loop reset)
-                        std::vector<unsigned int> index_transf = 
-                            std::get<5>(
-                                OpenWQ_wqconfig.BGCexpressions_info.at(transf_index[transi]));
+                    for (unsigned int iz=0;iz<nz;iz++){                    
                         
                         std::vector<double> chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
 
                         // loop to get all the variables inside the expression
-                        for (unsigned int chem=0;chem<index_transf.size();chem++){
+                        for (unsigned int chem=0;chem<index_chemtransf.size();chem++){
                             chemass_InTransfEq.push_back(
                                 (*OpenWQ_vars.chemass)
                                 (icmp)
-                                (index_transf[chem])
+                                (index_chemtransf[chem])
                                 (ix,iy,iz));
+
+                                std::cout << chemass_InTransfEq[chem] << std::endl;
+                                std::cout << index_chemtransf[chem] << std::endl;
                         }
 
                         // Mass transfered: Consumed -> Produced (using exprtk)
-                        double transf_mass = OpenWQ_wqconfig.BGCexpressions_eq[transf_index[transi]].value(); 
+
+                        std::cout << std::to_string(transf_index[transi]) << std::endl;
+
+                        transf_mass = OpenWQ_wqconfig.BGCexpressions_eq[transf_index[transi]].value(); 
 
                         // New mass of consumed chemical
                         (*OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
