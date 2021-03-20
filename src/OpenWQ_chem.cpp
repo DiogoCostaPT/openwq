@@ -48,12 +48,10 @@ void OpenWQ_chem::setBGCexpressions(
         > BGCTransfTuple_info;          // Tuple with info and expression for BGC cyling
     int num_BGCcycles, 
         num_transf,
-        index_i; // iteractive index (can be zero because it is determined in a .find())
+        index_i,                         // iteractive index (can be zero because it is determined in a .find())
+        index_cons,index_prod;          // indexed for consumed and produced chemical
     std::vector<std::string> BGCcycles_namelist;
     std::string BGCcycles_name, Transf_name;
-    unsigned int 
-        index_cons,index_prod, // indexed for consumed and produced chemical
-        index_express; // iteractive index for expression evaluator  
     double param_val; // prameter value
 
 
@@ -118,8 +116,13 @@ void OpenWQ_chem::setBGCexpressions(
                 ["parameter_names"];
             expression_string_modif = expression_string;
             
+            /* ########################################
             // Find species indexes: consumed, produced and in the expression
-            
+            ######################################## */
+            // these indexes need to be reset here
+            index_cons = -1;
+            index_prod = -1; // indexed for consumed and produced chemical
+
             for(unsigned int chemi=0;chemi<(OpenWQ_wqconfig.num_chem);chemi++){
                 
                 // Get chemical species name
@@ -137,20 +140,18 @@ void OpenWQ_chem::setBGCexpressions(
                     index_prod = chemi; // index
                 }
 
-                // In expression
-                index_i = expression_string.find(chemname);
-                index_express = 0; // reset needed for every new equation
-                if (index_i!=-1 && !expression_string.empty()){
+                // In expression (replace chemical species name by index)
+                index_i = expression_string_modif.find(chemname);
+                if (index_i!=-1 && !expression_string_modif.empty()){
                     index_transf.push_back(chemi); // index
                     expression_string_modif.replace(
-                        index_i,
-                        index_i + chemname.size(),
-                        "chemass_InTransfEq["+std::to_string(index_express)+"]");
-                    index_express++;
+                        index_i,    // start position
+                        chemname.size(),    // length
+                        "chemass_InTransfEq["+std::to_string(chemi)+"]"); // string to replace by
                 }
             }
 
-            // Replace parameter name by value in expression
+            // Replace parameter name by value in expression (future: allow for variable e.g., soil moisture)
             for (unsigned int i=0;i<parameter_names.size();i++){
                 index_i = expression_string_modif.find(parameter_names[i]);
                 param_val = OpenWQ_json.BGCcycling
@@ -159,8 +160,12 @@ void OpenWQ_chem::setBGCexpressions(
                     [std::to_string(transi+1)]
                     ["parameter_values"]
                     [parameter_names[i]];
-                expression_string_modif.replace(index_i,index_i + parameter_names[i].size(),std::to_string(param_val));
+                expression_string_modif.replace(
+                    index_i,
+                    parameter_names[i].size(),
+                    std::to_string(param_val));
             }
+            std::cout << expression_string_modif << std::endl;
 
             // Add variables to symbol_table
             symbol_table_t symbol_table;
@@ -289,7 +294,6 @@ void OpenWQ_chem::BGC_Transform(
         
         for (unsigned int transi=0;transi<num_transf;transi++){
 
-            
             /* ########################################
             // Loop over space: nx, ny, nz
             ######################################## */
@@ -314,7 +318,7 @@ void OpenWQ_chem::BGC_Transform(
                         }
 
                         // Mass transfered: Consumed -> Produced (using exprtk)
-                        double transf_mass = OpenWQ_wqconfig.BGCexpressions_eq[transi].value(); 
+                        double transf_mass = OpenWQ_wqconfig.BGCexpressions_eq[transf_index[transi]].value(); 
 
                         // New mass of consumed chemical
                         (*OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;

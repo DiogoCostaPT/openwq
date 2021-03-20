@@ -14,9 +14,9 @@
                 "DON": [2,"concentration","mg/l"],
                 "labile_orgN": [100,"mass","kg/m3"],
                 "refractory_orgN": [100,"mass","kg/m3"],
-                "SRP": [100,"mass","kg/m3"],
-                "DOP": [100,"mass","kg/m3"],
-                "partP": [100,"mass","kg/m3"],
+                "SRP": [3,"concentration","mg/l"],
+                "DOP": [2,"concentration","mg/l"],
+                "partP": [2,"concentration","mg/l"],
                 "labile_orgP": [100,"mass","kg/m3"],
                 "refractory_orgP": [100,"mass","kg/m3"]
             }

@@ -24,10 +24,11 @@
             "1":{
                 "consumed": "NH4",
                 "produced": "NO3",
-                "kinetics": "NH4 + k",
-                "parameter_names": ["k"],
+                "kinetics": "NH4 * NO3 * k * p",
+                "parameter_names": ["k","p"],
                 "parameter_values":{
-                    "k": 0.001
+                    "k": 0.002,
+                    "p": 10
                 }
             },
             "2":{
@@ -50,7 +51,7 @@
                 "kinetics": "SRP + k",
                 "parameter_names": ["k"],
                 "parameter_values":{
-                    "k": 0.001
+                    "k": 0.002
                 }
             }
         },
