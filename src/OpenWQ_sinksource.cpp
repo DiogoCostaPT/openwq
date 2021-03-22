@@ -78,48 +78,6 @@ void OpenWQ_sinksource::CheckApply(
         // Loop over loads per sub-structure
         ######################################## */
         for (unsigned int ssi=0;ssi<num_sschem;ssi++){
-
-            // Look for chemicals, but there might be additional information such as METADATA
-            try{
-
-                // Chemical name json
-                chemname_ssi = 
-                    OpenWQ_json.SinkSource
-                    [std::to_string(ssf+1)]
-                    [std::to_string(ssi+1)]
-                    ["Chemical_name"];
-
-                // Look if that chemical name is in chem_species_list
-                find_i = 
-                    std::find((OpenWQ_wqconfig.chem_species_list).begin(), 
-                    (OpenWQ_wqconfig.chem_species_list).end(), 
-                    chemname_ssi);
-
-                // Find chemical model index
-                if (find_i != (OpenWQ_wqconfig.chem_species_list).end()){
-                    chemi_ssi =   find_i - (OpenWQ_wqconfig.chem_species_list).begin();
-                }else{
-                     std::cout 
-                        << "<OpenWQ> ERROR (entry skipped): Chemical_name in source-sink file unkown: " 
-                        << chemname_ssi 
-                        << std::endl;
-                }
-
-            }catch(json::type_error){
-                // If not chemical, just continue
-                continue;
-            }
-
-            // Get type: source or sink
-            ssType_ssi = OpenWQ_json.SinkSource
-                [std::to_string(ssf+1)]
-                [std::to_string(ssi+1)]
-                ["Type"];
-            std::transform(
-                ssType_ssi.begin(),
-                ssType_ssi.end(), 
-                ssType_ssi.begin(), // Convert to lower case to avoid issues
-                [](unsigned char c){ return std::tolower(c); });
             
             // Get number of rows of data in JSON (YYYY, MM, DD, HH,...)
             num_rowdata = OpenWQ_json.SinkSource
@@ -139,121 +97,176 @@ void OpenWQ_sinksource::CheckApply(
                     [std::to_string(ssi+1)]
                     ["Data"]
                     [std::to_string(di+1)].at(0);
-                MM_json = OpenWQ_json.SinkSource    // month
-                    [std::to_string(ssf+1)]
-                    [std::to_string(ssi+1)]
-                    ["Data"]
-                    [std::to_string(di+1)].at(1);
-                DD_json =OpenWQ_json.SinkSource     // day
-                    [std::to_string(ssf+1)]
-                    [std::to_string(ssi+1)]
-                    ["Data"]
-                    [std::to_string(di+1)].at(2);
-                HH_json =OpenWQ_json.SinkSource     // hour
-                    [std::to_string(ssf+1)]
-                    [std::to_string(ssi+1)]
-                    ["Data"]
-                    [std::to_string(di+1)].at(3);                               
 
-                /* ########################################
-                // Apply Source or Sink
-                // Only if Dates match: model and Json-source-sink input
-                ######################################## */
-
-                if (YYYY == YYYY_json && MM == MM_json &&
-                    DD == DD_json && HH == HH_json){
+                if (YYYY == YYYY_json){
+                        
+                    MM_json = OpenWQ_json.SinkSource    // month
+                        [std::to_string(ssf+1)]
+                        [std::to_string(ssi+1)]
+                        ["Data"]
+                        [std::to_string(di+1)].at(1);
                     
-                    // Get additional information about sink-source row data                    
-                    compartment_name = OpenWQ_json.SinkSource // compartment name
-                        [std::to_string(ssf+1)]
-                        [std::to_string(ssi+1)]
-                        ["Compartment"];
-                    // chemname_ssi -> already obtained above // chemcial namea
-                    ix_json = OpenWQ_json.SinkSource // ix 
-                        [std::to_string(ssf+1)]
-                        [std::to_string(ssi+1)]
-                        ["Data"]
-                        [std::to_string(di+1)].at(4);
-                    iy_json = OpenWQ_json.SinkSource // iy
-                        [std::to_string(ssf+1)]
-                        [std::to_string(ssi+1)]
-                        ["Data"]
-                        [std::to_string(di+1)].at(5);
-                    iz_json = OpenWQ_json.SinkSource // iz
-                        [std::to_string(ssf+1)]
-                        [std::to_string(ssi+1)]
-                        ["Data"]
-                        [std::to_string(di+1)].at(6);
-                    ss_data_json = OpenWQ_json.SinkSource // sink/source data
-                        [std::to_string(ssf+1)]
-                        [std::to_string(ssi+1)]
-                        ["Data"]
-                        [std::to_string(di+1)].at(7);
-                    ss_units_json = OpenWQ_json.SinkSource // sink/source data
-                        [std::to_string(ssf+1)]
-                        [std::to_string(ssi+1)]
-                        ["Units"]; 
+                        if (MM == MM_json){
 
-                    // Need to "- 1" for ix_json, iy_json, and iz_json because c++ starts at zero
-                    ix_json -= 1;
-                    iy_json -= 1;
-                    iz_json -= 1;
+                        DD_json =OpenWQ_json.SinkSource     // day
+                            [std::to_string(ssf+1)]
+                            [std::to_string(ssi+1)]
+                            ["Data"]
+                            [std::to_string(di+1)].at(2);
+                        
+                            if (DD == DD_json){
 
-                    // Get compartment index
-                    find_i = 
-                        std::find(cmp_list.begin(), 
-                        cmp_list.end(), 
-                        compartment_name);
+                            HH_json =OpenWQ_json.SinkSource     // hour
+                                [std::to_string(ssf+1)]
+                                [std::to_string(ssi+1)]
+                                ["Data"]
+                                [std::to_string(di+1)].at(3);      
 
-                    // Find chemical model index
-                    if (find_i != cmp_list.end()){
-                        cmpi_ssi =   find_i - cmp_list.begin();
-                    }else{
-                        std::cout 
-                            << "<OpenWQ> ERROR (entry skipped): Compartment name in source-sink file unkown: " 
-                            << compartment_name 
-                            << std::endl;
-                        continue;   
-                    }
+                            if (HH == HH_json){             
+                                
+                                /* ########################################
+                                // Check if chemical exists
+                                ######################################## */
+                                try{
 
-                    // Convert units
-                    // Source/sink units (g -> default model mass units)
-                    OpenWQ_units.Convert_SS_Units(
-                        ss_data_json,      // SS value
-                        ss_units_json);  // SS unit
+                                    // Chemical name json
+                                    chemname_ssi = 
+                                        OpenWQ_json.SinkSource
+                                        [std::to_string(ssf+1)]
+                                        [std::to_string(ssi+1)]
+                                        ["Chemical_name"];
 
-                    /* ########################################
-                    // if SOURCE
-                    ######################################## */
-                    if (ssType_ssi.compare("source") == 0){
+                                    // Look if that chemical name is in chem_species_list
+                                    find_i = 
+                                        std::find((OpenWQ_wqconfig.chem_species_list).begin(), 
+                                        (OpenWQ_wqconfig.chem_species_list).end(), 
+                                        chemname_ssi);
 
-                        OpenWQ_sinksource::Apply_Source(
-                            OpenWQ_vars,
-                            cmpi_ssi,           // compartment model index
-                            chemi_ssi,       // chemical model index    
-                            ix_json,            // compartment model ix
-                            iy_json,            // compartment model iy
-                            iz_json,            // compartment model iz
-                            ss_data_json);      // source load
+                                    // Find chemical model index
+                                    if (find_i != (OpenWQ_wqconfig.chem_species_list).end()){
+                                        chemi_ssi =   find_i - (OpenWQ_wqconfig.chem_species_list).begin();
+                                    }else{
+                                        std::cout 
+                                            << "<OpenWQ> ERROR (entry skipped): Chemical_name in source-sink file unkown: " 
+                                            << chemname_ssi 
+                                            << std::endl;
+                                    }
 
-                    }
-                    /* ########################################
-                    // if SINK
-                    ######################################## */
-                    else if (ssType_ssi.compare("sink") == 0){
-                        OpenWQ_sinksource::Apply_Sink(
-                            OpenWQ_vars,
-                            cmpi_ssi,           // compartment model index
-                            chemi_ssi,          // chemical model index    
-                            ix_json,            // compartment model ix
-                            iy_json,            // compartment model iy
-                            iz_json,            // compartment model iz
-                            ss_data_json);      // source load g
-                    }
-                    // if none of the above (throw error)
-                    else {
-                        std::cout << "<OpenWQ> ERROR: Sink_Source type unkown: " << ssType_ssi << std::endl;
-                        exit (EXIT_FAILURE);  
+                                }catch(json::type_error){
+                                    // If not chemical, just continue
+                                    continue;
+                                }            
+
+                                /* ########################################
+                                // Apply Source or Sink
+                                // Only if Dates match: model and Json-source-sink input
+                                ######################################## */
+                    
+                                // Get additional information about sink-source row data                    
+                                compartment_name = OpenWQ_json.SinkSource // compartment name
+                                    [std::to_string(ssf+1)]
+                                    [std::to_string(ssi+1)]
+                                    ["Compartment"];
+                                // chemname_ssi -> already obtained above // chemcial namea
+                                ix_json = OpenWQ_json.SinkSource // ix 
+                                    [std::to_string(ssf+1)]
+                                    [std::to_string(ssi+1)]
+                                    ["Data"]
+                                    [std::to_string(di+1)].at(4);
+                                iy_json = OpenWQ_json.SinkSource // iy
+                                    [std::to_string(ssf+1)]
+                                    [std::to_string(ssi+1)]
+                                    ["Data"]
+                                    [std::to_string(di+1)].at(5);
+                                iz_json = OpenWQ_json.SinkSource // iz
+                                    [std::to_string(ssf+1)]
+                                    [std::to_string(ssi+1)]
+                                    ["Data"]
+                                    [std::to_string(di+1)].at(6);
+                                ss_data_json = OpenWQ_json.SinkSource // sink/source data
+                                    [std::to_string(ssf+1)]
+                                    [std::to_string(ssi+1)]
+                                    ["Data"]
+                                    [std::to_string(di+1)].at(7);
+                                ss_units_json = OpenWQ_json.SinkSource // sink/source data
+                                    [std::to_string(ssf+1)]
+                                    [std::to_string(ssi+1)]
+                                    ["Units"]; 
+
+                                // Need to "- 1" for ix_json, iy_json, and iz_json because c++ starts at zero
+                                ix_json -= 1;
+                                iy_json -= 1;
+                                iz_json -= 1;
+
+                                // Get compartment index
+                                find_i = 
+                                    std::find(cmp_list.begin(), 
+                                    cmp_list.end(), 
+                                    compartment_name);
+
+                                // Find chemical model index
+                                if (find_i != cmp_list.end()){
+                                    cmpi_ssi =   find_i - cmp_list.begin();
+                                }else{
+                                    std::cout 
+                                        << "<OpenWQ> ERROR (entry skipped): Compartment name in source-sink file unkown: " 
+                                        << compartment_name 
+                                        << std::endl;
+                                    continue;   
+                                }
+
+                                // Convert units
+                                // Source/sink units (g -> default model mass units)
+                                OpenWQ_units.Convert_SS_Units(
+                                    ss_data_json,      // SS value
+                                    ss_units_json);  // SS unit
+
+                                /* ########################################
+                                // if SOURCE
+                                ######################################## */
+                                // Get type: source or sink
+                                ssType_ssi = OpenWQ_json.SinkSource
+                                    [std::to_string(ssf+1)]
+                                    [std::to_string(ssi+1)]
+                                    ["Type"];
+                                std::transform(
+                                    ssType_ssi.begin(),
+                                    ssType_ssi.end(), 
+                                    ssType_ssi.begin(), // Convert to lower case to avoid issues
+                                    [](unsigned char c){ return std::tolower(c); });
+
+                                if (ssType_ssi.compare("source") == 0){
+
+                                    OpenWQ_sinksource::Apply_Source(
+                                        OpenWQ_vars,
+                                        cmpi_ssi,           // compartment model index
+                                        chemi_ssi,       // chemical model index    
+                                        ix_json,            // compartment model ix
+                                        iy_json,            // compartment model iy
+                                        iz_json,            // compartment model iz
+                                        ss_data_json);      // source load
+
+                                }
+                                /* ########################################
+                                // if SINK
+                                ######################################## */
+                                else if (ssType_ssi.compare("sink") == 0){
+                                    OpenWQ_sinksource::Apply_Sink(
+                                        OpenWQ_vars,
+                                        cmpi_ssi,           // compartment model index
+                                        chemi_ssi,          // chemical model index    
+                                        ix_json,            // compartment model ix
+                                        iy_json,            // compartment model iy
+                                        iz_json,            // compartment model iz
+                                        ss_data_json);      // source load g
+                                }
+                                // if none of the above (throw error)
+                                else {
+                                    std::cout << "<OpenWQ> ERROR: Sink_Source type unkown: " << ssType_ssi << std::endl;
+                                    exit (EXIT_FAILURE);  
+                                }
+                            }
+                        }
                     }
                 }
             }
