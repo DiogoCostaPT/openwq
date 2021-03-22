@@ -171,11 +171,12 @@ void OpenWQ_chem::setBGCexpressions(
 
             // Add variables to symbol_table
             symbol_table_t symbol_table;
-            std::vector<double> chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
+            
+            OpenWQ_wqconfig.chemass_InTransfEq.clear();
             for (unsigned int i=0;i<index_transf.size();i++){
-                chemass_InTransfEq.push_back(0); // creating the vector
+                OpenWQ_wqconfig.chemass_InTransfEq.push_back(0); // creating the vector
             }
-            symbol_table.add_vector("chemass_InTransfEq",chemass_InTransfEq);
+            symbol_table.add_vector("chemass_InTransfEq",OpenWQ_wqconfig.chemass_InTransfEq);
             // symbol_table.add_constants();
 
             // Create Object
@@ -312,24 +313,21 @@ void OpenWQ_chem::BGC_Transform(
                 for (unsigned int iy=0;iy<ny;iy++){
                     for (unsigned int iz=0;iz<nz;iz++){                    
                         
-                        std::vector<double> chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
-
+                        //std::vector<double> chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
+                        OpenWQ_wqconfig.chemass_InTransfEq.clear();
                         // loop to get all the variables inside the expression
                         for (unsigned int chem=0;chem<index_chemtransf.size();chem++){
-                            chemass_InTransfEq.push_back(
+                            OpenWQ_wqconfig.chemass_InTransfEq.push_back(
                                 (*OpenWQ_vars.chemass)
                                 (icmp)
                                 (index_chemtransf[chem])
                                 (ix,iy,iz));
 
-                                std::cout << chemass_InTransfEq[chem] << std::endl;
+                                std::cout << OpenWQ_wqconfig.chemass_InTransfEq[chem] << std::endl;
                                 std::cout << index_chemtransf[chem] << std::endl;
                         }
 
                         // Mass transfered: Consumed -> Produced (using exprtk)
-
-                        std::cout << std::to_string(transf_index[transi]) << std::endl;
-
                         transf_mass = OpenWQ_wqconfig.BGCexpressions_eq[transf_index[transi]].value(); 
 
                         // New mass of consumed chemical

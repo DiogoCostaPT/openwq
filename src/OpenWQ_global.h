@@ -99,7 +99,7 @@ class OpenWQ_wqconfig
     std::vector<
         exprtk::expression<double>     // Expression (exprtk) parsed
         >BGCexpressions_eq;   // BGC kinetic formulas
-    
+    std::vector<double> chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
 };
 
 /* #################################################
