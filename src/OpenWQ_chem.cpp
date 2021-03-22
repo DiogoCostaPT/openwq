@@ -322,9 +322,6 @@ void OpenWQ_chem::BGC_Transform(
                                 (icmp)
                                 (index_chemtransf[chem])
                                 (ix,iy,iz));
-
-                                std::cout << OpenWQ_wqconfig.chemass_InTransfEq[chem] << std::endl;
-                                std::cout << index_chemtransf[chem] << std::endl;
                         }
 
                         // Mass transfered: Consumed -> Produced (using exprtk)
