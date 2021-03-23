@@ -47,11 +47,6 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
     std::string filename;                   // iteractive output file name
     
 
-    // Get number of species for compartment icmp
-    unsigned int numspec = OpenWQ_json.BGCcycling
-        ["CHEMICAL_SPECIES"]
-        ["list"].size(); // number of chemical species in BGCcycling
-
     // Get export folder
     std::string output_dir = OpenWQ_json.Master
         ["openWQ_OUTPUT"]

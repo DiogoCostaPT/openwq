@@ -43,6 +43,16 @@ class OpenWQ_sinksource{
         const unsigned int DD,                         // current model step: day
         const unsigned int HH);                        // current model step: hour
 
+    void Apply(
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units,
+        const unsigned int ssf,     // source-sink file
+        const unsigned int ssi,     // load section                 
+        const unsigned int di);     // data row
+
     void Apply_Source(
         OpenWQ_vars& OpenWQ_vars,
         const unsigned int cmpi,               // compartment model index

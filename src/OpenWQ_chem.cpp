@@ -240,22 +240,16 @@ void OpenWQ_chem::BGC_Transform(
     
     // Local variables for expression evaluator: exprtk
     std::string expression_string; // expression string
-    typedef exprtk::symbol_table<double> symbol_table_t;
-    typedef exprtk::expression<double> expression_t;
-    typedef exprtk::parser<double> parser_t;
 
     // Other local variables
     std::string chemname; // chemical name
     unsigned int index_cons,index_prod; // indexed for consumed and produced chemical
-    int index_i; // iteractive index (can be zero because it is determined in a .find())
-    double param_val; // prameter value
-    unsigned int num_BGCcycles; // number of BGC frameworks in comparment icmp
     unsigned int num_transf; // number of transformation in biogeochemical cycle bgci
+    unsigned int num_BGCcycles; // number of BGC frameworks in comparment icmp
     unsigned int nx = std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in x-direction
     unsigned int ny = std::get<3>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in y-direction
     unsigned int nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in z-direction
-    std::string BGCcycles_name_icmp,BGCcycles_name_list; // BGC Cycling name i of compartment icmp 
-    unsigned int index_express; // iteractive index for expression evaluator  
+    std::string BGCcycles_name_icmp,BGCcycles_name_list; // BGC Cycling name i of compartment icmp  
     double transf_mass;         // interactive mass to transfer between species
 
     // Find compartment icmp name from code (host hydrological model)
