@@ -80,10 +80,17 @@ class OpenWQ_wqconfig
 
         // #################################################
         // num_coldata is, the moment, equal to 11
-        // 1 - chemical
-        // 2 - compartment
-        // 3 - source(=0) or sink(=1)
-        // 4:11 - data (YYYY,MM,DD,HH,ix,iy,iz,value) 
+        // 0 - chemical
+        // 1 - compartment
+        // 2 - source(=0) or sink(=1)
+        // 3 - YYYY
+        // 4 - MM
+        // 5 - DD
+        // 6 - HH
+        // 7 - ix
+        // 8 - iy
+        // 9 - iz
+        // 10 - value (already converted to mg/l (concentration) or g(mass)) 
 
         SinkSource_FORC = 
             std::unique_ptr<

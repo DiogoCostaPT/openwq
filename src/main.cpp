@@ -148,11 +148,9 @@ int main(int argc, char* argv[])
 
         
         OpenWQ_sinksource.CheckApply(
-            OpenWQ_json,
             OpenWQ_vars,
             OpenWQ_hostModelconfig,
             OpenWQ_wqconfig,
-            OpenWQ_units,
             YYYY,
             MM,
             DD,

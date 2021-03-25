@@ -42,11 +42,9 @@ class OpenWQ_sinksource{
 
     // Check if sink or sources needs to be applied
     void CheckApply(
-        OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_units& OpenWQ_units,
         const unsigned int YYYY,                       // current model step: Year
         const unsigned int MM,                         // current model step: month
         const unsigned int DD,                         // current model step: day
@@ -58,7 +56,6 @@ class OpenWQ_sinksource{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_units& OpenWQ_units,
         const unsigned int ssf,     // source-sink file
         const unsigned int ssi,     // load section                 
         const unsigned int di);     // data row
