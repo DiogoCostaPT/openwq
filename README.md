@@ -29,6 +29,8 @@
 * development: used to verify updates from feature branches before merging with main
 * supporting_scripts: feature branch for development of supporting Python and MATLAB scripts
 * wrapper_interfaces: feature branch for development of wrapper interfaces between SUMMA and OpenWQ, and MESH and OpenWQ
+* expression_evaluation_optimization: feature branch for optimizing string parsing and the computation of mathematical expressions
+* optimization_sink_source: feature branch
 ### Notes
 * Note that the primary branch (formerly known as "master") was renamed as "main"
 * If using a local clone with the previous naming scheme, the clone may be updated using the following Git commands:
