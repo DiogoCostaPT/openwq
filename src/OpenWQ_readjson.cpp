@@ -31,7 +31,7 @@ void OpenWQ_readjson::read_all(
         ######################## */
 
         // Local Variables
-        const std::string OpenWQ_masterjson = "openWQ_master.json";
+        const std::string OpenWQ_masterjson = "bin/openWQ_master.json";
 
         // Master file json (read)
         read_JSON_2class(
@@ -109,6 +109,7 @@ void OpenWQ_readjson::read_JSON_2class(
         /* ####################################
         // Save JSON file in JSON data structure
         #################################### */
+        
         try{
                 // Read json file with ifstrem
                 std::ifstream i(jsonfile);

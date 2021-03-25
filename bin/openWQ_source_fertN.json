@@ -5,7 +5,7 @@
 	},
 	"1": {
 		"Chemical_name": "NO3",
-		"Compartment": "Soil",
+		"Compartment_name": "Soil",
 		"Type": "source",
 		"Units": "kg",
 		"Data": {
@@ -17,7 +17,7 @@
 	},
 	"2": {
 		"Chemical_name": "NH4",
-		"Compartment": "Soil",
+		"Compartment_name": "Soil",
 		"Type": "source",
 		"Units": "kg",
 		"Data": {

@@ -32,6 +32,15 @@ class OpenWQ_sinksource{
 
     public:
 
+    // Save Sink and Source data to tuple (more efficient then allways calling jnlohmann)
+    void SetSinkSource(
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units);
+
+    // Check if sink or sources needs to be applied
     void CheckApply(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
@@ -43,6 +52,7 @@ class OpenWQ_sinksource{
         const unsigned int DD,                         // current model step: day
         const unsigned int HH);                        // current model step: hour
 
+    // Apply Sink or Source
     void Apply(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
@@ -53,6 +63,7 @@ class OpenWQ_sinksource{
         const unsigned int ssi,     // load section                 
         const unsigned int di);     // data row
 
+    // Apply Source
     void Apply_Source(
         OpenWQ_vars& OpenWQ_vars,
         const unsigned int cmpi,               // compartment model index
@@ -62,6 +73,7 @@ class OpenWQ_sinksource{
         const unsigned int iz_json,            // compartment model iz
         const double ss_data_json);            // source load
 
+    // Apply Sink
     void Apply_Sink(
         OpenWQ_vars& OpenWQ_vars,
         const unsigned int cmpi,                // compartment model index

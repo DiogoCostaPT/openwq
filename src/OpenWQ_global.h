@@ -70,14 +70,41 @@ class OpenWQ_hostModelconfig
 ################################################# */
 class OpenWQ_wqconfig
 {
-
     public:
+    OpenWQ_wqconfig(){
 
+    }
+    OpenWQ_wqconfig(size_t num_coldata){
+
+        this -> num_coldata = num_coldata;
+
+        SinkSource_FORC = 
+        std::unique_ptr<
+            std::vector<
+                std::tuple<
+                    std::string,
+                    std::string,
+                    std::string,
+                    std::string,
+                    arma::Mat<double>
+        >>> (new std::vector<
+                    std::tuple<
+                    std::string,
+                    std::string,
+                    std::string,
+                    std::string,
+                    arma::mat>> (num_coldata));   // sink and source forcing
+    }
+
+    size_t num_coldata;
+
+    // #################################################
     // General set up
     double timetep_out;             // time step
     std::string timestep_out_unit;  // time step unit
     double nexttime_out = 0.0f;     // iteractive next printing time
     
+    // #################################################
     // Chemistry
     unsigned int num_chem;                  //Number of chemical species  
     std::vector
@@ -96,10 +123,26 @@ class OpenWQ_wqconfig
             unsigned int,               // index of produced species
             std::vector<unsigned int>   // index of chemical in transformation equation (needs to be here for loop reset)
         >> BGCexpressions_info;
+    
     std::vector<
         exprtk::expression<double>     // Expression (exprtk) parsed
-        >BGCexpressions_eq;   // BGC kinetic formulas
+        >BGCexpressions_eq;            // BGC kinetic formulas for all biogeochemical cycles
+    
     std::vector<double> chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
+
+    // #################################################
+    // Sink anhd Source
+
+    std::unique_ptr<
+            std::vector<
+                std::tuple<
+                    std::string,
+                    std::string,
+                    std::string,
+                    std::string,
+                    arma::Mat<double>
+        >>> SinkSource_FORC; 
+
 };
 
 /* #################################################

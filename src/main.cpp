@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 
     // Create Object: OpenWQ_json (Input JSON files) and wqconfig
     OpenWQ_json OpenWQ_json;            // create OpenWQ_json object
-    OpenWQ_wqconfig OpenWQ_wqconfig;    // create OpenWQ_wqconfig object
+    OpenWQ_wqconfig OpenWQ_wqconfig(8);    // create OpenWQ_wqconfig object
     OpenWQ_units OpenWQ_units;          // functions for unit conversion
     
     // Read JSON file
@@ -118,6 +118,16 @@ int main(int argc, char* argv[])
         OpenWQ_wqconfig,
         OpenWQ_vars);
 
+    /* #################################################
+    // Parse sink and source inputs and store them in tuple and arma::mat for rapid access
+    ################################################# */
+    OpenWQ_sinksource.SetSinkSource(
+        OpenWQ_json,
+        OpenWQ_vars,
+        OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig,
+        OpenWQ_units);    
+    
     unsigned int ts_hosthydromod = 5000; // (timesteps) TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     
     /* #################################################
