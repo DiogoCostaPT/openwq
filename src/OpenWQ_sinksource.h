@@ -87,6 +87,11 @@ class OpenWQ_sinksource{
         double &ss_value,     // SS value
         std::string ss_unit);  // SS unit
 
+    bool getModIndex(
+        std::vector<std::string> &vec_list,
+        std::string &obj_name,
+        std::string &obj_text,
+        unsigned long &vec_obj_index);
 
 };
 

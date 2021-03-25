@@ -28,23 +28,20 @@ void OpenWQ_sinksource::SetSinkSource(
     OpenWQ_units& OpenWQ_units){ 
     
     // Local variables
+    bool foundflag = false;                 // iteractive boolean to identify if comp or chem was found
+    std::string err_text;                   // iteractive string for text to pass to error messages
     std::vector<std::string> cmp_list;      // model compartment list
-    unsigned int cmpi_ssi;          // model index for compartment Compartment_name_name
-    
+    std::vector<std::string> chem_list;     // model chemical list
+    unsigned long cmpi_ssi;          // model index for compartment Compartment_name_name
+    unsigned long chem_ssi;          // model index for compartment Compartment_name_name
+    unsigned long sinksource_ssi;    // = 0 (source), = 1 (sink)
+
     unsigned int num_ssfiles;       // number of sink-source files 
                                     // (saved as sub-structure of SinkSource)
     unsigned int num_sschem;        // number of chemical loads per file
     unsigned int num_rowdata;       // number of rows of data in JSON (YYYY, MM, DD, HH,...)
     int int_n_elem;                 // iterative counting of number of elements in arma:mat
     
-    typedef std::tuple<
-        std::string,
-        std::string,
-        std::string,
-        std::string,
-        arma::Mat<double>
-        > SinkSourceTuple; // Tuple for Sink and Source Data
-
     std::string Chemical_name;  // from JSON file
     std::string Compartment_name;    // from JSON file
     std::string Type;           // from JSON file
@@ -59,9 +56,7 @@ void OpenWQ_sinksource::SetSinkSource(
     int iz_json;           // iteractive ix info for sink-source row data 
     double ss_data_json;            // data (sink or source) from row data
     std::string ss_units_json;      // units of row data
-    std::vector<std::string>::iterator find_i; // iteractor used to store the position or searched element
-
-    arma::Mat<double> sinksource_matrix; // matrix storing blocks of sink source data
+   
     arma::vec row_data_col;     // new row data (initially as col data)
     arma::Mat<double> row_data_row;     // for conversion of row_data_col to row data
     
@@ -71,6 +66,14 @@ void OpenWQ_sinksource::SetSinkSource(
         cmp_list.push_back(
             std::get<1>(
                 OpenWQ_hostModelconfig.HydroComp.at(ci))); // num of x elements 
+    }
+
+    // Get model chemical names list
+    unsigned int num_chem = OpenWQ_wqconfig.num_chem;
+    for (unsigned int chemi=0;chemi<num_chem;chemi++){
+        chem_list.push_back(
+            (OpenWQ_wqconfig.chem_species_list)[chemi]);
+            std::cout << OpenWQ_wqconfig.chem_species_list[chemi] << std::endl;
     }
 
     // Get number of sub-structures of SinkSource
@@ -88,6 +91,9 @@ void OpenWQ_sinksource::SetSinkSource(
         /* ########################################
         // Loop over loads per sub-structure
         ######################################## */
+
+        foundflag = false;      // reset to false at every 
+
         for (unsigned int ssi=0;ssi<num_sschem;ssi++){
             
             // needs this here because there can be entries that are not relevant e.g. COMMENTS
@@ -120,12 +126,38 @@ void OpenWQ_sinksource::SetSinkSource(
                 [std::to_string(ssf+1)]
                 [std::to_string(ssi+1)]
                 ["Data"].size();
+            
+            // Get chemical index
+            err_text = 'Chemical name';
+            foundflag = getModIndex(
+                chem_list,
+                Chemical_name,
+                err_text,
+                chem_ssi);
+            if (foundflag == false) continue; // skip if comp not found
+
+            // Get compartment index
+            err_text = 'Compartment name';
+            foundflag = getModIndex(
+                cmp_list,
+                Compartment_name,
+                err_text,
+                cmpi_ssi);
+            if (foundflag == false) continue; // skip if comp not found
+
+            // Set flag for sink or source
+            if (Type.compare("source") == 0){
+                sinksource_ssi = 0;
+            }else if (Type.compare("sink") == 0){
+                sinksource_ssi = 1;
+            }else{
+                continue; // skip if Type is unknown
+            }
+            
 
             /* ########################################
              // Loop over row data in sink-source file
             ######################################## */
-
-            sinksource_matrix.reset(); // Reset the size to zero (the object will have no elements)
 
             for (unsigned int di=0;di<num_rowdata;di++){
                 
@@ -193,22 +225,6 @@ void OpenWQ_sinksource::SetSinkSource(
                 iy_json = std::max(iy_json - 1,0);
                 iz_json = std::max(iz_json - 1,0);
                 
-                // Get compartment index
-                find_i = 
-                    std::find(cmp_list.begin(), 
-                    cmp_list.end(), 
-                    Compartment_name);
-
-                if (find_i != cmp_list.end()){
-                    cmpi_ssi =   find_i - cmp_list.begin();
-                }else{
-                    std::cout 
-                        << "<OpenWQ> ERROR (entry skipped): Compartment name in source-sink file unkown: " 
-                        << Compartment_name
-                        << std::endl;
-                    return;   
-                }
-
                 // Convert units
                 // Source/sink units (g -> default model mass units)
                 OpenWQ_units.Convert_SS_Units(
@@ -217,6 +233,9 @@ void OpenWQ_sinksource::SetSinkSource(
 
                 // Get the vector with the data
                 row_data_col = {
+                    chem_ssi,
+                    cmpi_ssi,
+                    sinksource_ssi,
                     YYYY_json,
                     MM_json,
                     DD_json,
@@ -226,25 +245,15 @@ void OpenWQ_sinksource::SetSinkSource(
                     ix_json,
                     ss_data_json};
 
-                // Transpose vector for adding to sinksource_matrix as a new row
+                // Transpose vector for adding to SinkSource_FORC as a new row
                 row_data_row = row_data_col.t();
 
-                // Add new row_data_row to sinksource_matrix   
-                int_n_elem = sinksource_matrix.n_rows;                     
-                sinksource_matrix.insert_rows(
+                // Add new row_data_row to SinkSource_FORC   
+                int_n_elem = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows;                     
+                (*OpenWQ_wqconfig.SinkSource_FORC).insert_rows(
                     std::max(int_n_elem-1,0),
                     row_data_row); 
             }
-
-            // Add to tuple
-            (*OpenWQ_wqconfig.SinkSource_FORC).push_back(
-                SinkSourceTuple(
-                    Chemical_name,
-                    Compartment_name,
-                    Type,
-                    Units,
-                    sinksource_matrix));
-
         }
     }
 }
@@ -281,7 +290,7 @@ void OpenWQ_sinksource::CheckApply(
     ######################################## */
     for (unsigned int ssf=0;ssf<num_ssfiles;ssf++){
         
-        // Get number of loads in each sub-structure 
+        // Get number of loads in each sub-structure
         // (corresponding to different sink_source json files)
         num_sschem = OpenWQ_json.SinkSource[std::to_string(ssf+1)].size();
         
@@ -567,5 +576,36 @@ void OpenWQ_sinksource::Apply_Sink(
     
     // Add mass load (already converted to g units)
     (*OpenWQ_vars.chemass)(cmpi)(chemi)(ix,iy,iz) -= mass_sink;
+
+}
+
+/* #################################################
+ // Get model structure indexes for compartments and chemicals
+ ################################################# */
+bool OpenWQ_sinksource::getModIndex(
+    std::vector<std::string> &vec_list,
+    std::string &obj_name,
+    std::string &obj_text,
+    unsigned long &vec_obj_index){
+
+    bool foundflag = false;
+    std::vector<std::string>::iterator find_i;  // iteractor used to store the position or searched element
+
+    find_i = 
+            std::find(vec_list.begin(), 
+            vec_list.end(), 
+            obj_name);
+        if (find_i != vec_list.end()){
+            vec_obj_index =   find_i - vec_list.begin();
+            foundflag = true;
+        }else{
+            std::cout 
+                << "<OpenWQ> ERROR (entry skipped): " 
+                << obj_text 
+                << " in source-sink file unkown: " 
+                << obj_name
+                << std::endl;
+        }
+    return foundflag;
 
 }

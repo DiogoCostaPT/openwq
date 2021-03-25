@@ -33,6 +33,7 @@
 
 int main(int argc, char* argv[]) 
 {   
+       
     // Initiate output VTU file name string 
     std::string vtufilename;
 
@@ -57,9 +58,9 @@ int main(int argc, char* argv[])
 
 
     // Create Object: OpenWQ_json (Input JSON files) and wqconfig
-    OpenWQ_json OpenWQ_json;            // create OpenWQ_json object
-    OpenWQ_wqconfig OpenWQ_wqconfig(8);    // create OpenWQ_wqconfig object
-    OpenWQ_units OpenWQ_units;          // functions for unit conversion
+    OpenWQ_json OpenWQ_json;                // create OpenWQ_json object
+    OpenWQ_wqconfig OpenWQ_wqconfig(11);    // create OpenWQ_wqconfig object
+    OpenWQ_units OpenWQ_units;              // functions for unit conversion
     
     // Read JSON file
     OpenWQ_readjson OpenWQ_readjson; // create object: json files load modules

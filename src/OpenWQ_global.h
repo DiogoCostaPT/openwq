@@ -78,22 +78,19 @@ class OpenWQ_wqconfig
 
         this -> num_coldata = num_coldata;
 
+        // #################################################
+        // num_coldata is, the moment, equal to 11
+        // 1 - chemical
+        // 2 - compartment
+        // 3 - source(=0) or sink(=1)
+        // 4:11 - data (YYYY,MM,DD,HH,ix,iy,iz,value) 
+
         SinkSource_FORC = 
-        std::unique_ptr<
-            std::vector<
-                std::tuple<
-                    std::string,
-                    std::string,
-                    std::string,
-                    std::string,
-                    arma::Mat<double>
-        >>> (new std::vector<
-                    std::tuple<
-                    std::string,
-                    std::string,
-                    std::string,
-                    std::string,
-                    arma::mat>> (num_coldata));   // sink and source forcing
+            std::unique_ptr<
+                arma::Mat<double>>
+            ( new  arma::mat(1,num_coldata));
+        
+            
     }
 
     size_t num_coldata;
@@ -132,16 +129,9 @@ class OpenWQ_wqconfig
 
     // #################################################
     // Sink anhd Source
-
     std::unique_ptr<
-            std::vector<
-                std::tuple<
-                    std::string,
-                    std::string,
-                    std::string,
-                    std::string,
-                    arma::Mat<double>
-        >>> SinkSource_FORC; 
+        arma::Mat<double>
+        > SinkSource_FORC;
 
 };
 
