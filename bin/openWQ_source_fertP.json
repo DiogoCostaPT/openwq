@@ -5,19 +5,18 @@
 	},
 	"1": {
 		"Chemical_name": "SRP",
-		"Compartment": "Soil",
+		"Compartment_name": "Soil",
 		"Type": "source",
 		"Units": "kg",
 		"Data": {
 			"1": [2001,5,20,12,1,1,1,20],
 			"2": [2001,5,20,12,1,1,1,20],
 			"3": [2001,5,20,12,1,1,1,20]
-
 		}
 	},
 	"2": {
 		"Chemical_name": "SRP",
-		"Compartment": "Soil",
+		"Compartment_name": "Soil",
 		"Type": "source",
 		"Units": "kg",
 		"Data": {

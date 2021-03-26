@@ -47,15 +47,10 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
     std::string filename;                   // iteractive output file name
     
 
-    // Get number of species for compartment icmp
-    unsigned int numspec = OpenWQ_json.BGCcycling
-        ["CHEMICAL_SPECIES"]
-        ["list"].size(); // number of chemical species in BGCcycling
-
     // Get export folder
     std::string output_dir = OpenWQ_json.Master
-        ["openWQ_OUTPUT"]
-        ["Results_folder"]; 
+        ["OPENWQ_OUTPUT"]
+        ["RESULTS_FOLDER"]; 
 
     // Number of hydrological compartments in host model
     unsigned int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); 

@@ -5,30 +5,30 @@
         "disperson_z_m2/s": 0.3
     },
     "BIOGEOCHEMISTRY_CONFIGURATION":{
-        "Snow":{
-            "cycling_framework": ["N_inorg","P_inorg"],
-            "initial_conditions":{
-                "NO3": [2,"concentration","ug/l"],
-                "NH4": [2,"concentration","mg/l"],
-                "N2": [2,"concentration","mg/l"],
+        "SNOW":{
+            "CYCLING_FRAMEWORK": ["N_inorg","P_inorg"],
+            "INITIAL_CONDITIONS":{
+                "NO3": [7,"concentration","mg/l"],
+                "NH4": [11,"concentration","mg/l"],
+                "N2": [2,"concentration","ug/l"],
                 "DON": [2,"concentration","mg/l"],
                 "labile_orgN": [100,"mass","kg/m3"],
                 "refractory_orgN": [100,"mass","kg/m3"],
-                "SRP": [100,"mass","kg/m3"],
-                "DOP": [100,"mass","kg/m3"],
-                "partP": [100,"mass","kg/m3"],
+                "SRP": [3,"concentration","mg/l"],
+                "DOP": [2,"concentration","mg/l"],
+                "partP": [2,"concentration","mg/l"],
                 "labile_orgP": [100,"mass","kg/m3"],
                 "refractory_orgP": [100,"mass","kg/m3"]
             }
         },
-        "Soil":{
-            "cycling_framework": ["N_inorg","P_inorg","N_soil_org","P_soil_org"]
+        "SOIL":{
+            "CYCLING_FRAMEWORK": ["N_inorg","P_inorg","N_soil_org","P_soil_org"]
         },
-        "Groundwater":{
-            "cycling_framework": ["N_inorg","P_inorg"]
+        "GROUNDWATER":{
+            "CYCLING_FRAMEWORK": ["N_inorg","P_inorg"]
         },
-        "Streams":{
-            "cycling_framework": ["N_inorg","P_inorg"]
+        "STREAMS":{
+            "CYCLING_FRAMEWORK": ["N_inorg","P_inorg"]
         }
     } 
 }

@@ -1,6 +1,6 @@
 {
     "CHEMICAL_SPECIES": {
-        "list": {
+        "LIST": {
             "1": "NO3",
             "2": "NH4",
             "3": "N2",
@@ -13,131 +13,132 @@
             "10": "labile_orgP",
             "11": "refractory_orgP"
         },
-        "mobile_species": [1,2,4,6,7,8]
+        "MOBILE_SPECIES": [1,2,4,6,7,8]
     },
     "CYCLING_FRAMEWORKS": {
         "N_inorg": {
-            "list_transformations":{
+            "LIST_TRANSFORMATIONS":{
                 "1": "nitrification",
                 "2": "denitrification"
             },
             "1":{
-                "consumed": "NH4",
-                "produced": "NO3",
-                "kinetics": "NH4 + k",
-                "parameter_names": ["k"],
-                "parameter_values":{
-                    "k": 0.001
+                "CONSUMED": "NH4",
+                "PRODUCED": "NO3",
+                "KINETICS": "NH4 + NO3 + k * p",
+                "PARAMETER_NAMES": ["k","p"],
+                "PARAMETER_VALUES":{
+                    "k": 0.005,
+                    "p": 10
                 }
             },
             "2":{
-                "consumed": "NO3",
-                "produced": "N2",
-                "kinetics": "NO3 * k",
-                "parameter_names": ["k"],
-                "parameter_values":{
+                "CONSUMED": "NO3",
+                "PRODUCED": "N2",
+                "KINETICS": "NO3 * k",
+                "PARAMETER_NAMES": ["k"],
+                "PARAMETER_VALUES":{
                     "k": 0.001
                 }
             }
         },
         "P_inorg": {
-            "list_transformations":{
+            "LIST_TRANSFORMATIONS":{
                 "1": "dynamic_equilibrium"
             },
             "1":{
-                "consumed": "SRP",
-                "produced": "partP",
-                "kinetics": "SRP + k",
-                "parameter_names": ["k"],
-                "parameter_values":{
-                    "k": 0.001
+                "CONSUMED": "SRP",
+                "PRODUCED": "partP",
+                "KINETICS": "SRP + k",
+                "PARAMETER_NAMES": ["k"],
+                "PARAMETER_VALUES":{
+                    "k": 0.002
                 }
             }
         },
         "N_soil_org": {
-            "list_transformations":{
+            "LIST_TRANSFORMATIONS":{
                 "1": "degradation",
                 "2": "dissolution_1",
                 "3": "dissolution_2",
                 "4": "mineralization"
             },
             "1":{
-                "consumed": "refractory_orgN",
-                "produced": "labile_orgN",
-                "kinetics": "refractory_orgN * k",
-                "parameter_names": ["k"],
-                "parameter_values":{
+                "CONSUMED": "refractory_orgN",
+                "PRODUCED": "labile_orgN",
+                "KINETICS": "refractory_orgN * k",
+                "PARAMETER_NAMES": ["k"],
+                "PARAMETER_VALUES":{
                     "k": 0.001
                 }
             },
             "2":{
-                "consumed": "refractory_orgN",
-                "produced": "DON",
-                "kinetics": "refractory_orgN * k",
-                "parameter_names": ["k"],
-                "parameter_values":{
+                "CONSUMED": "refractory_orgN",
+                "PRODUCED": "DON",
+                "KINETICS": "refractory_orgN * k",
+                "PARAMETER_NAMES": ["k"],
+                "PARAMETER_VALUES":{
                     "k": 0.001
                 }
             },
             "3":{
-                "consumed": "labile_orgN",
-                "produced": "DON",
-                "kinetics": "labile_orgN * k",
-                "parameter_names": ["k"],
-                "parameter_values":{
+                "CONSUMED": "labile_orgN",
+                "PRODUCED": "DON",
+                "KINETICS": "labile_orgN * k",
+                "PARAMETER_NAMES": ["k"],
+                "PARAMETER_VALUES":{
                     "k": 0.001
                 }
             },
             "4":{
-                "consumed": "labile_orgN",
-                "produced": "NH4",
-                "kinetics": "labile_orgN * k",
-                "parameter_names": ["k"],
-                "parameter_values":{
+                "CONSUMED": "labile_orgN",
+                "PRODUCED": "NH4",
+                "KINETICS": "labile_orgN * k",
+                "PARAMETER_NAMES": ["k"],
+                "PARAMETER_VALUES":{
                     "k": 0.001
                 }
             }
         },
         "P_soil_org": {
-            "list_transformations":{
+            "LIST_TRANSFORMATIONS":{
                 "1": "degradation",
                 "2": "dissolution_1",
                 "3": "dissolution_2",
                 "4": "mineralization"
             },
             "1":{
-                "consumed": "refractory_orgP",
-                "produced": "labile_orgP",
-                "kinetics": "refractory_orgP * k",
-                "parameter_names": ["k"],
-                "parameter_values":{
+                "CONSUMED": "refractory_orgP",
+                "PRODUCED": "labile_orgP",
+                "KINETICS": "refractory_orgP * k",
+                "PARAMETER_NAMES": ["k"],
+                "PARAMETER_VALUES":{
                     "k": 0.001
                 }
             },
             "2":{
-                "consumed": "refractory_orgP",
-                "produced": "DOP",
-                "kinetics": "refractory_orgP * k",
-                "parameter_names": ["k"],
-                "parameter_values":{
+                "CONSUMED": "refractory_orgP",
+                "PRODUCED": "DOP",
+                "KINETICS": "refractory_orgP * k",
+                "PARAMETER_NAMES": ["k"],
+                "PARAMETER_VALUES":{
                     "k": 0.001
                 }
             },
             "3":{
-                "consumed": "labile_orgP",
-                "produced": "DOP",
-                "kinetics": "labile_orgP * k",
-                "parameter_names": ["k"],
-                "parameter_values":{
+                "CONSUMED": "labile_orgP",
+                "PRODUCED": "DOP",
+                "KINETICS": "labile_orgP * k",
+                "PARAMETER_NAMES": ["k"],
+                "PARAMETER_VALUES":{
                     "k": 0.001
                 }
             },
             "4":{
-                "consumed": "labile_orgP",
-                "produced": "SRP",
-                "kinetics": "labile_orgP * k",
-                "parameter_names": ["k"],
-                "parameter_values":{
+                "CONSUMED": "labile_orgP",
+                "PRODUCED": "SRP",
+                "KINETICS": "labile_orgP * k",
+                "PARAMETER_NAMES": ["k"],
+                "PARAMETER_VALUES":{
                     "k": 0.001
                 }
             }

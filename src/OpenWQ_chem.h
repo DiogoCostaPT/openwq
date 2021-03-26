@@ -25,8 +25,11 @@
 #include "exprtk.hpp"
 #include <cstdio>
 #include <tuple>
+#include <vector>
 
 // #include "utility.h"
+#include "jnlohmann/json.h"
+using json = nlohmann::json;
 
 #include "OpenWQ_global.h"
 
@@ -35,6 +38,12 @@
 class OpenWQ_chem{
 
     public:
+
+    // Parse biogeochemical expressions
+    void setBGCexpressions(
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_vars& OpenWQ_vars);
 
     void Run(
         OpenWQ_json& OpenWQ_json,
