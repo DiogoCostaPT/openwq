@@ -40,7 +40,6 @@ class OpenWQ_readjson{
 
     void read_all(
         OpenWQ_json& OpenWQ_json,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units);
 
@@ -50,6 +49,22 @@ class OpenWQ_readjson{
         const std::string JsonSubStruct_name,   // if true, name of subfield    
         const std::string jsonfile);            // Name of JSON file
 
+    void ConvertJSONtext_2upperCase(
+        json &jsondata);
+    
+    void ConvertStringToUpperCase(
+        const std::string &old_jsonkey,
+        std::string &new_jsonkey);
+
+    void change_JSON_key_to_upper_case(
+        json &object, 
+        const std::string& old_key,
+        std::string& new_key);
+
+    void SetConfigInfo(
+        OpenWQ_json &OpenWQ_json,
+        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_units &OpenWQ_units);
 };
 
 #endif
