@@ -46,11 +46,11 @@ void OpenWQ_chem::setBGCexpressions(
         unsigned int,                   // index of produced species
         std::vector<unsigned int>       // index of chemical in transformation equation (needs to be here for loop reset)
         > BGCTransfTuple_info;          // Tuple with info and expression for BGC cyling
-    int num_BGCcycles, 
+    unsigned int num_BGCcycles, 
         num_transf,
-        index_i,                         // iteractive index (can be zero because it is determined in a .find())
         index_cons,index_prod,           // indexed for consumed and produced chemical
         index_new_chemass_InTransfEq;    // interactive index to build index_new_chemass_InTransfEq
+    int index_i;                         // iteractive index (can be zero because it is determined in a .find())
     std::vector<std::string> BGCcycles_namelist;
     std::string BGCcycles_name, Transf_name;
     double param_val; // prameter value
@@ -81,7 +81,7 @@ void OpenWQ_chem::setBGCexpressions(
         num_transf = OpenWQ_json.BGCcycling
             ["CYCLING_FRAMEWORKS"]
             [BGCcycles_name]
-            ["list_transformations"].size();
+            ["LIST_TRANSFORMATIONS"].size();
         
         for (unsigned int transi=0;transi<num_transf;transi++){
 
@@ -89,7 +89,7 @@ void OpenWQ_chem::setBGCexpressions(
             Transf_name = OpenWQ_json.BGCcycling
                 ["CYCLING_FRAMEWORKS"]
                 [BGCcycles_name]
-                ["list_transformations"]
+                ["LIST_TRANSFORMATIONS"]
                 [std::to_string(transi+1)];
 
             std::vector<unsigned int> index_transf; // index of chemical in transformation equation (needs to be here for loop reset)
@@ -99,22 +99,22 @@ void OpenWQ_chem::setBGCexpressions(
                 ["CYCLING_FRAMEWORKS"]
                 [BGCcycles_name]
                 [std::to_string(transi+1)]
-                ["consumed"];
+                ["CONSUMED"];
             produced_spec =  OpenWQ_json.BGCcycling
                 ["CYCLING_FRAMEWORKS"]
                 [BGCcycles_name]
                 [std::to_string(transi+1)]
-                ["produced"];
+                ["PRODUCED"];
             expression_string = OpenWQ_json.BGCcycling
                 ["CYCLING_FRAMEWORKS"]
                 [BGCcycles_name]
                 [std::to_string(transi+1)]
-                ["kinetics"];
+                ["KINETICS"];
             std::vector<std::string> parameter_names = OpenWQ_json.BGCcycling
                 ["CYCLING_FRAMEWORKS"]
                 [BGCcycles_name]
                 [std::to_string(transi+1)]
-                ["parameter_names"];
+                ["PARAMETER_NAMES"];
             expression_string_modif = expression_string;
             
             /* ########################################
@@ -161,7 +161,7 @@ void OpenWQ_chem::setBGCexpressions(
                     ["CYCLING_FRAMEWORKS"]
                     [BGCcycles_name]
                     [std::to_string(transi+1)]
-                    ["parameter_values"]
+                    ["PARAMETER_VALUES"]
                     [parameter_names[i]];
                 expression_string_modif.replace(
                     index_i,
@@ -260,7 +260,7 @@ void OpenWQ_chem::BGC_Transform(
     // (compartment names need to match)
     std::vector<std::string> BGCcycles_icmp = 
         OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"]
-            [CompName_icmp]["cycling_framework"];
+            [CompName_icmp]["CYCLING_FRAMEWORK"];
 
     // Get number of BGC frameworks in comparment icmp
     num_BGCcycles = BGCcycles_icmp.size();

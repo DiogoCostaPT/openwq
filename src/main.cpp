@@ -48,10 +48,10 @@ int main(int argc, char* argv[])
     (4) number of cell in y-direction
     (5) number of cell in z-direction
     */
-    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(0,"Snow",100,50,1));
-    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(1,"Soil",100,50,1));
-    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(2,"Groundwater",100,50,1));
-    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(3,"Streams",100,50,1));
+    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(0,"SNOW",100,50,1));
+    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(1,"SOIL",100,50,1));
+    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(2,"GROUNDWATER",100,50,1));
+    OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(3,"STREAMS",100,50,1));
     // (add other compartments as needed)...
 
     int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
@@ -66,7 +66,6 @@ int main(int argc, char* argv[])
     OpenWQ_readjson OpenWQ_readjson; // create object: json files load modules
     OpenWQ_readjson.read_all(
         OpenWQ_json,
-        OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
         OpenWQ_units);
     

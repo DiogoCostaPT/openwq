@@ -29,9 +29,9 @@ void OpenWQ_sinksource::SetSinkSource(
     
     // Local variables
     bool foundflag = false;                 // iteractive boolean to identify if comp or chem was found
-    std::string err_text;                   // iteractive string for text to pass to error messages
     std::vector<std::string> cmp_list;      // model compartment list
     std::vector<std::string> chem_list;     // model chemical list
+    std::string err_text;                   // iteractive string for text to pass to error messages
     unsigned long cmpi_ssi;          // model index for compartment Compartment_name_name
     unsigned long chem_ssi;          // model index for compartment Compartment_name_name
     unsigned long sinksource_ssi;    // = 0 (source), = 1 (sink)
@@ -101,7 +101,7 @@ void OpenWQ_sinksource::SetSinkSource(
                 Chemical_name =  OpenWQ_json.SinkSource // chemical name
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
-                    ["Chemical_name"];
+                    ["CHEMICAL_NAME"];
             }catch(json::type_error){   
                 continue;
             }
@@ -109,26 +109,27 @@ void OpenWQ_sinksource::SetSinkSource(
             Compartment_name = OpenWQ_json.SinkSource // compartment name
                 [std::to_string(ssf+1)]
                 [std::to_string(ssi+1)]
-                ["Compartment_name"];
+                ["COMPARTMENT_NAME"];
 
             Type = OpenWQ_json.SinkSource // type (sink or source)
                 [std::to_string(ssf+1)]
                 [std::to_string(ssi+1)]
-                ["Type"];
+                ["TYPE"];
 
             Units = OpenWQ_json.SinkSource // units
                 [std::to_string(ssf+1)]
                 [std::to_string(ssi+1)]
-                ["Type"];
+                ["UNITS"];
 
             // Get number of rows of data in JSON (YYYY, MM, DD, HH,...)
             num_rowdata = OpenWQ_json.SinkSource
                 [std::to_string(ssf+1)]
                 [std::to_string(ssi+1)]
-                ["Data"].size();
+                ["DATA"].size();
             
             // Get chemical index
-            err_text = 'Chemical name';
+            err_text.assign("Chemical name");
+            std::cout << err_text << std::endl;
             foundflag = getModIndex(
                 chem_list,
                 Chemical_name,
@@ -137,7 +138,7 @@ void OpenWQ_sinksource::SetSinkSource(
             if (foundflag == false) continue; // skip if comp not found
 
             // Get compartment index
-            err_text = 'Compartment name';
+            err_text.assign("Compartment name");
             foundflag = getModIndex(
                 cmp_list,
                 Compartment_name,
@@ -146,9 +147,9 @@ void OpenWQ_sinksource::SetSinkSource(
             if (foundflag == false) continue; // skip if comp not found
 
             // Set flag for sink or source
-            if (Type.compare("source") == 0){
+            if (Type.compare("SOURCE") == 0){
                 sinksource_ssi = 0;
-            }else if (Type.compare("sink") == 0){
+            }else if (Type.compare("SINK") == 0){
                 sinksource_ssi = 1;
             }else{
                 continue; // skip if Type is unknown
@@ -169,56 +170,56 @@ void OpenWQ_sinksource::SetSinkSource(
                YYYY_json =  OpenWQ_json.SinkSource // year
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
-                    ["Data"]
+                    ["DATA"]
                     [std::to_string(di+1)].at(0);
    
                 MM_json = OpenWQ_json.SinkSource    // month
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
-                    ["Data"]
+                    ["DATA"]
                     [std::to_string(di+1)].at(1);
                 
                 DD_json =OpenWQ_json.SinkSource     // day
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
-                    ["Data"]
+                    ["DATA"]
                     [std::to_string(di+1)].at(2);
                          
                 HH_json =OpenWQ_json.SinkSource     // hour
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
-                    ["Data"]
+                    ["DATA"]
                     [std::to_string(di+1)].at(3);      
                 
                 // chemname_ssi -> already obtained above // chemcial namea
                 ix_json = OpenWQ_json.SinkSource // ix 
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
-                    ["Data"]
+                    ["DATA"]
                     [std::to_string(di+1)].at(4);
 
                 iy_json = OpenWQ_json.SinkSource // iy
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
-                    ["Data"]
+                    ["DATA"]
                     [std::to_string(di+1)].at(5);
 
                 iz_json = OpenWQ_json.SinkSource // iz
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
-                    ["Data"]
+                    ["DATA"]
                     [std::to_string(di+1)].at(6);
 
                 ss_data_json = OpenWQ_json.SinkSource // sink/source data
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
-                    ["Data"]
+                    ["DATA"]
                     [std::to_string(di+1)].at(7);
 
                 ss_units_json = OpenWQ_json.SinkSource // sink/source data
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
-                    ["Units"]; 
+                    ["UNITS"]; 
 
                 // Need to "- 1" for ix_json, iy_json, and iz_json because c++ starts at zero
                 ix_json = std::max(ix_json - 1,0);
@@ -271,9 +272,6 @@ void OpenWQ_sinksource::CheckApply(
     const unsigned int HH){                        // current model step: hour
     
     // Local variables
-    unsigned int num_rows;          // number of rows in sink and source matrix
-                                    // (saved as sub-structure of SinkSource)
-    unsigned int num_sschem;        // number of chemical loads per file
     unsigned int num_rowdata;       // number of rows of data in JSON (YYYY, MM, DD, HH,...)
     unsigned int YYYY_json;         // Year in JSON-sink_source (interactive)
     unsigned int MM_json;           // Month in JSON-sink_source (interactive)

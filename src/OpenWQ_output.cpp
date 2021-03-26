@@ -49,8 +49,8 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
 
     // Get export folder
     std::string output_dir = OpenWQ_json.Master
-        ["openWQ_OUTPUT"]
-        ["Results_folder"]; 
+        ["OPENWQ_OUTPUT"]
+        ["RESULTS_FOLDER"]; 
 
     // Number of hydrological compartments in host model
     unsigned int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); 

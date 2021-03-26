@@ -38,7 +38,7 @@ void OpenWQ_initiate::initmemory(
     unsigned int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
     
     // Create arma for chemical species
-    unsigned int numspec = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["list"].size(); // number of chemical species in BGCcycling
+    unsigned int numspec = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["LIST"].size(); // number of chemical species in BGCcycling
     typedef arma::field<arma::Cube<double>> arma_fieldcube; // typedef data structure: used for domain_field
 
     /* ########################################
@@ -155,7 +155,7 @@ void OpenWQ_initiate::setIC(
         try{ 
             ic_info_i = 
                 OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
-                ["initial_conditions"][chemname];
+                ["INITIAL_CONDITIONS"][chemname];
 
             ic_value = std::get<0>(ic_info_i);      // get IC value
             ic_type = std::get<1>(ic_info_i);       // get IC type

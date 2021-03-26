@@ -40,7 +40,7 @@ void OpenWQ_watertransp::Adv(
     unsigned int ichem_mob;
 
     // CHANGE THE LINE BELOW: see my notes -> there should be no icmp because all compartments should have the same number of mobile species
-    std::vector<unsigned int> chemspec_mobile = JSONfiles.BGCcycling["CHEMICAL_SPECIES"]["mobile_species"];
+    std::vector<unsigned int> chemspec_mobile = JSONfiles.BGCcycling["CHEMICAL_SPECIES"]["MOBILE_SPECIES"];
     unsigned int numspec = chemspec_mobile.size();
 
     // Loop for mobile chemical species
