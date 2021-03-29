@@ -1,0 +1,361 @@
+{
+    "CHEMICAL_SPECIES": {
+        "list": {
+            "1": "SOM",
+            "2": "NH4_inorg_soil",
+            "3": "NH4_groundwater",
+            "4": "NO3_inorg_soil",
+            "5": "NO3_groundwater",
+            "6": "NH4_stream",
+            "7": "NO3_stream",
+            "8": "inactive_P_soil",
+            "9": "labile_org_P_soil",
+            "10": "TDP_soil",
+            "11": "TDP_groundwater",
+            "12": "adsorbed_P_groundwater",
+            "13": "TDP_quickflow",
+            "14": "PP_quickflow",
+            "15": "TDP_stream",
+            "16": "PP_stream",
+            "17": "PP_streambed",
+            "18": "TDP_streambed",
+            "19": "organism_P"
+        },
+        "mobile_species": [1,2,5,8,9,10,11,13,14,15,16,17,18]
+    },
+    "CYCLING_FRAMEWORKS": {
+        "SOIL_N": {
+            "list_transformations":{
+                "1": "net_SOM_mineralization",
+                "2": "nitrification_soil",
+                "3": "NH4_leach_soil_groundwater",
+                "4": "NO3_leach_soil_groundwater",
+                "5": "NH4_leach_soil_stream",
+                "6": "NO3_leach_soil_stream",
+                "7": "NH4_leach_groundwater_stream",
+                "8": "NO3_leach_groundwater_stream",
+                "9": "stream_nitrification"
+            },
+            "1":{
+                "consumed": "SOM",
+                "produced": "NH4_inorg_soil",
+                "kinetics": "SOM + k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "2":{
+                "consumed": "NH4_inorg_soil",
+                "produced": "NO3_inorg_soil",
+                "kinetics": "NH4_inorg_soil + k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }    
+            },
+            "3":{
+                "consumed": "NH4_inorg_soil",
+                "produced": "NH4_groundwater",
+                "kinetics": "NH4_inorg_soil * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "4":{
+                "consumed": "NO3_inorg_soil",
+                "produced": "NO3_groundwater",
+                "kinetics": "NO3_inorg_soil * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "5":{
+                "consumed": "SOIL_N_ORG_fresh",
+                "produced": "SOIL_NO3",
+                "kinetics": "SOIL_N_ORG_fresh * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+            },
+            "6":{
+                "consumed": "SOIL_N_ORG_stable",
+                "produced": "SOIL_N_ORG_active",
+                "kinetics": "SOIL_N_ORG_stable * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+            },
+            "7":{
+                "consumed": "SOIL_N_ORG_active",
+                "produced": "SOIL_N_ORG_stable",
+                "kinetics": "SOIL_N_ORG_active * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+            },        
+            "8":{
+                "consumed": "SOIL_N_ORG_stable",
+                "produced": "SOIL_N_ORG_active",
+                "kinetics": "SOIL_N_ORG_stable * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+            },
+            "9":{
+                "consumed": "NH4_stream",
+                "produced": "NO3_stream",
+                "kinetics": "NH4_stream * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+            }        
+        },
+        "SOIL_P": {
+            "list_transformations":{
+                "1": "P_soil_immobilisation",
+                "2": "P_soil_weathering",
+                "3": "P_soil_desorption",
+                "4": "P_soil_sorption",
+                "5": "P_percolation",
+                "6": "P_groundwater_desorption",
+                "7": "P_groundwater_sorption",
+                "8": "P_groundwaterflow",
+                "9": "P_saturationexcess",
+                "10": "P_inactive_eroded",
+                "11": "P_labile_eroded",
+                "12": "P_quickflow_TDP",
+                "13": "P_quickflow_PP",
+                "14": "P_stream_sorption",
+                "15": "P_stream_desorption",
+                "16": "P_streamtobed_TDPexchange",
+                "17": "P_bedtostream_TDPexchange",
+                "18": "P_stream_entrainment",
+                "19": "P_stream_deposition",
+                "20": "P_streambed_sorption",
+                "21": "P_streambed_desorption",
+                "22": "P_uptake_stream",
+                "23": "P_uptake_sediment",
+                "24": "organism_decay"
+            },
+            "1":{
+                "consumed": "labile_org_P_soil",
+                "produced": "inactive_P_soil",
+                "kinetics": "labile_org_P_soil * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "2":{
+                "consumed": "inactive_P_soil",
+                "produced": "labile_org_P_soil",
+                "kinetics": "inactive_P_soil * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "3":{
+                "consumed": "labile_org_P_soil",
+                "produced": "TDP_soil",
+                "kinetics": "labile_org_P_soil * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "4":{
+                "consumed": "TDP_soil",
+                "produced": "labile_org_P_soil",
+                "kinetics": "TDP_soil * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "5":{
+                "consumed": "TDP_soil",
+                "produced": "TDP_groundwater",
+                "kinetics": "TDP_soil * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "6":{
+                "consumed": "TDP_groundwater",
+                "produced": "adsorbed_P_groundwater",
+                "kinetics": "TDP_groundwater * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "7":{
+                "consumed": "adsorbed_P_groundwater",
+                "produced": "TDP_groundwater",
+                "kinetics": "adsorbed_P_groundwater * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "8":{
+                "consumed": "TDP_groundwater",
+                "produced": "TDP_stream",
+                "kinetics": "TDP_groundwater * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "9":{
+                "consumed": "TDP_soil",
+                "produced": "TDP_quickflow",
+                "kinetics": "TDP_soil * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "10":{
+                "consumed": "inactive_P_soil",
+                "produced": "PP_quickflow",
+                "kinetics": "inactive_P_soil * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "11":{
+                "consumed": "labile_org_P_soil",
+                "produced": "PP_quickflow",
+                "kinetics": "labile_org_P_soil * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "12":{
+                "consumed": "TDP_quickflow",
+                "produced": "TDP_stream",
+                "kinetics": "TDP_quickflow * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "13":{
+                "consumed": "PP_quickflow",
+                "produced": "PP_stream",
+                "kinetics": "PP_quickflow * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "14":{
+                "consumed": "TDP_stream",
+                "produced": "PP_stream",
+                "kinetics": "TDP_stream * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "15":{
+                "consumed": "PP_stream",
+                "produced": "TDP_stream",
+                "kinetics": "PP_stream * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "16":{
+                "consumed": "TDP_stream",
+                "produced": "TDP_streambed",
+                "kinetics": "TDP_stream * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "17":{
+                "consumed": "TDP_streambed",
+                "produced": "TDP_stream",
+                "kinetics": "TDP_streambed * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "18":{
+                "consumed": "PP_streambed",
+                "produced": "PP_stream",
+                "kinetics": "PP_streambed * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "19":{
+                "consumed": "PP_stream",
+                "produced": "PP_streambed",
+                "kinetics": "PP_stream * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "20":{
+                "consumed": "TDP_streambed",
+                "produced": "PP_streambed",
+                "kinetics": "TDP_streambed * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "21":{
+                "consumed": "PP_streambed",
+                "produced": "TDP_streambed",
+                "kinetics": "PP_streambed * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "22":{
+                "consumed": "TDP_stream",
+                "produced": "organism_P",
+                "kinetics": "TDP_stream * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "23":{
+                "consumed": "TDP_streambed",
+                "produced": "organism_P",
+                "kinetics": "TDP_streambed * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "24":{
+                "consumed": "organism_P",
+                "produced": "PP_streambed",
+                "kinetics": "organism_P * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            }
+        }
+    }
+}

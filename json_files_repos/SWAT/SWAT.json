@@ -1,0 +1,176 @@
+{
+    "CHEMICAL_SPECIES": {
+        "list": {
+            "1": "SOIL_NO3",
+            "2": "SOIL_NH4",
+            "3": "SOIL_N_ORG_fresh",
+            "4": "SOIL_N_ORG_stable",
+            "5": "SOIL_N_ORG_active",
+            "6": "SOIL_P_ORG_fresh",
+            "7": "SOIL_P_ORG_stable",
+            "8": "SOIL_P_ORG_active",
+            "6": "SOIL_P_MIN_solution",
+            "7": "SOIL_P_MIN_stable",
+            "8": "SOIL_P_MIN_active",
+        },
+        "mobile_species": [1,2,5,8]
+    },
+    "CYCLING_FRAMEWORKS": {
+        "SOIL_N": {
+            "list_transformations":{
+                "1": "decay_active",
+                "2": "decay_stable",
+                "3": "nitrification",
+                "4": "mineralization",
+                "5": "residue_mineralization",
+                "6": "humic_transformation_stabletoactive",
+                "7": "humic_transformation_activetostable"
+            },
+            "1":{
+                "consumed": "SOIL_N_ORG_fresh",
+                "produced": "SOIL_N_ORG_active",
+                "kinetics": "SOIL_N_ORG_fresh + k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "2":{
+                "consumed": "SOIL_N_ORG_fresh",
+                "produced": "SOIL_N_ORG_stable",
+                "kinetics": "SOIL_N_ORG_fresh + k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }    
+            },
+            "3":{
+                "consumed": "SOIL_NH4",
+                "produced": "SOIL_NO3",
+                "kinetics": "SOIL_NH4 * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "4":{
+                "consumed": "SOIL_N_ORG_active",
+                "produced": "SOIL_NO3",
+                "kinetics": "SOIL_N_ORG_active * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "5":{
+                "consumed": "SOIL_N_ORG_fresh",
+                "produced": "SOIL_NO3",
+                "kinetics": "SOIL_N_ORG_fresh * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+            },
+            "6":{
+                "consumed": "SOIL_N_ORG_stable",
+                "produced": "SOIL_N_ORG_active",
+                "kinetics": "SOIL_N_ORG_stable * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+            },
+            "7":{
+                "consumed": "SOIL_N_ORG_active",
+                "produced": "SOIL_N_ORG_stable",
+                "kinetics": "SOIL_N_ORG_active * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+            }        
+        },
+        "SOIL_P": {
+            "list_transformations":{
+                "1": "P_humic_transformation_stabletoactive",
+                "1": "P_humic_transformation_activetostable",
+                "2": "decay",
+                "3": "residue_mineralization",
+                "4": "mineralization",
+                "5": "P_MIN_transformation_stabletoactive",
+                "6": "P_MIN_transformation_activetostable",
+                "7": "P_MIN_transformation_activetosolution",
+                "8": "P_MIN_transformation_solutiontoactive"
+            },
+            "1":{
+                "consumed": "SOIL_P_ORG_stable",
+                "produced": "SOIL_P_ORG_active",
+                "kinetics": "SOIL_P_ORG_stable * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "2":{
+                "consumed": "SOIL_P_ORG_fresh",
+                "produced": "SOIL_P_ORG_active",
+                "kinetics": "SOIL_P_ORG_fresh * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "3":{
+                "consumed": "SOIL_P_ORG_fresh",
+                "produced": "SOIL_P_MIN_solution",
+                "kinetics": "SOIL_P_ORG_fresh * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "4":{
+                "consumed": "SOIL_P_ORG_active",
+                "produced": "SOIL_P_MIN_solution",
+                "kinetics": "SOIL_P_ORG_active * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "5":{
+                "consumed": "SOIL_P_MIN_stable",
+                "produced": "SOIL_P_MIN_active",
+                "kinetics": "SOIL_P_ORG_stable * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "6":{
+                "consumed": "SOIL_P_MIN_active",
+                "produced": "SOIL_P_MIN_stable",
+                "kinetics": "SOIL_P_ORG_active * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "7":{
+                "consumed": "SOIL_P_MIN_solution",
+                "produced": "SOIL_P_MIN_active",
+                "kinetics": "SOIL_P_ORG_solution * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "8":{
+                "consumed": "SOIL_P_MIN_active",
+                "produced": "SOIL_P_MIN_solution",
+                "kinetics": "SOIL_P_ORG_active * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            }
+        }
+    }
+}

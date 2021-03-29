@@ -1,0 +1,126 @@
+{
+    "CHEMICAL_SPECIES": {
+        "list": {
+            "1": "fastN",
+            "2": "slowN",
+            "3": "DIN",
+            "4": "DON",
+            "5": "partP",
+            "6": "fastP",
+            "7": "slowP",
+            "8": "SRP",
+            "9": "DOP",
+        },
+        "mobile_species": [3,4,5,8]
+    },
+    "CYCLING_FRAMEWORKS": {
+        "SOIL_N": {
+            "list_transformations":{
+                "1": "slowN_to_fastN",
+                "2": "slowN_to_DON",
+                "3": "N_dissolution",
+                "4": "fastN_to_DIN",
+            },
+            "1":{
+                "consumed": "slowN",
+                "produced": "fastN",
+                "kinetics": "slowN + k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "2":{
+                "consumed": "slowN",
+                "produced": "DON",
+                "kinetics": "slowN + k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }    
+            },
+            "3":{
+                "consumed": "fastN",
+                "produced": "DON",
+                "kinetics": "fastN * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "4":{
+                "consumed": "fastN",
+                "produced": "DIN",
+                "kinetics": "fastN * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            }
+        },
+        "SOIL_P": {
+            "list_transformations":{
+                "1": "slowP_to_fastP",
+                "2": "slowP_to_DOP",
+                "3": "P_dissolution",
+                "4": "fastP_to_SRP",
+                "5": "partP_to_SRP",
+                "6": "SRP_to_partP",
+            },
+            "1":{
+                "consumed": "slowP",
+                "produced": "fastP",
+                "kinetics": "slowP * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "2":{
+                "consumed": "slowP",
+                "produced": "DOP",
+                "kinetics": "slowP * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "3":{
+                "consumed": "fastP",
+                "produced": "DOP",
+                "kinetics": "fastP * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "4":{
+                "consumed": "fastP",
+                "produced": "SRP",
+                "kinetics": "fastP * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "5":{
+                "consumed": "partP",
+                "produced": "SRP",
+                "kinetics": "partP * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            },
+            "6":{
+                "consumed": "SRP",
+                "produced": "partP",
+                "kinetics": "SRP * k",
+                "parameter_names": ["k"],
+                "parameter_values":{
+                    "k": 0.001
+                }
+            }
+        }
+    }
+}
