@@ -87,6 +87,7 @@ ELSE()
         add_executable(openwq
                 ${SOURCES})
 
+        #please set the directory to the "Armadillo" and "vtk" manually here
         target_include_directories(
                 openwq PUBLIC 
                 "I:/FLUXOS_cpp/Armadillo/include"}
@@ -94,7 +95,6 @@ ELSE()
 
         target_link_libraries(
                 openwq
-                ${ARMADILLO_LIBRARIES}
                 ${VTK_LIBRARIES})
 
 ENDIF()
