@@ -48,16 +48,16 @@ void OpenWQ_readjson::read_all(
             OpenWQ_json.Config,
             false,
             "",
-            OpenWQ_json.Master["OPENWQ_INPUT"]["CONFIG_FILE"]);
+            OpenWQ_json.Master["OPENWQ_INPUT"]["CONFIG_FILEPATH"]);
 
         // BGCcycling cycling json (read)
         OpenWQ_readjson::read_JSON_2class(
             OpenWQ_json.BGCcycling,
             false,
             "",
-            OpenWQ_json.Master["OPENWQ_INPUT"]["BGC_CYCLES_FILE"]);
+            OpenWQ_json.Master["OPENWQ_INPUT"]["BGC_CYCLES_FILEPATH"]);
 
-        // SinkSource json (read)
+        // SinkSource json (read)openWQ_OUTPUT
         unsigned int num_ssf = OpenWQ_json.Master["OPENWQ_INPUT"]["SINKSOURCE_FILES"].size();
         for (unsigned int ssf = 0; ssf < num_ssf; ssf++)
         {
@@ -180,6 +180,9 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                                         old_jsonkey_layer_2,
                                                         new_jsonkey_layer_2);
                                         }else{
+                                                OpenWQ_readjson::change_JSON_value_to_upper_case(
+                                                        jsondata,
+                                                        new_jsonkey_layer_1);
                                                 continue;
                                         }
 
@@ -196,6 +199,9 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                                                         old_jsonkey_layer_3,
                                                                         new_jsonkey_layer_3);
                                                         }else{
+                                                                OpenWQ_readjson::change_JSON_value_to_upper_case(
+                                                                        jsondata[new_jsonkey_layer_1],
+                                                                        new_jsonkey_layer_2);
                                                                 continue;
                                                         }
 
@@ -212,7 +218,10 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                                                                         old_jsonkey_layer_4,
                                                                                         new_jsonkey_layer_4);
                                                                         }else{
-                                                                                continue;
+                                                                                OpenWQ_readjson::change_JSON_value_to_upper_case(
+                                                                                jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2],
+                                                                                new_jsonkey_layer_3);
+                                                                        continue;
                                                                         }                                      
                                                                         
                                                                 }catch (...){}
@@ -253,12 +262,55 @@ void OpenWQ_readjson::change_JSON_key_to_upper_case(
 
                 // get iterator to old key; TODO: error handling if key is not present
                 json::iterator it = object.find(old_key);
+
                 // create null value for new key and swap value from old key
                 std::swap(object[new_key], it.value());
+
         }catch(const std::exception &e){}
 
 }
 
+// ########################################
+// Change JSON value
+// ########################################
+void OpenWQ_readjson::change_JSON_value_to_upper_case(
+        json &object,
+        std::string new_jsonkey_layer_1){
+
+        std::string old_value;
+        std::string new_value;
+
+        //if (object.type() != json::value_t::string)
+        //        return;
+
+        // Vector of words to keep with native upper/lower case provided by user
+        std::vector<std::string> exclude_vales;
+        exclude_vales.push_back("FILEPATH");
+        exclude_vales.push_back("FOLDERPATH");
+        unsigned int num_exclude_vales = exclude_vales.size();
+
+        // if FILEPATH or FOLDERPATH, do not change to upper case
+        for (unsigned int w=0;w<num_exclude_vales;w++){
+
+                if (new_jsonkey_layer_1.find(exclude_vales[w]) != std::string::npos){
+                        return;
+                }
+        }
+
+        // if NOT FILEPATH or FOLDERPATH, change string to Upper Case
+        try{
+                old_value = object[new_jsonkey_layer_1];
+                
+                OpenWQ_readjson::ConvertStringToUpperCase(
+                        old_value,
+                        new_value);
+
+                object[new_jsonkey_layer_1].swap(new_value);
+
+        }catch(const std::exception &e){}
+
+        
+}
 
 // ########################################
 // Converts string text to lower case

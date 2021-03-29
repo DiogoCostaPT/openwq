@@ -61,6 +61,10 @@ class OpenWQ_readjson{
         const std::string& old_key,
         std::string& new_key);
 
+    void change_JSON_value_to_upper_case(
+        json &object,
+        std::string new_jsonkey_layer_1);
+
     void SetConfigInfo(
         OpenWQ_json &OpenWQ_json,
         OpenWQ_wqconfig &OpenWQ_wqconfig,
