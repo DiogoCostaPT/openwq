@@ -73,7 +73,6 @@ void OpenWQ_sinksource::SetSinkSource(
     for (unsigned int chemi=0;chemi<num_chem;chemi++){
         chem_list.push_back(
             (OpenWQ_wqconfig.chem_species_list)[chemi]);
-            std::cout << OpenWQ_wqconfig.chem_species_list[chemi] << std::endl;
     }
 
     // Get number of sub-structures of SinkSource
@@ -129,7 +128,6 @@ void OpenWQ_sinksource::SetSinkSource(
             
             // Get chemical index
             err_text.assign("Chemical name");
-            std::cout << err_text << std::endl;
             foundflag = getModIndex(
                 chem_list,
                 Chemical_name,
