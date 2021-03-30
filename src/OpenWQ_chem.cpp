@@ -185,8 +185,6 @@ void OpenWQ_chem::setBGCexpressions(
             symbol_table.add_variable("SM",OpenWQ_hostModelconfig.SM);
             symbol_table.add_variable("Tair",OpenWQ_hostModelconfig.Tair);
             
-            std::cout << expression_string_modif << std::endl;
-
             // Create Object
             expression_t expression;
             expression.register_symbol_table(symbol_table);
