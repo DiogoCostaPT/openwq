@@ -48,8 +48,14 @@ class OpenWQ_json
 class OpenWQ_hostModelconfig
 {
     public:
+    
     OpenWQ_hostModelconfig(){
+
         SM_space_hydromodel = std::unique_ptr<
+                arma::Cube<
+                double>>(new arma::cube); 
+
+        Tair_space_hydromodel = std::unique_ptr<
                 arma::Cube<
                 double>>(new arma::cube); 
     }
