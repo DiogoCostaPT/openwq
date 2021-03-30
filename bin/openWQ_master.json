@@ -1,0 +1,25 @@
+{
+    "PROJECT_NAME": "Test",
+    "GEOGRAPHICAL_LOCATION": "Svalbard",
+    "AUTHORS": "Diogo Costa",
+    "DATE": "May_2020",
+    "COMMENT": "Default file for testing purposes",
+    "OPENWQ_INPUT": {
+    	"CONFIG_FILEPATH": "bin/openWQ_config.json",
+    	"BGC_CYCLES_FILEPATH": "bin/SWAT_Soil_BGC.json",
+    	"SINKSOURCE_FILES": {
+    		"1": {
+    			"LABEL": "fertilizer_N",
+    			"FILEPATH": "bin/openWQ_source_fertN.json"
+    		},
+    		"2": {
+    			"LABEL": "fertilizer_P",
+    			"FILEPATH": "bin/openWQ_source_fertP.json"
+    		}
+    	}
+	},
+	"openWQ_OUTPUT": {
+		"RESULTS_FOLDERPATH": "bin/Output",
+		"TIMESTEP": [1,"h"]
+	}
+}
