@@ -61,13 +61,13 @@ int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
     for (unsigned int icmp=0;icmp<num_HydroComp;icmp++){
 
         // Compartment info
-        CompName_icmp = std::get<1>(
+        CompName_icmp = std::get<0>(
             OpenWQ_hostModelconfig.HydroComp.at(icmp));  // name
-        nx = std::get<2>(
+        nx = std::get<1>(
             OpenWQ_hostModelconfig.HydroComp.at(icmp));  // get domain dimensions                     
-        ny = std::get<3>(
+        ny = std::get<2>(
             OpenWQ_hostModelconfig.HydroComp.at(icmp));
-        nz = std::get<4>(
+        nz = std::get<3>(
             OpenWQ_hostModelconfig.HydroComp.at(icmp));
 
         // Reset file name for each compartment
