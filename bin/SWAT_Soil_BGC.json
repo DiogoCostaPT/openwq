@@ -29,7 +29,7 @@
             "1":{
                 "consumed": "SOIL_N_ORG_fresh",
                 "produced": "SOIL_N_ORG_active",
-                "kinetics": "SOIL_N_ORG_fresh + k",
+                "kinetics": "SOIL_N_ORG_fresh * k * SM * Tair",
                 "parameter_names": ["k"],
                 "parameter_values":{
                     "k": 0.001

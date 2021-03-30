@@ -47,6 +47,12 @@ class OpenWQ_json
 ################################################# */
 class OpenWQ_hostModelconfig
 {
+    public:
+    OpenWQ_hostModelconfig(){
+        SM_space_hydromodel = std::unique_ptr<
+                arma::Cube<
+                double>>(new arma::cube); 
+    }
 
     typedef std::tuple<int,std::string,int, int, int> hydroTuple;
     // Add host_hydrological_model compartment:
@@ -62,6 +68,12 @@ class OpenWQ_hostModelconfig
     
     // Number of hydrological compartments (that can store and transport water)
     unsigned int num_HydroComp;
+
+    // Add dependencies for BGC calculations
+    std::unique_ptr<arma::Cube<double>> SM_space_hydromodel;    // Saves all SM data from hostmodel
+    std::unique_ptr<arma::Cube<double>> Tair_space_hydromodel;  // Saves all Tair data from hostmodel
+    double SM;                                                  // Used as iteractive variable to use with exprtk
+    double Tair;                                                // Used as iteractive variable to use with exprtk
 
 };
 
@@ -163,7 +175,9 @@ class OpenWQ_vars
                 arma::field< // Compartments
                 arma::field< // Chemical Species
                 arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp)); 
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
+
+            
 
         }catch(const std::exception& e){
             std::cout << 
@@ -176,7 +190,7 @@ class OpenWQ_vars
     size_t num_HydroComp;
 
     std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> chemass; 
-    
+
 };
 
 

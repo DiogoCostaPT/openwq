@@ -115,6 +115,7 @@ int main(int argc, char* argv[])
     ################################################# */
     OpenWQ_chem.setBGCexpressions(
         OpenWQ_json,
+        OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
         OpenWQ_vars);
 
@@ -206,8 +207,12 @@ int main(int argc, char* argv[])
 
          /* ########################################
          Biogeochemistry (doesn't need space loop => it's inside the function)
-        ###########################
-        ############# */ 
+        ######################################## */
+
+        // Loop needed -> Dependencies to kinetic formulas (needs loop to get hydro model variables
+        // that are dependencies to OpenWQ)
+        (*OpenWQ_hostModelconfig.SM_space_hydromodel)(ix,iy,iz) = 0.1;  // loop needed - Save all SM data from hostmodel at time t
+        (*OpenWQ_hostModelconfig.SM_space_hydromodel)(ix,iy,iz) = 10;   // loop needed - Save all Taair data from hostmodel at time t      
 
         OpenWQ_chem.Run(
             OpenWQ_json,

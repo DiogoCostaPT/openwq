@@ -73,7 +73,11 @@ void OpenWQ_initiate::initmemory(
         /* ########################################
         // Allocate Memory
         ######################################## */
+        // OpenWQ state variable
         (*OpenWQ_vars.chemass)(icmp) = domain_field;
+        // Hydro model variables
+        (*OpenWQ_hostModelconfig.SM_space_hydromodel) = domain_xyz;
+        (*OpenWQ_hostModelconfig.Tair_space_hydromodel) = domain_xyz;
     }
 
 }

@@ -23,6 +23,7 @@
 ################################################# */
 void OpenWQ_chem::setBGCexpressions(
     OpenWQ_json& OpenWQ_json,
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_vars& OpenWQ_vars){
 
@@ -154,7 +155,7 @@ void OpenWQ_chem::setBGCexpressions(
                 }
             }
 
-            // Replace parameter name by value in expression (future: allow for variable e.g., soil moisture)
+            // Replace parameter name by value in expression
             for (unsigned int i=0;i<parameter_names.size();i++){
                 index_i = expression_string_modif.find(parameter_names[i]);
                 param_val = OpenWQ_json.BGCcycling
@@ -176,8 +177,15 @@ void OpenWQ_chem::setBGCexpressions(
             for (unsigned int i=0;i<index_transf.size();i++){
                 OpenWQ_wqconfig.chemass_InTransfEq.push_back(0); // creating the vector
             }
+
+            // Add vectors to table of symbols
             symbol_table.add_vector("chemass_InTransfEq",OpenWQ_wqconfig.chemass_InTransfEq);
-            // symbol_table.add_constants();
+
+            // Add variable dependencies to table of symbols (in case they are used)
+            symbol_table.add_variable("SM",OpenWQ_hostModelconfig.SM);
+            symbol_table.add_variable("Tair",OpenWQ_hostModelconfig.Tair);
+            
+            std::cout << expression_string_modif << std::endl;
 
             // Create Object
             expression_t expression;
@@ -223,7 +231,7 @@ void OpenWQ_chem::Run(
             OpenWQ_vars,
             OpenWQ_hostModelconfig,
             OpenWQ_wqconfig,
-            icmp); 
+            icmp);
 
     }
 }
@@ -300,6 +308,7 @@ void OpenWQ_chem::BGC_Transform(
                 std::get<5>(
                     OpenWQ_wqconfig.BGCexpressions_info.at(transf_index[transi]));
 
+
             /* ########################################
             // Loop over space: nx, ny, nz
             ######################################## */
@@ -317,6 +326,10 @@ void OpenWQ_chem::BGC_Transform(
                                 (index_chemtransf[chem])
                                 (ix,iy,iz));
                         }
+
+                        // Update dependency values if needed
+                        OpenWQ_hostModelconfig.SM = (*OpenWQ_hostModelconfig.SM_space_hydromodel)(ix,iy,iz);
+                        OpenWQ_hostModelconfig.Tair = (*OpenWQ_hostModelconfig.Tair_space_hydromodel)(ix,iy,iz);
 
                         // Mass transfered: Consumed -> Produced (using exprtk)
                         transf_mass = OpenWQ_wqconfig.BGCexpressions_eq[transf_index[transi]].value(); 

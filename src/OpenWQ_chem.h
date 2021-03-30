@@ -42,6 +42,7 @@ class OpenWQ_chem{
     // Parse biogeochemical expressions
     void setBGCexpressions(
         OpenWQ_json& OpenWQ_json,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_vars& OpenWQ_vars);
 
