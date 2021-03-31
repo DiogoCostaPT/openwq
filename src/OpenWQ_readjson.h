@@ -40,6 +40,7 @@ class OpenWQ_readjson{
 
     void read_all(
         OpenWQ_json& OpenWQ_json,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units);
 
@@ -67,6 +68,7 @@ class OpenWQ_readjson{
 
     void SetConfigInfo(
         OpenWQ_json &OpenWQ_json,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig &OpenWQ_wqconfig,
         OpenWQ_units &OpenWQ_units);
 };

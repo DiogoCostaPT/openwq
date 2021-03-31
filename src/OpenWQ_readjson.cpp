@@ -17,11 +17,13 @@
 
 #include "OpenWQ_readjson.h"
 
+
 /* #################################################
  // Real all configuration files
  ################################################# */
 void OpenWQ_readjson::read_all(
         OpenWQ_json &OpenWQ_json,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig &OpenWQ_wqconfig,
         OpenWQ_units &OpenWQ_units)
 {
@@ -74,6 +76,7 @@ void OpenWQ_readjson::read_all(
         ######################## */
         OpenWQ_readjson::SetConfigInfo(
                 OpenWQ_json,
+                OpenWQ_hostModelconfig,
                 OpenWQ_wqconfig,
                 OpenWQ_units);
 
@@ -96,7 +99,7 @@ void OpenWQ_readjson::read_JSON_2class(
         try
         {
                 // Read json file with ifstrem
-                std::ifstream i(jsonfile);
+                std::ifstream f(jsonfile);
 
                 //* ##########################
                 // If substruc_flag = true
@@ -105,7 +108,7 @@ void OpenWQ_readjson::read_JSON_2class(
                 if (substruc_flag == false)
                 {
                         // Save ifstream to JSON data type
-                        i >> (jsondata);
+                        f >> (jsondata);
                         // Convert all text in JSON to upper case
                         OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                 jsondata);
@@ -113,7 +116,7 @@ void OpenWQ_readjson::read_JSON_2class(
                 else
                 {
                         // Save ifstream to JSON data type
-                        i >> (jsondata[JsonSubStruct_name]);
+                        f >> (jsondata[JsonSubStruct_name]);
                         // Convert all text in JSON to upper case
                         OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                 jsondata[JsonSubStruct_name]);
@@ -337,34 +340,122 @@ void OpenWQ_readjson::ConvertStringToUpperCase(
 // ########################################
 void OpenWQ_readjson::SetConfigInfo(
         OpenWQ_json &OpenWQ_json,
+        OpenWQ_hostModelconfig & OpenWQ_hostModelconfig,
         OpenWQ_wqconfig &OpenWQ_wqconfig,
         OpenWQ_units &OpenWQ_units){
 
         // Local Variables
-        std::tuple<unsigned int, std::string> time_tuple; // IC information in config file
+        std::tuple<unsigned int, std::string> time_tuple;       // IC information in config file
+        std::string output_format;                              // format of output (CSV, VTK)
+        long num_chem2print;                                    // number of chemicals to print based on openWQ_OUTPUT               
+        long num_compt2print;                                   // number of compartments to print
+        std::string chem_name2print;                            // iteractive chem name from openWQ_OUTPUT
+        std::string chem_namelist;                              // iteractive chem name from BGC list
+        std::string CompName_icmp;                              // iteractive compartment name from list
+        std::string compt_name2print;                           // iteractive compartment name to print
 
         // ########################################
         // CHEMISTRY
+        // ########################################
 
         // Get number of chemical species from BGC_json
-        (OpenWQ_wqconfig.num_chem) = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["LIST"].size();
+        (OpenWQ_wqconfig.num_chem) = OpenWQ_json.BGCcycling
+                ["CHEMICAL_SPECIES"]["LIST"].size();
 
         // Get chemical species list from BGC_json
         for (unsigned int chemi = 0; chemi < (OpenWQ_wqconfig.num_chem); chemi++)
         {
-                (OpenWQ_wqconfig.chem_species_list).push_back(OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["LIST"][std::to_string(chemi + 1)]);
+                (OpenWQ_wqconfig.chem_species_list).push_back(OpenWQ_json.BGCcycling
+                        ["CHEMICAL_SPECIES"]["LIST"][std::to_string(chemi + 1)]);
         }
 
         // ########################################
-        // TIME STEP
+        // Set Output options
+        // ########################################
+        
+        // Output format
+        output_format = OpenWQ_json.Master
+                ["OPENWQ_OUTPUT"]["FORMAT"];
 
+        // Output folder
+        OpenWQ_wqconfig.output_dir = OpenWQ_json.Master
+                ["OPENWQ_OUTPUT"]
+                ["RESULTS_FOLDERPATH"]; 
+        
+        // ########################################
+        // Output format ######
+        // CSV 
+        if (output_format.compare("CSV") == 0){
+                OpenWQ_wqconfig.output_type = 0;
+        // VTK
+        }else if (output_format.compare("VTK") == 0){
+                OpenWQ_wqconfig.output_type = 1;
+        } 
+
+        // ########################################
+        // Time ######
         // Get print/output timestep AND convert to seconds
-        time_tuple = OpenWQ_json.Master["OPENWQ_OUTPUT"]["TIMESTEP"];  // Get tuple (value, unit)
+        time_tuple = OpenWQ_json.Master
+                ["OPENWQ_OUTPUT"]["TIMESTEP"];  // Get tuple (value, unit)
         (OpenWQ_wqconfig.timetep_out) = std::get<0>(time_tuple);       // Get value
         (OpenWQ_wqconfig.timestep_out_unit) = std::get<1>(time_tuple); // Get units
 
         // Convert time units to host model units
         OpenWQ_units.Convert_Time_Units(
-        OpenWQ_wqconfig.timetep_out,
-        OpenWQ_wqconfig.timestep_out_unit);
+                OpenWQ_wqconfig.timetep_out,
+                OpenWQ_wqconfig.timestep_out_unit);
+
+        // ########################################
+        // Chemicals to print
+        // num of chem to print
+        num_chem2print = OpenWQ_json.Master
+                ["OPENWQ_OUTPUT"]["CHEMICAL_SPECIES"].size();
+        
+        // Get chemical species names to print 
+        std::vector<std::string> chem_names_vec = OpenWQ_json.Master
+                ["OPENWQ_OUTPUT"]["CHEMICAL_SPECIES"];
+               
+        for (unsigned int chemi = 0; chemi < num_chem2print; chemi++){
+               chem_name2print = chem_names_vec[chemi];
+               
+                for (unsigned int chemlisti = 0; chemlisti < (OpenWQ_wqconfig.num_chem); chemlisti++){
+                        
+                        chem_namelist = OpenWQ_wqconfig.chem_species_list[chemlisti];
+
+                        if (chem_namelist.compare(chem_name2print) == 0){                               
+                                
+                                OpenWQ_wqconfig.chem2print.push_back(chemlisti);
+
+                        }
+                }
+        }
+
+        // ########################################
+        // Compartments to print
+        // num of comartments to print
+        num_compt2print = OpenWQ_json.Master
+                ["OPENWQ_OUTPUT"]["COMPARTMENTS"].size();
+        
+        // Get chemical species names to print 
+        std::vector<std::string> compt_names_vec = OpenWQ_json.Master
+                ["OPENWQ_OUTPUT"]["COMPARTMENTS"];
+
+        unsigned int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
+               
+        for (unsigned int cmpti = 0; cmpti < num_compt2print; cmpti++){
+
+               compt_name2print = compt_names_vec[cmpti];
+               
+                for (unsigned int icmp = 0; icmp < num_HydroComp; icmp++){
+                        
+                        CompName_icmp = std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp));  // name
+
+                        if (CompName_icmp.compare(compt_name2print) == 0){                               
+                                
+                                OpenWQ_wqconfig.compt2print.push_back(icmp);
+
+                        }
+                }
+        }
+
 }

@@ -115,16 +115,9 @@ class OpenWQ_wqconfig
                 arma::Mat<double>>
             ( new  arma::mat(1,num_coldata));
         
-            
     }
 
     size_t num_coldata;
-
-    // #################################################
-    // General set up
-    double timetep_out;             // time step
-    std::string timestep_out_unit;  // time step unit
-    double nexttime_out = 0.0f;     // iteractive next printing time
     
     // #################################################
     // Chemistry
@@ -158,6 +151,22 @@ class OpenWQ_wqconfig
         arma::Mat<double>
         > SinkSource_FORC;
 
+    // #################################################
+    // Output 
+    
+    // Time
+    double timetep_out;             // time step
+    std::string timestep_out_unit;  // time step unit
+    double nexttime_out = 0.0f;     // iteractive next printing time
+    // output format
+    unsigned long output_type;
+    // chemicals and compartments to export
+    std::vector<int> chem2print;
+    std::vector<int> compt2print;
+
+    // Output folder
+    std::string output_dir;
+    
 };
 
 /* #################################################

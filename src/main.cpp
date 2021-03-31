@@ -66,6 +66,7 @@ int main(int argc, char* argv[])
     OpenWQ_readjson OpenWQ_readjson; // create object: json files load modules
     OpenWQ_readjson.read_all(
         OpenWQ_json,
+        OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
         OpenWQ_units);
     
@@ -223,12 +224,22 @@ int main(int argc, char* argv[])
         /* ########################################
          Output Results
         ######################################## */
-        OpenWQ_output.writeVTU(
-            OpenWQ_json,
-            OpenWQ_vars,
-            OpenWQ_hostModelconfig,
-            OpenWQ_wqconfig,
-            ts); 
+        if (OpenWQ_wqconfig.output_type == 0){
+            OpenWQ_output.writeCSV(
+                OpenWQ_json,
+                OpenWQ_vars,
+                OpenWQ_hostModelconfig,
+                OpenWQ_wqconfig,
+                ts); 
+        }else if (OpenWQ_wqconfig.output_type == 1){
+            OpenWQ_output.writeVTU(
+                OpenWQ_json,
+                OpenWQ_vars,
+                OpenWQ_hostModelconfig,
+                OpenWQ_wqconfig,
+                ts); 
+        }
+
 
     }
     

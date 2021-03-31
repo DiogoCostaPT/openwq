@@ -42,6 +42,12 @@
 class OpenWQ_output{
 
     public:
+
+    int writeCSV(OpenWQ_json& OpenWQ_json,
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        unsigned int ts);
     
     int writeVTU(OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
