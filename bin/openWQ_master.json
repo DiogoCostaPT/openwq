@@ -20,7 +20,7 @@
 	},
 	"openWQ_OUTPUT": {
 		"RESULTS_FOLDERPATH": "bin/Output_OpenWQ",
-        "FORMAT": "VTU",
+        "FORMAT": "CSV",
         "CHEMICAL_SPECIES":["SOIL_NO3","SOIL_NO3"],
         "COMPARTMENTS": ["SNOW","SOIL"],
 		"TIMESTEP": [1,"h"]

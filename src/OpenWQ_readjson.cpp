@@ -405,7 +405,7 @@ void OpenWQ_readjson::SetConfigInfo(
                 OpenWQ_wqconfig.output_type = 1;
 
                 // create dir if needed
-                OpenWQ_wqconfig.output_dir.append("/CSV");
+                OpenWQ_wqconfig.output_dir.append("/VTU");
                 OpenWQ_readjson::check_mkdir_openWQ(
                         OpenWQ_wqconfig.output_dir);
 
