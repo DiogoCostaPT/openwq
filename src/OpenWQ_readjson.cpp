@@ -384,14 +384,34 @@ void OpenWQ_readjson::SetConfigInfo(
         
         // ########################################
         // Output format ######
+
+        // Create OpenWQ_wqconfig.output_dir folder if nonexistant
+        OpenWQ_readjson::check_mkdir_openWQ(
+                OpenWQ_wqconfig.output_dir);
+                
+        OpenWQ_wqconfig.output_type = -1;               // reset
+
         // CSV
-        OpenWQ_wqconfig.output_type = -1;
         if (output_format.compare("CSV") == 0){
                 OpenWQ_wqconfig.output_type = 0;
+
+                // create dir if needed
+                OpenWQ_wqconfig.output_dir.append("/CSV");
+                OpenWQ_readjson::check_mkdir_openWQ(
+                        OpenWQ_wqconfig.output_dir);
+
         // VTK
         }else if (output_format.compare("VTU") == 0){
                 OpenWQ_wqconfig.output_type = 1;
-        } 
+
+                // create dir if needed
+                OpenWQ_wqconfig.output_dir.append("/CSV");
+                OpenWQ_readjson::check_mkdir_openWQ(
+                        OpenWQ_wqconfig.output_dir);
+
+        } else {
+                std::cout << "<OpenWQ> ERROR: Output type unkown: " << output_format << std::endl;
+        }
 
         // ########################################
         // Time ######
@@ -457,6 +477,22 @@ void OpenWQ_readjson::SetConfigInfo(
 
                         }
                 }
+        }
+
+}
+
+// Check if directory exists and create it
+void OpenWQ_readjson::check_mkdir_openWQ(
+        std::string &dirname){
+        
+        struct stat st = {0};
+        
+        // convert to *char
+        const char *cstr = dirname.c_str();
+
+        // mkdir
+        if (stat(cstr, &st) == -1) {
+                mkdir(cstr, 0700);
         }
 
 }

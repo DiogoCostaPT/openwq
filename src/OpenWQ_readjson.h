@@ -22,6 +22,11 @@
 #include <string>
 #include <algorithm>
 
+// Linux only (I think)
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include "exprtk.hpp"
 
 #include <cstdio>
@@ -71,6 +76,9 @@ class OpenWQ_readjson{
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig &OpenWQ_wqconfig,
         OpenWQ_units &OpenWQ_units);
+
+    void check_mkdir_openWQ(
+        std::string &dirname);
 };
 
 #endif

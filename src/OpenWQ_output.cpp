@@ -87,7 +87,7 @@ int OpenWQ_output::writeCSV(
         // Reset file name for each compartment
         filename = OpenWQ_wqconfig.output_dir;
 
-        filename.append("/");
+        filename.append("/CSV/");
         filename.append(CompName_icmp);
         filename.append("_");
         filename.append(std::to_string(ts)); // time stamp
@@ -189,7 +189,7 @@ int OpenWQ_output::writeVTU(
         // Reset file name for each compartment
         filename = OpenWQ_wqconfig.output_dir;
 
-        filename.append("/");
+        filename.append("/VTU/");
         filename.append(CompName_icmp);
         filename.append("_");
         filename.append(std::to_string(ts)); // time stamp
