@@ -35,8 +35,7 @@ void OpenWQ_initiate::initmemory(
     // Local variables
     std::string HydroCmpName;   // Hydrological compartment names as specified in main.cpp and 
                                 // OpenWQ_json.openWQ_config.json (they need to match)
-    unsigned int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
-    
+
     // Create arma for chemical species
     unsigned int numspec = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["LIST"].size(); // number of chemical species in BGCcycling
     typedef arma::field<arma::Cube<double>> arma_fieldcube; // typedef data structure: used for domain_field
@@ -45,7 +44,7 @@ void OpenWQ_initiate::initmemory(
     // Loop over compartments
     // Assign and  allocate memory to openWQ variables: chemass
     ######################################## */
-    for (unsigned int icmp=0;icmp<num_HydroComp;icmp++){
+    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
             
         // Dimensions for compartment icmp
         n_xyz[0] = std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // num of x elements

@@ -54,8 +54,7 @@ int main(int argc, char* argv[])
     OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(3,"STREAMS",100,50,1));
     // (add other compartments as needed)...
 
-    int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
-
+    OpenWQ_hostModelconfig.num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
 
     // Create Object: OpenWQ_json (Input JSON files) and wqconfig
     OpenWQ_json OpenWQ_json;                // create OpenWQ_json object
@@ -72,7 +71,7 @@ int main(int argc, char* argv[])
     
     // Create Object: OpenWQ_vars (openWQ variables)
     OpenWQ_vars OpenWQ_vars(
-        num_HydroComp);
+        OpenWQ_hostModelconfig.num_HydroComp);
 
     // OpenWQ_initiate
     OpenWQ_initiate OpenWQ_initiate; // create object: start modules e.g., initiate

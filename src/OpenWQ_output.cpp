@@ -73,7 +73,6 @@ int OpenWQ_output::writeCSV(
     // Local Variables
     unsigned int nx, ny, nz;                // compartment dimensions
     unsigned int num_chem2print;            // number of chemical species to print
-    unsigned int num_HydroComp;             // number of compartments
     std::string CompName_icmp;              // compartment name (iteractive)
     std::string chem_name;                  // chemical name (iteractive)
     std::string filename;                   // iteractive output file name 
@@ -83,9 +82,6 @@ int OpenWQ_output::writeCSV(
     /* ########################################
     // Get necessary info
     ######################################## */
-    
-    // Number of hydrological compartments in host model
-    num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size();
 
     // Number of chemical species to print (needed for output header)
     num_chem2print = OpenWQ_wqconfig.chem2print.size();
@@ -93,7 +89,7 @@ int OpenWQ_output::writeCSV(
     /* ########################################
     // Loop over comparments
     ######################################## */
-    for (unsigned int icmp=0;icmp<num_HydroComp;icmp++){
+    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
 
         // See if icmp is in compt2print 
         // (which means user wants to print variables for this compartment)

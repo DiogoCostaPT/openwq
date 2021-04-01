@@ -461,13 +461,12 @@ void OpenWQ_readjson::SetConfigInfo(
         std::vector<std::string> compt_names_vec = OpenWQ_json.Master
                 ["OPENWQ_OUTPUT"]["COMPARTMENTS"];
 
-        unsigned int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); // number of hydrological compartments in host model
-               
+    
         for (unsigned int cmpti = 0; cmpti < num_compt2print; cmpti++){
 
                compt_name2print = compt_names_vec[cmpti];
                
-                for (unsigned int icmp = 0; icmp < num_HydroComp; icmp++){
+                for (unsigned int icmp = 0; icmp < OpenWQ_hostModelconfig.num_HydroComp; icmp++){
                         
                         CompName_icmp = std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp));  // name
 
