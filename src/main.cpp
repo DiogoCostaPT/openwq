@@ -224,22 +224,12 @@ int main(int argc, char* argv[])
         /* ########################################
          Output Results
         ######################################## */
-        if (OpenWQ_wqconfig.output_type == 0){
-            OpenWQ_output.writeCSV(
-                OpenWQ_json,
-                OpenWQ_vars,
-                OpenWQ_hostModelconfig,
-                OpenWQ_wqconfig,
-                ts); 
-        }else if (OpenWQ_wqconfig.output_type == 1){
-            OpenWQ_output.writeVTU(
-                OpenWQ_json,
-                OpenWQ_vars,
-                OpenWQ_hostModelconfig,
-                OpenWQ_wqconfig,
-                ts); 
-        }
-
+        OpenWQ_output.writeResults(
+            OpenWQ_json,
+            OpenWQ_vars,
+            OpenWQ_hostModelconfig,
+            OpenWQ_wqconfig,
+            ts); 
 
     }
     

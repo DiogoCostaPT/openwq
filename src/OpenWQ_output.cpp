@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+// For VTK support:
 // This was built for hexahedrons (see line 66) for now (cubes, Rectangular cuboid, Trigonal trapezohedron, etc)
 // But line 33:33 makes determining cubes of side lenght = 1 (but this can all be changed)
 // based on https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
@@ -23,6 +23,46 @@
 
 #include "OpenWQ_output.h"
 
+int OpenWQ_output::writeResults(
+    OpenWQ_json& OpenWQ_json,
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    unsigned int ts){
+    
+    
+    /* ########################################
+    // Return if not time to print yet
+    ######################################## */
+    if (ts < OpenWQ_wqconfig.nexttime_out)
+        return EXIT_SUCCESS;
+    else
+        OpenWQ_wqconfig.nexttime_out += OpenWQ_wqconfig.timetep_out;
+
+
+    // CSV
+    if (OpenWQ_wqconfig.output_type == 0){
+            OpenWQ_output::writeCSV(
+                OpenWQ_json,
+                OpenWQ_vars,
+                OpenWQ_hostModelconfig,
+                OpenWQ_wqconfig,
+                ts);
+
+    // VTU
+    }else if (OpenWQ_wqconfig.output_type == 1){
+        OpenWQ_output::writeVTU(
+            OpenWQ_json,
+            OpenWQ_vars,
+            OpenWQ_hostModelconfig,
+            OpenWQ_wqconfig,
+            ts); 
+    }
+}
+
+
+
+// CSV output
 int OpenWQ_output::writeCSV(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
@@ -39,14 +79,6 @@ int OpenWQ_output::writeCSV(
     std::string filename;                   // iteractive output file name 
     std::vector<int>::iterator it;          // Iterator used to store the position of searched element
     int a;                                  // iteractive dummy variable for printing
-
-    /* ########################################
-    // Return if not time to print yet
-    ######################################## */
-    if (ts < OpenWQ_wqconfig.nexttime_out)
-        return EXIT_SUCCESS;
-    else
-        OpenWQ_wqconfig.nexttime_out += OpenWQ_wqconfig.timetep_out;
 
     /* ########################################
     // Get necessary info
@@ -134,10 +166,8 @@ int OpenWQ_output::writeCSV(
                 }
             }
         }
-
         // Print to CSV file
         filedata.save(arma::csv_name(filename,header));
-
     }
     
 }
@@ -150,16 +180,6 @@ int OpenWQ_output::writeVTU(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     unsigned int ts){ // time step (in seconds)
 
-
-    /* ########################################
-    // Return if not time to print yet
-    ######################################## */
-    if (ts < OpenWQ_wqconfig.nexttime_out)
-        return EXIT_SUCCESS;
-    else
-        OpenWQ_wqconfig.nexttime_out += OpenWQ_wqconfig.timetep_out;
-
-
     // Local Variables
     unsigned int nx, ny, nz;                // compartment dimensions
     unsigned int index_i;                   // iteractive index
@@ -168,13 +188,10 @@ int OpenWQ_output::writeVTU(
     std::string filename;                   // iteractive output file name
     
 
-    // Number of hydrological compartments in host model
-    unsigned int num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); 
-
     /* ########################################
     // Loop over comparments
     ######################################## */
-    for (unsigned int icmp=0;icmp<num_HydroComp;icmp++){
+    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
 
         // Compartment info
         CompName_icmp = std::get<1>(
