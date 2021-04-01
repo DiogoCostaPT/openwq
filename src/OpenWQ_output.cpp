@@ -23,7 +23,8 @@
 
 #include "OpenWQ_output.h"
 
-int OpenWQ_output::writeCSV(OpenWQ_json& OpenWQ_json,
+int OpenWQ_output::writeCSV(
+    OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
@@ -142,7 +143,8 @@ int OpenWQ_output::writeCSV(OpenWQ_json& OpenWQ_json,
 }
 
 
-int OpenWQ_output::writeVTU(OpenWQ_json& OpenWQ_json,
+int OpenWQ_output::writeVTU(
+    OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,

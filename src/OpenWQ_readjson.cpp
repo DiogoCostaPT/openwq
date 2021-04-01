@@ -384,11 +384,12 @@ void OpenWQ_readjson::SetConfigInfo(
         
         // ########################################
         // Output format ######
-        // CSV 
+        // CSV
+        OpenWQ_wqconfig.output_type = -1;
         if (output_format.compare("CSV") == 0){
                 OpenWQ_wqconfig.output_type = 0;
         // VTK
-        }else if (output_format.compare("VTK") == 0){
+        }else if (output_format.compare("VTU") == 0){
                 OpenWQ_wqconfig.output_type = 1;
         } 
 
