@@ -79,12 +79,6 @@ int OpenWQ_output::writeCSV(
     std::vector<int>::iterator it;          // Iterator used to store the position of searched element
     int a;                                  // iteractive dummy variable for printing
 
-    /* ########################################
-    // Get necessary info
-    ######################################## */
-
-    // Number of chemical species to print (needed for output header)
-    num_chem2print = OpenWQ_wqconfig.chem2print.size();
 
     /* ########################################
     // Loop over comparments
@@ -124,10 +118,10 @@ int OpenWQ_output::writeCSV(
         filename.append(".txt");
 
         // Initiate arma::mat to print data
-        arma::mat filedata(nx*ny*nz,num_chem2print + 3); // starts with ix, iy and iz (so + 3)
+        arma::mat filedata(nx*ny*nz,OpenWQ_wqconfig.chem2print.size() + 3); // starts with ix, iy and iz (so + 3)
         
         // Define header of file
-        arma::field<std::string> header(num_chem2print + 3); // starts with ix, iy and iz (so + 3)
+        arma::field<std::string> header(OpenWQ_wqconfig.chem2print.size() + 3); // starts with ix, iy and iz (so + 3)
         header(0) = "ix [-]";
         header(1) = "iy [-]";
         header(2) = "iz [-]";
@@ -143,7 +137,7 @@ int OpenWQ_output::writeCSV(
                     filedata(a,1) = iy;
                     filedata(a,2) = ix;
   
-                    for (unsigned int ichem=0;ichem<num_chem2print;ichem++){
+                    for (unsigned int ichem=0;ichem<OpenWQ_wqconfig.chem2print.size();ichem++){
 
                         // Get chemical name
                         chem_name = OpenWQ_wqconfig.chem_species_list[
