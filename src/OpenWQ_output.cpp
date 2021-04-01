@@ -262,7 +262,7 @@ int OpenWQ_output::writeVTU(
     /* ########################################
     // Loop over chemical species
     ######################################## */
-    for (unsigned int ichem=0;ichem<(OpenWQ_wqconfig.num_chem);ichem++){ // all chemical species
+    for (unsigned int ichem=0;ichem<(OpenWQ_wqconfig.chem2print.size());ichem++){ // all chemical species
 
         vtkSmartPointer<vtkDoubleArray> varexpot = vtkSmartPointer<vtkDoubleArray>::New();
         varexpot->SetNumberOfValues(numvert);
@@ -275,14 +275,19 @@ int OpenWQ_output::writeVTU(
         varexpot->SetName(chemname.c_str());
 
         /* ########################################
-        // Loop dimensions
+        // Loop dimensions 
         ######################################## */
         index_i = 0;
         for (unsigned int iz=0;iz<=nz;iz++){   
                 for (unsigned int ix=0;ix<=nx;ix++){
                     for (unsigned int iy=0;iy<=ny;iy++){
                         if(iz!=nz && iy!=ny && ix!=nx){
-                            varexpot->SetValue(index_i, (*OpenWQ_vars.chemass)(icmp)(ichem)(ix,iy,iz));
+                            varexpot->SetValue(
+                                index_i, 
+                                (*OpenWQ_vars.chemass)
+                                    (icmp)
+                                    (OpenWQ_wqconfig.chem2print[ichem])         // index of chemical to print
+                                    (ix,iy,iz));
                         }else{
                             varexpot->SetValue(index_i, 0);
                         }
