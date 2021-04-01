@@ -54,13 +54,15 @@ class OpenWQ_output{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        unsigned int ts);
+        unsigned int ts,
+        int icmp);
     
     int writeVTU(OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        unsigned int ts);
+        unsigned int ts,
+        int icmp);
 
 };
 
