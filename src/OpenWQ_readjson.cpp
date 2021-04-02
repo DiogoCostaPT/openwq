@@ -108,7 +108,11 @@ void OpenWQ_readjson::read_JSON_2class(
                 if (substruc_flag == false)
                 {
                         // Save ifstream to JSON data type
-                        jsondata = json::parse(f);
+                        jsondata = json::parse(f,
+                                /* callback */ nullptr,
+                                /* allow exceptions */ false,
+                                /* skip_comments */ true);
+
                         // Convert all text in JSON to upper case
                         OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                 jsondata);
@@ -116,7 +120,11 @@ void OpenWQ_readjson::read_JSON_2class(
                 else
                 {
                         // Save ifstream to JSON data type
-                        jsondata[JsonSubStruct_name] = json::parse(f);
+                        jsondata[JsonSubStruct_name] = json::parse(f,
+                                /* callback */ nullptr,
+                                /* allow exceptions */ false,
+                                /* skip_comments */ true);
+                                
                         // Convert all text in JSON to upper case
                         OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                 jsondata[JsonSubStruct_name]);

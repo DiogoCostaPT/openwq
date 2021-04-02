@@ -25,7 +25,7 @@
 #include "exprtk.hpp"
 
 
-#include "jnlohmann/json.h"
+#include "jnlohmann/json.hpp"
 using json = nlohmann::json;
 
 /* #################################################

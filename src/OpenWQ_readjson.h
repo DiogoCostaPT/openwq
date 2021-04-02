@@ -31,7 +31,7 @@
 
 #include <cstdio>
 
-#include "jnlohmann/json.h"
+#include "jnlohmann/json.hpp"
 using json = nlohmann::json;
 
 //#include "utility.h"

@@ -28,7 +28,7 @@
 #include <vector>
 
 // #include "utility.h"
-#include "jnlohmann/json.h"
+#include "jnlohmann/json.hpp"
 using json = nlohmann::json;
 
 #include "OpenWQ_global.h"

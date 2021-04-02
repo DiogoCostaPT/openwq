@@ -6,7 +6,8 @@
     "COMMENT": "Default file for testing purposes",
     "OPENWQ_INPUT": {
     	"CONFIG_FILEPATH": "bin/openWQ_config.json",
-    	"BGC_CYCLES_FILEPATH": "bin/SWAT_Soil_BGC.json",
+    	//"BGC_CYCLES_FILEPATH": "bin/SWAT_Soil_BGC.json",
+        "BGC_CYCLES_FILEPATH": "bin/openWQ_BGC_cycling.json",
     	"SINKSOURCE_FILES": {
     		"1": {
     			"LABEL": "fertilizer_N",
