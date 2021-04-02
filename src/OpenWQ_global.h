@@ -166,6 +166,9 @@ class OpenWQ_wqconfig
 
     // Output folder
     std::string output_dir;
+
+    // Flag for printing coordinates once
+    bool print_xyz = true;
     
 };
 

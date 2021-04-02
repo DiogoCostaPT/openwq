@@ -441,12 +441,10 @@ void OpenWQ_readjson::SetConfigInfo(
         num_chem2print = OpenWQ_json.Master
                 ["OPENWQ_OUTPUT"]["CHEMICAL_SPECIES"].size();
         
-        // Get chemical species names to print 
-        std::vector<std::string> chem_names_vec = OpenWQ_json.Master
-                ["OPENWQ_OUTPUT"]["CHEMICAL_SPECIES"];
-               
         for (unsigned int chemi = 0; chemi < num_chem2print; chemi++){
-               chem_name2print = chem_names_vec[chemi];
+
+                // Chemical name (to print)
+               chem_name2print = OpenWQ_wqconfig.chem_species_list[chemi];
                
                 for (unsigned int chemlisti = 0; chemlisti < (OpenWQ_wqconfig.num_chem); chemlisti++){
                         
@@ -455,6 +453,7 @@ void OpenWQ_readjson::SetConfigInfo(
                         if (chem_namelist.compare(chem_name2print) == 0){                               
                                 
                                 OpenWQ_wqconfig.chem2print.push_back(chemlisti);
+                                break;
 
                         }
                 }
@@ -482,6 +481,7 @@ void OpenWQ_readjson::SetConfigInfo(
                         if (CompName_icmp.compare(compt_name2print) == 0){                               
                                 
                                 OpenWQ_wqconfig.compt2print.push_back(icmp);
+                                break;
 
                         }
                 }

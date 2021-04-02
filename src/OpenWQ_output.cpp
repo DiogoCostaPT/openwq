@@ -90,11 +90,17 @@ int OpenWQ_output::writeResults(
         
         }
     }
+
+    // turn off (only save once xyz_elements database)
+    OpenWQ_wqconfig.print_xyz = false; 
+
 }
 
 
 
+ /* ########################################
 // CSV output
+######################################## */
 int OpenWQ_output::writeCSV(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
@@ -177,7 +183,10 @@ int OpenWQ_output::writeCSV(
 
 }
 
+ /* ########################################
 // VTU output
+######################################## */
+
 int OpenWQ_output::writeVTU(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
@@ -321,7 +330,10 @@ int OpenWQ_output::writeVTU(
 
 }
 
+/* ########################################
 // HDF5 format
+######################################## */
+
 int OpenWQ_output::writeHDF5(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
@@ -334,9 +346,10 @@ int OpenWQ_output::writeHDF5(
     unsigned int nx, ny, nz;                // compartment dimensions
     unsigned int num_chem2print;            // number of chemical species to print
     std::string CompName_icmp;              // compartment name (iteractive)
-    std::string chem_name;                  // chemical name (iteractive)
+    const char * chem_name  ;              // chemical name pointer (iteractive)
     std::string filename;                   // iteractive output file name 
-    int a;                                  // iteractive dummy variable for printing
+    std::string internal_database_name;     // iteractive database name
+
 
     // Compartment info
     CompName_icmp = std::get<1>(
@@ -348,57 +361,85 @@ int OpenWQ_output::writeHDF5(
     nz = std::get<4>(
         OpenWQ_hostModelconfig.HydroComp.at(icmp));
 
-    // Reset file name for each compartment
-    filename = OpenWQ_wqconfig.output_dir;
+    // num of chemicals to print
+    num_chem2print = OpenWQ_wqconfig.chem2print.size();
 
-    filename.append("/");
-    filename.append(CompName_icmp);
-    filename.append(".h5");
+
+    // ########################################
+    // Save ix, iy and iz in dataset (the first time)
+    if (OpenWQ_wqconfig.print_xyz == true){
+
+        for (unsigned int ichem=0;ichem<num_chem2print;ichem++){
+
+            // Get chemical name (convert to char for use in .save())
+            chem_name = OpenWQ_wqconfig.chem_species_list[
+            OpenWQ_wqconfig.chem2print[ichem]].c_str();           // index of chemical to print
+
+            // Reset file name for each compartment
+            filename = OpenWQ_wqconfig.output_dir;
+
+            filename.append("/");
+            filename.append(CompName_icmp);
+            filename.append("_");
+            filename.append(chem_name);
+            filename.append(".h5");
+
+            // x elements
+            internal_database_name = "x_elements";             // name for internal HDF5 database name
+            arma::linspace(1,nx,nx)
+                .save(arma::hdf5_name(
+                    filename,
+                    internal_database_name));                  // no append (to clean old file if existant)
+
+            // y elements
+            internal_database_name = "y_elements";             // name for internal HDF5 database name
+            arma::linspace(1,ny,ny)
+                .save(arma::hdf5_name(
+                    filename,
+                    internal_database_name,
+                    arma::hdf5_opts::append));
+
+            // z elements
+            internal_database_name = "z_elements";             // name for internal HDF5 database name
+            arma::linspace(1,nz,nz)
+                .save(arma::hdf5_name(
+                    filename,
+                    internal_database_name,
+                    arma::hdf5_opts::append));
+
+        }
+    }
+
+    // ########################################
+    // Save datasets for each time step
 
     // Initiate arma::mat to print data
-    arma::mat filedata_xyz(nx*ny*nz,3);
+    arma::mat filedata(nx*ny*nz,1);
 
-    // Prepare data structure to print
-    a = 0;
-    for (unsigned int iz=0;iz<nz;iz++){   
-        for (unsigned int iy=0;iy<ny;iy++){
-            for (unsigned int ix=0;ix<nx;ix++){
+    for (unsigned int ichem=0;ichem<num_chem2print;ichem++){
 
-                // ix, iy and iz
-                filedata_xyz(a,0) = ix;
-                filedata_xyz(a,1) = iy;
-                filedata_xyz(a,2) = ix;
-            }
-        }
+        // Get chemical name (convert to char for use in .save())
+        chem_name = OpenWQ_wqconfig.chem_species_list[
+        OpenWQ_wqconfig.chem2print[ichem]].c_str();           // index of chemical to print
+
+        // Reset file name for each compartment
+        filename = OpenWQ_wqconfig.output_dir;
+
+        filename.append("/");
+        filename.append(CompName_icmp);
+        filename.append("_");
+        filename.append(chem_name);
+        filename.append(".h5");
+
+        // Save
+        (*OpenWQ_vars.chemass)
+            (icmp)
+            (OpenWQ_wqconfig.chem2print[ichem])
+            .save(arma::hdf5_name(
+                filename,                               // file name
+                std::to_string(ts),   // database name: chem name + time
+                arma::hdf5_opts::append));              // options
     }
-    // Print to CSV file
-    std::string internal_database_name = "xyz_elements";             // name for internal HDF5 database name
-    filedata_xyz.save(arma::hdf5_name(filename,internal_database_name,arma::hdf5_opts::append));
-
-/*
-    for (unsigned int ichem=0;ichem<OpenWQ_wqconfig.chem2print.size();ichem++){
-
-        for (unsigned int iz=0;iz<nz;iz++){   
-            for (unsigned int iy=0;iy<ny;iy++){
-                for (unsigned int ix=0;ix<nx;ix++){
-
-                    // Get chemical name
-                    chem_name = OpenWQ_wqconfig.chem_species_list[
-                        OpenWQ_wqconfig.chem2print[ichem]];           // index of chemical to print
-                        
-                    // Add chemical name to file header (add column)
-                    header(ichem + 3) = chem_name;
-
-                    filedata(a,ichem + 3) = (*OpenWQ_vars.chemass)
-                        (icmp)
-                        (OpenWQ_wqconfig.chem2print[ichem])         // index of chemical to print
-                        (ix,iy,iz);     
-                }
-                    a += 1; 
-            }
-        }
-    }
-    */
 
     return EXIT_SUCCESS;
 }
