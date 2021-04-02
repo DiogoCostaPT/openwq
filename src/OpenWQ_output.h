@@ -64,6 +64,13 @@ class OpenWQ_output{
         unsigned int ts,
         int icmp);
 
+    int writeHDF5(OpenWQ_json& OpenWQ_json,
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        unsigned int ts,
+        int icmp);
+
 };
 
 #endif

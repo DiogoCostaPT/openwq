@@ -23,8 +23,9 @@ find_package(VTK
 
         REQUIRED)
 
-find_package(Armadillo REQUIRED)
+find_package(Armadillo 10.3.0 REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
 find_package(OpenMP REQUIRED)
+find_package(HDF5)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
@@ -37,4 +38,5 @@ target_link_libraries(
         openwq
         ${ARMADILLO_LIBRARIES}
         ${VTK_LIBRARIES})
+
 

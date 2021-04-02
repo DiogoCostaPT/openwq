@@ -391,7 +391,7 @@ void OpenWQ_readjson::SetConfigInfo(
                 
         OpenWQ_wqconfig.output_type = -1;               // reset
 
-        // CSV
+        // CSV format
         if (output_format.compare("CSV") == 0){
                 OpenWQ_wqconfig.output_type = 0;
 
@@ -400,7 +400,7 @@ void OpenWQ_readjson::SetConfigInfo(
                 OpenWQ_readjson::check_mkdir_openWQ(
                         OpenWQ_wqconfig.output_dir);
 
-        // VTK
+        // VTK format
         }else if (output_format.compare("VTU") == 0){
                 OpenWQ_wqconfig.output_type = 1;
 
@@ -408,6 +408,15 @@ void OpenWQ_readjson::SetConfigInfo(
                 OpenWQ_wqconfig.output_dir.append("/VTU");
                 OpenWQ_readjson::check_mkdir_openWQ(
                         OpenWQ_wqconfig.output_dir);
+
+        // HDF5 format
+        }else if (output_format.compare("HDF5") == 0){
+                OpenWQ_wqconfig.output_type = 2;
+
+                // create dir if needed
+                OpenWQ_wqconfig.output_dir.append("/HDF5");
+                OpenWQ_readjson::check_mkdir_openWQ(
+                        OpenWQ_wqconfig.output_dir); 
 
         } else {
                 std::cout << "<OpenWQ> ERROR: Output type unkown: " << output_format << std::endl;
