@@ -195,7 +195,8 @@ void OpenWQ_initiate::setIC(
         ######################################## */
         catch(json::exception& e){ 
             std::cout << "<OpenWQ> IC conditions not defined: set to zero " 
-                    << "(compartment: " << CompName_icmp << ", " 
+                    << "(compartment: " << CompName_icmp << "; " 
+                    << "element: (" << ix << ", " << iy << ", " << iz << "); " 
                     << "chemical: " << chemname << ")"
                     << std::endl;
         }  
