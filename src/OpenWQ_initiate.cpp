@@ -193,12 +193,11 @@ void OpenWQ_initiate::setIC(
         /* ########################################
         // IC conditions NOT provided set to ZERO
         ######################################## */
-        catch(json::type_error& e){ 
+        catch(json::exception& e){ 
             std::cout << "<OpenWQ> IC conditions not defined: set to zero " 
                     << "(compartment: " << CompName_icmp << ", " 
                     << "chemical: " << chemname << ")"
                     << std::endl;
-            (*OpenWQ_vars.chemass)(icmp)(chemi)(ix,iy,iz) = 0.0f;
         }  
     }
 }
