@@ -50,7 +50,8 @@ class OpenWQ_output{
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         unsigned int ts);
 
-    int writeCSV(OpenWQ_json& OpenWQ_json,
+    int writeCSV(
+        OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
@@ -64,7 +65,8 @@ class OpenWQ_output{
         unsigned int ts,
         int icmp);
 
-    int writeHDF5(OpenWQ_json& OpenWQ_json,
+    int writeHDF5(
+        OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
