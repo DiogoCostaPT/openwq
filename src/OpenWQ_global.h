@@ -169,6 +169,9 @@ class OpenWQ_wqconfig
 
     // Flag for printing coordinates once
     bool print_xyz = true;
+
+    // Error message flags
+    bool BGC_Transform_print_errmsg = true;
     
 };
 

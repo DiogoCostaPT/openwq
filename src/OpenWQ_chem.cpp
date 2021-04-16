@@ -232,6 +232,9 @@ void OpenWQ_chem::Run(
             icmp);
 
     }
+
+    // Turn off printing of exception err message (only print on first step)
+    OpenWQ_wqconfig.BGC_Transform_print_errmsg = false;
 }
 
 /* #################################################
@@ -264,84 +267,94 @@ void OpenWQ_chem::BGC_Transform(
 
     // Get cycling_frameworks for compartment icomp (name = CompName_icmp) 
     // (compartment names need to match)
-    std::vector<std::string> BGCcycles_icmp = 
-        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"]
-            [CompName_icmp]["CYCLING_FRAMEWORK"];
+    try{
+        std::vector<std::string> BGCcycles_icmp =             
+            OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"]
+                [CompName_icmp]["CYCLING_FRAMEWORK"];
 
-    // Get number of BGC frameworks in comparment icmp
-    num_BGCcycles = BGCcycles_icmp.size();
-        
-
-    /* ########################################
-    // Loop over biogeochemical cycling frameworks
-    ######################################## */
-
-    for (unsigned int bgci=0;bgci<num_BGCcycles;bgci++){
-
-        // Get framework name i of compartment icmp
-        BGCcycles_name_icmp = BGCcycles_icmp.at(bgci);
-
-        // Get number transformations in biogeochemical cycle BGCcycles_name_icmp
-        std::vector<unsigned int> transf_index;
-        for (unsigned int index_j=0;index_j<OpenWQ_wqconfig.BGCexpressions_info.size();index_j++){
-            BGCcycles_name_list = std::get<0>(OpenWQ_wqconfig.BGCexpressions_info.at(index_j)); // get BGC cycle from OpenWQ_wqconfig.BGCexpressions_info
-            if(BGCcycles_name_list.compare(BGCcycles_name_icmp) == 0){
-                transf_index.push_back(index_j);
-            }
-        }
-        
-        num_transf = transf_index.size(); // number of transformation for this BGC cycle (as identified in BGCexpressions_info)
-
+        // Get number of BGC frameworks in comparment icmp
+        num_BGCcycles = BGCcycles_icmp.size();
+            
         /* ########################################
-        // Loop over transformations in biogeochemical cycle bgci
+        // Loop over biogeochemical cycling frameworks
         ######################################## */
-        
-        for (unsigned int transi=0;transi<num_transf;transi++){
 
-            index_cons = std::get<3>(OpenWQ_wqconfig.BGCexpressions_info.at(transf_index[transi]));
-            index_prod = std::get<4>(OpenWQ_wqconfig.BGCexpressions_info.at(transf_index[transi]));
+        for (unsigned int bgci=0;bgci<num_BGCcycles;bgci++){
 
-            // Get indexes of chemicals in transformation equation (needs to be here for loop reset)
-            std::vector<unsigned int> index_chemtransf = 
-                std::get<5>(
-                    OpenWQ_wqconfig.BGCexpressions_info.at(transf_index[transi]));
+            // Get framework name i of compartment icmp
+            BGCcycles_name_icmp = BGCcycles_icmp.at(bgci);
 
+            // Get number transformations in biogeochemical cycle BGCcycles_name_icmp
+            std::vector<unsigned int> transf_index;
+            for (unsigned int index_j=0;index_j<OpenWQ_wqconfig.BGCexpressions_info.size();index_j++){
+                BGCcycles_name_list = std::get<0>(OpenWQ_wqconfig.BGCexpressions_info.at(index_j)); // get BGC cycle from OpenWQ_wqconfig.BGCexpressions_info
+                if(BGCcycles_name_list.compare(BGCcycles_name_icmp) == 0){
+                    transf_index.push_back(index_j);
+                }
+            }
+            
+            num_transf = transf_index.size(); // number of transformation for this BGC cycle (as identified in BGCexpressions_info)
 
             /* ########################################
-            // Loop over space: nx, ny, nz
+            // Loop over transformations in biogeochemical cycle bgci
             ######################################## */
-            for (unsigned int ix=0;ix<nx;ix++){
-                for (unsigned int iy=0;iy<ny;iy++){
-                    for (unsigned int iz=0;iz<nz;iz++){                    
-                        
-                        //std::vector<double> chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
-                        OpenWQ_wqconfig.chemass_InTransfEq.clear();
-                        // loop to get all the variables inside the expression
-                        for (unsigned int chem=0;chem<index_chemtransf.size();chem++){
-                            OpenWQ_wqconfig.chemass_InTransfEq.push_back(
-                                (*OpenWQ_vars.chemass)
-                                (icmp)
-                                (index_chemtransf[chem])
-                                (ix,iy,iz));
+            
+            for (unsigned int transi=0;transi<num_transf;transi++){
+
+                index_cons = std::get<3>(OpenWQ_wqconfig.BGCexpressions_info.at(transf_index[transi]));
+                index_prod = std::get<4>(OpenWQ_wqconfig.BGCexpressions_info.at(transf_index[transi]));
+
+                // Get indexes of chemicals in transformation equation (needs to be here for loop reset)
+                std::vector<unsigned int> index_chemtransf = 
+                    std::get<5>(
+                        OpenWQ_wqconfig.BGCexpressions_info.at(transf_index[transi]));
+
+
+                /* ########################################
+                // Loop over space: nx, ny, nz
+                ######################################## */
+                for (unsigned int ix=0;ix<nx;ix++){
+                    for (unsigned int iy=0;iy<ny;iy++){
+                        for (unsigned int iz=0;iz<nz;iz++){                    
+                            
+                            //std::vector<double> chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
+                            OpenWQ_wqconfig.chemass_InTransfEq.clear();
+                            // loop to get all the variables inside the expression
+                            for (unsigned int chem=0;chem<index_chemtransf.size();chem++){
+                                OpenWQ_wqconfig.chemass_InTransfEq.push_back(
+                                    (*OpenWQ_vars.chemass)
+                                    (icmp)
+                                    (index_chemtransf[chem])
+                                    (ix,iy,iz));
+                            }
+
+                            // Update dependency values if needed
+                            OpenWQ_hostModelconfig.SM = (*OpenWQ_hostModelconfig.SM_space_hydromodel)(ix,iy,iz);
+                            OpenWQ_hostModelconfig.Tair = (*OpenWQ_hostModelconfig.Tair_space_hydromodel)(ix,iy,iz);
+
+                            // Mass transfered: Consumed -> Produced (using exprtk)
+                            transf_mass = OpenWQ_wqconfig.BGCexpressions_eq[transf_index[transi]].value(); 
+
+                            // New mass of consumed chemical
+                            (*OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
+
+                            // New mass of produced chemical
+                            (*OpenWQ_vars.chemass)(icmp)(index_prod)(ix,iy,iz) += transf_mass;
+
                         }
-
-                        // Update dependency values if needed
-                        OpenWQ_hostModelconfig.SM = (*OpenWQ_hostModelconfig.SM_space_hydromodel)(ix,iy,iz);
-                        OpenWQ_hostModelconfig.Tair = (*OpenWQ_hostModelconfig.Tair_space_hydromodel)(ix,iy,iz);
-
-                        // Mass transfered: Consumed -> Produced (using exprtk)
-                        transf_mass = OpenWQ_wqconfig.BGCexpressions_eq[transf_index[transi]].value(); 
-
-                        // New mass of consumed chemical
-                        (*OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
-
-                        // New mass of produced chemical
-                        (*OpenWQ_vars.chemass)(icmp)(index_prod)(ix,iy,iz) += transf_mass;
-
                     }
                 }
             }
         }
-    }
+    }catch(json::exception& e){
 
+        // Print error message if 1st time step
+        if (OpenWQ_wqconfig.BGC_Transform_print_errmsg == true){
+            std::cout << "<OpenWQ> No CYCLING_FRAMEWORK defined for " 
+                << "compartment: " << CompName_icmp
+                << std::endl;
+        }
+        
+        return;
+    } 
 }
