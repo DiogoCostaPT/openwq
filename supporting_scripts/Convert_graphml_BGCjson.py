@@ -157,14 +157,40 @@ BGC_JSON_dic = {}
 BGC_JSON_dic["CHEMICAL_SPECIES"] = {}
 BGC_JSON_dic["CHEMICAL_SPECIES"]["LIST"] = {}
 BGC_JSON_dic["CHEMICAL_SPECIES"]["MOBILE_SPECIES"] = []
-BGC_JSON_dic["LIST_TRANSFORMATIONS"] = {}
+BGC_JSON_dic["CYCLING_FRAMEWORKS"] = {}
 
+##############################
 # Construct chemical list data
 LIST_data = {}
 for i in range(0, len(node_ids)):
     BGC_JSON_dic["CHEMICAL_SPECIES"]["LIST"][str(i + 1)] = node_labels[i]
 
+##############################
+# Construct cycling frameworks dictionary
+BGC_JSON_dic["CYCLING_FRAMEWORKS"][CYCLING_FRAMEWORKS_name] = {}
+
+# Add list of transformations and details for each of them
+BGC_JSON_dic["CYCLING_FRAMEWORKS"][CYCLING_FRAMEWORKS_name]["LIST_TRANSFORMATIONS"] = {}
+
+for i in range(0, len(arrow_ids)):
+
+    # Add to list of transformations
+    BGC_JSON_dic["CYCLING_FRAMEWORKS"][CYCLING_FRAMEWORKS_name]["LIST_TRANSFORMATIONS"][str(i + 1)] = arrow_labels[i]
+
+    # Add details of transformation
+    BGC_JSON_dic["CYCLING_FRAMEWORKS"][CYCLING_FRAMEWORKS_name][str(i + 1)] = {}
+    BGC_JSON_dic["CYCLING_FRAMEWORKS"][CYCLING_FRAMEWORKS_name][str(i + 1)]["CONSUMED"] = \
+        node_labels[node_ids.index(arrow_sources[i])]
+    BGC_JSON_dic["CYCLING_FRAMEWORKS"][CYCLING_FRAMEWORKS_name][str(i + 1)]["PRODUCED"] = \
+        node_labels[node_ids.index(arrow_targets[i])]
+    BGC_JSON_dic["CYCLING_FRAMEWORKS"][CYCLING_FRAMEWORKS_name][str(i + 1)]["KINETICS"] = \
+        arrow_kinetics[i]
+    BGC_JSON_dic["CYCLING_FRAMEWORKS"][CYCLING_FRAMEWORKS_name][str(i + 1)]["PARAMETER_NAMES"] = []
+    BGC_JSON_dic["CYCLING_FRAMEWORKS"][CYCLING_FRAMEWORKS_name][str(i + 1)]["PARAMETER_VALUES"] = {}
+
+
+##############################
 # Save to JSON file
 JSON_filename = graphml_filepath[0:len(graphml_filepath)-8] + ".json"
 with open(JSON_filename, 'w') as outfile:
-    json.dump(BGC_JSON_dic, outfile, separators=(',', ': '),sort_keys=True, indent=4)
+    json.dump(BGC_JSON_dic, outfile, separators=(',', ': '), indent=4)
