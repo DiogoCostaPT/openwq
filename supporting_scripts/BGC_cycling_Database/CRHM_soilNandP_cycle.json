@@ -1,0 +1,136 @@
+{
+    "CHEMICAL_SPECIES": {
+        "LIST": {
+            "1": "labileP",
+            "2": "refractoryP",
+            "3": "SRP",
+            "4": "DOP",
+            "5": "Erosion_lost",
+            "6": "NO3-N",
+            "7": "labileN",
+            "8": "DON",
+            "9": "refractoryN",
+            "10": "NH4-N",
+            "11": "N2",
+            "12": "partP"
+        },
+        "MOBILE_SPECIES": [
+            3,
+            4,
+            6,
+            8,
+            10,
+            12
+        ]
+    },
+    "CYCLING_FRAMEWORKS": {
+        "global": {
+            "LIST_TRANSFORMATIONS": {
+                "1": "dissol_refrcP2DOP",
+                "2": "degrad_refrcP2labP",
+                "3": "dissol_labN2DON",
+                "4": "mineralization",
+                "5": "erosion_partP2lost",
+                "6": "erosion_refracP2lost",
+                "7": "degrad_refr2lab_N",
+                "8": "mineralization",
+                "9": "dissol_labN2DON",
+                "10": "dissol_refrcN2DON",
+                "11": "nitrification",
+                "12": "denitrification",
+                "13": "dyneq_partP2SRP"
+            },
+            "1": {
+                "CONSUMED": "refractoryP",
+                "PRODUCED": "DOP",
+                "KINETICS": " refractoryP * 0.001",
+                "PARAMETER_NAMES": [],
+                "PARAMETER_VALUES": {}
+            },
+            "2": {
+                "CONSUMED": "refractoryP",
+                "PRODUCED": "labileP",
+                "KINETICS": " refractoryP * 0.01",
+                "PARAMETER_NAMES": [],
+                "PARAMETER_VALUES": {}
+            },
+            "3": {
+                "CONSUMED": "labileP",
+                "PRODUCED": "DOP",
+                "KINETICS": " labileN * 0.002",
+                "PARAMETER_NAMES": [],
+                "PARAMETER_VALUES": {}
+            },
+            "4": {
+                "CONSUMED": "labileP",
+                "PRODUCED": "SRP",
+                "KINETICS": " labileP * 0.001",
+                "PARAMETER_NAMES": [],
+                "PARAMETER_VALUES": {}
+            },
+            "5": {
+                "CONSUMED": "partP",
+                "PRODUCED": "Erosion_lost",
+                "KINETICS": " partP * 0.001",
+                "PARAMETER_NAMES": [],
+                "PARAMETER_VALUES": {}
+            },
+            "6": {
+                "CONSUMED": "refractoryP",
+                "PRODUCED": "Erosion_lost",
+                "KINETICS": " refractoryP * 0.02",
+                "PARAMETER_NAMES": [],
+                "PARAMETER_VALUES": {}
+            },
+            "7": {
+                "CONSUMED": "refractoryN",
+                "PRODUCED": "labileN",
+                "KINETICS": " refractoryN * 0.01",
+                "PARAMETER_NAMES": [],
+                "PARAMETER_VALUES": {}
+            },
+            "8": {
+                "CONSUMED": "labileN",
+                "PRODUCED": "NH4-N",
+                "KINETICS": " labileN * 0.01",
+                "PARAMETER_NAMES": [],
+                "PARAMETER_VALUES": {}
+            },
+            "9": {
+                "CONSUMED": "labileN",
+                "PRODUCED": "DON",
+                "KINETICS": " labileN * 0.002",
+                "PARAMETER_NAMES": [],
+                "PARAMETER_VALUES": {}
+            },
+            "10": {
+                "CONSUMED": "refractoryN",
+                "PRODUCED": "DON",
+                "KINETICS": " refractoryN * 0.0001",
+                "PARAMETER_NAMES": [],
+                "PARAMETER_VALUES": {}
+            },
+            "11": {
+                "CONSUMED": "NH4-N",
+                "PRODUCED": "NO3-N",
+                "KINETICS": " NH4-N * 0.003",
+                "PARAMETER_NAMES": [],
+                "PARAMETER_VALUES": {}
+            },
+            "12": {
+                "CONSUMED": "NO3-N",
+                "PRODUCED": "N2",
+                "KINETICS": " NO3-N * 0.06",
+                "PARAMETER_NAMES": [],
+                "PARAMETER_VALUES": {}
+            },
+            "13": {
+                "CONSUMED": "partP",
+                "PRODUCED": "SRP",
+                "KINETICS": " partP * 0.001",
+                "PARAMETER_NAMES": [],
+                "PARAMETER_VALUES": {}
+            }
+        }
+    }
+}
