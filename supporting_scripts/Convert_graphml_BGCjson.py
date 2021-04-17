@@ -4,8 +4,10 @@ import numpy as np
 
 ###########################################
 # graphml file name (define full path)
-graphml_filepath = 'BGC_test.graphml'
+graphml_filepath = 'BGC_cycling_Database/CRHM_soilNandP_cycle.graphml'
 CYCLING_FRAMEWORKS_name = 'global'
+kinetics_flag_graphml_arrow_labels = 'kinetics:'
+mobile_flag_graphml_nodes_labels = 'mobile:'
 ###########################################
 
 
@@ -27,6 +29,8 @@ arrow_targets = []
 
 # Dummy variables
 arrow_lablkinet = []
+vector_mobile = []
+node_index = 1
 
 # flags
 found_graph_flag = False
@@ -63,6 +67,8 @@ for l in range(0, len(content_list)):
     #############################################
     if (found_node_flag == True):
 
+
+
         # Extract id
         id_key = '<node id="'
         if content_l.find(id_key) != -1:
@@ -79,7 +85,14 @@ for l in range(0, len(content_list)):
             keyword_end = '<y:LabelModel>'
             loc_str = content_l.find(keyword_str) + len(keyword_str)
             loc_end = content_l.find(keyword_end)
-            node_labels.append(content_l[loc_str:loc_end])
+
+            new_entry = content_l[loc_str:loc_end]
+            if new_entry.find(mobile_flag_graphml_nodes_labels) != -1:
+                if new_entry.find('true') != -1:
+                    vector_mobile.append(node_index)
+                node_index += 1
+            else:
+                node_labels.append(new_entry)
 
         else:
             continue
@@ -123,40 +136,51 @@ for l in range(0, len(content_list)):
             keyword_end = '<y:LabelModel>'
             loc_str = content_l.find(keyword_str) + len(keyword_str)
             loc_end = content_l.find(keyword_end)
+
+            # if properties of labels are changed, if may not find loc_end
+            # this is another attempt to find it
+            if loc_end == -1:
+                keyword_end = '<y:PreferredPlacementDescriptor'
+                loc_end = content_l.find(keyword_end)
+
             arrow_lablkinet.append(content_l[loc_str:loc_end])
 
         else:
             continue
 
 # Abort if arrows don't have all the info needed: name of transformation + kinetics
+if len(node_labels) != len(node_ids):
+    print('> ERROR: Chemical Constituents: each node needs two labels (name of chemical and mobile-bool)')
+    exit()
 if len(arrow_lablkinet)/2 != len(arrow_ids):
-    print('> ERROR: each arrow (transformation) needs two labels (transformation name and kinetics)')
+    print('> ERROR: Chemical Transformations: each arrow needs two labels (transformation name and kinetics)')
     exit()
 
 # Separate labels and kinetics
-indexes_labels = np.linspace(0,len(arrow_lablkinet)-2,len(arrow_ids))
-for i in range(0, len(indexes_labels)):
-    arrow_labels.append(arrow_lablkinet[int(indexes_labels[i])])
-for i in range(0, len(indexes_labels)):
-    arrow_kinetics.append(arrow_lablkinet[int(indexes_labels[i]+1)])
+for i in range(0, len(arrow_lablkinet)):
+    arrow_info_i = arrow_lablkinet[i]
+    # if kinetics
+    if arrow_info_i.find(kinetics_flag_graphml_arrow_labels) != -1:
+        arrow_kinetics.append(arrow_info_i[len(kinetics_flag_graphml_arrow_labels):len(arrow_info_i)])
+    else:
+         arrow_labels.append(arrow_info_i)
 
+# Abort if number of arrow labels and kinetics don't match
+if len(arrow_labels) != len(arrow_kinetics):
+    print('> ERROR: No match between transformation labels and transformation kinetics. \n'
+          '  Make sure to add signatures in graphml file to all kinetics given by python variable "kinetics_flag_graphml_arrow_labels"\n'
+          '  Signature (kinetics_flag_graphml_arrow_labels) = ' + kinetics_flag_graphml_arrow_labels
+          )
+    exit()
 
 #################################################
 # Creating JSON BGC file
 #################################################
 
-#node_ids = []
-#node_labels = []
-#arrow_ids = []
-#arrow_labels = []
-#arrow_kinetics = []
-#arrow_sources = []
-#arrow_targets = []
-
 BGC_JSON_dic = {}
 BGC_JSON_dic["CHEMICAL_SPECIES"] = {}
 BGC_JSON_dic["CHEMICAL_SPECIES"]["LIST"] = {}
-BGC_JSON_dic["CHEMICAL_SPECIES"]["MOBILE_SPECIES"] = []
+BGC_JSON_dic["CHEMICAL_SPECIES"]["MOBILE_SPECIES"] = vector_mobile
 BGC_JSON_dic["CYCLING_FRAMEWORKS"] = {}
 
 ##############################
