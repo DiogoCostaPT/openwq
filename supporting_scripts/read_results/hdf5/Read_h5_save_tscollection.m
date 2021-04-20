@@ -3,17 +3,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Read HDF5 data and save to timeseries collection
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function Read_h5_save_tscollection(folderpath)
+function output_tscollect = Read_h5_save_tscollection(folderpath)
+
+    % Create timeseries collection
+    output_tscollect = tscollection();
 
     % Get hdf5 files (one per compartment)
     dinfo = dir(folderpath);
     filenames = {dinfo.name};
     filenames(strcmp(filenames,'.')) = [];
     filenames(strcmp(filenames,'..')) = [];
-
-    % Create timeseries collection
-    output_tscollect = tscollection();
-
+   
     % loop over files/compartments
     for i = 1:numel(filenames)
 
