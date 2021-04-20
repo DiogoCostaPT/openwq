@@ -27,17 +27,20 @@ function plot_elements(...
         % Get timeseries for compartment tsnames{loc_var}
         ts = output_tscollect.(genvarname(tsnames{loc_var}));
         
-        
-        % Print -> Get instruction for printing
+        % Get instruction for printing
         plot_elem_select = plotElm_info_i{2};
        % if selected print "all"
         if strcmp(plot_elem_select,'all')
-            plot(ts,'-o')
+            ts_select = ts;
         % otherwise
         else
-            plot(ts(plot_elem_select),'-o')
+            ts_select = ts;
         end
-
+        
+        % Print
+        plot(ts_select,'-o')
+        
+        % Grind and labels
         grid on
         ylabel(ts.Name)
         

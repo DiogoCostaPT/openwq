@@ -59,10 +59,14 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
             % Data (up to 3D)
             data_all(tstep,:,:,:) = data_i;
 
-        end  
+        end
+        
+         % Order timeseries
+        [time_all,reorderedIndex] = sort(time_all);
+        data_all = data_all(reorderedIndex,:);
 
         % Create timeseries
-        ts = timeseries(data_all,time_all);
+        ts = timetable(time_all,data_all(:,1));
 
         % Add timeseries for timeseries collection 
         % Timeseries name 
