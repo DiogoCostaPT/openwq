@@ -171,6 +171,7 @@ class OpenWQ_wqconfig
     bool print_xyz = true;
 
     // Error message flags
+    bool readSet_print_errmsg = true;
     bool BGC_Transform_print_errmsg = true;
     
 };
