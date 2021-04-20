@@ -28,7 +28,7 @@ int OpenWQ_output::writeResults(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    unsigned int ts){
+    double ts){
     
     // Local Variables
     std::vector<int>::iterator it;          // Iterator used to store the position of searched element
@@ -106,7 +106,7 @@ int OpenWQ_output::writeCSV(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    unsigned int ts,            // time step (in seconds)
+    double ts,            // time step (in seconds)
     int icmp){                  // compartment index
 
     // Local Variables
@@ -192,7 +192,7 @@ int OpenWQ_output::writeVTU(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    unsigned int ts,    // time step (in seconds)
+    double ts,    // time step (in seconds)
     int icmp){          // compartment index
 
     // Local Variables
@@ -339,7 +339,7 @@ int OpenWQ_output::writeHDF5(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    unsigned int ts,    // time step (in seconds)
+    double ts,    // time step (in seconds)
     int icmp){          // compartment index
 
      // Local Variables
