@@ -32,14 +32,6 @@ int OpenWQ_output::writeResults(
     
     // Local Variables
     std::vector<int>::iterator it;          // Iterator used to store the position of searched element
-    
-    /* ########################################
-    // Return if not time to print yet
-    ######################################## */
-    if (ts < OpenWQ_wqconfig.nexttime_out)
-        return EXIT_SUCCESS;
-    else
-        OpenWQ_wqconfig.nexttime_out += OpenWQ_wqconfig.timetep_out;
 
     
     /* ########################################

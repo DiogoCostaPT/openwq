@@ -223,12 +223,23 @@ int main(int argc, char* argv[])
         /* ########################################
          Output Results
         ######################################## */
-        OpenWQ_output.writeResults(
-            OpenWQ_json,
-            OpenWQ_vars,
-            OpenWQ_hostModelconfig,
-            OpenWQ_wqconfig,
-            ts); 
+
+        // Only print if time to print -> Needs to be adapted to host model time conventions
+        // Note that OpenWQ_wqconfig.timetep_out converted to seconds in OpenWQ_readjson
+        if (ts < OpenWQ_wqconfig.nexttime_out)
+            continue;
+        else{     
+            // Print/Save results
+            OpenWQ_output.writeResults(
+                OpenWQ_json,
+                OpenWQ_vars,
+                OpenWQ_hostModelconfig,
+                OpenWQ_wqconfig,
+                ts);
+
+            // Update next time step
+            OpenWQ_wqconfig.nexttime_out += OpenWQ_wqconfig.timetep_out;
+        }
 
     }
     
