@@ -44,7 +44,7 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
 
         % Re-organize all the data (loop over time)
         num_timestaps = numel(timestamps);
-        time_all = zeros(num_timestaps,1) * NaN;
+        time_all = cell(num_timestaps,1); % as data-time string
         data_all = zeros(...
             num_timestaps,...       % time
             num_x_elements,...      % x-dir
@@ -58,20 +58,29 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
 
             % Time
             time_i = timestamps(tstep);
-            time_num = str2double(time_i{:});
-            time_all(tstep) = time_num;  
+            time_all(tstep) = time_i;  
 
             % Data (up to 3D)
             data_all(tstep,:,:,:) = data_i;
 
         end
         
-         % Order timeseries
-        [time_all,reorderedIndex] = sort(time_all);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Order timeseries
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        % first convert time string to time num
+        time_all_num = datenum(time_all,'yyyymmmdd-HH:MM:SS');
+        
+        % then sort results and get indexes for new order
+        [time_all_num,reorderedIndex] = sort(time_num);
+        
+        % re-order time and data 
+        %time_all = time_all(reorderedIndex);
         data_all = data_all(reorderedIndex,:);
 
         % Create timeseries
-        ts = timetable(time_all,data_all(:,1));
+        ts = timetable(datetime(datevec(time_all_num)),data_all(:,1));
 
         % Add timeseries for timeseries collection 
         % Timeseries name 
