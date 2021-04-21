@@ -18,6 +18,7 @@
 #include <fstream>
 #include <armadillo>
 #include <string>
+#include <time.h> 
 
 // #include "utility.h"
 
@@ -131,11 +132,21 @@ int main(int argc, char* argv[])
     
     unsigned int ts_hosthydromod = 5000; // (timesteps) TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     
+    // Host model intial time in native time units (it will vary depending on the model) -> this will not exist in coupled version
+    // this time_host_model value is updated by the host model with new time steps
+    long time_host_model = 42945.010416666664; // provided by the model (this example is based on excel/crhm convention)
+   
+    // Convert host model time convention to OpenWQ time convention that is
+    // in seconds since 00:00 hours, Jan 1, 1970 UTC
+    // the arithmetic operations below are for excel/crhm time convertion to OpenWQ's
+    OpenWQ_wqconfig.nexttime_out = (time_host_model - 70 * 365 - 21) * 24 * 3600; 
+
     /* #################################################
     // Loop: Time 
     // Space loop is inside OpenWQ_chem.Run function
     // No space loop for OpenWQ_watertransp.Adv: it needs to be called throughout the host model code
     ################################################# */
+
     for (unsigned int ts=0;ts<ts_hosthydromod;ts++){ // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
 
         /* ########################################
@@ -226,20 +237,23 @@ int main(int argc, char* argv[])
 
         // Only print if time to print -> Needs to be adapted to host model time conventions
         // Note that OpenWQ_wqconfig.timetep_out converted to seconds in OpenWQ_readjson
-        if (ts < OpenWQ_wqconfig.nexttime_out)
-            continue;
-        else{     
-            // Print/Save results
-            OpenWQ_output.writeResults(
-                OpenWQ_json,
-                OpenWQ_vars,
-                OpenWQ_hostModelconfig,
-                OpenWQ_wqconfig,
-                ts);
 
-            // Update next time step
-            OpenWQ_wqconfig.nexttime_out += OpenWQ_wqconfig.timetep_out;
-        }
+        // updated new model time (in host model units) 
+        time_host_model = time_host_model + 2; // -> to remove (this is just to simulate a new time)
+   
+        // Convert host model time convention to OpenWQ time convention that is
+        // in seconds since 00:00 hours, Jan 1, 1970 UTC
+        // the arithmetic operations below are for excel/crhm time convertion to OpenWQ's
+        time_t simtime = (time_host_model - 70 * 365 - 21) * 24 * 3600; 
+
+        // Print/Save results
+        OpenWQ_output.writeResults(
+            OpenWQ_json,
+            OpenWQ_vars,
+            OpenWQ_hostModelconfig,
+            OpenWQ_wqconfig,
+            simtime); // simulation time, needs to be in seconds since 00:00 hours, Jan 1, 1970 UTC
+
 
     }
     

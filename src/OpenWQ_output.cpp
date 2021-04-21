@@ -28,12 +28,23 @@ int OpenWQ_output::writeResults(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    double ts){
+    time_t simtime){ // needs to be in seconds since 00:00 hours, Jan 1, 1970 UTC
     
+    // Return if not time to print
+    if (simtime < OpenWQ_wqconfig.nexttime_out)
+        return EXIT_SUCCESS;
+
     // Local Variables
     std::vector<int>::iterator it;          // Iterator used to store the position of searched element
 
-    
+    // Create time string to print
+    struct tm * timeinfo;
+    char timechar [30];
+    timeinfo = gmtime (&simtime);
+    strftime (timechar,30,"%Y%b%d-%H:%M:%S",timeinfo);
+    std::string timestr = std::string(timechar);
+    std::cout << timestr << std::endl;
+
     /* ########################################
     // Loop over comparments
     ######################################## */
@@ -57,7 +68,7 @@ int OpenWQ_output::writeResults(
                     OpenWQ_vars,
                     OpenWQ_hostModelconfig,
                     OpenWQ_wqconfig,
-                    ts,
+                    timestr,
                     icmp);
 
         // VTU
@@ -67,7 +78,7 @@ int OpenWQ_output::writeResults(
                 OpenWQ_vars,
                 OpenWQ_hostModelconfig,
                 OpenWQ_wqconfig,
-                ts,
+                timestr,
                 icmp);
 
         // HDF5
@@ -77,7 +88,7 @@ int OpenWQ_output::writeResults(
                 OpenWQ_vars,
                 OpenWQ_hostModelconfig,
                 OpenWQ_wqconfig,
-                ts,
+                timestr,
                 icmp);
         
         }
@@ -85,6 +96,12 @@ int OpenWQ_output::writeResults(
 
     // turn off (only save once xyz_elements database)
     OpenWQ_wqconfig.print_xyz = false; 
+
+    // update new OpenWQ_wqconfig.nexttime_out
+    OpenWQ_wqconfig.nexttime_out += OpenWQ_wqconfig.timetep_out;
+
+    // Completed succesfully 
+    return EXIT_SUCCESS;
 
 }
 
@@ -98,7 +115,7 @@ int OpenWQ_output::writeCSV(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    double ts,            // time step (in seconds)
+    std::string timestr,            // time step (in seconds)
     int icmp){                  // compartment index
 
     // Local Variables
@@ -125,7 +142,7 @@ int OpenWQ_output::writeCSV(
     filename.append("/");
     filename.append(CompName_icmp);
     filename.append("_");
-    filename.append(std::to_string(ts)); // time stamp
+    filename.append(timestr); // time stamp
     filename.append("_");
     filename.append("sec");
     filename.append(".txt");
@@ -184,7 +201,7 @@ int OpenWQ_output::writeVTU(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    double ts,    // time step (in seconds)
+    std::string timestr,    // time step (in seconds)
     int icmp){          // compartment index
 
     // Local Variables
@@ -211,7 +228,7 @@ int OpenWQ_output::writeVTU(
     filename.append("/");
     filename.append(CompName_icmp);
     filename.append("_");
-    filename.append(std::to_string(ts)); // time stamp
+    filename.append(timestr); // time stamp
     filename.append("sec");
     filename.append(".vtu");
     std::string chemname;        
@@ -331,7 +348,7 @@ int OpenWQ_output::writeHDF5(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    double ts,    // time step (in seconds)
+    std::string timestr,    // time step (in seconds)
     int icmp){          // compartment index
 
      // Local Variables
@@ -429,7 +446,7 @@ int OpenWQ_output::writeHDF5(
             (OpenWQ_wqconfig.chem2print[ichem])
             .save(arma::hdf5_name(
                 filename,                               // file name
-                std::to_string(ts),   // database name: chem name + time
+                timestr,   // database name: chem name + time
                 arma::hdf5_opts::append));              // options
     }
 

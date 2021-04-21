@@ -48,31 +48,29 @@ class OpenWQ_output{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        double ts);
+        time_t simtime);
 
     int writeCSV(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        double ts,
+        std::string timestr,
         int icmp);
-    
     
     int writeVTU(OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        double ts,
+        std::string timestr,
         int icmp);
     
-
     int writeHDF5(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        double ts,
+        std::string timestr,
         int icmp);
 
 };
