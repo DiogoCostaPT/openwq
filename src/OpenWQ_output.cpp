@@ -31,7 +31,7 @@ int OpenWQ_output::writeResults(
     time_t simtime){ // needs to be in seconds since 00:00 hours, Jan 1, 1970 UTC
     
     // Return if not time to print
-    if (simtime =< OpenWQ_wqconfig.nexttime_out)
+    if (simtime <= OpenWQ_wqconfig.nexttime_out)
         return EXIT_SUCCESS;
 
     // Local Variables
