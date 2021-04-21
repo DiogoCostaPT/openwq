@@ -21,7 +21,12 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
         filepath_i = [folderpath,filename_i];
 
         % Data saved
-        datasets = {h5info(filepath_i).Datasets.Name};
+        try
+            datasets = {h5info(filepath_i).Datasets.Name};
+        catch
+           disp(["ERR: not an HDF5 file:", filepath_i]) 
+           continue
+        end
         timestamps = datasets(1:end-3);         % time steps
         x_elements_name = datasets{end-2};      % x elements
         y_elements_name = datasets{end-1};      % y_elements
