@@ -438,7 +438,7 @@ void OpenWQ_readjson::SetConfigInfo(
         (OpenWQ_wqconfig.timetep_out) = std::get<0>(time_tuple);       // Get value
         (OpenWQ_wqconfig.timestep_out_unit) = std::get<1>(time_tuple); // Get units
 
-        // Convert time units to host model units
+        // Convert time units from host model units to seconds (OpenWQ time units)
         OpenWQ_units.Convert_Time_Units(
                 OpenWQ_wqconfig.timetep_out,
                 OpenWQ_wqconfig.timestep_out_unit);
