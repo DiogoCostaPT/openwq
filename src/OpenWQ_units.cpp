@@ -164,6 +164,8 @@ void OpenWQ_units::Convert_Time_Units(
     // Default source/sink loads units = g (openWQ internal units of mass)
     if (time_unit.compare("s") == 0){
         unit_convert_k = 1.0f;
+    }else if (time_unit.compare("m") == 0){
+        unit_convert_k = 60;
     }else if (time_unit.compare("h") == 0){
         unit_convert_k = 3600.0f;
     }else if (time_unit.compare("d") == 0){
