@@ -43,7 +43,6 @@ int OpenWQ_output::writeResults(
     timeinfo = gmtime (&simtime);
     strftime (timechar,30,"%Y%b%d-%H:%M:%S",timeinfo);
     std::string timestr = std::string(timechar);
-    std::cout << timestr << std::endl;
 
     /* ########################################
     // Loop over comparments
