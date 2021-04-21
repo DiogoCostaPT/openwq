@@ -73,7 +73,7 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
         time_all_num = datenum(time_all,'yyyymmmdd-HH:MM:SS');
         
         % then sort results and get indexes for new order
-        [time_all_num,reorderedIndex] = sort(time_num);
+        [time_all_num,reorderedIndex] = sort(time_all_num);
         
         % re-order time and data 
         %time_all = time_all(reorderedIndex);
