@@ -25,10 +25,13 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
 
         filename_i = filenames{i};
         filepath_i = [folderpath,filename_i];
-
+       
+        % update waitbar
+        hbar.iterate(1);
+        
         % Data saved
         try
-            datasets = {h5info(filepath_i).Datasets.Name};
+           datasets = {h5info(filepath_i).Datasets.Name};
         catch
            disp(["ERR: not an HDF5 file:", filepath_i]) 
            continue
@@ -96,10 +99,13 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
         % Add timeseries for timeseries collection    
         output_tscollect{i} = ts;
         
-        % update waitbar
-        hbar.iterate(1);
-
     end
+    
+    % close waitbar
     close(hbar);
+    
+    % remove empty rows in output_tscollect
+    output_tscollect = output_tscollect(~cellfun(@isempty, output_tscollect(:,1)), :);
+
 
 end
