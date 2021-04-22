@@ -8,8 +8,6 @@ function plot_elements(...
     output_tscollect,...
     plotElm_info)
 
-    num_tsnames = numel(tsnames);   % number of timeseries stored
-    
     % Number of variables to plot
     num_var = numel(plotElm_info(:,1));
 
@@ -25,16 +23,37 @@ function plot_elements(...
         figure('Name',tsnames{loc_var})
         
         % Get timeseries for compartment tsnames{loc_var}
-        ts = output_tscollect.(genvarname(tsnames{loc_var}));
+        ts = output_tscollect{loc_var};
         
         % Get instruction for printing
         plot_elem_select = plotElm_info_i{2};
-       % if selected print "all"
+        
+        % num of elements to print
+        num_elem2print = numel(plot_elem_select(:,1));
+        
+        % if selected print "all"
         if strcmp(plot_elem_select,'all')
             ts_select = ts;
         % otherwise
         else
-            ts_select = ts;
+            % initiate ts_select data as a 2D matrix
+            ts_select_data = zeros(...
+                numel(ts.Time),...
+                num_elem2print);
+            
+            % Get elements ts_select_data            
+            for l=1:num_elem2print
+                ts_select_data(:,l) = ts.Data(:,...                   % time
+                    plot_elem_select(l,1),...      % x elements
+                    plot_elem_select(l,2),...      % y elements
+                    plot_elem_select(l,3));        % z elements
+            end
+                        
+            % Build new timeseries with selected elements only
+             ts_select = timeseries(...
+                ts_select_data,...   
+                ts.Time,...
+                'Name',ts.Name);
         end
         
         % Print
