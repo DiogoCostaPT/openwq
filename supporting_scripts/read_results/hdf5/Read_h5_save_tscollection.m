@@ -5,24 +5,23 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function output_tscollect = Read_h5_save_tscollection(folderpath)
 
-    % Create timeseries collection
-    output_tscollect = tscollection();
-
+    
     % Get hdf5 files (one per compartment)
     dinfo = dir(folderpath);
     filenames = {dinfo.name};
     filenames(strcmp(filenames,'.')) = [];
     filenames(strcmp(filenames,'..')) = [];
     
+    % Create timeseries collection
+    output_tscollect = cell(numel(filenames),1);
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % loop over files/compartments
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    % initiate waitbars
-    multiWaitbar( 'Extracting files', 0);
-       
+    hbar = parfor_progressbar(numel(filenames),'Extracting OpenWQ *.h5 outputs...');  %create the progress bar
     % loop
-    for i = 1:numel(filenames)
+    parfor i = 1:numel(filenames)
 
         filename_i = filenames{i};
         filepath_i = [folderpath,filename_i];
@@ -58,8 +57,6 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
             num_y_elements,...      % y-dir
             num_z_elements) * NaN;  % z-dir
         
-        % reset waitbar
-        multiWaitbar( 'Extracting timesteps', 0);
 
         % loop over datasets 
         for tstep = 1:numel(timestamps)
@@ -73,9 +70,6 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
 
             % Data (up to 3D)
             data_all(tstep,:,:,:) = data_i;
-            
-            % update waitbar
-            multiWaitbar( 'Extracting timesteps', tstep/numel(timestamps));
 
         end
         
@@ -100,13 +94,12 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
         ts = timeseries(data_all(:,1),datestr(time_all_num),'Name',ts_name);
 
         % Add timeseries for timeseries collection    
-        output_tscollect = addts(output_tscollect,ts);
+        output_tscollect{i} = ts;
         
         % update waitbar
-        multiWaitbar( 'Extracting files', i/numel(filenames));
+        hbar.iterate(1);
 
     end
-    
-    % close waibars
-    multiWaitbar( 'CloseAll' );
+    close(hbar);
+
 end
