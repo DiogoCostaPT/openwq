@@ -42,8 +42,7 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
            continue
         end
         
-        
-        
+        % Get time samples and model elements
         timestamps = datasets(1:end-3);         % time steps
         x_elements_name = datasets{end-2};      % x elements
         y_elements_name = datasets{end-1};      % y_elements
@@ -102,7 +101,7 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
         ts_name = filename_i(1:end-3);
         
         % Create timeseries
-        ts = timeseries(data_all(:,1),datestr(time_all_num),'Name',ts_name);
+        ts = timeseries(data_all,datestr(time_all_num),'Name',ts_name);
 
         % Add timeseries for timeseries collection    
         output_tscollect{i} = ts;
