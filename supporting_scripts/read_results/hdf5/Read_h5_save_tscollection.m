@@ -29,13 +29,21 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
         % update waitbar
         hbar.iterate(1);
         
-        % Data saved
+        % Check if proper h5 file
+        if ~strcmp(filepath_i(end-2:end),'.h5')
+           continue; 
+        end
+        
+        % Another check if h5 file
         try
            datasets = {h5info(filepath_i).Datasets.Name};
         catch
            disp(["ERR: not an HDF5 file:", filepath_i]) 
            continue
         end
+        
+        
+        
         timestamps = datasets(1:end-3);         % time steps
         x_elements_name = datasets{end-2};      % x elements
         y_elements_name = datasets{end-1};      % y_elements
