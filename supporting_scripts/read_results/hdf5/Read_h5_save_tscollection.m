@@ -75,7 +75,7 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
             data_all(tstep,:,:,:) = data_i;
             
             % update waitbar
-            multiWaitbar( 'Extracting timesteps', tstep/numel(timestamps))
+            multiWaitbar( 'Extracting timesteps', tstep/numel(timestamps));
 
         end
         
@@ -100,10 +100,10 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
         ts = timeseries(data_all(:,1),datestr(time_all_num),'Name',ts_name);
 
         % Add timeseries for timeseries collection    
-        output_tscollect = addts(output_tscollect,ts,ts_name);
+        output_tscollect = addts(output_tscollect,ts);
         
         % update waitbar
-        multiWaitbar( 'Extracting files', i/numel(filenames))
+        multiWaitbar( 'Extracting files', i/numel(filenames));
 
     end
     
