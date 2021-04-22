@@ -13,8 +13,15 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
     filenames = {dinfo.name};
     filenames(strcmp(filenames,'.')) = [];
     filenames(strcmp(filenames,'..')) = [];
-   
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % loop over files/compartments
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    % initiate waitbars
+    multiWaitbar( 'Extracting files', 0);
+       
+    % loop
     for i = 1:numel(filenames)
 
         filename_i = filenames{i};
@@ -50,7 +57,11 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
             num_x_elements,...      % x-dir
             num_y_elements,...      % y-dir
             num_z_elements) * NaN;  % z-dir
+        
+        % reset waitbar
+        multiWaitbar( 'Extracting timesteps', 0);
 
+        % loop over datasets 
         for tstep = 1:numel(timestamps)
 
             % load hdf5 data
@@ -62,6 +73,9 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
 
             % Data (up to 3D)
             data_all(tstep,:,:,:) = data_i;
+            
+            % update waitbar
+            multiWaitbar( 'Extracting timesteps', tstep/numel(timestamps))
 
         end
         
@@ -78,14 +92,21 @@ function output_tscollect = Read_h5_save_tscollection(folderpath)
         % re-order time and data 
         %time_all = time_all(reorderedIndex);
         data_all = data_all(reorderedIndex,:);
-
-        % Create timeseries
-        ts = timetable(datetime(datevec(time_all_num)),data_all(:,1));
-
-        % Add timeseries for timeseries collection 
+        
         % Timeseries name 
         ts_name = filename_i(1:end-3);
+        
+        % Create timeseries
+        ts = timeseries(data_all(:,1),datestr(time_all_num),'Name',ts_name);
+
+        % Add timeseries for timeseries collection    
         output_tscollect = addts(output_tscollect,ts,ts_name);
+        
+        % update waitbar
+        multiWaitbar( 'Extracting files', i/numel(filenames))
 
     end
+    
+    % close waibars
+    multiWaitbar( 'CloseAll' );
 end
