@@ -7,7 +7,7 @@ plot_elemt_flag = true;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Read h5 data and save to timeseries collection
 output_tscollect = Read_h5_save_tscollection(folderpath);
-
+   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Get names of timeseries in tscollection
 tsnames = Get_output_tsnames(output_tscollect);
@@ -16,14 +16,14 @@ tsnames = Get_output_tsnames(output_tscollect);
 % Plot elements
 if plot_elemt_flag
     
-    % element info
+    % get element info
     plotElm_info = {...
         'SOIL_RECHR_NO3','all';...
         'SOIL_RECHR_NO3',[1,1,1;...
                           6,1,1]...
     };
     
-    % plot elements
+    % plot requested data defined in plotElm_info
     plot_elements(...
         tsnames,...
         output_tscollect,...
