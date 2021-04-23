@@ -27,33 +27,75 @@ function plot_elements(...
         
         % Get instruction for printing
         plot_elem_select = plotElm_info_i{2};
-        
-        % num of elements to print
-        num_elem2print = numel(plot_elem_select(:,1));
-        
+                
         % if selected print "all"
         if strcmp(plot_elem_select,'all')
+            
+            % selected ts is the entire ts
             ts_select = ts;
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % Create legend
+            elem_size = size(ts_select.Data(1,:,:,:)); % time + up to 3 dimensions
+            num_elem2print = numel(ts_select.Data(1,:,:,:));
+            legend_labels = cell(num_elem2print,1);
+            
+            % Get number of elements in x, y and z directions
+            size_x = elem_size(2);                              % x-dir
+            try size_y = elem_size(3); catch size_y = 1; end    % y-dir
+            try size_z = elem_size(4); catch size_z = 1; end    % z-dir
+            
+            % Construct
+            iloc = 1;
+            for xi = 1:size_x
+                for yi = 1:size_y
+                    for zi = 1:size_z
+                        
+                      legend_labels{iloc,1} = ['(',...
+                          num2str(xi),',',...
+                          num2str(zi),',',...
+                          num2str(zi),')'];
+                      
+                      iloc = iloc + 1;
+                      
+                    end
+                end
+            end
+            
+            
         % otherwise
         else
+            % num of elements to print
+            num_elem2print = numel(plot_elem_select(:,1));
+        
             % initiate ts_select data as a 2D matrix
             ts_select_data = zeros(...
                 numel(ts.Time),...
                 num_elem2print);
             
+            % initiate legend_info
+            legend_labels = cell(num_elem2print,1);
+            
             % Get elements ts_select_data            
             for l=1:num_elem2print
-                ts_select_data(:,l) = ts.Data(:,...                   % time
-                    plot_elem_select(l,1),...      % x elements
-                    plot_elem_select(l,2),...      % y elements
-                    plot_elem_select(l,3));        % z elements
+                ts_select_data(:,l) = ts.Data(:,...     % time
+                    plot_elem_select(l,1),...           % x elements
+                    plot_elem_select(l,2),...           % y elements
+                    plot_elem_select(l,3));             % z elements
+                
+                % Create legend
+                legend_labels{l,1} = ['(',...
+                          num2str(plot_elem_select(l,1)),',',...
+                          num2str(plot_elem_select(l,2)),',',...
+                          num2str(plot_elem_select(l,3)),')'];
             end
                         
             % Build new timeseries with selected elements only
              ts_select = timeseries(...
                 ts_select_data,...   
                 ts.Time,...
-                'Name',ts.Name);
+                'Name',ts.Name);            
+            
         end
         
         % Print
@@ -64,7 +106,7 @@ function plot_elements(...
         ylabel(ts.Name)
         
         % Prepare legend
-        legend('Location','eastoutside')
+        legend(legend_labels,'Location','eastoutside')
 
     end
     
