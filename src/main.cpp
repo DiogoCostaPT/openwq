@@ -61,6 +61,10 @@ int main(int argc, char* argv[])
     OpenWQ_json OpenWQ_json;                // create OpenWQ_json object
     OpenWQ_wqconfig OpenWQ_wqconfig(11);    // create OpenWQ_wqconfig object
     OpenWQ_units OpenWQ_units;              // functions for unit conversion
+
+    // Get path to master file: openWQ_master.json
+    // this path will depend on the hostmodel
+    OpenWQ_wqconfig.OpenWQ_masterjson.append("bin/openWQ_master.json");
     
     // Read JSON file
     OpenWQ_readjson OpenWQ_readjson; // create object: json files load modules

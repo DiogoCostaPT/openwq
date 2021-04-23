@@ -118,6 +118,9 @@ class OpenWQ_wqconfig
     }
 
     size_t num_coldata;
+
+    // Master file location
+    std::string OpenWQ_masterjson;
     
     // #################################################
     // Chemistry

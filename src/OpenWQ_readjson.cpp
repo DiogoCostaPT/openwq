@@ -32,18 +32,15 @@ void OpenWQ_readjson::read_all(
         // Read JSON files
         ######################## */
 
-        // Local Variables
-        const std::string OpenWQ_masterjson = "bin/openWQ_master.json";
-
         // ########################
         // Master file json
 
         // read
         OpenWQ_readjson::read_JSON_2class(
-            OpenWQ_json.Master, // JSON structure to save to
-            false,              // Save in subfield of JSON structure? only if multiple files (e.g., source and sinks)
-            "",                 // if above true, provide name of subfield
-            OpenWQ_masterjson); // Name of JSON file
+            OpenWQ_json.Master,                 // JSON structure to save to
+            false,                              // Save in subfield of JSON structure? only if multiple files (e.g., source and sinks)
+            "",                                 // if above true, provide name of subfield
+            OpenWQ_wqconfig.OpenWQ_masterjson); // Name of JSON file
 
         // Main confirguration json (read)
         OpenWQ_readjson::read_JSON_2class(
