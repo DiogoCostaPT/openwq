@@ -295,6 +295,13 @@ void OpenWQ_chem::BGC_Transform(
             
             num_transf = transf_index.size(); // number of transformation for this BGC cycle (as identified in BGCexpressions_info)
 
+            // Check if found any valid BBC cycling framework (based on the json BCG)
+            if (num_transf == 0){
+                std::cout << "<OpenWQ> Invalid CYCLING_FRAMEWORK defined for " 
+                << "compartment: " << CompName_icmp
+                << std::endl;
+            }
+            
             /* ########################################
             // Loop over transformations in biogeochemical cycle bgci
             ######################################## */
