@@ -235,6 +235,7 @@ void OpenWQ_chem::Run(
 
     // Turn off printing of exception err message (only print on first step)
     OpenWQ_wqconfig.BGC_Transform_print_errmsg = false;
+    OpenWQ_wqconfig.invalid_bgc_entry_errmsg = false;
 }
 
 /* #################################################
@@ -297,12 +298,12 @@ void OpenWQ_chem::BGC_Transform(
 
             // Check if found any valid BBC cycling framework (based on the json BCG)
             if (num_transf == 0 && OpenWQ_wqconfig.invalid_bgc_entry_errmsg == true){
-                std::cout << "<OpenWQ> Invalid CYCLING_FRAMEWORK defined for " 
-                << "compartment: " << CompName_icmp
+                std::cout << "<OpenWQ> Unkown CYCLING_FRAMEWORK with name '"
+                << BGCcycles_name_icmp
+                << "defined for compartment: " << CompName_icmp
                 << std::endl;
             }
-            OpenWQ_wqconfig.invalid_bgc_entry_errmsg = false; // this is so that the message is only printed once
-            
+                        
             /* ########################################
             // Loop over transformations in biogeochemical cycle bgci
             ######################################## */
