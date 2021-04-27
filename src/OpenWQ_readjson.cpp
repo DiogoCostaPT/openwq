@@ -220,7 +220,7 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                                                 
                                                                         old_jsonkey_layer_4 = x4.key();
 
-                                                                        if (!old_jsonkey_layer_3.empty()){ // if not null
+                                                                        if (!old_jsonkey_layer_4.empty()){ // if not null
                                                                                 OpenWQ_readjson::change_JSON_key_to_upper_case(
                                                                                         jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3], 
                                                                                         old_jsonkey_layer_4,
