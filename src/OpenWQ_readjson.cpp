@@ -149,11 +149,13 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
         std::string old_jsonkey_layer_2;
         std::string old_jsonkey_layer_3;
         std::string old_jsonkey_layer_4;
+        std::string old_jsonkey_layer_5;
 
         std::string new_jsonkey_layer_1;
         std::string new_jsonkey_layer_2;
         std::string new_jsonkey_layer_3;
         std::string new_jsonkey_layer_4;
+        std::string new_jsonkey_layer_5;
         
         // ########################################
         // Identify all keys in JSON tree data and replace ny upper case keys
@@ -182,7 +184,9 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                        
                                         old_jsonkey_layer_2 = x2.key();
 
-                                        if (!old_jsonkey_layer_2.empty()){ // if not null
+                                        if (!old_jsonkey_layer_2.empty()&& // if not null
+                                                jsondata[new_jsonkey_layer_1].type() != json::value_t::array){ // and not array
+                                                
                                                 OpenWQ_readjson::change_JSON_key_to_upper_case(
                                                         jsondata[new_jsonkey_layer_1], 
                                                         old_jsonkey_layer_2,
@@ -201,7 +205,9 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                                 
                                                         old_jsonkey_layer_3 = x3.key();
 
-                                                        if (!old_jsonkey_layer_3.empty()){ // if not null
+                                                        if (!old_jsonkey_layer_3.empty()&& // if not null
+                                                                jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2].type() != json::value_t::array){ // and not array
+                                                                
                                                                 OpenWQ_readjson::change_JSON_key_to_upper_case(
                                                                         jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2], 
                                                                         old_jsonkey_layer_3,
@@ -220,7 +226,9 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                                                 
                                                                         old_jsonkey_layer_4 = x4.key();
 
-                                                                        if (!old_jsonkey_layer_4.empty()){ // if not null
+                                                                        if (!old_jsonkey_layer_4.empty() && // if not null
+                                                                                jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3].type() != json::value_t::array){ // and not array
+                                                                                
                                                                                 OpenWQ_readjson::change_JSON_key_to_upper_case(
                                                                                         jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3], 
                                                                                         old_jsonkey_layer_4,
@@ -230,7 +238,31 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                                                                 jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2],
                                                                                 new_jsonkey_layer_3);
                                                                         continue;
-                                                                        }                                      
+                                                                        }   
+
+                                                                        // -------------> Fourth possible layer of keys
+                                                                        for (auto& x5 : jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3][new_jsonkey_layer_4].items()){
+                                                                
+                                                                                try{
+                                                                                
+                                                                                        old_jsonkey_layer_5 = x5.key();
+
+                                                                                        if (!old_jsonkey_layer_5.empty() && // if not null
+                                                                                                jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3][new_jsonkey_layer_4].type() != json::value_t::array){ // and not array
+                                                                                                
+                                                                                                OpenWQ_readjson::change_JSON_key_to_upper_case(
+                                                                                                        jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3][new_jsonkey_layer_4], 
+                                                                                                        old_jsonkey_layer_5,
+                                                                                                        new_jsonkey_layer_5);
+                                                                                        }else{
+                                                                                                OpenWQ_readjson::change_JSON_value_to_upper_case(
+                                                                                                jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3],
+                                                                                                new_jsonkey_layer_4);
+                                                                                        continue;
+                                                                                        }
+
+                                                                                }catch (...){}
+                                                                        }                                   
                                                                         
                                                                 }catch (...){}
                                                         }
@@ -260,9 +292,6 @@ void OpenWQ_readjson::change_JSON_key_to_upper_case(
         std::string& new_key)
 {
 
-        if (object.type() == json::value_t::array)
-                return;
-
         try{
                 OpenWQ_readjson::ConvertStringToUpperCase(
                         old_key,
@@ -284,12 +313,11 @@ void OpenWQ_readjson::change_JSON_key_to_upper_case(
 void OpenWQ_readjson::change_JSON_value_to_upper_case(
         json &object,
         std::string new_jsonkey_layer_1){
+        
+        // Local variables
+        long num_vals;
+        bool array_flag = false;
 
-        std::string old_value;
-        std::string new_value;
-
-        //if (object.type() != json::value_t::string)
-        //        return;
 
         // Vector of words to keep with native upper/lower case provided by user
         std::vector<std::string> exclude_vales;
@@ -305,19 +333,77 @@ void OpenWQ_readjson::change_JSON_value_to_upper_case(
                 }
         }
 
-        // if NOT FILEPATH or FOLDERPATH, change string to Upper Case
-        try{
-                old_value = object[new_jsonkey_layer_1];
+        // check if object is an array
+        if(object[new_jsonkey_layer_1].type() == json::value_t::array)
+                array_flag = true;        
+        
+        // ########################################
+        // Replace elements by upper case version
+        // ########################################
+
+        // if string (not array or tuple) - most of the cases
+        if (array_flag != true){ // check if value is array
+
+                 // Local variables
                 
+                std::string new_value;
+                std::string old_value;
+
+                num_vals = 1;
+                old_value = object[new_jsonkey_layer_1];
+   
                 OpenWQ_readjson::ConvertStringToUpperCase(
                         old_value,
-                        new_value);
+                        new_value);    
 
-                object[new_jsonkey_layer_1].swap(new_value);
+                // replace value
+                object[new_jsonkey_layer_1].swap(new_value);         
 
-        }catch(const std::exception &e){}
+        // If value is an array or tuple 
+        // (loop over the array elements to replace lower case string to upper case strings
+        }else{
+  
+                // initiate json arrays and get existing one 
+                json::array_t old_value_array = object[new_jsonkey_layer_1];
+                json::array_t new_value_array;
+                
+                // size of array
+                num_vals = old_value_array.size();
 
+                // Loop over number of values
+                // if NOT FILEPATH or FOLDERPATH, change string to Upper Case
+                for (unsigned int i=0;i<num_vals;i++){
+                        
+                        // Get element in array/tuple
+                        auto old_value = old_value_array.at(i);
+                        
+                        // if string
+                        try{         
+                                std::string new_value_str;
+
+                                // Convert to upper case
+                                OpenWQ_readjson::ConvertStringToUpperCase(
+                                        old_value,
+                                        new_value_str);
+
+                                // add string to new_value_array
+                                new_value_array.push_back(new_value_str);
+
+                        // if num
+                        }catch(...){
+                                double new_value_num = old_value;
+                                
+                                // add num to new_value_array
+                                new_value_array.push_back(new_value_num);
+                        }
         
+                }                        
+
+                // replace value
+                object[new_jsonkey_layer_1].swap(new_value_array); 
+
+        }
+
 }
 
 // ########################################
