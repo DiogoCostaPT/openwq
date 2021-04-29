@@ -19,7 +19,7 @@ import numpy as np
 
 ###########################################
 # JBGC JSON file name (define full path)
-bgc_jsonfile = '/media/dcosta/data/megasync/ec_main/models/openwq/code/internally_coupled/supporting_scripts/graphml_to_json/BGC_cycling_Database/CRHM_soilNandP_cycle.json'
+bgc_jsonfile = '/media/dcosta/data/megasync/ec_main/models/openwq/code/internally_coupled/supporting_scripts/Generate_BGC_JSON_from_graphml/BGC_cycling_Database/CRHM_soilNandP_cycle.json'
 new_configfile_name = 'examples/OpenWQ_config.json'
 
 ###########################################
