@@ -114,13 +114,18 @@ function plot_elements(...
             
         end
         
+        % Express time relative to the start date.
+        ts_select.Time = ts.Time;
+        ts_select.TimeInfo = ts.TimeInfo;
+        
         % Print
         plot(ts_select,'-o')
         
         % Grind and labels
         grid on
         ylabel(ts.Name)
-        
+        datetick('x','keepticks','keeplimits')
+          
         % Prepare legend
         legend(legend_labels,'Location','eastoutside')
 
