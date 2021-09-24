@@ -16,36 +16,42 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% EXAMPLES OF INPUT ARGUMENTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{ 
+ 
+    folderpath = '/media/dcosta/data/megasync/ec_main/models/crhm/code_crhm/build/Case_Studies/stc_openwq/Output_OpenWQ/HDF5/';
+
+    plot_elemt_flag = true;
+
+    plotElm_info = {...
+        'SOIL_RECHR_LABILEP','all';...
+        'SOIL_RECHR_REFRACTORYP',[1,1,1;...
+                          6,1,1]...
+        };
+
+%}
+
+%% FUNCTION
 % Read and plot HDF5 output data
 
 function [tsnames,output_tscollect] = main_hdf5(...
     folderpath,...      % Provide fullpath to directory where the HDF5 files are located
     plot_elemt_flag,... % Flag to specify if to plot variables
-    plotElm_info...    % If the flag above is 1, then provide details about the variables to plot
+    extractElm_info...  % If the flag above is 1, then provide details about the variables to plot
     )
 
-    %{ 
-        Examples of input arguments
-    
-        folderpath = '/media/dcosta/data/megasync/ec_main/models/crhm/code_crhm/build/Case_Studies/stc_openwq/Output_OpenWQ/HDF5/';
-
-        plot_elemt_flag = true;
-    
-        plotElm_info = {...
-            'SOIL_RECHR_LABILEP','all';...
-            'SOIL_RECHR_REFRACTORYP',[1,1,1;...
-                              6,1,1]...
-            };
-    
-        %}
-
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Read h5 data and save to timeseries collection
-    output_tscollect = Read_h5_save_tscollection(folderpath);
+    % Read selected h5 data and save to timeseries collection
+    [output_tscollect] = Read_h5_save_tscollection(...
+        folderpath,...
+        extractElm_info);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Get names of timeseries in tscollection
-    tsnames = Get_output_tsnames(output_tscollect);
+    tsnames = Get_output_tsnames(...
+        output_tscollect);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot elements
@@ -55,11 +61,10 @@ function [tsnames,output_tscollect] = main_hdf5(...
         plot_elements(...
             tsnames,...
             output_tscollect,...
-            plotElm_info)
+            extractElm_info);
 
     end
-
-
+    
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Read timeseries names

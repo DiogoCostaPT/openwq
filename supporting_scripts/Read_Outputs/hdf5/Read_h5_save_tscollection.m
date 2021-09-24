@@ -18,27 +18,62 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Read HDF5 data and save to timeseries collection
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function output_tscollect = Read_h5_save_tscollection(folderpath)
+function [output_tscollect] = Read_h5_save_tscollection(...
+    folderpath,...
+    extractElm_info)
 
     
-    % Get hdf5 files (one per compartment)
+    % Get hdf5 files in directory folderpath
     dinfo = dir(folderpath);
     filenames = {dinfo.name};
     filenames(strcmp(filenames,'.')) = [];
     filenames(strcmp(filenames,'..')) = [];
     
-    % Create timeseries collection
-    output_tscollect = cell(numel(filenames),1);
+    % Determine number of hdf5 files to examine
+    num_info2print = numel(extractElm_info(:,1));
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % loop over files/compartments
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    hbar = parfor_progressbar(numel(filenames),'Extracting OpenWQ *.h5 outputs...');  %create the progress bar
-    % loop
-    parfor i = 1:numel(filenames)
+   
+    loc_valid_info2print = [];
+    for i = 1:num_info2print
+        
+       
+        % Get plot infor for each element selected
+        extractElm_info_i = extractElm_info(i,:);
 
-        filename_i = filenames{i};
+        % Find location of compartment/chemical in tsnames
+        loc_file_i = find(contains(filenames,upper(extractElm_info_i{1})) == 1);
+        
+        % If cannot find a extractElm_info_i{1}, then through a warning message   
+        if ~isempty(loc_file_i)
+            
+            loc_valid_info2print = [loc_valid_info2print, loc_file_i];
+            
+        else
+            
+            % Display warning messagea; requestd file could not be found
+            disp(['<main_hdf5> Warning: could not find "',extractElm_info_i{1},'.h5 file. Request skipped.'])
+
+        end
+        
+    end
+    
+    % Number of valid info2print requests
+    num_valid_info2print = numel(loc_valid_info2print);
+    
+    % Create timeseries collection (with only valid info2print entries
+    output_tscollect = cell(num_valid_info2print,1);
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % loop over files/compartments selected
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    hbar = parfor_progressbar(...
+        num_valid_info2print,...
+        ['Extracting data from OpenWQ *.h5 files: ',num2str(num_valid_info2print),' file(s)']);  %create the progress bar
+
+    parfor i = 1:num_valid_info2print
+
+        filename_i = filenames{loc_valid_info2print(i)};
         filepath_i = [folderpath,filename_i];
        
         % update waitbar
