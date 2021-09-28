@@ -44,14 +44,9 @@ function [tsnames,output_tscollect] = main_hdf5(...
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Read selected h5 data and save to timeseries collection
-    [output_tscollect] = Read_h5_save_tscollection(...
+    [tsnames,output_tscollect] = Read_h5_save_tscollection(...
         folderpath,...
         extractElm_info);
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Get names of timeseries in tscollection
-    tsnames = Get_output_tsnames(...
-        output_tscollect);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot elements
@@ -62,30 +57,6 @@ function [tsnames,output_tscollect] = main_hdf5(...
             tsnames,...
             output_tscollect,...
             extractElm_info);
-
-    end
-    
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Read timeseries names
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    function stsnames = Get_output_tsnames(output_tscollect)
-
-        % get number of timeseries
-        num_ts = numel(output_tscollect);
-
-        % initiate stsnames cell
-        stsnames = cell(num_ts,1);
-
-        for i = 1:num_ts
-
-            % Get ts i
-            ts = output_tscollect{i};
-
-            % Save name of ts i
-            stsnames{i} = ts.Name;
-
-        end
 
     end
 

@@ -18,21 +18,22 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Read HDF5 data and save to timeseries collection
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [output_tscollect] = Read_h5_save_tscollection(...
+
+function [stsnames,output_tscollect] = Read_h5_save_tscollection(...
     folderpath,...
     extractElm_info)
 
     
     % Get hdf5 files in directory folderpath
     dinfo = dir(folderpath);
-    filenames = {dinfo.name};
+    filenames = {dinfo.name}';
     filenames(strcmp(filenames,'.')) = [];
     filenames(strcmp(filenames,'..')) = [];
     
     % Determine number of hdf5 files to examine
     num_info2print = numel(extractElm_info(:,1));
     
-   
+    % Loop over the info2print
     loc_valid_info2print = [];
     for i = 1:num_info2print
         
@@ -60,6 +61,9 @@ function [output_tscollect] = Read_h5_save_tscollection(...
     % Number of valid info2print requests
     num_valid_info2print = numel(loc_valid_info2print);
     
+    % Create stsnames cell
+    stsnames = cell(num_valid_info2print,1);
+        
     % Create timeseries collection (with only valid info2print entries
     output_tscollect = cell(num_valid_info2print,1);
     
@@ -71,7 +75,7 @@ function [output_tscollect] = Read_h5_save_tscollection(...
         num_valid_info2print,...
         ['Extracting data from OpenWQ *.h5 files: ',num2str(num_valid_info2print),' file(s)']);  %create the progress bar
 
-    parfor i = 1:num_valid_info2print
+    for i = 1:num_valid_info2print
 
         filename_i = filenames{loc_valid_info2print(i)};
         filepath_i = [folderpath,filename_i];
@@ -145,16 +149,21 @@ function [output_tscollect] = Read_h5_save_tscollection(...
         
         % re-order time and data 
         %time_all = time_all(reorderedIndex);
-        data_all = data_all(reorderedIndex,:);
+        data_all = data_all(reorderedIndex,:,:,:);
         
         % Timeseries name 
         ts_name = filename_i(1:end-3);
         
-        % Create timeseries
-        ts = timeseries(data_all,datestr(time_all_num),'Name',ts_name);
-
+        % Get names of timeseries in tscollection
+        stsnames{i} = ts_name;
+        
+        % Create TimeTable
+        ttdata = timetable(...
+            datetime(datevec(time_all_num)),... % Time
+            data_all);                          % Data
+        
         % Add timeseries for timeseries collection    
-        output_tscollect{i} = ts;
+        output_tscollect{i} = ttdata;
         
     end
     

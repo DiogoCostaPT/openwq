@@ -93,7 +93,7 @@ function plot_elements(...
 
             % Get elements ts_select_data            
             for l=1:num_elem2print
-                ts_select_data(:,l) = ts.Data(:,...     % time
+                ts_select_data(:,l) = ts.data_all(:,... % time
                     plot_elem_select(l,1),...           % x elements
                     plot_elem_select(l,2),...           % y elements
                     plot_elem_select(l,3));             % z elements
@@ -105,11 +105,10 @@ function plot_elements(...
                           num2str(plot_elem_select(l,3)),')'];
             end
 
-            % Build new timeseries with selected elements only
-             ts_select = timeseries(...
-                ts_select_data,...   
+            % Build new timetable with selected elements only
+             ts_select = timetable(...
                 ts.Time,...
-                'Name',ts.Name);            
+                ts_select_data);           
 
         end
 
@@ -118,11 +117,11 @@ function plot_elements(...
         ts_select.TimeInfo = ts.TimeInfo;
 
         % Print
-        plot(ts_select,'-o')
+        plot(ts_select.Time,ts_select.Var1,'-o')
 
         % Grind and labels
         grid on
-        ylabel(ts.Name)
+        ylabel(tsnames{i})
         datetick('x','keepticks','keeplimits')
 
         % Prepare legend
