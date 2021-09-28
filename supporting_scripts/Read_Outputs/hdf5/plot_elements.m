@@ -112,10 +112,6 @@ function plot_elements(...
 
         end
 
-        % Express time relative to the start date.
-        ts_select.Time = ts.Time;
-        ts_select.TimeInfo = ts.TimeInfo;
-
         % Print
         plot(ts_select.Time,ts_select.Var1,'-o')
 
