@@ -19,107 +19,151 @@
 % Read HDF5 data and save to timeseries collection
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [stsnames,output_tscollect] = Read_h5_save_tscollection(...
+function output_tscollect = Read_h5_save_tscollection(...
     folderpath,...
     extractElm_info)
 
     
-    % Get hdf5 files in directory folderpath
+    % Get hdf5 files in HDF5 directory
     dinfo = dir(folderpath);
     filenames = {dinfo.name}';
     filenames(strcmp(filenames,'.')) = [];
     filenames(strcmp(filenames,'..')) = [];
     
-    % Determine number of hdf5 files to examine
+    % Determine number of hdf5 files available
     num_info2print = numel(extractElm_info(:,1));
     
-    % Loop over the info2print
+    
+    %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Loop over the requested data provided in info2print
+    % Check if all entries are valid and eliminate those that aren't
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     loc_valid_info2print = [];
     for i = 1:num_info2print
         
        
-        % Get plot infor for each element selected
+        % Get plot info for each data requested
         extractElm_info_i = extractElm_info(i,:);
 
-        % Find location of compartment/chemical in tsnames
+        % Check if extractElm_info_i requested exist in existing HDF5 files
+        temp = extractElm_info_i{1};
+        temp(isspace(temp)) = []; % remove all spaces
+        extractElm_info_i{1} = temp;
+        extractElm_info{i,1} = temp;
         loc_file_i = find(contains(filenames,upper(extractElm_info_i{1})) == 1);
         
-        % If cannot find a extractElm_info_i{1}, then through a warning message   
+        
+        % If cannot find cannot find apropriate HDF5 file,
+        % then through a warning message and skip the requested data
         if ~isempty(loc_file_i)
             
-            loc_valid_info2print = [loc_valid_info2print, loc_file_i];
+            loc_valid_info2print = [loc_valid_info2print; loc_file_i];
             
         else
             
+            % Add in error_INVALID marker
+            loc_valid_info2print = [loc_valid_info2print; -99999];
+             
             % Display warning messagea; requestd file could not be found
-            disp(['<main_hdf5> Warning: could not find "',extractElm_info_i{1},'.h5 file. Request skipped.'])
+            disp(['<Read_h5_save_tscollection> Warning: could not find "',...
+                extractElm_info_i{1},...
+                '.h5 file. Request skipped.'])
 
         end
         
     end
     
-    % Number of valid info2print requests
-    num_valid_info2print = numel(loc_valid_info2print);
+    % Get valid and requested data locations in iloc_valid
+    iloc_valid = find(loc_valid_info2print ~= -99999);
     
-    % Create stsnames cell
+    % Get filenames needed for valid entries
+    extractElm_info_valid = extractElm_info(iloc_valid,:);
+    
+    % Number of valid info2print requests
+    num_valid_info2print = numel(iloc_valid);
+    
+    % Create stsnames cell for valid entries
     stsnames = cell(num_valid_info2print,1);
         
     % Create timeseries collection (with only valid info2print entries
-    output_tscollect = cell(num_valid_info2print,1);
+    output_tscollect = cell(num_valid_info2print,3);
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % loop over files/compartments selected
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
+     %create the progress bar
     hbar = parfor_progressbar(...
         num_valid_info2print,...
-        ['Extracting data from OpenWQ *.h5 files: ',num2str(num_valid_info2print),' file(s)']);  %create the progress bar
+        ['Extracting requested data from OpenWQ *.h5 files: ',num2str(num_valid_info2print),' file(s)']);
 
-    for i = 1:num_valid_info2print
+    parfor i = 1:num_valid_info2print
 
-        filename_i = filenames{loc_valid_info2print(i)};
-        filepath_i = [folderpath,filename_i];
+        filename_i = extractElm_info_valid{i,1};
+        filepath_i = [folderpath,filename_i,'.h5'];
        
         % update waitbar
         hbar.iterate(1);
         
-        % Check if proper h5 file
-        if ~strcmp(filepath_i(end-2:end),'.h5')
-           continue; 
-        end
-        
         % Another check if h5 file
         try
-           datasets = {h5info(filepath_i).Datasets.Name};
+           datasets = {h5info(filepath_i).Datasets.Name}';
         catch
-           disp(["ERR: not an HDF5 file:", filepath_i]) 
+           disp(['<main_hdf5> Warning: Could not find file ', filename_i,'.h5']) 
            continue
         end
         
         % Get time samples and model elements
-        timestamps = datasets(1:end-3);         % time steps
-        x_elements_name = datasets{end-2};      % x elements
-        y_elements_name = datasets{end-1};      % y_elements
-        z_elements_name = datasets{end};        % z elements
+        timestamps = datasets(1:end-1);         % time steps
+        xyz_elements_name = datasets{end};        % z elements
 
         % x, y, z elements
-        x_elements = h5read(filepath_i,['/',x_elements_name]);
-        y_elements = h5read(filepath_i,['/',y_elements_name]);
-        z_elements = h5read(filepath_i,['/',z_elements_name]);
+        xyz_elements_source = h5read(filepath_i,['/',xyz_elements_name]);
+        xyz_elements_source = xyz_elements_source + 1; % add 1 to go from c++ to matlab index conventions
 
-        % number of elements x, y and z
-        num_x_elements = numel(x_elements);
-        num_y_elements = numel(y_elements);
-        num_z_elements = numel(z_elements);
+        % Skip if source does not have data
+        if isempty(xyz_elements_source)
+           continue; 
+        end
+        
+        % number of cell elements available in file
+        num_xyx_elements = numel(xyz_elements_source(:,1));
 
+        % cells requested
+        xyz_elements_requested = extractElm_info_valid{i,2};
+        
+        % Look for cells to print
+        icell_request_all = [];
+        xyz_elements_requested_validated = [];
+        
+        for l = 1:numel(xyz_elements_requested(:,1))
+            
+            icell_request_i = find(sum([...
+                                xyz_elements_source(:,1) == xyz_elements_requested(l,1),...
+                                xyz_elements_source(:,2) == xyz_elements_requested(l,2),...
+                                xyz_elements_source(:,3) == xyz_elements_requested(l,3)],...
+                                2) == 3); 
+                                
+            % add location if found
+            icell_request_all = [icell_request_all,icell_request_i];
+            
+            % Get validated xyz_elements_requested
+            xyz_elements_requested_validated = [xyz_elements_requested_validated;...
+                                                xyz_elements_requested(l,:)];
+            
+        end
+        
+        % Validate the number of cells to print
+        num_xyx_elements_validated = numel(xyz_elements_requested_validated(:,1));
+        
         % Re-organize all the data (loop over time)
         num_timestaps = numel(timestamps);
         time_all = cell(num_timestaps,1); % as data-time string
         data_all = zeros(...
-            num_timestaps,...       % time
-            num_x_elements,...      % x-dir
-            num_y_elements,...      % y-dir
-            num_z_elements) * NaN;  % z-dir
+            num_timestaps,...           % time
+            num_xyx_elements_validated) * NaN;    % number of cell elements available
         
 
         % loop over datasets 
@@ -133,7 +177,8 @@ function [stsnames,output_tscollect] = Read_h5_save_tscollection(...
             time_all(tstep) = time_i;  
 
             % Data (up to 3D)
-            data_all(tstep,:,:,:) = data_i;
+            data_all(tstep,:,:) =...
+                data_i(:,icell_request_all);
 
         end
         
@@ -149,21 +194,19 @@ function [stsnames,output_tscollect] = Read_h5_save_tscollection(...
         
         % re-order time and data 
         %time_all = time_all(reorderedIndex);
-        data_all = data_all(reorderedIndex,:,:,:);
+        data_save_final = data_all(reorderedIndex,:,:,:);
         
-        % Timeseries name 
-        ts_name = filename_i(1:end-3);
-        
-        % Get names of timeseries in tscollection
-        stsnames{i} = ts_name;
         
         % Create TimeTable
         ttdata = timetable(...
             datetime(datevec(time_all_num)),... % Time
-            data_all);                          % Data
+            data_save_final...                        % Data
+            );
         
-        % Add timeseries for timeseries collection    
-        output_tscollect{i} = ttdata;
+        % Add timeseries for timeseries collection  
+        output_tscollect(i,:) = {filename_i,...
+                                    ttdata,...
+                                    xyz_elements_requested_validated};
         
     end
     
