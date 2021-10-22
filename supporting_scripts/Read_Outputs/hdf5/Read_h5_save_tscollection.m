@@ -48,10 +48,12 @@ function output_tscollect = Read_h5_save_tscollection(...
 
         % Check if extractElm_info_i requested exist in existing HDF5 files
         temp = extractElm_info_i{1};
-        temp(isspace(temp)) = []; % remove all spaces
+        temp(isspace(temp)) = [];       % remove all spaces
+        temp = upper(temp);             % upper case
+        temp = strrep(temp,'/','|');    % *.h5 cannot have "/", so replaced by "|" 
         extractElm_info_i{1} = temp;
         extractElm_info{i,1} = temp;
-        loc_file_i = find(contains(filenames,upper(extractElm_info_i{1})) == 1);
+        loc_file_i = find(contains(filenames,extractElm_info_i{1}) == 1);
         
         
         % If cannot find cannot find apropriate HDF5 file,
@@ -83,8 +85,6 @@ function output_tscollect = Read_h5_save_tscollection(...
     % Number of valid info2print requests
     num_valid_info2print = numel(iloc_valid);
     
-    % Create stsnames cell for valid entries
-    stsnames = cell(num_valid_info2print,1);
         
     % Create timeseries collection (with only valid info2print entries
     output_tscollect = cell(num_valid_info2print,3);
@@ -121,7 +121,6 @@ function output_tscollect = Read_h5_save_tscollection(...
 
         % x, y, z elements
         xyz_elements_source = h5read(filepath_i,['/',xyz_elements_name]);
-        xyz_elements_source = xyz_elements_source + 1; % add 1 to go from c++ to matlab index conventions
 
         % Skip if source does not have data
         if isempty(xyz_elements_source)

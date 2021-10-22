@@ -58,6 +58,7 @@ function output_tscollect = Read_csv_save_tscollection(...
         chem_name = strtrim(...
             extractAfter(upper(extractElm_info_i{1}),'@'));
         
+        
         % If cannot identify compartment name, through a warning message   
         if ~isempty(cmpot_name) && ~isempty(chem_name)
             
@@ -223,6 +224,14 @@ function output_tscollect = Read_csv_save_tscollection(...
                 
                 % Get chem name i
                 chem_name_i = chem_cells_request{c,1};
+                
+                % Remove spaces
+                chem_name_i(isspace(chem_name_i)) = [];
+                
+                % Replace # and / by "_" because matlab 
+                % does not recognize these symbols
+                chem_name_i = strrep(chem_name_i,'#','_');
+                chem_name_i = strrep(chem_name_i,'/','_');
                                
                 % Get data in file for chem chem_name_i
                 chem_data_i = datacsv_i.(genvarname(chem_name_i));

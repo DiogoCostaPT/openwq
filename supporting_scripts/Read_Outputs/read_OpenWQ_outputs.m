@@ -46,6 +46,7 @@ function output_openwq_tscollect = read_OpenWQ_outputs(...
     
     % Get fullpath to outputs
     fullpath_outputs = [folderpath,OpenWQ_output_format,'/'];
+    
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Read selected h5 data and save to timeseries collection
