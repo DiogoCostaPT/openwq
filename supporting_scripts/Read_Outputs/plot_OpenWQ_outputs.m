@@ -20,57 +20,98 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function plot_OpenWQ_outputs(...
-    plot_OpenWQ_outputs)
+    plot_OpenWQ_outputs_all)
 
+    
     % Number of variables to plot (only valid entries)
-    num_var = numel(plot_OpenWQ_outputs(:,1));
+    % Get this from any file
+    plot_OpenWQ_outputs_ref = plot_OpenWQ_outputs_all{1,2};
+    num_var = numel(plot_OpenWQ_outputs_ref(:,1));
+    
+    % Number of results to plot for each variabls
+    % Includes derivatives if debug mode is on
+    num_res2plot = numel(plot_OpenWQ_outputs_all(:,1));
 
+    % Loop over the number of variables
     for i = 1:num_var
-        
+
         % Get plot infor for each element selected
-        tsnames_i = plot_OpenWQ_outputs{i,1};      
-                
+        tsnames_i = plot_OpenWQ_outputs_ref{i,1};
+        
+        % Remove info about type of output
+        tsnames_i = extractBefore(tsnames_i,'-');
+
         % Initiate figure with respective name
-        figure('Name',tsnames_i);
-
-        % Get timeseries for compartment tsnames{loc_var}
-        ts = plot_OpenWQ_outputs{i,2};
-
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Create legend      
+        figure('Name',tsnames_i);% Num of results to plot (if debug mode on, then derivatives will be printed
         
-        % Get info for legend
-        cells2print = plot_OpenWQ_outputs{i,3};
-        num_elem2print = numel(ts.data_save_final(1,:));
-        legend_labels = cell(num_elem2print,1);
+        % Initiate legend for all output-variable combinations
+        legend_labels_all = {};
+        
+        
+        % Loop over outputs (if debug mode is on, derivatives will be
+        % printed)
+        for m = 1:num_res2plot
 
-        % Construct legend string
-        for l = 1:num_elem2print
+            plot_OpenWQ_outputs_name = plot_OpenWQ_outputs_all{m,1};
+            plot_OpenWQ_outputs = plot_OpenWQ_outputs_all{m,2};
+    
+            % Get timeseries for compartment tsnames{loc_var}
+            ts = plot_OpenWQ_outputs{i,2};
+            
+            % Appending string with type of output (main or derivatives)
+            output_mode = ['(',plot_OpenWQ_outputs_name,')'];
 
-                  legend_labels{l,1} = ['(',...
-                      num2str(cells2print(l,1)),',',...
-                      num2str(cells2print(l,2)),',',...
-                      num2str(cells2print(l,3)),')'];
+       
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % Create legend      
 
+            % Get info for legend
+            cells2print = plot_OpenWQ_outputs{i,3};
+            num_elem2print = numel(ts.data_save_final(1,:));
+            legend_labels = cell(num_elem2print,1);
+
+            % Construct legend string
+            for l = 1:num_elem2print
+
+                      legend_labels{l,1} = ['(',...
+                          num2str(cells2print(l,1)),',',...
+                          num2str(cells2print(l,2)),',',...
+                          num2str(cells2print(l,3)),')'];
+
+            end
+            
+            % Append info about output type
+            legend_labels = strcat(legend_labels,output_mode);
+
+            % Replace -9999 values by NaN for ommission
+            ts.data_save_final(ts.data_save_final == -9999.0) = NaN;
+
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            % Print results
+            hold on
+            plot(ts.Time,ts.data_save_final,'-o')
+           
+            % Add this legend to the global one
+            legend_labels_all = [legend_labels_all;legend_labels];
+            
         end
-
-        
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Print results
-        plot(ts.Time,ts.data_save_final,'-o')
 
         % Grind and labels
         grid on
         ylabel(tsnames_i,...
             'Interpreter', 'none')
-        
+
         datetick('x','keepticks','keeplimits')
 
         % Prepare legend
-        legend(legend_labels,...
+        legend(legend_labels_all,...
             'Location','eastoutside',...
             'Interpreter', 'none')
-        
+
+        % Title
+        title(tsnames_i)
+
     end
+
    
 end
