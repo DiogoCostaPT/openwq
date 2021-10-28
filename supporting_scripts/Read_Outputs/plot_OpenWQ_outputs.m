@@ -44,13 +44,16 @@ function plot_OpenWQ_outputs(...
         % Initiate figure with respective name
         figure('Name',tsnames_i);% Num of results to plot (if debug mode on, then derivatives will be printed
         
-        % Initiate legend for all output-variable combinations
-        legend_labels_all = {};
         
+        % Determine number of subplots (5 in debug mode)
+        xnum_subplots = ceil(num_res2plot^0.5);
+        ynum_subplots = ceil(num_res2plot/xnum_subplots);
         
         % Loop over outputs (if debug mode is on, derivatives will be
         % printed)
         for m = 1:num_res2plot
+            
+            subplot(xnum_subplots,ynum_subplots,m)
 
             plot_OpenWQ_outputs_name = plot_OpenWQ_outputs_all{m,1};
             plot_OpenWQ_outputs = plot_OpenWQ_outputs_all{m,2};
@@ -60,7 +63,7 @@ function plot_OpenWQ_outputs(...
             
             % Appending string with type of output (main or derivatives)
             output_mode = ['(',plot_OpenWQ_outputs_name,')'];
-
+            
        
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % Create legend      
@@ -73,15 +76,12 @@ function plot_OpenWQ_outputs(...
             % Construct legend string
             for l = 1:num_elem2print
 
-                      legend_labels{l,1} = ['(',...
-                          num2str(cells2print(l,1)),',',...
-                          num2str(cells2print(l,2)),',',...
-                          num2str(cells2print(l,3)),')'];
+            legend_labels{l,1} = ['(',...
+                num2str(cells2print(l,1)),',',...
+                num2str(cells2print(l,2)),',',...
+                num2str(cells2print(l,3)),')'];
 
             end
-            
-            % Append info about output type
-            legend_labels = strcat(legend_labels,output_mode);
 
             % Replace -9999 values by NaN for ommission
             ts.data_save_final(ts.data_save_final == -9999.0) = NaN;
@@ -90,26 +90,24 @@ function plot_OpenWQ_outputs(...
             % Print results
             hold on
             plot(ts.Time,ts.data_save_final,'-o')
-           
-            % Add this legend to the global one
-            legend_labels_all = [legend_labels_all;legend_labels];
-            
+                     
+
+            % Grind and labels
+            grid on
+            ylabel(tsnames_i,...
+                'Interpreter', 'none')
+
+            datetick('x','keepticks','keeplimits')
+
+            % Prepare legend
+            legend(legend_labels,...
+                'Location','eastoutside',...
+                'Interpreter', 'none')
+
+            % Title
+            title(output_mode)
+        
         end
-
-        % Grind and labels
-        grid on
-        ylabel(tsnames_i,...
-            'Interpreter', 'none')
-
-        datetick('x','keepticks','keeplimits')
-
-        % Prepare legend
-        legend(legend_labels_all,...
-            'Location','eastoutside',...
-            'Interpreter', 'none')
-
-        % Title
-        title(tsnames_i)
 
     end
 
