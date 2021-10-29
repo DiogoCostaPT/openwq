@@ -61,6 +61,13 @@ function plot_OpenWQ_outputs(...
             % Get timeseries for compartment tsnames{loc_var}
             ts = plot_OpenWQ_outputs{i,2};
             
+            % Get min and max time
+            % Just need to get from -main
+            if m == 1
+                minTime = min(ts.Time)
+                maxTime = max(ts.Time);
+            end
+            
             % Appending string with type of output (main or derivatives)
             output_mode = ['(',plot_OpenWQ_outputs_name,')'];
             
@@ -97,7 +104,8 @@ function plot_OpenWQ_outputs(...
             ylabel(tsnames_i,...
                 'Interpreter', 'none')
 
-            datetick('x','keepticks','keeplimits')
+            xlim([minTime, maxTime])
+            datetick('x','keeplimits')
 
             % Prepare legend
             legend(legend_labels,...
