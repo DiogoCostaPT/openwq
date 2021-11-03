@@ -55,10 +55,10 @@ void OpenWQ_watertransp::Adv(
             wmass_recipient;
         
         // Remove Chemical mass flux from SOURCE 
-        (*OpenWQ_vars.chemass)(source)(ichem_mob)(ix_s,iy_s,iz_s) -= chemass_flux;
+        (*OpenWQ_vars.d_chemass_dt_transp)(source)(ichem_mob)(ix_s,iy_s,iz_s) -= chemass_flux;
 
         // Add Chemical mass flux to RECIPIENT 
-        (*OpenWQ_vars.chemass)(recipient)(ichem_mob)(ix_r,iy_r,iz_r) += chemass_flux;
+        (*OpenWQ_vars.d_chemass_dt_transp)(recipient)(ichem_mob)(ix_r,iy_r,iz_r) += chemass_flux;
     }
                 
 }

@@ -13,7 +13,7 @@
             "10": "labile_orgP",
             "11": "refractory_orgP"
         },
-        "MOBILE_SPECIES": [1,2,4,6,7,8]
+        "MOBILE_SPECIES": [1,2,4,7,8,9]
     },
     "CYCLING_FRAMEWORKS": {
         "N_inorg": {
@@ -24,20 +24,21 @@
             "1":{
                 "CONSUMED": "NH4",
                 "PRODUCED": "NO3",
-                "KINETICS": "NH4 + NO3 + k * p",
+                "KINETICS_PER_DAY": "NH4 * k", // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
                 "PARAMETER_NAMES": ["k","p"],
                 "PARAMETER_VALUES":{
-                    "k": 0.005,
+                    "k": 0.01,
                     "p": 10
                 }
             },
             "2":{
                 "CONSUMED": "NO3",
                 "PRODUCED": "N2",
-                "KINETICS": "NO3 * k",
-                "PARAMETER_NAMES": ["k"],
+                "KINETICS_PER_DAY": "NO3 * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                "PARAMETER_NAMES": ["k","p"],
                 "PARAMETER_VALUES":{
-                    "k": 0.001
+                    "k": 0.01,
+                    "p": 10
                 }
             }
         },
@@ -48,10 +49,10 @@
             "1":{
                 "CONSUMED": "SRP",
                 "PRODUCED": "partP",
-                "KINETICS": "SRP + k",
+                "KINETICS_PER_DAY": "SRP *+ k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
                 "PARAMETER_NAMES": ["k"],
                 "PARAMETER_VALUES":{
-                    "k": 0.002
+                    "k": 0.01
                 }
             }
         },
@@ -65,37 +66,37 @@
             "1":{
                 "CONSUMED": "refractory_orgN",
                 "PRODUCED": "labile_orgN",
-                "KINETICS": "refractory_orgN * k",
+                "KINETICS_PER_DAY": "refractory_orgN * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
                 "PARAMETER_NAMES": ["k"],
                 "PARAMETER_VALUES":{
-                    "k": 0.001
+                    "k": 0.01
                 }
             },
             "2":{
                 "CONSUMED": "refractory_orgN",
                 "PRODUCED": "DON",
-                "KINETICS": "refractory_orgN * k",
+                "KINETICS_PER_DAY": "refractory_orgN * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
                 "PARAMETER_NAMES": ["k"],
                 "PARAMETER_VALUES":{
-                    "k": 0.001
+                    "k": 0.01
                 }
             },
             "3":{
                 "CONSUMED": "labile_orgN",
                 "PRODUCED": "DON",
-                "KINETICS": "labile_orgN * k",
+                "KINETICS_PER_DAY": "labile_orgN * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
                 "PARAMETER_NAMES": ["k"],
                 "PARAMETER_VALUES":{
-                    "k": 0.001
+                    "k": 0.01
                 }
             },
             "4":{
                 "CONSUMED": "labile_orgN",
                 "PRODUCED": "NH4",
-                "KINETICS": "labile_orgN * k",
+                "KINETICS_PER_DAY": "labile_orgN * k", // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
                 "PARAMETER_NAMES": ["k"],
                 "PARAMETER_VALUES":{
-                    "k": 0.001
+                    "k": 0.01
                 }
             }
         },
@@ -109,37 +110,37 @@
             "1":{
                 "CONSUMED": "refractory_orgP",
                 "PRODUCED": "labile_orgP",
-                "KINETICS": "refractory_orgP * k",
+                "KINETICS_PER_DAY": "refractory_orgP * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
                 "PARAMETER_NAMES": ["k"],
                 "PARAMETER_VALUES":{
-                    "k": 0.001
+                    "k": 0.01
                 }
             },
             "2":{
                 "CONSUMED": "refractory_orgP",
                 "PRODUCED": "DOP",
-                "KINETICS": "refractory_orgP * k",
+                "KINETICS_PER_DAY": "refractory_orgP * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
                 "PARAMETER_NAMES": ["k"],
                 "PARAMETER_VALUES":{
-                    "k": 0.001
+                    "k": 0.01
                 }
             },
             "3":{
                 "CONSUMED": "labile_orgP",
                 "PRODUCED": "DOP",
-                "KINETICS": "labile_orgP * k",
+                "KINETICS_PER_DAY": "labile_orgP * k", // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
                 "PARAMETER_NAMES": ["k"],
                 "PARAMETER_VALUES":{
-                    "k": 0.001
+                    "k": 0.01
                 }
             },
             "4":{
                 "CONSUMED": "labile_orgP",
                 "PRODUCED": "SRP",
-                "KINETICS": "labile_orgP * k",
+                "KINETICS_PER_DAY": "labile_orgP * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
                 "PARAMETER_NAMES": ["k"],
                 "PARAMETER_VALUES":{
-                    "k": 0.001
+                    "k": 0.01
                 }
             }
         }

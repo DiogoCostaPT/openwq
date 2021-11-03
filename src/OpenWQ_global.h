@@ -23,6 +23,7 @@
 #include <tuple>
 #include <vector>
 #include "exprtk.hpp"
+#include <omp.h>
 
 
 #include "jnlohmann/json.hpp"
@@ -51,13 +52,18 @@ class OpenWQ_hostModelconfig
     
     OpenWQ_hostModelconfig(){
 
+        fluxes_hydromodel = std::unique_ptr<
+            std::vector<
+            arma::Cube<
+            double>>>(new std::vector<arma::cube>); 
+
         SM_space_hydromodel = std::unique_ptr<
-                arma::Cube<
-                double>>(new arma::cube); 
+            arma::Cube<
+            double>>(new arma::cube); 
 
         Tair_space_hydromodel = std::unique_ptr<
-                arma::Cube<
-                double>>(new arma::cube); 
+            arma::Cube<
+            double>>(new arma::cube); 
     }
 
     typedef std::tuple<int,std::string,int, int, int> hydroTuple;
@@ -71,9 +77,23 @@ class OpenWQ_hostModelconfig
     public: 
     
     std::vector<hydroTuple> HydroComp;
-    
+
+    // Host model iteraction step (dynamic value)
+    long interaction_step;
+
+    // Host model time step (in seconds)
+    long time_step;
+
     // Number of hydrological compartments (that can store and transport water)
     unsigned int num_HydroComp;
+
+    // Stores water fluxes when concentration are requested for outputs
+    std::unique_ptr<std::vector<arma::Cube<double>>> fluxes_hydromodel;
+
+    // Water volume minimum limit (critical for concentration calculations)
+    // to avoid concentration instabilities and numerical blowup
+    // uses native units: m3
+    double watervol_minlim = 0.01;
 
     // Add dependencies for BGC calculations
     std::unique_ptr<arma::Cube<double>> SM_space_hydromodel;    // Saves all SM data from hostmodel
@@ -108,12 +128,15 @@ class OpenWQ_wqconfig
         // 7 - ix
         // 8 - iy
         // 9 - iz
-        // 10 - value (already converted to mg/l (concentration) or g(mass)) 
+        // 10 - value (already converted to mg/l (concentration) or g(mass))
+        // 11 - flag to tell if already used (1) or not (0) because models can run 
+                // timesteps smaller than the specified load and that would cause the 
+                // load to be added multiple times
 
         SinkSource_FORC = 
             std::unique_ptr<
                 arma::Mat<double>>
-            ( new  arma::mat(1,num_coldata));
+            ( new  arma::mat(0,num_coldata));
         
     }
 
@@ -121,6 +144,17 @@ class OpenWQ_wqconfig
 
     // Master file location
     std::string OpenWQ_masterjson;
+
+    // #################################################
+    // General
+    double time_previous;           // previous time (in seconds) for calculation of dynamic
+                                    // timesteps that critical for calculation of transformation rates
+    std::string LogFile_name = "Log_OpenWQ.txt";       // name of log file
+
+    // #################################################
+    // Computation settings
+    int num_threads_system;       // number of threads in the system
+    int num_threads_requested;    // number of threads requested by user
     
     // #################################################
     // Chemistry
@@ -158,20 +192,29 @@ class OpenWQ_wqconfig
     // Output 
     
     // Time
-    double timetep_out;             // time step
+    double timetep_out;             // time step (in seconds)
     std::string timestep_out_unit;  // time step unit
-    double nexttime_out = 0.0f;     // iteractive next printing time
+    double nexttime_out = 0.0f;     // iteractive next printing time (in seconds)
     // output format
-    unsigned long output_type;
-    // chemicals and compartments to export
+    unsigned long output_type;      // 1) CSV, 2) VTK, 3) HDF5
+    bool debug_mode = false;                // set to true if debug mode is requested
+    std::tuple<
+        std::string,            // output units as provided by the user
+        double,                 // numerator multiplier (determined by Convert_Units)
+        double,                 // denominator multiplier (determined by Convert_Units)
+        bool                    // flad if requested concentration (needs to be divided by water volume)
+        > output_units;         // Tuple with info about output units
+    // chemicals, compartments and cells/elements to export
     std::vector<int> chem2print;
     std::vector<int> compt2print;
-
+    std::vector<bool> cells2print_bool;
+    std::vector<arma::mat> cells2print_vec;
+    
     // Output folder
     std::string output_dir;
 
     // Flag for printing coordinates once
-    bool print_xyz = true;
+    bool print_oneStep = true;
 
     // Error message flags
     bool readSet_print_errmsg = true;
@@ -202,20 +245,109 @@ class OpenWQ_vars
                 arma::field< // Chemical Species
                 arma::Cube<  // Dimensions: nx, ny, nz
                 double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
+            
+            
+            // ############################################
+            // Mass changes (for solver separation and DEBUG mode activation)
+            // ############################################
 
+
+            // ############################################
+            // Derivatives
+
+            // Derivative (chemistry)
+            d_chemass_dt_chem = std::unique_ptr<
+                arma::field< // Compartments
+                arma::field< // Chemical Species
+                arma::Cube<  // Dimensions: nx, ny, nz
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
+
+            // Derivative (water transport)
+            d_chemass_dt_transp = std::unique_ptr<
+                arma::field< // Compartments
+                arma::field< // Chemical Species
+                arma::Cube<  // Dimensions: nx, ny, nz
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
+
+
+            // ############################################
+            // Single time, constant or isolated changes 
+            // to state-variable
+
+            // IC (single time change at start of simulation)
+            d_chemass_ic = std::unique_ptr<
+                arma::field< // Compartments
+                arma::field< // Chemical Species
+                arma::Cube<  // Dimensions: nx, ny, nz
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
+    
+            // Derivative (sink and source)
+            d_chemass_ss = std::unique_ptr<
+                arma::field< // Compartments
+                arma::field< // Chemical Species
+                arma::Cube<  // Dimensions: nx, ny, nz
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
+
+
+             // ############################################
+            // Cumulative Mass changes 
+            // Cumulating mass changes until next output is printed
+            // Needed for Debug mode
+            // ############################################
+
+
+            // ############################################
+            // Derivatives
+
+            // Derivative (chemistry)
+            d_chemass_dt_chem_out = std::unique_ptr<
+                arma::field< // Compartments
+                arma::field< // Chemical Species
+                arma::Cube<  // Dimensions: nx, ny, nz
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
+
+            // Derivative (water transport)
+            d_chemass_dt_transp_out = std::unique_ptr<
+                arma::field< // Compartments
+                arma::field< // Chemical Species
+                arma::Cube<  // Dimensions: nx, ny, nz
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
+
+
+            // ############################################
+            // Single time, constant or isolated changes 
+            // to state-variable
+
+            // Derivative (sink and source)
+            d_chemass_ss_out = std::unique_ptr<
+                arma::field< // Compartments
+                arma::field< // Chemical Species
+                arma::Cube<  // Dimensions: nx, ny, nz
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
             
 
         }catch(const std::exception& e){
+
+            // Write Error in Console only (the program hasn't started yet)
             std::cout << 
                 "ERROR: An exception occured during memory allocation (openWQ_global.h)" 
                 << std::endl;
             exit (EXIT_FAILURE);
+
         }
 
     }
     size_t num_HydroComp;
 
-    std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> chemass; 
+    std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> 
+        chemass,                    // state-variable
+        d_chemass_dt_chem,          // derivative (chemistry)
+        d_chemass_dt_transp,        // derivative (transport)
+        d_chemass_ss,               // derivative (isolated) SS
+        d_chemass_ic,               // derivative (at start) IC
+        d_chemass_dt_chem_out,      // cumulative derivative for output in ddebug model
+        d_chemass_dt_transp_out,    // cumulative derivative for output in ddebug model
+        d_chemass_ss_out;           // cumulative derivative for output in ddebug model
 
 };
 

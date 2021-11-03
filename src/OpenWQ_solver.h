@@ -1,5 +1,4 @@
 
-
 // Copyright 2020, Diogo Costa (diogo.pinhodacosta@canada.ca)
 // This file is part of OpenWQ model.
 
@@ -16,54 +15,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OPENWQ_INITIATEH_INCLUDED
-#define OPENWQ_INITIATEH_INCLUDED
 
-#include <tuple>
-#include <vector>
-#include "jnlohmann/json.hpp"
-using json = nlohmann::json;
+#ifndef OPENWQ_SOLVERH_INCLUDED
+#define OPENWQ_SOLVERH_INCLUDED
 
 #include "OpenWQ_global.h"
-#include "OpenWQ_units.h"
-#include "OpenWQ_output.h"
 
+class OpenWQ_solver{
 
-class OpenWQ_initiate{
-    
     public:
-    
-    // Allocate Memory
-    void initmemory(
-        OpenWQ_json& OpenWQ_json,
-        OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_output& OpenWQ_output);
 
-    // Read and set simulation conditions and options
-    void readSet(
-        OpenWQ_json& OpenWQ_json,
-        OpenWQ_vars& OpenWQ_vars,
+    // Generic Numerical Solver
+    void Numerical_Solver(
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_units& OpenWQ_units,
-        OpenWQ_output& OpenWQ_output);
+        OpenWQ_vars& OpenWQ_vars);
 
-    void setIC(
-        OpenWQ_json& OpenWQ_json,
-        OpenWQ_vars& OpenWQ_vars,
+    // Reset derivatives (before each time iteraction)
+    void Reset_Deriv(
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_units& OpenWQ_units,
-        OpenWQ_output& OpenWQ_output,
-        const int icmp,
-        const int ix,
-        const int iy,
-        const int iz,
-        double i_volume);    // all calculations assume unit = m3
+        OpenWQ_vars& OpenWQ_vars,
+        bool inst_deriv_flag,
+        bool cum_deriv_flag);
 
 };
-
 
 #endif

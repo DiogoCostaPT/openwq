@@ -20,12 +20,14 @@
 #ifndef OPENWQ_OUTPUT_INCLUDED
 #define OPENWQ_OUTPUT_INCLUDED
 
+/*
 #include <vtkSmartPointer.h>
 #include <vtkPoints.h>
 #include <vtkPointData.h>
 #include <vtkDoubleArray.h>
 #include <vtkUnstructuredGrid.h>
 #include <vtkXMLUnstructuredGridWriter.h>
+*/
 
 /* // if want to load 
 #include <vtkXMLUnstructuredGridReader.h>
@@ -38,40 +40,59 @@
 */
 
 #include "OpenWQ_global.h"
+#include "OpenWQ_solver.h"
 
 class OpenWQ_output{
 
     public:
 
+    // main print function
     int writeResults(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_solver& OpenWQ_solver,
         time_t simtime);
 
+    // Print output in CSV
     int writeCSV(
         OpenWQ_json& OpenWQ_json,
-        OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        std::string timestr,
+        std::unique_ptr<arma::field<arma::field<arma::cube>>>& OpenWQ_var2print,
+        std::string& output_file_label,
+        std::string timestr,            // time step (in seconds)
         int icmp);
     
+    // Print output in VTU
+    /*    
     int writeVTU(OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        std::string timestr,
+        double ts,
         int icmp);
-    
+    */
+
+   // Print output in HDF5
+
     int writeHDF5(
         OpenWQ_json& OpenWQ_json,
-        OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        std::string timestr,
+        std::unique_ptr<arma::field<arma::field<arma::cube>>>& OpenWQ_var2print,
+        std::string& output_file_label,
+        std::string timestr,            // time step (in seconds)
         int icmp);
+
+
+    // Print in console and log file
+    void ConsoleLog(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        std::string& msg_string,
+        bool print_console,
+        bool print_logFile);
 
 };
 

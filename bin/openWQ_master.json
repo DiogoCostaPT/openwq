@@ -1,29 +1,64 @@
 {
-    "PROJECT_NAME": "Test",
-    "GEOGRAPHICAL_LOCATION": "Svalbard",
+    "PROJECT_NAME": "big_creek_openwq",
+    "GEOGRAPHICAL_LOCATION": "Bi Creek, Ontario",
     "AUTHORS": "Diogo Costa",
     "DATE": "May_2020",
-    "COMMENT": "Default file for testing purposes",
+    "COMMENT": "First set up of model",
+	"COMPUTATIONAL_SETTINGS":{
+		"RUN_MODE_DEBUG": true, 
+		"USE_NUM_THREADS": "all" // "all" or integer of number of threads to use (e.g., 10)
+	},
     "OPENWQ_INPUT": {
-    	"CONFIG_FILEPATH": "bin/openWQ_config.json",
-    	//"BGC_CYCLES_FILEPATH": "bin/SWAT_Soil_BGC.json",
-        "BGC_CYCLES_FILEPATH": "bin/openWQ_BGC_cycling.json",
+    	"CONFIG_FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_config.json",
+    	//"BGC_CYCLES_FILEPATH": "build/SWAT_Soil_BGC.json",
+        "BGC_CYCLES_FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_BGC_cycling.json",
     	"SINKSOURCE_FILES": {
     		"1": {
     			"LABEL": "fertilizer_N",
-    			"FILEPATH": "bin/openWQ_source_fertN.json"
+    			"FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_source_fertN.json"
     		},
     		"2": {
     			"LABEL": "fertilizer_P",
-    			"FILEPATH": "bin/openWQ_source_fertP.json"
+    			"FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_source_fertP.json"
     		}
     	}
 	},
-	"openWQ_OUTPUT": {
-		"RESULTS_FOLDERPATH": "bin/Output_OpenWQ",
-        "FORMAT": "HDF5",
-        "CHEMICAL_SPECIES":["SOIL_NO3","SOIL_NO3"],
-        "COMPARTMENTS": ["SNOW","SOIL"],
-		"TIMESTEP": [1,"h"]
+	"OPENWQ_OUTPUT": {
+		"RESULTS_FOLDERPATH": "Output_OpenWQ",
+        "FORMAT": "HDF5", // HDF5, CSV, VTK
+        // "CHEMICAL_SPECIES":["NO3","NH4","N2","DON","labile_orgN","refractory_orgN","SRP","DOP","partP","labile_orgP","refractory_orgP"],
+        "CHEMICAL_SPECIES":["NO3","NH4"],
+		"UNITS":"kg",
+		"COMPARTMENTS_AND_CELLS": {
+			//"SWE": {
+			//	"1": [304,1,1],
+			//	"2": [281,1,1]
+			//},
+			"RUNOFF": {
+				"1": [304,1,1],
+				"2": [281,1,1]
+			},
+			//"SD": {
+			//	"1": [304,1,1],
+			//	"2": [281,1,1]
+			//},
+			"SOIL_RECHR": {
+				"1": [304,1,1],
+				"2": [281,1,1]
+			},
+			"SOIL_LOWER": {
+				"1": [304,1,1],
+				"2": [281,1,1]
+			//},
+			//"SURFSOIL": {
+			//	"1": [304,1,1],
+			//	"2": [281,1,1]
+			//},
+			//"GW": {
+			//	"1": [304,1,1],
+			//	"2": [281,1,1]
+			}
+		},
+		"TIMESTEP": [15,"min"]
 	}
 }

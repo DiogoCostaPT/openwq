@@ -24,7 +24,9 @@
 void OpenWQ_initiate::initmemory(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
-    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig){
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output){
 
     // Pointer to nx, ny, nx information (grids or HRU)
     std::unique_ptr<unsigned int[]> n_xyz(new unsigned int[3]); // pointer to nx, ny, nx information
@@ -35,6 +37,7 @@ void OpenWQ_initiate::initmemory(
     // Local variables
     std::string HydroCmpName;   // Hydrological compartment names as specified in main.cpp and 
                                 // OpenWQ_json.openWQ_config.json (they need to match)
+    std::string msg_string;             // error/warning message string
 
     // Create arma for chemical species
     unsigned int numspec = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["LIST"].size(); // number of chemical species in BGCcycling
@@ -42,7 +45,7 @@ void OpenWQ_initiate::initmemory(
 
     /* ########################################
     // Loop over compartments
-    // Assign and  allocate memory to openWQ variables: chemass
+    // Assign and  allocate memory to openWQ variables
     ######################################## */
     for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
             
@@ -53,6 +56,9 @@ void OpenWQ_initiate::initmemory(
         
         // Generate arma::cube of compartment icmp size
         arma::Cube<double> domain_xyz(n_xyz[0],n_xyz[1],n_xyz[2]);
+
+        // Set to zero
+        domain_xyz.zeros();
 
         // Get number of species in compartment icmp
         HydroCmpName = std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp));
@@ -72,12 +78,108 @@ void OpenWQ_initiate::initmemory(
         /* ########################################
         // Allocate Memory
         ######################################## */
+        
         // OpenWQ state variable
         (*OpenWQ_vars.chemass)(icmp) = domain_field;
-        // Hydro model variables
-        (*OpenWQ_hostModelconfig.SM_space_hydromodel) = domain_xyz;
-        (*OpenWQ_hostModelconfig.Tair_space_hydromodel) = domain_xyz;
+
+        // Derivatives
+        (*OpenWQ_vars.d_chemass_dt_chem)(icmp) = domain_field;
+        (*OpenWQ_vars.d_chemass_dt_transp)(icmp) = domain_field;
+        (*OpenWQ_vars.d_chemass_ic)(icmp) = domain_field;
+        (*OpenWQ_vars.d_chemass_ss)(icmp) = domain_field;
+
+        // Cumulative Derivatives (for export in debug mode)
+
+        (*OpenWQ_vars.d_chemass_dt_chem_out)(icmp) = domain_field;
+        (*OpenWQ_vars.d_chemass_dt_transp_out)(icmp) = domain_field;
+        (*OpenWQ_vars.d_chemass_ss_out)(icmp) = domain_field;
+
+        // Hydro model variables used as BGC dependencies
+        // Just need to do this once (no need to repeat in this loop)
+        if (icmp == 0){
+            (*OpenWQ_hostModelconfig.SM_space_hydromodel) = domain_xyz;
+            (*OpenWQ_hostModelconfig.Tair_space_hydromodel) = domain_xyz;
+        }
+
+        // Hydro model variables (water volumes for calc of concentrations)
+        // Set them to ones in case concentrations are not requested
+        // In such cases, the output will multiply by one (so it's fine)
+        (*OpenWQ_hostModelconfig.fluxes_hydromodel).push_back(domain_xyz);
+
     }
+
+     /* ########################################
+    // Log file
+    ######################################## */
+
+    // Create Log file name with full or relative path
+    OpenWQ_wqconfig.LogFile_name.insert(0,"/");
+    OpenWQ_wqconfig.LogFile_name.insert(0,
+        OpenWQ_json.Master["OPENWQ_OUTPUT"]["RESULTS_FOLDERPATH"]);
+
+    // Create log file
+    std::ofstream outfile (OpenWQ_wqconfig.LogFile_name);
+
+    // ###############
+    // Write header in log file
+
+    // Separator
+    msg_string.clear();
+    msg_string = "\n ############################## \n";
+    OpenWQ_output.ConsoleLog(
+        OpenWQ_wqconfig,    // for Log file name
+        msg_string, // message
+        false,              // print in console
+        true);              // print in log file
+
+    // PROJECT_NAME
+    msg_string.clear();
+    msg_string = "PROJECT_NAME: ";
+    msg_string.append(OpenWQ_json.Master["PROJECT_NAME"]);
+    OpenWQ_output.ConsoleLog(
+        OpenWQ_wqconfig,    // for Log file name
+        msg_string, // message
+        false,              // print in console
+        true);              // print in log file
+
+    // GEOGRAPHICAL_LOCATION
+    msg_string.clear();
+    msg_string = "GEOGRAPHICAL_LOCATION: ";
+    msg_string.append(OpenWQ_json.Master["GEOGRAPHICAL_LOCATION"]);
+    OpenWQ_output.ConsoleLog(
+        OpenWQ_wqconfig,    // for Log file name
+        msg_string, // message
+        false,              // print in console
+        true);              // print in log file
+    
+    // AUTHORS
+    msg_string.clear();
+    msg_string = "AUTHORS: ";
+    msg_string.append(OpenWQ_json.Master["AUTHORS"]);
+    OpenWQ_output.ConsoleLog(
+        OpenWQ_wqconfig,    // for Log file name
+        msg_string, // message
+        false,              // print in console
+        true);              // print in log file
+
+    // DATE
+    msg_string.clear();
+    msg_string = "DATE: ";
+    msg_string.append(OpenWQ_json.Master["DATE"]);
+    OpenWQ_output.ConsoleLog(
+        OpenWQ_wqconfig,    // for Log file name
+        msg_string, // message
+        false,              // print in console
+        true);              // print in log file
+
+    // Separator
+    msg_string.clear();
+    msg_string = "\n ##############################\n ";
+    OpenWQ_output.ConsoleLog(
+        OpenWQ_wqconfig,    // for Log file name
+        msg_string, // message
+        false,              // print in console
+        true);              // print in log file
 
 }
 
@@ -90,28 +192,47 @@ void OpenWQ_initiate::readSet(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_units& OpenWQ_units,
-    const int icmp,
-    const int ix,
-    const int iy,
-    const int iz,
-    double igridcell_volume,  // all calculations assume unit = m3
-    double iwater_volume){    // all calculations assume unit = m3
+    OpenWQ_output& OpenWQ_output){    // volume (water or soil), all calculations assume unit = m3
+    
+    // Local variables
+    unsigned int nx, ny, nz;    // interactive compartment domain dimensions
+    unsigned int ix, iy, iz;    // interactive compartment domain cell indexes
+
     
     /* #################################################
     // Read and set IC conditions
     ################################################# */
-    setIC(
-        OpenWQ_json,
-        OpenWQ_vars,
-        OpenWQ_hostModelconfig,
-        OpenWQ_wqconfig,
-        OpenWQ_units,
-        icmp,
-        ix,
-        iy,
-        iz,
-        igridcell_volume,   // all calculations assume unit = m3
-        iwater_volume);     // all calculations assume unit = m3
+   
+    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
+
+        // Dimensions for compartment icmp
+        nx = std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // num of x elements
+        ny = std::get<3>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // num of y elements
+        nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // num of z elements
+
+        // X, Y, Z loops
+        #pragma omp parallel for private (ix, iy, iz) collapse (3) num_threads(OpenWQ_wqconfig.num_threads_requested)
+        for (ix=0;ix<nx;ix++){
+            for (iy=0;iy<ny;iy++){
+                for (iz=0;iz<nz;iz++){
+
+                    setIC(
+                        OpenWQ_json,
+                        OpenWQ_vars,
+                        OpenWQ_hostModelconfig,
+                        OpenWQ_wqconfig,
+                        OpenWQ_units,
+                        OpenWQ_output,
+                        icmp,
+                        ix,
+                        iy,
+                        iz,
+                        (*OpenWQ_hostModelconfig.fluxes_hydromodel)[icmp](ix,iy,iz) );    // volume (water or soil) in m3
+
+                }
+            }
+        }
+    }
 
 }
 
@@ -124,19 +245,20 @@ void OpenWQ_initiate::setIC(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_units& OpenWQ_units,
+    OpenWQ_output& OpenWQ_output,
     const int icmp,
     const int ix,
     const int iy,
     const int iz,
-    double igridcell_volume,  // all calculations assume unit = m3
-    double iwater_volume){    // all calculati
+    double i_volume){    // volume (water or soil)
 
     // Local variables
     std::string chemname; // chemical name
-    std::tuple<unsigned int,std::string,std::string> ic_info_i; // IC information in config file
+    std::tuple<double,std::string> ic_info_i; // IC information in config file
     double ic_value; // IC value of chemical i
-    std::string ic_type; // IC value type of chemical (mass or concentration)
     std::string ic_units; // // IC value units of chemical (e.g, kg/m3, mg/l))
+    std::vector<double> unit_multiplers;    // multiplers (numerator and denominator)
+    std::string msg_string;             // error/warning message string
 
     // Find compartment icmp name from code (host hydrological model)
     std::string CompName_icmp = std::get<1>(
@@ -161,44 +283,55 @@ void OpenWQ_initiate::setIC(
                 ["INITIAL_CONDITIONS"][chemname];
 
             ic_value = std::get<0>(ic_info_i);      // get IC value
-            ic_type = std::get<1>(ic_info_i);       // get IC type
-            ic_units = std::get<2>(ic_info_i);      // get IC units 
+            ic_units = std::get<1>(ic_info_i);      // get IC units 
 
+            // ########################################
             // Transform units based on info provided
-            OpenWQ_units.Convert_IC_Units(
-                ic_value, // ic_value passed by reference so that it can be changed
-                ic_type,
-                ic_units);
+            // 1) Calculate unit multiplers
+            OpenWQ_units.Calc_Unit_Multipliers(
+                OpenWQ_wqconfig,
+                OpenWQ_output,
+                unit_multiplers,    // multiplers (numerator and denominator)
+                ic_units,           // input units
+                true);              // direction of the conversion: 
+                                    // to native (true) or 
+                                    // from native to desired output units (false)
+            // 2) Calculate value with new units
+            OpenWQ_units.Convert_Units(
+                ic_value,           // ic_value passed by reference so that it can be changed
+                unit_multiplers);   // units
 
-            // Apply IC conditons (no need to handle error
+
+            /* ########################################
+            // Apply IC conditons (no need to handle error)
             // Already done in OpenWQ_initiate::Transform_Units)
-            /* ########################################
-            // if CONCENTRATION
             ######################################## */
-            if(ic_type.compare("concentration") == 0){
-                (*OpenWQ_vars.chemass)(icmp)(chemi)(ix,iy,iz) =// units: g (basic units of MASS in openWQ)
-                    ic_value // converted to mg/l (or g/m3) in OpenWQ_initiate::Transform_Units
-                    * iwater_volume; // passed in m3
-            }
-            /* ########################################
-            // if MASS
-            ######################################## */
-            else if(ic_type.compare("mass") == 0){
-                (*OpenWQ_vars.chemass)(icmp)(chemi)(ix,iy,iz) =// units: g (basic units of MASS in openWQ)
-                    ic_value // converted to mg/l (or g/m3) in OpenWQ_initiate::Transform_Units
-                    * igridcell_volume; // passed in m3
-            }
+
+            (*OpenWQ_vars.d_chemass_ic)(icmp)(chemi)(ix,iy,iz) =// units: g (basic units of MASS in openWQ)
+                ic_value // converted to mg/l (or g/m3) in OpenWQ_initiate::Transform_Units
+                * i_volume; // passed in m3 (can be volume of water of volume of soil)
 
         }
         /* ########################################
         // IC conditions NOT provided set to ZERO
         ######################################## */
         catch(json::exception& e){ 
-            std::cout << "<OpenWQ> IC conditions not defined: set to zero " 
-                << "(compartment: " << CompName_icmp << "; " 
-                << "element: (" << ix << ", " << iy << ", " << iz << "); " 
-                << "chemical: " << chemname << ")"
-                << std::endl;
+
+            // Create Message
+            msg_string = 
+                "<OpenWQ> IC conditions not defined: set to zero (compartment: " 
+                + CompName_icmp + "; element: " 
+                + std::to_string(ix) + ", " 
+                + std::to_string(iy) + ", " 
+                + std::to_string(iz) + "); chemical: " 
+                + chemname + ")";
+
+            // Print it (Console and/or Log file)
+            OpenWQ_output.ConsoleLog(
+                OpenWQ_wqconfig,    // for Log file name
+                msg_string,         // message
+                true,               // print in console
+                true);              // print in log file
         }  
     }
 }

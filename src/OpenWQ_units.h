@@ -24,6 +24,7 @@
 using json = nlohmann::json;
 
 #include "OpenWQ_global.h"
+#include "OpenWQ_output.h"
 
 /* #################################################
 // Functions to convert input units
@@ -33,21 +34,30 @@ class OpenWQ_units{
 
     public: 
 
-    // IC conditions
-    void Convert_IC_Units(
-        double &ic_value,       // IC value of chemical (passed by reference)
-        std::string ic_type,    // IC value type of chemical (mass or concentration)
-        std::string ic_units);
+    void Convert_Units(
+        double& input_value,                      // input value (passed by reference)
+        std::vector<double> unit_multiplers);   // multiplers (numerator and denominator) 
 
-    // Sink & Source
-    void Convert_SS_Units(
-        double &ss_value,       // SS value
-        std::string ss_unit);   // SS unit
+    bool Calc_Unit_Multipliers(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
+        std::vector<double>& unit_multiplers, // multiplers (numerator and denominator)
+        std::string input_unit,     // input units
+        bool direction_2native);    // direction of the conversion: 
+                                    // to native (true) or 
+                                    // from native to desired output units (false)
 
-    // Time step
-    void Convert_Time_Units(
-        double &time_value,      // SS value
-        std::string time_unit);
+    bool Check_Mass_Units(
+        std::string unit_i,         // unit of numerator or denominator
+        double& unit_multipler_i);  // multiplier of numerator or denominator
+
+    bool Check_Volume_Units(
+        std::string unit_i,         // unit of numerator or denominator
+        double& unit_multipler_i);  // multiplier of numerator or denominator
+
+    bool Check_Time_Units(
+        std::string unit_i,         // unit of numerator or denominator
+        double& unit_multipler_i);  // multiplier of numerator or denominator
 
 };
 

@@ -39,6 +39,7 @@ using json = nlohmann::json;
 
 #include "OpenWQ_global.h"
 #include "OpenWQ_units.h"
+#include "OpenWQ_output.h"
 
 class OpenWQ_readjson{
 
@@ -48,9 +49,12 @@ class OpenWQ_readjson{
         OpenWQ_json& OpenWQ_json,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_units& OpenWQ_units);
+        OpenWQ_units& OpenWQ_units,
+        OpenWQ_output& OpenWQ_output);
 
     void read_JSON_2class(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
         json& jsondata,                         // JSON structure to save to
         const bool substruc_flag,               // Save in subfield of JSON structure? only if multiple files (e.g., source and sinks)        
         const std::string JsonSubStruct_name,   // if true, name of subfield    
@@ -76,7 +80,8 @@ class OpenWQ_readjson{
         OpenWQ_json &OpenWQ_json,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig &OpenWQ_wqconfig,
-        OpenWQ_units &OpenWQ_units);
+        OpenWQ_units &OpenWQ_units,
+        OpenWQ_output& OpenWQ_output);
 
     void check_mkdir_openWQ(
         std::string &dirname);

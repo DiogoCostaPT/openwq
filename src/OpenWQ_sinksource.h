@@ -27,6 +27,7 @@ using json = nlohmann::json;
 
 #include "OpenWQ_global.h"
 #include "OpenWQ_units.h"
+#include "OpenWQ_output.h"
 
 class OpenWQ_sinksource{
 
@@ -38,17 +39,20 @@ class OpenWQ_sinksource{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_units& OpenWQ_units);
+        OpenWQ_units& OpenWQ_units,
+        OpenWQ_output& OpenWQ_output);
 
     // Check if sink or sources needs to be applied
     void CheckApply(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
         const unsigned int YYYY,                       // current model step: Year
         const unsigned int MM,                         // current model step: month
         const unsigned int DD,                         // current model step: day
-        const unsigned int HH);                        // current model step: hour
+        const unsigned int HH,                         // current model step: hour
+        const unsigned int MIN);                        // current model step: min
 
     // Apply Sink or Source
     void Apply(
@@ -63,6 +67,9 @@ class OpenWQ_sinksource{
     // Apply Source
     void Apply_Source(
         OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_output& OpenWQ_output,
         const unsigned int cmpi,               // compartment model index
         const unsigned int chemi,              // chemical model index    
         const unsigned int ix_json,            // compartment model ix
@@ -73,6 +80,9 @@ class OpenWQ_sinksource{
     // Apply Sink
     void Apply_Sink(
         OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_output& OpenWQ_output,
         const unsigned int cmpi,                // compartment model index
         const unsigned int chemi,               // chemical model index    
         const unsigned int ix_json,             // compartment model ix
@@ -85,6 +95,8 @@ class OpenWQ_sinksource{
         std::string ss_unit);  // SS unit
 
     bool getModIndex(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
         std::vector<std::string> &vec_list,
         std::string &obj_name,
         std::string &obj_text,

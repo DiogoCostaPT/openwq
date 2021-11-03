@@ -25,7 +25,8 @@ void OpenWQ_chem::setBGCexpressions(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    OpenWQ_vars& OpenWQ_vars){
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_output& OpenWQ_output){
 
     // Local variables for expression evaluator: exprtk
     std::string 
@@ -55,6 +56,7 @@ void OpenWQ_chem::setBGCexpressions(
     std::vector<std::string> BGCcycles_namelist;
     std::string BGCcycles_name, Transf_name;
     double param_val; // prameter value
+    std::string msg_string;             // error/warning message string
 
 
     // Number of BCG cycles defined    
@@ -110,12 +112,13 @@ void OpenWQ_chem::setBGCexpressions(
                 ["CYCLING_FRAMEWORKS"]
                 [BGCcycles_name]
                 [std::to_string(transi+1)]
-                ["KINETICS"];
+                ["KINETICS_PER_DAY"];
             std::vector<std::string> parameter_names = OpenWQ_json.BGCcycling
                 ["CYCLING_FRAMEWORKS"]
                 [BGCcycles_name]
                 [std::to_string(transi+1)]
                 ["PARAMETER_NAMES"];
+
             expression_string_modif = expression_string;
             
             /* ########################################
@@ -164,10 +167,31 @@ void OpenWQ_chem::setBGCexpressions(
                     [std::to_string(transi+1)]
                     ["PARAMETER_VALUES"]
                     [parameter_names[i]];
-                expression_string_modif.replace(
-                    index_i,
-                    parameter_names[i].size(),
-                    std::to_string(param_val));
+                
+                // Try replacing
+                try{
+                    expression_string_modif.replace(
+                        index_i,
+                        parameter_names[i].size(),
+                        std::to_string(param_val));
+                }
+                catch(...){ 
+      
+                    // Create Message
+                    msg_string = "<OpenWQ> Parameter ignored in CYCLING_FRAMEWORKS > " 
+                        + BGCcycles_name + " > " 
+                        + std::to_string(transi+1)
+                        + ". Parameter " + parameter_names[i] 
+                        + " with value " + std::to_string(param_val);
+
+                    // Print it (Console and/or Log file)
+                    OpenWQ_output.ConsoleLog(
+                        OpenWQ_wqconfig,    // for Log file name
+                        msg_string,         // message
+                        true,               // print in console
+                        true);              // print in log file
+
+                };
             }
 
             // Add variables to symbol_table
@@ -202,6 +226,7 @@ void OpenWQ_chem::setBGCexpressions(
                     index_cons,
                     index_prod,
                     index_transf));
+
             OpenWQ_wqconfig.BGCexpressions_eq.push_back(expression);
 
         }
@@ -216,19 +241,19 @@ void OpenWQ_chem::Run(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig){
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_output& OpenWQ_output){
     
-    // Local variable for num_HydroComp
-   unsigned int num_hydrocmp = OpenWQ_hostModelconfig.HydroComp.size();
 
     // Loop over number of compartments
-    for (unsigned int icmp=0;icmp<num_hydrocmp;icmp++){
+    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
     
         BGC_Transform( // calls exprtk: parsing expression
             OpenWQ_json,
             OpenWQ_vars,
             OpenWQ_hostModelconfig,
             OpenWQ_wqconfig,
+            OpenWQ_output,
             icmp);
 
     }
@@ -246,12 +271,10 @@ void OpenWQ_chem::BGC_Transform(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output,
     unsigned int icmp){
     
-    // Local variables for expression evaluator: exprtk
-    std::string expression_string; // expression string
-
-    // Other local variables
+    // Local variables
     std::string chemname; // chemical name
     unsigned int index_cons,index_prod; // indexed for consumed and produced chemical
     unsigned int num_transf; // number of transformation in biogeochemical cycle bgci
@@ -261,6 +284,11 @@ void OpenWQ_chem::BGC_Transform(
     unsigned int nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in z-direction
     std::string BGCcycles_name_icmp,BGCcycles_name_list; // BGC Cycling name i of compartment icmp  
     double transf_mass;         // interactive mass to transfer between species
+    std::string msg_string;             // error/warning message string
+
+    // Local variables for expression evaluator: exprtk
+    std::string expression_string; // expression string
+
 
     // Find compartment icmp name from code (host hydrological model)
     std::string CompName_icmp = std::get<1>(
@@ -298,10 +326,20 @@ void OpenWQ_chem::BGC_Transform(
 
             // Check if found any valid BBC cycling framework (based on the json BCG)
             if (num_transf == 0 && OpenWQ_wqconfig.invalid_bgc_entry_errmsg == true){
-                std::cout << "<OpenWQ> Unkown CYCLING_FRAMEWORK with name '"
-                << BGCcycles_name_icmp
-                << "defined for compartment: " << CompName_icmp
-                << std::endl;
+
+                // Create Message
+                msg_string = "<OpenWQ> Unkown CYCLING_FRAMEWORK with name '"
+                    + BGCcycles_name_icmp
+                    + "' defined for compartment: " 
+                    + CompName_icmp;
+
+                // Print it (Console and/or Log file)
+                OpenWQ_output.ConsoleLog(
+                    OpenWQ_wqconfig,    // for Log file name
+                    msg_string,         // message
+                    true,               // print in console
+                    true);              // print in log file
+
             }
                         
             /* ########################################
@@ -342,13 +380,27 @@ void OpenWQ_chem::BGC_Transform(
                             OpenWQ_hostModelconfig.Tair = (*OpenWQ_hostModelconfig.Tair_space_hydromodel)(ix,iy,iz);
 
                             // Mass transfered: Consumed -> Produced (using exprtk)
-                            transf_mass = OpenWQ_wqconfig.BGCexpressions_eq[transf_index[transi]].value(); 
+                            // Make sure that transf_mass is positive, otherwise ignore transformation
+                            transf_mass = std::fmax(
+                                OpenWQ_wqconfig.BGCexpressions_eq[transf_index[transi]].value(),
+                                0.0f); // Needs to be positive (from consumed to produced)
+
+                            // Convert transfer_mass per day (as provided in the kinetics)
+                            // to mass transfer per second that is the native time unit
+                            // and the previous one
+                            transf_mass /= (24 * 60 * 60);
+
+                            // Guarantee that removed mass is not larger than existing mass
+                            transf_mass = std::fmin(
+                                    (*OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz),
+                                    transf_mass);
 
                             // New mass of consumed chemical
-                            (*OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
+                            
+                            (*OpenWQ_vars.d_chemass_dt_chem)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
 
                             // New mass of produced chemical
-                            (*OpenWQ_vars.chemass)(icmp)(index_prod)(ix,iy,iz) += transf_mass;
+                            (*OpenWQ_vars.d_chemass_dt_chem)(icmp)(index_prod)(ix,iy,iz) += transf_mass;
 
                         }
                     }
@@ -359,9 +411,18 @@ void OpenWQ_chem::BGC_Transform(
 
         // Print error message if 1st time step
         if (OpenWQ_wqconfig.BGC_Transform_print_errmsg == true){
-            std::cout << "<OpenWQ> No CYCLING_FRAMEWORK defined for " 
-                << "compartment: " << CompName_icmp
-                << std::endl;
+
+            // Create Message
+            msg_string = 
+                "<OpenWQ> No CYCLING_FRAMEWORK defined for compartment: "
+                + CompName_icmp;
+
+            // Print it (Console and/or Log file)
+            OpenWQ_output.ConsoleLog(
+                OpenWQ_wqconfig,    // for Log file name
+                msg_string,         // message
+                true,               // print in console
+                true);              // print in log file
         }
         
         return;

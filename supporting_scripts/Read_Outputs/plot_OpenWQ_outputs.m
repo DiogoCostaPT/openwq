@@ -64,7 +64,7 @@ function plot_OpenWQ_outputs(...
             % Get min and max time
             % Just need to get from -main
             if m == 1
-                minTime = min(ts.Time)
+                minTime = min(ts.Time);
                 maxTime = max(ts.Time);
             end
             
