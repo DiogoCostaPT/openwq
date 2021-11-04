@@ -23,8 +23,8 @@
 // Mass transport
 ################################################# */
 void OpenWQ_watertransp::Adv(
-        OpenWQ_json& JSONfiles,
         OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         const int source,
         const int ix_s, 
         const int iy_s,
@@ -40,25 +40,27 @@ void OpenWQ_watertransp::Adv(
     unsigned int ichem_mob;
 
     // CHANGE THE LINE BELOW: see my notes -> there should be no icmp because all compartments should have the same number of mobile species
-    std::vector<unsigned int> chemspec_mobile = JSONfiles.BGCcycling["CHEMICAL_SPECIES"]["MOBILE_SPECIES"];
-    unsigned int numspec = chemspec_mobile.size();
+    unsigned int numspec = OpenWQ_wqconfig.mobile_species.size();
 
     // Loop for mobile chemical species
     for (unsigned int c=0;c<numspec;c++){
 
         // mobile chemical species index
-        ichem_mob = chemspec_mobile[c] - 1; // because C array indexing starts in 0 
+        ichem_mob = OpenWQ_wqconfig.mobile_species[c] - 1;
 
         // Chemical mass flux between source and recipient 
-        chemass_flux = wflux_s2r *
-            (*OpenWQ_vars.chemass)(source)(ichem_mob)(ix_s,iy_s,iz_s) / // concentration calculation
-            wmass_recipient;
+        chemass_flux = 
+            wflux_s2r
+            * (*OpenWQ_vars.chemass)(source)(ichem_mob)(ix_s,iy_s,iz_s) // concentration calculation
+             / wmass_recipient;
         
         // Remove Chemical mass flux from SOURCE 
-        (*OpenWQ_vars.d_chemass_dt_transp)(source)(ichem_mob)(ix_s,iy_s,iz_s) -= chemass_flux;
+        (*OpenWQ_vars.d_chemass_dt_transp)(source)(ichem_mob)(ix_s,iy_s,iz_s) 
+            -= chemass_flux;
 
         // Add Chemical mass flux to RECIPIENT 
-        (*OpenWQ_vars.d_chemass_dt_transp)(recipient)(ichem_mob)(ix_r,iy_r,iz_r) += chemass_flux;
+        (*OpenWQ_vars.d_chemass_dt_transp)(recipient)(ichem_mob)(ix_r,iy_r,iz_r) 
+            += chemass_flux;
     }
                 
 }

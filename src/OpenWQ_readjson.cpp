@@ -592,6 +592,16 @@ void OpenWQ_readjson::SetConfigInfo(
     (OpenWQ_wqconfig.num_chem) = OpenWQ_json.BGCcycling
         ["CHEMICAL_SPECIES"]["LIST"].size();
 
+    // Get mobile species 
+    // reset index to start on zero
+    std::vector<unsigned int> mobile_species_local = 
+        OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["MOBILE_SPECIES"];
+    for (unsigned int chemi = 0; chemi < mobile_species_local.size(); chemi++){
+    
+        OpenWQ_wqconfig.mobile_species.push_back(mobile_species_local[chemi] - 1);
+
+     }
+
     // Get chemical species list from BGC_json
     for (unsigned int chemi = 0; chemi < (OpenWQ_wqconfig.num_chem); chemi++)
     {

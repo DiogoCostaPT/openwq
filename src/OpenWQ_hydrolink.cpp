@@ -204,16 +204,7 @@ void ClassWQ_OpenWQ::run(
 
     Description = "Multi-chemistry OpenWQ framework";
 
-
-    // Get mobile species 
-    // Only update mass witmobile_speciesh CRHM's wate volume for the mobile species
-    std::vector<double> mobile_species = 
-        OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["MOBILE_SPECIES"];
-
-    // Change indexing to start in zero
-    for (auto& item : mobile_species){item += 1;}
-
-
+    // Local Variables
     unsigned int Sub_mob;   // interactive species index (for mobile species)
 
     // Reset Derivatives 
@@ -246,6 +237,7 @@ void ClassWQ_OpenWQ::run(
     // So conversion of mm (water) to m3 is calculated as follows:
     // water_m3 = (water_mm / 1000) * (area_km2 * 1000000) <=>
     // water_m3 = water_mm * area_km2 * 1000
+    #pragma omp parallel for num_threads(OpenWQ_wqconfig.num_threads_requested)
     for (unsigned int hru=0;hru<nhru;hru++){
 
         // SWE
@@ -273,7 +265,7 @@ void ClassWQ_OpenWQ::run(
                 , 0.0f);
         // Surfsoil (not water in it)
         (*OpenWQ_hostModelconfig.fluxes_hydromodel)[6](hru,0,0) 
-            = -9999;
+            = 1;
         // gw
         (*OpenWQ_hostModelconfig.fluxes_hydromodel)[7](hru,0,0) 
             = std::fmax(gw[hru] * 1000 * hru_area[hru] 
@@ -316,11 +308,11 @@ void ClassWQ_OpenWQ::run(
         #pragma omp parallel for private(Sub_mob) collapse(2) num_threads(OpenWQ_wqconfig.num_threads_requested)
         for(unsigned int hru = 0; hru < nhru; ++hru) {
 
-            for(unsigned int Sub_i = 0; Sub_i < mobile_species.size(); ++Sub_i) {
+            for(unsigned int Sub_i = 0; Sub_i < OpenWQ_wqconfig.mobile_species.size(); ++Sub_i) {
 
                 // Get mobile species indexes
                 // Only update mass/concentrations using CRHM's water for mobile species
-                Sub_mob = mobile_species[Sub_i];
+                Sub_mob = OpenWQ_wqconfig.mobile_species[Sub_i];
     
                 // SWE
                 (*OpenWQ_vars.d_chemass_dt_transp)(0)(Sub_mob)(hru,0,0) = 
@@ -333,6 +325,23 @@ void ClassWQ_OpenWQ::run(
                     (std::fmax(soil_runoff_cWQ_lay[Sub_mob][hru],0.0f)
                     * (*OpenWQ_hostModelconfig.fluxes_hydromodel)[1](hru,0,0) 
                     ) - (*OpenWQ_vars.chemass)(1)(Sub_mob)(hru,0,0);
+
+                
+
+            if (hru  == 303 && (*OpenWQ_hostModelconfig.fluxes_hydromodel)[1](303,0,0)  > 0){
+                std::cout << std::to_string((*OpenWQ_hostModelconfig.fluxes_hydromodel)[1](hru,0,0) ) << std::endl;
+                std::cout << std::to_string(soil_runoff_cWQ_lay[Sub_mob][hru]) << std::endl;
+                std::cout << std::to_string((*OpenWQ_vars.d_chemass_dt_transp)(1)(Sub_mob)(hru,0,0) ) << std::endl;
+                std::cout << std::to_string((*OpenWQ_vars.chemass)(1)(Sub_mob)(hru,0,0) ) << std::endl;
+                
+            }
+
+           
+
+            if ((*OpenWQ_vars.d_chemass_dt_transp)(1)(0)(303,0,0) > 0){
+        std::cout << std::to_string((*OpenWQ_vars.d_chemass_dt_transp)(1)(0)(303,0,0)) << std::endl; 
+    }
+
 
                 // SSR
                 (*OpenWQ_vars.d_chemass_dt_transp)(2)(Sub_mob)(hru,0,0) = 
@@ -409,8 +418,9 @@ void ClassWQ_OpenWQ::run(
     Transport with water fluxes (No space loop: needs to be called for every water flux)
     ######################################## */ 
 
-    /* (No transport needed - already embeded in CRHM)
+    // (No transport needed - already embeded in CRHM)
 
+    /*
     unsigned int source = 1;                 // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     unsigned int ix_s = 1;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
     unsigned int iy_s = 1;                   // TO REMOVE/REPLACE IN HOST HYDROLOGICAL MODEL
@@ -425,8 +435,8 @@ void ClassWQ_OpenWQ::run(
     
     // FUNCTION 1: Just Advection (Land Surface model)
     OpenWQ_watertransp.Adv(
-        OpenWQ_json,
         OpenWQ_vars,
+        OpenWQ_wqconfig,
         source,
         ix_s, 
         iy_s,
@@ -438,7 +448,7 @@ void ClassWQ_OpenWQ::run(
         wflux_s2r,
         wmass_recipient
         );
-
+    */ 
     // FUNCTION 2: Advection and Dispersion (Aquatic Systems)
     //OpenWQ_watertransp.AdvDisp(
     //    OpenWQ_json,
@@ -454,7 +464,7 @@ void ClassWQ_OpenWQ::run(
     //    std::array<double,7> & linedata, 
     //    int & index_chem){
 
-    */
+    
 
     /* ########################################
     Biogeochemistry (doesn't need space loop => it's inside the function)
@@ -462,6 +472,7 @@ void ClassWQ_OpenWQ::run(
 
     // Loop needed -> Dependencies to kinetic formulas (needs loop to get hydro model variables
         // that are dependencies to OpenWQ)
+    #pragma omp parallel for num_threads(OpenWQ_wqconfig.num_threads_requested)
     for (unsigned int hru=0;hru<nhru;hru++){
         (*OpenWQ_hostModelconfig.SM_space_hydromodel)(hru,0,0) = soil_rechr[hru]/soil_rechr_max[hru];  // loop needed - Save all SM data from hostmodel at time t
         (*OpenWQ_hostModelconfig.Tair_space_hydromodel)(hru,0,0) = hru_t[hru];  // loop needed - Save all Taair data from hostmodel at time t      
@@ -531,11 +542,11 @@ void ClassWQ_OpenWQ::run(
     #pragma omp parallel for private(Sub_mob) collapse(2) num_threads(OpenWQ_wqconfig.num_threads_requested)
     for(unsigned int hru = 0; hru < nhru; ++hru) {
 
-        for(unsigned int Sub_i = 0; Sub_i < mobile_species.size(); ++Sub_i) {
+        for(unsigned int Sub_i = 0; Sub_i < OpenWQ_wqconfig.mobile_species.size(); ++Sub_i) {
 
                 // Get mobile species indexes
                 // Only update mass/concentrations using CRHM's water for mobile species
-                Sub_mob = mobile_species[Sub_i];
+                Sub_mob = OpenWQ_wqconfig.mobile_species[Sub_i];
 
             // SWE
             if ((*OpenWQ_hostModelconfig.fluxes_hydromodel)[0](hru,0,0) 
