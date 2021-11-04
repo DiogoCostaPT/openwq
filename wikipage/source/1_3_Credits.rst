@@ -1,3 +1,2 @@
-Initial conditions file
+Credits
 ==================================
-

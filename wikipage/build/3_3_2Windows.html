@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Windows &mdash; OpenWQ 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="MacOS" href="3_3_3MacOS.html" />
+    <link rel="prev" title="Linux" href="3_3_1Linux.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> OpenWQ
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1_0_Home.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="3_0_Installation.html">Installation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="3_1_Download.html">Download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_2_Build.html">Building requirement</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="3_3_Compile.html">Build and Compile</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="3_3_1Linux.html">Linux</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Windows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_3_3MacOS.html">MacOS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="3_4_Trouble.html">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4_0_Input.html">Input/Output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Developer:Join us!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_0_Reference.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OpenWQ</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="3_0_Installation.html">Installation</a> &raquo;</li>
+          <li><a href="3_3_Compile.html">Build and Compile</a> &raquo;</li>
+      <li>Windows</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/3_3_2Windows.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="windows">
+<h1>Windows<a class="headerlink" href="#windows" title="Permalink to this headline"></a></h1>
+<dl>
+<dt>1.Armadillo</dt><dd><p>Download the latest stable package from the website</p>
+<p>arma.sourceforge.net/download.html</p>
+<p>After extract, copy the include folder to a convenient directory. We will need this directroy for the cmake file.</p>
+</dd>
+</dl>
+<img alt="_images/windows1.PNG" src="_images/windows1.PNG" />
+<p>Install LAPACK from <a class="reference external" href="http://icl.cs.utk.edu/lapack-for-windows/clapack/index.html">http://icl.cs.utk.edu/lapack-for-windows/clapack/index.html</a></p>
+<p>Download “blas.lib”, “libf2c.lib” and “lapack.lib”. Remember the directory to the “lapack.lib”</p>
+<dl>
+<dt>2.OpenMP</dt><dd><p>We could build the C++ compiler with MinGW. Please install the Windows 64bit MinGW, otherwise you are likely meet problems when working with Armadillo library. Here is the link</p>
+<p><a class="reference external" href="https://sourceforge.net/projects/mingw-w64/">https://sourceforge.net/projects/mingw-w64/</a></p>
+<p>Running the setup file and set the architecture to “x86_64”, also remember the installation directory.</p>
+<p>Then go to the installation folder, add the <code class="docutils literal notranslate"><span class="pre">&lt;mingw</span> <span class="pre">installation</span> <span class="pre">path&gt;\i686-8.1.0-posix-dwarf-rt_v6-rev0/mingw32/include</span></code> to the windows environment path. By now, MinGW should have been configurated successfully.</p>
+<p>MinGW has a package manager which would be convenient to install the libraries and packages. We could setup OpenMP with it.</p>
+<p><a class="reference external" href="https://sourceforge.net/projects/mingw/">https://sourceforge.net/projects/mingw/</a></p>
+<p>The installation process is quite straight forward. After installation, you could be able to use “MinGW Installation Manager”. In order to ise OpenMP, we need to install “mingw-pthread” shown as the figure below</p>
+</dd>
+</dl>
+<img alt="_images/windows3.PNG" src="_images/windows3.PNG" />
+<img alt="_images/windows2.PNG" src="_images/windows2.PNG" />
+<ol class="arabic" start="3">
+<li><dl>
+<dt>VTK</dt><dd><p>In this step, we need to use the CMake GUI. You could download it from <a class="reference external" href="https://cmake.org/download/">https://cmake.org/download/</a>.</p>
+<p>Then, download the VTK package (for example “VTK-8.2.0.zip”) from the link below:</p>
+<p><a class="reference external" href="https://vtk.org/">https://vtk.org/</a></p>
+<p>Extract the package, then go to the VTK folder and create new folder named “build”. As the first picture below, select the source directory (VTK) and the build target directory (build). Then by pressing “Configure”, it will ask you to choose the generator (For me, I choose the Unix Makefile. You could choose to use the Visual Studio if you are more comfortable with that).</p>
+<p>Here we show how to build the VTK with Unix Makefiles. You could follow the instruction <a class="reference external" href="https://www.youtube.com/watch?v=6S3_sl5Sc0E&amp;t=12s">https://www.youtube.com/watch?v=6S3_sl5Sc0E&amp;t=12s</a> to build the VTK with Visual Studio. So by pressing Configure, it brings you to the next picture. You could modify the configuration and press “Configure” to apply the changes (the default setting should be fine to run this application). After the configuration is finished, press “Generate”, the Makefile (or .sln file if you choose to use visual studio) will be generated to the “build” folder. Finally, open the cmd and go to the “build” folder. By using <code class="docutils literal notranslate"><span class="pre">make</span></code>, the installation can be finished.</p>
+</dd>
+</dl>
+</li>
+</ol>
+<img alt="_images/vtkwin1.PNG" src="_images/vtkwin1.PNG" />
+<img alt="_images/vtkwin2.PNG" src="_images/vtkwin2.PNG" />
+<ol class="arabic" start="4">
+<li><dl>
+<dt>cmake and compile</dt><dd><p>Before runing the cmake file, please write the armadillo include directory to the “target_include_directorties”. After that, open the cmd and go to the directroy of the “CmakeLists.txt”. Then</p>
+<p><code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">-G</span> <span class="pre">&quot;Unix</span> <span class="pre">Makefiles&quot;</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">make</span></code></p>
+<p>The executable file will be generated to the “Results” folder</p>
+</dd>
+</dl>
+</li>
+</ol>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="3_3_1Linux.html" class="btn btn-neutral float-left" title="Linux" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="3_3_3MacOS.html" class="btn btn-neutral float-right" title="MacOS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Diogo Costa.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
