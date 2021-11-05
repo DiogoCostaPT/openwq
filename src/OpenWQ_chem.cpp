@@ -206,8 +206,9 @@ void OpenWQ_chem::setBGCexpressions(
             symbol_table.add_vector("chemass_InTransfEq",OpenWQ_wqconfig.chemass_InTransfEq);
 
             // Add variable dependencies to table of symbols (in case they are used)
-            symbol_table.add_variable("SM",OpenWQ_hostModelconfig.SM);
-            symbol_table.add_variable("Tair",OpenWQ_hostModelconfig.Tair);
+            symbol_table.add_variable("SM",OpenWQ_hostModelconfig.SM_txyz);
+            symbol_table.add_variable("Tair",OpenWQ_hostModelconfig.Tair_txyz);
+            symbol_table.add_variable("Tsoil",OpenWQ_hostModelconfig.Tsoil_txyz);
             
             // Create Object
             expression_t expression;
@@ -376,8 +377,9 @@ void OpenWQ_chem::BGC_Transform(
                             }
 
                             // Update dependency values if needed
-                            OpenWQ_hostModelconfig.SM = (*OpenWQ_hostModelconfig.SM_space_hydromodel)(ix,iy,iz);
-                            OpenWQ_hostModelconfig.Tair = (*OpenWQ_hostModelconfig.Tair_space_hydromodel)(ix,iy,iz);
+                            OpenWQ_hostModelconfig.SM_txyz = (*OpenWQ_hostModelconfig.SM)(ix,iy,iz);
+                            OpenWQ_hostModelconfig.Tair_txyz = (*OpenWQ_hostModelconfig.Tair)(ix,iy,iz);
+                            OpenWQ_hostModelconfig.Tsoil_txyz = (*OpenWQ_hostModelconfig.Tsoil)(ix,iy,iz);
 
                             // Mass transfered: Consumed -> Produced (using exprtk)
                             // Make sure that transf_mass is positive, otherwise ignore transformation

@@ -97,8 +97,9 @@ void OpenWQ_initiate::initmemory(
         // Hydro model variables used as BGC dependencies
         // Just need to do this once (no need to repeat in this loop)
         if (icmp == 0){
-            (*OpenWQ_hostModelconfig.SM_space_hydromodel) = domain_xyz;
-            (*OpenWQ_hostModelconfig.Tair_space_hydromodel) = domain_xyz;
+            (*OpenWQ_hostModelconfig.SM) = domain_xyz;
+            (*OpenWQ_hostModelconfig.Tair) = domain_xyz;
+            (*OpenWQ_hostModelconfig.Tsoil) = domain_xyz;
         }
 
         // Hydro model variables (water volumes for calc of concentrations)

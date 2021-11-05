@@ -43,6 +43,10 @@ void ClassWQ_OpenWQ::decl(
     // defined)
     if (OpenWQ_hostModelconfig.HydroComp.size()==0){
 
+        // #######################################
+        // Characterize the Host model domain
+        // Host model specific
+        // #######################################
         OpenWQ_hostModelconfig.HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(0,"SWE",nhru,1,1));
         OpenWQ_hostModelconfig.HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(1,"RUNOFF",nhru,1,1));
         OpenWQ_hostModelconfig.HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(2,"SSR",nhru,1,1));
@@ -425,8 +429,9 @@ void ClassWQ_OpenWQ::run(
         // that are dependencies to OpenWQ)
     #pragma omp parallel for num_threads(OpenWQ_wqconfig.num_threads_requested)
     for (unsigned int hru=0;hru<nhru;hru++){
-        (*OpenWQ_hostModelconfig.SM_space_hydromodel)(hru,0,0) = soil_rechr[hru]/soil_rechr_max[hru];  // loop needed - Save all SM data from hostmodel at time t
-        (*OpenWQ_hostModelconfig.Tair_space_hydromodel)(hru,0,0) = hru_t[hru];  // loop needed - Save all Taair data from hostmodel at time t      
+        (*OpenWQ_hostModelconfig.SM)(hru,0,0) = soil_rechr[hru]/soil_rechr_max[hru];  // loop needed - Save all SM data from hostmodel at time t
+        (*OpenWQ_hostModelconfig.Tair)(hru,0,0) = hru_t[hru];  // loop needed - Save all Taair data from hostmodel at time t      
+        (*OpenWQ_hostModelconfig.Tsoil)(hru,0,0) = hru_t[hru];   // keeping the same as Tair for now
     }
 
     // Run chemistry
