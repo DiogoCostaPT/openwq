@@ -35,6 +35,8 @@ void OpenWQ_readjson::read_all(
 
     // ########################
     // Master file json
+    // Get master file location
+    OpenWQ_wqconfig.OpenWQ_masterjson = "build/openWQ_master.json";
 
     // read
     OpenWQ_readjson::read_JSON_2class(
@@ -583,6 +585,13 @@ void OpenWQ_readjson::SetConfigInfo(
             true);              // print in log file
 
     }
+    
+    // ########################################
+    // HOST MODEL
+    // ########################################
+
+    // Number of hydrological compartments in host model
+    OpenWQ_hostModelconfig.num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); 
 
     // ########################################
     // CHEMISTRY

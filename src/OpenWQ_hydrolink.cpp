@@ -35,43 +35,24 @@ void ClassWQ_OpenWQ::decl(
     unsigned long nhru)
 {
     
-    Description = "Multi-chemistry OpenWQ framework";
-
     // Initiate output VTU file name string 
     //STASKED// std::string vtufilename;
-
-    // Create Object: OpenWQ_hostModelconfig (link to host hydrological model)
-    //OpenWQ_hostModelconfig OpenWQ_hostModelconfig;
-
-    // ################################
-    // Link openWQ data strucuture indexes to hydrological model compartments
-    // ################################
-    typedef std::tuple<int,std::string,int, int, int> hydroTuple;
-    /* hydroTuple: 
-    (1) index in openWQ variable, 
-    (2) name identifier in openWQ_config.json, 
-    (3) number of cell in x-direction
-    (4) number of cell in y-direction
-    (5) number of cell in z-direction
-    */
 
     // Check if the call is from ::decl (allow to set OpenWQ_hostModelconfig)
     // or ::initbase (do not allow because OpenWQ_hostModelconfig has already been
     // defined)
     if (OpenWQ_hostModelconfig.HydroComp.size()==0){
 
-        OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(0,"SWE",nhru,1,1));
-        OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(1,"RUNOFF",nhru,1,1));
-        OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(2,"SSR",nhru,1,1));
-        OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(3,"SD",nhru,1,1));
-        OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(4,"SOIL_RECHR",nhru,1,1));
-        OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(5,"SOIL_LOWER",nhru,1,1));
-        OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(6,"SURFSOIL",nhru,1,1));
-        OpenWQ_hostModelconfig.HydroComp.push_back(hydroTuple(7,"GW",nhru,1,1));
+        OpenWQ_hostModelconfig.HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(0,"SWE",nhru,1,1));
+        OpenWQ_hostModelconfig.HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(1,"RUNOFF",nhru,1,1));
+        OpenWQ_hostModelconfig.HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(2,"SSR",nhru,1,1));
+        OpenWQ_hostModelconfig.HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(3,"SD",nhru,1,1));
+        OpenWQ_hostModelconfig.HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(4,"SOIL_RECHR",nhru,1,1));
+        OpenWQ_hostModelconfig.HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(5,"SOIL_LOWER",nhru,1,1));
+        OpenWQ_hostModelconfig.HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(6,"SURFSOIL",nhru,1,1));
+        OpenWQ_hostModelconfig.HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(7,"GW",nhru,1,1));
         // (add other compartments as needed)...
     
-        // Number of hydrological compartments in host model
-        OpenWQ_hostModelconfig.num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); 
 
         // Create Object: OpenWQ_json (Input JSON files) and wqconfig
         //OpenWQ_json OpenWQ_json;            // create OpenWQ_json object
@@ -82,8 +63,6 @@ void ClassWQ_OpenWQ::decl(
         // ################################
         // Read JSON file
         // ################################
-        // Get master file location
-        OpenWQ_wqconfig.OpenWQ_masterjson = "build/openWQ_master.json";
         //OpenWQ_wqconfig.OpenWQ_masterjson = OpenWQ_masterjson_path->Strings[0];
 
         //OpenWQ_readjson OpenWQ_readjson; // create object: json files load modules
@@ -94,6 +73,7 @@ void ClassWQ_OpenWQ::decl(
             OpenWQ_units,
             OpenWQ_output);
 
+        // SPECIFIC TO CRHM
         // Fix number of species for use in other module
         // Particularly WQ_CRHM that computes transport
         Global::numsubstances = OpenWQ_wqconfig.num_chem;
@@ -202,8 +182,6 @@ void ClassWQ_OpenWQ::run(
     OpenWQ_output& OpenWQ_output)                // output modules
 {
 
-    Description = "Multi-chemistry OpenWQ framework";
-
     // Local Variables
     unsigned int Sub_mob;   // interactive species index (for mobile species)
 
@@ -220,13 +198,17 @@ void ClassWQ_OpenWQ::run(
     // ################################
     // Read and Set Initial Conditions
     // ################################
-    OpenWQ_hostModelconfig.interaction_step = getstep();
     
     // Retrieve simulation timestamp
     // convert to OpenWQ time convention: seconds since 00:00 hours, Jan 1, 1970 UTC
     // this allows the use of a number of funtions of C++
     time_t simtime = (Global::DTnow - 70 * 365 - 21) * 24 * 3600;
-
+    
+    // Update all time vars
+    OpenWQ_initiate.setTimeVars(
+        OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig,
+        simtime);           // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
     
     // Get Fluxes from Hydrological model
     // Save them to (*OpenWQ_hostModelconfig.fluxes_hydromodel)
@@ -276,13 +258,6 @@ void ClassWQ_OpenWQ::run(
     // Initiation steps that only need to be done once (at the start of the simulation)
     if (OpenWQ_hostModelconfig.interaction_step == 1){
 
-        // Initiate OpenWQ_wqconfig.nexttime_out with simtime
-        // this is only applicable at the start of the simulation
-        OpenWQ_wqconfig.nexttime_out = simtime;
-
-        // Initiate time_step
-        OpenWQ_hostModelconfig.time_step = 0.0f;
-
         // Set IC 
         // (icmp, chemi, ix, ix and iz loop is inside the function)
         OpenWQ_initiate.readSet(
@@ -294,10 +269,6 @@ void ClassWQ_OpenWQ::run(
             OpenWQ_output);
 
     }else{
-
-        // Update time step and difference as fraction of 1 day (because reaction kinetics are
-        // given is rate per day. Then update time_previous for next time step
-        OpenWQ_hostModelconfig.time_step = (simtime - OpenWQ_wqconfig.time_previous);
 
         // ################################
         // Retried current state of state variables form CRHM
@@ -325,23 +296,6 @@ void ClassWQ_OpenWQ::run(
                     (std::fmax(soil_runoff_cWQ_lay[Sub_mob][hru],0.0f)
                     * (*OpenWQ_hostModelconfig.fluxes_hydromodel)[1](hru,0,0) 
                     ) - (*OpenWQ_vars.chemass)(1)(Sub_mob)(hru,0,0);
-
-                
-
-            if (hru  == 303 && (*OpenWQ_hostModelconfig.fluxes_hydromodel)[1](303,0,0)  > 0){
-                std::cout << std::to_string((*OpenWQ_hostModelconfig.fluxes_hydromodel)[1](hru,0,0) ) << std::endl;
-                std::cout << std::to_string(soil_runoff_cWQ_lay[Sub_mob][hru]) << std::endl;
-                std::cout << std::to_string((*OpenWQ_vars.d_chemass_dt_transp)(1)(Sub_mob)(hru,0,0) ) << std::endl;
-                std::cout << std::to_string((*OpenWQ_vars.chemass)(1)(Sub_mob)(hru,0,0) ) << std::endl;
-                
-            }
-
-           
-
-            if ((*OpenWQ_vars.d_chemass_dt_transp)(1)(0)(303,0,0) > 0){
-        std::cout << std::to_string((*OpenWQ_vars.d_chemass_dt_transp)(1)(0)(303,0,0)) << std::endl; 
-    }
-
 
                 // SSR
                 (*OpenWQ_vars.d_chemass_dt_transp)(2)(Sub_mob)(hru,0,0) = 
@@ -387,9 +341,6 @@ void ClassWQ_OpenWQ::run(
 
     }
 
-    // Save time_previous (in seconds) for calculation of kinetics rates in the next timestep
-    // Needed because kinetics rates are provided as rate/day
-    OpenWQ_wqconfig.time_previous = simtime;
 
     /* #################################################
     // Loop: Time 

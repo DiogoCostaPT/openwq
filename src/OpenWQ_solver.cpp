@@ -95,6 +95,10 @@ void OpenWQ_solver::Numerical_Solver(
                         // updating cumulative calc for output in debug mode
                         (*OpenWQ_vars.d_chemass_dt_transp_out)(icmp)(chemi)(ix,iy,iz) += dm_dt_trans;  
 
+                        //if (ix == 303){
+                        //   std::cout << std::to_string((*OpenWQ_vars.d_chemass_dt_transp)(0)(0)(303,0,0)) << std::endl; 
+
+                        //}
                         
                         // ####################################
                         // 5

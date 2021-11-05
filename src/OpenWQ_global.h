@@ -74,12 +74,13 @@ class OpenWQ_hostModelconfig
     // (4) int => number of cells in y-direction
     // (5) int => number of cells in z-direction
     
+    
     public: 
     
     std::vector<hydroTuple> HydroComp;
 
     // Host model iteraction step (dynamic value)
-    long interaction_step;
+    long interaction_step = 0;
 
     // Host model time step (in seconds)
     long time_step;

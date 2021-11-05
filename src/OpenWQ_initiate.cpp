@@ -335,3 +335,37 @@ void OpenWQ_initiate::setIC(
         }  
     }
 }
+
+
+/* #################################################
+// Get Time variables
+################################################# */
+void OpenWQ_initiate::setTimeVars(
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    time_t simtime){
+
+    // Update interaction number
+    OpenWQ_hostModelconfig.interaction_step += 1;
+
+    // Update other time variables
+    if (OpenWQ_hostModelconfig.interaction_step == 1){
+
+        // Initiate OpenWQ_wqconfig.nexttime_out with simtime
+        // this is only applicable at the start of the simulation
+        OpenWQ_wqconfig.nexttime_out = simtime;
+
+        // Initiate time_step
+        OpenWQ_hostModelconfig.time_step = 0.0f;
+    }else{
+
+        // Update time step and difference as fraction of 1 day (because reaction kinetics are
+        // given is rate per day. Then update time_previous for next time step
+        OpenWQ_hostModelconfig.time_step = (simtime - OpenWQ_wqconfig.time_previous);
+
+    }
+
+    // Update time previous
+    OpenWQ_wqconfig.time_previous = simtime;
+
+}
