@@ -61,7 +61,7 @@ class OpenWQ_hostModelconfig
 
     OpenWQ_hostModelconfig(){
 
-        fluxes_hydromodel = std::unique_ptr<
+        waterVol_hydromodel = std::unique_ptr<
             std::vector<
             arma::Cube<
             double>>>(new std::vector<arma::cube>); 
@@ -91,7 +91,7 @@ class OpenWQ_hostModelconfig
     unsigned int num_HydroComp;
 
     // Stores water fluxes when concentration are requested for outputs
-    std::unique_ptr<std::vector<arma::Cube<double>>> fluxes_hydromodel;
+    std::unique_ptr<std::vector<arma::Cube<double>>> waterVol_hydromodel;
 
     // Water volume minimum limit (critical for concentration calculations)
     // to avoid concentration instabilities and numerical blowup

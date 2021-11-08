@@ -105,7 +105,7 @@ void OpenWQ_initiate::initmemory(
         // Hydro model variables (water volumes for calc of concentrations)
         // Set them to ones in case concentrations are not requested
         // In such cases, the output will multiply by one (so it's fine)
-        (*OpenWQ_hostModelconfig.fluxes_hydromodel).push_back(domain_xyz);
+        (*OpenWQ_hostModelconfig.waterVol_hydromodel).push_back(domain_xyz);
 
     }
 
@@ -228,7 +228,7 @@ void OpenWQ_initiate::readSet(
                         ix,
                         iy,
                         iz,
-                        (*OpenWQ_hostModelconfig.fluxes_hydromodel)[icmp](ix,iy,iz) );    // volume (water or soil) in m3
+                        (*OpenWQ_hostModelconfig.waterVol_hydromodel)[icmp](ix,iy,iz) );    // volume (water or soil) in m3
 
                 }
             }
