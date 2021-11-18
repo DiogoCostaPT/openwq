@@ -50,6 +50,7 @@ class OpenWQ_initiate{
         OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output);
 
+    // Set initial conditions
     void setIC(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
@@ -63,6 +64,11 @@ class OpenWQ_initiate{
         const int iz,
         double i_volume);    // all calculations assume unit = m3
 
+    // Update time variables
+    void setTimeVars(
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        time_t simtime);
 };
 
 

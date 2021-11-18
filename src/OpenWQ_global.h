@@ -50,22 +50,7 @@ class OpenWQ_hostModelconfig
 {
     public:
     
-    OpenWQ_hostModelconfig(){
-
-        fluxes_hydromodel = std::unique_ptr<
-            std::vector<
-            arma::Cube<
-            double>>>(new std::vector<arma::cube>); 
-
-        SM_space_hydromodel = std::unique_ptr<
-            arma::Cube<
-            double>>(new arma::cube); 
-
-        Tair_space_hydromodel = std::unique_ptr<
-            arma::Cube<
-            double>>(new arma::cube); 
-    }
-
+    // Host model characterization via tuple
     typedef std::tuple<int,std::string,int, int, int> hydroTuple;
     // Add host_hydrological_model compartment:
     // (1) int => index in openWQ 
@@ -73,13 +58,31 @@ class OpenWQ_hostModelconfig
     // (3) int => number of cells in x-direction
     // (4) int => number of cells in y-direction
     // (5) int => number of cells in z-direction
-    
-    public: 
-    
+
+    OpenWQ_hostModelconfig(){
+
+        waterVol_hydromodel = std::unique_ptr<
+            std::vector<
+            arma::Cube<
+            double>>>(new std::vector<arma::cube>); 
+
+        SM = std::unique_ptr<
+            arma::Cube<
+            double>>(new arma::cube); 
+
+        Tair = std::unique_ptr<
+            arma::Cube<
+            double>>(new arma::cube); 
+
+        Tsoil = std::unique_ptr<
+            arma::Cube<
+            double>>(new arma::cube); 
+    }
+
     std::vector<hydroTuple> HydroComp;
 
     // Host model iteraction step (dynamic value)
-    long interaction_step;
+    long interaction_step = 0;
 
     // Host model time step (in seconds)
     long time_step;
@@ -88,7 +91,7 @@ class OpenWQ_hostModelconfig
     unsigned int num_HydroComp;
 
     // Stores water fluxes when concentration are requested for outputs
-    std::unique_ptr<std::vector<arma::Cube<double>>> fluxes_hydromodel;
+    std::unique_ptr<std::vector<arma::Cube<double>>> waterVol_hydromodel;
 
     // Water volume minimum limit (critical for concentration calculations)
     // to avoid concentration instabilities and numerical blowup
@@ -96,11 +99,13 @@ class OpenWQ_hostModelconfig
     double watervol_minlim = 0.01;
 
     // Add dependencies for BGC calculations
-    std::unique_ptr<arma::Cube<double>> SM_space_hydromodel;    // Saves all SM data from hostmodel
-    std::unique_ptr<arma::Cube<double>> Tair_space_hydromodel;  // Saves all Tair data from hostmodel
-    double SM;                                                  // Used as iteractive variable to use with exprtk
-    double Tair;                                                // Used as iteractive variable to use with exprtk
-
+    std::unique_ptr<arma::Cube<double>> SM;    // Saves all SM data from hostmodel
+    std::unique_ptr<arma::Cube<double>> Tair;  // Saves all Tair data from hostmodel
+    std::unique_ptr<arma::Cube<double>> Tsoil;  // Saves all Tsoil data from hostmodel
+    double SM_txyz;                                                  // Used as iteractive variable to use with exprtk
+    double Tair_txyz;                                                // Used as iteractive variable to use with exprtk
+    double Tsoil_txyz;                                                // Used as iteractive variable to use with exprtk
+    
 };
 
 /* #################################################
@@ -161,6 +166,8 @@ class OpenWQ_wqconfig
     unsigned int num_chem;                  //Number of chemical species  
     std::vector
         <std::string> chem_species_list;    // Chemical species list
+    std::vector
+        <unsigned int> mobile_species;    // index of mobile chem species
 
     // BGC kinetic formulas (tuple with all the info needed)
     // It includes also the formulas parsed and ready to be used

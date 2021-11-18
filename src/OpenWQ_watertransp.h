@@ -47,9 +47,9 @@ class OpenWQ_watertransp{
     //    int & index_chem);
 
 
-    void Adv(
-        OpenWQ_json& OpenWQ_json,
+    void OpenWQ_watertransp::Adv(
         OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         const int source,
         const int ix_s, 
         const int iy_s,
@@ -58,8 +58,8 @@ class OpenWQ_watertransp{
         const int ix_r,
         const int iy_r,
         const int iz_r,
-        const double wflux_s2r,
-        const double wmass_recipient);
+        double wflux_s2r,
+        double wmass_recipient);
 
     //void AdvDisp(
     //    OpenWQ_json& OpenWQ_json,

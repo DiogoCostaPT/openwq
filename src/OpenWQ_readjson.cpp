@@ -35,6 +35,8 @@ void OpenWQ_readjson::read_all(
 
     // ########################
     // Master file json
+    // Get master file location
+    OpenWQ_wqconfig.OpenWQ_masterjson = "build/openWQ_master.json";
 
     // read
     OpenWQ_readjson::read_JSON_2class(
@@ -583,6 +585,13 @@ void OpenWQ_readjson::SetConfigInfo(
             true);              // print in log file
 
     }
+    
+    // ########################################
+    // HOST MODEL
+    // ########################################
+
+    // Number of hydrological compartments in host model
+    OpenWQ_hostModelconfig.num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); 
 
     // ########################################
     // CHEMISTRY
@@ -591,6 +600,16 @@ void OpenWQ_readjson::SetConfigInfo(
     // Get number of chemical species from BGC_json
     (OpenWQ_wqconfig.num_chem) = OpenWQ_json.BGCcycling
         ["CHEMICAL_SPECIES"]["LIST"].size();
+
+    // Get mobile species 
+    // reset index to start on zero
+    std::vector<unsigned int> mobile_species_local = 
+        OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["MOBILE_SPECIES"];
+    for (unsigned int chemi = 0; chemi < mobile_species_local.size(); chemi++){
+    
+        OpenWQ_wqconfig.mobile_species.push_back(mobile_species_local[chemi] - 1);
+
+     }
 
     // Get chemical species list from BGC_json
     for (unsigned int chemi = 0; chemi < (OpenWQ_wqconfig.num_chem); chemi++)
