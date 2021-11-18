@@ -1,0 +1,8 @@
+version: '3.3'
+services:
+  openwq_summa:
+    build: ./
+    tty: true
+    container_name: openWQ
+    volumes:
+      - ./:/code:Z
