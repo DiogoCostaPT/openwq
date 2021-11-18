@@ -47,7 +47,7 @@ class OpenWQ_watertransp{
     //    int & index_chem);
 
 
-    void OpenWQ_watertransp::Adv(
+    void Adv(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         const int source,

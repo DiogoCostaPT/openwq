@@ -1,6 +1,5 @@
 FROM ubuntu
 
-
 WORKDIR /code
 
 
@@ -12,6 +11,13 @@ RUN apt-get update && \
     liblapack-dev
 
 # OpenWQ Dependencies
+RUN apt-get update && \
+    DEBIAN_FRONTEND="noninteractive" apt install -y \
+        libopenblas-dev \
+        libarpack2-dev \
+        libsuperlu-dev \
+        libglvnd-core-dev
+
 
 RUN apt update -y \
     && apt upgrade -y \
@@ -25,6 +31,17 @@ RUN apt update -y \
          gdb \
     && apt-get autoclean
 
+RUN apt update -y \
+    && DEBIAN_FRONTEND="noninteractive" apt install -y \
+    build-essential \
+    mesa-common-dev \
+    mesa-utils \
+    freeglut3-dev \
+    ninja-build 
+
 ADD . /code
+
+ENV VTK_DIR=/code/lib/vtk/build/
+
 
 
