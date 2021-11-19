@@ -43,5 +43,12 @@ ADD . /code
 
 ENV VTK_DIR=/code/lib/vtk/build/
 
+RUN cp /code/lib/armadillo/armadillo-10.7.3/libarmadillo.so /usr/lib/
+
+WORKDIR /code/lib/armadillo/armadillo-10.7.3/
+
+RUN make install
+
+WORKDIR /code
 
 
