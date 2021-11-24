@@ -228,34 +228,42 @@ IF(UNIX)
 
         add_executable(summa
                 ${SUMMA_ALL}
-                ${DRIVER})
-
+                ${DRIVER}
+                ${SOURCES})
+        
+        set_property(TARGET summa PROPERTY LINKER_LANGUAGE Fortran)
         target_include_directories(
                  summa PUBLIC
                  ${LAPACK_INCLUDES}
                  ${netCDF_INCLUDES}
                  "/usr/include/"
-                 "/code/build/")
+                 "/code/build/"
+                 ${ARMADILLO_INCLUDE_DIR}
+                 ${VTK_INCLUDE_DIR}
+                 ${OpenMP_INCLUDE_DIR})
 
         target_link_libraries(summa PUBLIC
                 "/usr/lib/x86_64-linux-gnu/libnetcdff.a"
                 ${LAPACK_LIBRARIES}
                 ${netCDF_LIBRARIES}
                 SUMMA_COMM
-                SUMMA_NOAHMP)
-
-        add_executable(openwq
-                 ${SOURCES})
-        
-        target_include_directories(
-                openwq PUBLIC 
-                ${ARMADILLO_INCLUDE_DIR}
-                ${VTK_INCLUDE_DIR})
-
-        target_link_libraries(
-                openwq
+                SUMMA_NOAHMP
                 ${ARMADILLO_LIBRARIES}
-                ${VTK_LIBRARIES})
+                ${VTK_LIBRARIES}
+                -fopenmp)
+
+        # add_executable(openwq
+        #          ${SOURCES})
+        
+        # target_include_directories(
+        #         openwq PUBLIC 
+        #         ${ARMADILLO_INCLUDE_DIR}
+        #         ${VTK_INCLUDE_DIR})
+
+        # target_link_libraries(
+        #         openwq
+        #         ${ARMADILLO_LIBRARIES}
+        #         ${VTK_LIBRARIES})
 
 ELSE()
         MESSAGE(STATUS "current platform : Windows")
