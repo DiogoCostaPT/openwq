@@ -50,14 +50,17 @@ type(summa1_type_dec), allocatable :: summa1_struc(:)
 integer(i4b), parameter            :: n=1                        ! number of instantiations
 ! define timing information
 integer(i4b)                       :: modelTimeStep              ! index of model time step
+integer(i4b)                       :: random
 ! error control
 integer(i4b)                       :: err=0                      ! error code
 character(len=1024)                :: message=''                 ! error message
 
+random = 86
 ! *****************************************************************************
 ! * preliminaries
 ! *****************************************************************************
-
+print*, "HELLO"
+call dummy(random)
 ! allocate space for the master summa structure
 allocate(summa1_struc(n), stat=err)
 if(err/=0) call stop_program(1, 'problem allocating master summa structure')

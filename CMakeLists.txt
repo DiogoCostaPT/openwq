@@ -33,7 +33,7 @@ IF(UNIX)
         set(DSHARE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/dshare)
         set(NOAHMP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/noah-mp)
         set(ENGINE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/engine)
-        set(CPPWRAP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/cppwrap)
+        set(INTERFACE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/interface)
 
         #  utilities
         set(NRUTIL
@@ -166,6 +166,7 @@ IF(UNIX)
         ${DRIVER_DIR}/summa_driver.f90)
 
 
+
         set(CMAKE_CXX_STANDARD 17)
         #set(CMAKE_CXX_FLAGS "-O3")
         set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic")
@@ -195,9 +196,7 @@ IF(UNIX)
         find_package(LAPACK REQUIRED)
 
         # Requrire Fortran interface to be found
-        # set (NETCDF_F90 "YES")
-        # find_package(netcdf-fortran REQUIRED)
-        # include_directories(${NETCDF_INCLUDES})
+
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
         set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -213,7 +212,7 @@ IF(UNIX)
         target_compile_options(SUMMA_NOAHMP PRIVATE
                 -ffree-form -ffree-line-length-none -fmax-errors=0)
 
-        set(CMAKE_Fortran_FLAGS "-ffree-line-length-none -fmax-errors=0")
+        set(CMAKE_Fortran_FLAGS "-ffree-line-length-none -fmax-errors=0 -lstdc++")
         add_library(SUMMA_COMM OBJECT
                 ${COMM_ALL})
                 target_compile_options(SUMMA_COMM PRIVATE
@@ -225,11 +224,25 @@ IF(UNIX)
                 target_link_libraries(SUMMA_COMM PUBLIC
                         "/usr/lib/x86_64-linux-gnu/libnetcdff.a"
                         SUMMA_NOAHMP)
+        # compile openWQ into an object files
+        add_library(openWQ OBJECT 
+                ${SOURCES})
+        target_compile_options(openWQ PRIVATE
+                -g3 -Wall -pedantic)
+        target_include_directories(openWQ PRIVATE
+                ${ARMADILLO_INCLUDE_DIR}
+                ${VTK_INCLUDE_DIR}
+                ${OpenMP_INCLUDE_DIR})
+        target_link_libraries(openWQ PUBLIC
+                ${ARMADILLO_LIBRARIES}
+                ${VTK_LIBRARIES}
+                -fopenmp)       
+                
+
 
         add_executable(summa
                 ${SUMMA_ALL}
-                ${DRIVER}
-                ${SOURCES})
+                ${DRIVER})
         
         set_property(TARGET summa PROPERTY LINKER_LANGUAGE Fortran)
         target_include_directories(
@@ -237,10 +250,8 @@ IF(UNIX)
                  ${LAPACK_INCLUDES}
                  ${netCDF_INCLUDES}
                  "/usr/include/"
-                 "/code/build/"
-                 ${ARMADILLO_INCLUDE_DIR}
-                 ${VTK_INCLUDE_DIR}
-                 ${OpenMP_INCLUDE_DIR})
+                 "/code/build/")
+
 
         target_link_libraries(summa PUBLIC
                 "/usr/lib/x86_64-linux-gnu/libnetcdff.a"
@@ -248,22 +259,7 @@ IF(UNIX)
                 ${netCDF_LIBRARIES}
                 SUMMA_COMM
                 SUMMA_NOAHMP
-                ${ARMADILLO_LIBRARIES}
-                ${VTK_LIBRARIES}
-                -fopenmp)
-
-        # add_executable(openwq
-        #          ${SOURCES})
-        
-        # target_include_directories(
-        #         openwq PUBLIC 
-        #         ${ARMADILLO_INCLUDE_DIR}
-        #         ${VTK_INCLUDE_DIR})
-
-        # target_link_libraries(
-        #         openwq
-        #         ${ARMADILLO_LIBRARIES}
-        #         ${VTK_LIBRARIES})
+                openWQ)
 
 ELSE()
         MESSAGE(STATUS "current platform : Windows")
