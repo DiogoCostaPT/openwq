@@ -22,20 +22,11 @@ IF(UNIX)
         # Verify language compilers can talk to each other
         include(FortranCInterface)
         FortranCInterface_VERIFY(CXX)
-        
-        # # Utilities
-        # set(NRUTIL
-        #         ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/engine/nrtype.f90
-        #         ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/engine/f2008funcs.f90
-        #         ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/engine/nr_utility.f90)
 
         file(GLOB SOURCES "src/*.cpp")
-        # file(GLOB DRIVER_FILES "summa/build/source/driver/*.f90")
-        # file(GLOB DSHARE_FILES "summa/build/source/dshare/*.f90")
-        # file(GLOB ENGINE_FILES "summa/build/source/engine/*.f90")
-        # file(GLOB HOOKUP_FILES "summa/build/source/hookup/*.f90")
-        # file(GLOB NETCDF_FILES "summa/build/source/netcdf/*.f90")
-        # file(GLOB NOAHMP_FILES "summa/build/source/noah-mp/*.F")
+        ############################################################################
+        ## File definitions for subcomponents - For Summa
+        ############################################################################
         set(DRIVER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/driver)
         set(HOOKUP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/hookup)
         set(NETCDF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/netcdf)
@@ -43,9 +34,7 @@ IF(UNIX)
         set(NOAHMP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/noah-mp)
         set(ENGINE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/engine)
         set(CPPWRAP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/summa/build/source/cppwrap)
-        ############################################################################
-        ## File definitions for subcomponents
-        ############################################################################
+
         #  utilities
         set(NRUTIL
         ${ENGINE_DIR}/nrtype.f90
@@ -149,7 +138,6 @@ IF(UNIX)
 
         # ... stitch together common programs
         set(COMM_ALL
-        ${NRUTIL}
         ${NRPROC}
         ${HOOKUP}
         ${DATAMS}
@@ -219,7 +207,8 @@ IF(UNIX)
                 ${NOAHMP_DIR}/module_model_constants.F
                 ${NOAHMP_DIR}/module_sf_noahutl.F
                 ${NOAHMP_DIR}/module_sf_noahlsm.F
-                ${NOAHMP_DIR}/module_sf_noahmplsm.F)
+                ${NOAHMP_DIR}/module_sf_noahmplsm.F
+                ${NRUTIL})
 
         target_compile_options(SUMMA_NOAHMP PRIVATE
                 -ffree-form -ffree-line-length-none -fmax-errors=0)
@@ -230,10 +219,12 @@ IF(UNIX)
                 target_compile_options(SUMMA_COMM PRIVATE
                 -ffree-line-length-none -fmax-errors=0)
                 target_include_directories(SUMMA_COMM PRIVATE
-                        "/usr/include/")
+                        "/usr/include/"
+                        "/code/build/")
 
                 target_link_libraries(SUMMA_COMM PUBLIC
-                        "/usr/lib/x86_64-linux-gnu/libnetcdff.a")
+                        "/usr/lib/x86_64-linux-gnu/libnetcdff.a"
+                        SUMMA_NOAHMP)
 
         add_executable(summa
                 ${SUMMA_ALL}
