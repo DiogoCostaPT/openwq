@@ -195,24 +195,22 @@ IF(UNIX)
         find_package(netCDF REQUIRED)
         find_package(LAPACK REQUIRED)
 
-        # Requrire Fortran interface to be found
-
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
         set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-        ## Compile the library
+        # Compile the NOAHMP into object/.mod files
         add_library(SUMMA_NOAHMP OBJECT
                 ${NOAHMP_DIR}/module_model_constants.F
                 ${NOAHMP_DIR}/module_sf_noahutl.F
                 ${NOAHMP_DIR}/module_sf_noahlsm.F
                 ${NOAHMP_DIR}/module_sf_noahmplsm.F
                 ${NRUTIL})
-
-        target_compile_options(SUMMA_NOAHMP PRIVATE
-                -ffree-form -ffree-line-length-none -fmax-errors=0)
-
-        set(CMAKE_Fortran_FLAGS "-ffree-line-length-none -fmax-errors=0 -lstdc++")
+                target_compile_options(SUMMA_NOAHMP PRIVATE
+                        -ffree-form -ffree-line-length-none -fmax-errors=0)
+                set(CMAKE_Fortran_FLAGS "-ffree-line-length-none -fmax-errors=0 -lstdc++")
+        
+        # Compile Summa_Comm into object/.mod files
         add_library(SUMMA_COMM OBJECT
                 ${COMM_ALL})
                 target_compile_options(SUMMA_COMM PRIVATE
@@ -220,46 +218,42 @@ IF(UNIX)
                 target_include_directories(SUMMA_COMM PRIVATE
                         "/usr/include/"
                         "/code/build/")
-
                 target_link_libraries(SUMMA_COMM PUBLIC
                         "/usr/lib/x86_64-linux-gnu/libnetcdff.a"
                         SUMMA_NOAHMP)
-        # compile openWQ into an object files
+
+        # compile openWQ into an object file
         add_library(openWQ OBJECT 
                 ${SOURCES})
-        target_compile_options(openWQ PRIVATE
-                -g3 -Wall -pedantic)
-        target_include_directories(openWQ PRIVATE
-                ${ARMADILLO_INCLUDE_DIR}
-                ${VTK_INCLUDE_DIR}
-                ${OpenMP_INCLUDE_DIR})
-        target_link_libraries(openWQ PUBLIC
-                ${ARMADILLO_LIBRARIES}
-                ${VTK_LIBRARIES}
-                -fopenmp)       
-                
+                target_compile_options(openWQ PRIVATE
+                        -g3 -Wall -pedantic)
+                target_include_directories(openWQ PRIVATE
+                        ${ARMADILLO_INCLUDE_DIR}
+                        ${VTK_INCLUDE_DIR}
+                        ${OpenMP_INCLUDE_DIR})
+                target_link_libraries(openWQ PUBLIC
+                        ${ARMADILLO_LIBRARIES}
+                        ${VTK_LIBRARIES}
+                        -fopenmp)
 
-
+         # Create the executable with openWQ coupled to Summa                 
         add_executable(summa
                 ${SUMMA_ALL}
                 ${DRIVER})
-        
-        set_property(TARGET summa PROPERTY LINKER_LANGUAGE Fortran)
-        target_include_directories(
-                 summa PUBLIC
-                 ${LAPACK_INCLUDES}
-                 ${netCDF_INCLUDES}
-                 "/usr/include/"
-                 "/code/build/")
-
-
-        target_link_libraries(summa PUBLIC
-                "/usr/lib/x86_64-linux-gnu/libnetcdff.a"
-                ${LAPACK_LIBRARIES}
-                ${netCDF_LIBRARIES}
-                SUMMA_COMM
-                SUMMA_NOAHMP
-                openWQ)
+                set_property(TARGET summa PROPERTY LINKER_LANGUAGE Fortran)
+                target_include_directories(
+                        summa PUBLIC
+                        ${LAPACK_INCLUDES}
+                        ${netCDF_INCLUDES}
+                        "/usr/include/"
+                        "/code/build/")
+                target_link_libraries(summa PUBLIC
+                        "/usr/lib/x86_64-linux-gnu/libnetcdff.a"
+                        ${LAPACK_LIBRARIES}
+                        ${netCDF_LIBRARIES}
+                        SUMMA_COMM
+                        SUMMA_NOAHMP
+                        openWQ)
 
 ELSE()
         MESSAGE(STATUS "current platform : Windows")
