@@ -49,6 +49,10 @@ USE summaFileManager,only:STATE_PATH                        ! optional path to s
 USE summaFileManager,only:MODEL_INITCOND                    ! name of model initial conditions file
 USE summaFileManager,only:LOCAL_ATTRIBUTES                  ! name of model initial attributes file
 USE summaFileManager,only:OUTPUT_PATH,OUTPUT_PREFIX         ! define output file
+USE, intrinsic :: iso_c_binding, only : c_ptr
+
+! openWQ coupler
+!USE openwqInterface,only:openWQ, GetObject, openWQ_decl
 
 ! safety: set private unless specified otherwise
 implicit none
@@ -111,6 +115,7 @@ contains
  integer(i4b)                          :: iStruct,iGRU       ! looping variables
  integer(i4b)                          :: fileGRU            ! [used for filenames] number of GRUs in the input file
  integer(i4b)                          :: fileHRU            ! [used for filenames] number of HRUs in the input file
+ type(c_ptr)                           :: obj
  ! ---------------------------------------------------------------------------------------
  ! associate to elements in the data structure
  summaVars: associate(&

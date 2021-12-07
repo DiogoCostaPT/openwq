@@ -24,6 +24,10 @@ IF(UNIX)
         FortranCInterface_VERIFY(CXX)
 
         file(GLOB SOURCES "src/*.cpp")
+        set(OPENWQ_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+        set(OPENWQ_FILES 
+        ${OPENWQ_DIR}/OpenWQ_hydrolink.cpp)
         ############################################################################
         ## File definitions for subcomponents - For Summa
         ############################################################################
@@ -70,7 +74,9 @@ IF(UNIX)
         ${ENGINE_DIR}/snow_utils.f90
         ${ENGINE_DIR}/soil_utils.f90
         ${ENGINE_DIR}/updatState.f90
-        ${ENGINE_DIR}/matrixOper.f90)
+        ${ENGINE_DIR}/matrixOper.f90
+        # ${INTERFACE_DIR}/openWQInterface.f90
+        ${INTERFACE_DIR}/openWQ.f90)
 
         # Solver
         set(SOLVER
@@ -199,6 +205,20 @@ IF(UNIX)
 
         set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+          # compile openWQ into an object file
+          add_library(openWQ OBJECT 
+          ${OPENWQ_FILES})
+          target_compile_options(openWQ PRIVATE
+                  -g3 -Wall -pedantic)
+          target_include_directories(openWQ PRIVATE
+                  ${ARMADILLO_INCLUDE_DIR}
+                  ${VTK_INCLUDE_DIR}
+                  ${OpenMP_INCLUDE_DIR})
+          target_link_libraries(openWQ PUBLIC
+                  ${ARMADILLO_LIBRARIES}
+                  ${VTK_LIBRARIES}
+                  -fopenmp)
+
         # Compile the NOAHMP into object/.mod files
         add_library(SUMMA_NOAHMP OBJECT
                 ${NOAHMP_DIR}/module_model_constants.F
@@ -214,27 +234,13 @@ IF(UNIX)
         add_library(SUMMA_COMM OBJECT
                 ${COMM_ALL})
                 target_compile_options(SUMMA_COMM PRIVATE
-                -ffree-line-length-none -fmax-errors=0)
+                -ffree-line-length-none -fmax-errors=0 -lstdc++)
                 target_include_directories(SUMMA_COMM PRIVATE
                         "/usr/include/"
                         "/code/build/")
                 target_link_libraries(SUMMA_COMM PUBLIC
                         "/usr/lib/x86_64-linux-gnu/libnetcdff.a"
                         SUMMA_NOAHMP)
-
-        # compile openWQ into an object file
-        add_library(openWQ OBJECT 
-                ${SOURCES})
-                target_compile_options(openWQ PRIVATE
-                        -g3 -Wall -pedantic)
-                target_include_directories(openWQ PRIVATE
-                        ${ARMADILLO_INCLUDE_DIR}
-                        ${VTK_INCLUDE_DIR}
-                        ${OpenMP_INCLUDE_DIR})
-                target_link_libraries(openWQ PUBLIC
-                        ${ARMADILLO_LIBRARIES}
-                        ${VTK_LIBRARIES}
-                        -fopenmp)
 
          # Create the executable with openWQ coupled to Summa                 
         add_executable(summa

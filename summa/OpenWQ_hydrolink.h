@@ -49,7 +49,7 @@ using namespace CRHM;
 #include "OpenWQ_solver.h"
 #include "OpenWQ_output.h"
 
-
+                    // Inheritance from chm module
 class ClassWQ_OpenWQ : public ClassModule
 {
 

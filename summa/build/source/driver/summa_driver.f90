@@ -39,6 +39,8 @@ USE summa_util, only: stop_program                          ! used to stop the s
 USE summa_util, only: handle_err                            ! used to process errors
 ! global data
 USE globalData, only: numtim                                ! number of model time steps
+USE openwq
+USE, intrinsic :: iso_c_binding
 implicit none
 
 ! *****************************************************************************
@@ -51,16 +53,25 @@ integer(i4b), parameter            :: n=1                        ! number of ins
 ! define timing information
 integer(i4b)                       :: modelTimeStep              ! index of model time step
 integer(i4b)                       :: random
+integer(i4b)                       :: random2
 ! error control
 integer(i4b)                       :: err=0                      ! error code
 character(len=1024)                :: message=''                 ! error message
+type(openWQ_obj)                   :: openWQ_classobj
 
-random = 86
+
+openWQ_classobj = openWQ_obj(76)
+print*, openWQ_classobj%get_num()
+! random = 86
+! call GetObject(openWQ_obj, random)
+
+! call checkVal(openWQ_obj)
+! call checkVal(openWQ_obj)
+! call checkVal(openWQ_obj)
+
 ! *****************************************************************************
 ! * preliminaries
 ! *****************************************************************************
-print*, "HELLO"
-call dummy(random)
 ! allocate space for the master summa structure
 allocate(summa1_struc(n), stat=err)
 if(err/=0) call stop_program(1, 'problem allocating master summa structure')

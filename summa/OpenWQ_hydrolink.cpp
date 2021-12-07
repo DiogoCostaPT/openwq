@@ -121,12 +121,7 @@ void ClassWQ_OpenWQ::decl(
     declparam("soil_rechr_max", NHRU, "[60.0]", "0.0", "350.0",
     "Maximum value for soil recharge zone (upper portion of soil_moist where losses occur as both evaporation "//
     "and transpiration).  Must be less than or equal to soil_moist.","( )", &soil_rechr_max);
-int main() {
-    std::cout << "Started\n";
-    return 0;
-}
 
-}
 
 void ClassWQ_OpenWQ::run(
     OpenWQ_couplercalls& OpenWQ_couplercalls,
