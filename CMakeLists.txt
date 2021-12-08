@@ -58,6 +58,7 @@ IF(UNIX)
 
         # Data modules
         set(DATAMS
+        ${INTERFACE_DIR}/openWQ.f90 # needs to be compiled before globalData
         ${DSHARE_DIR}/multiconst.f90
         ${DSHARE_DIR}/var_lookup.f90
         ${DSHARE_DIR}/data_types.f90
@@ -74,9 +75,7 @@ IF(UNIX)
         ${ENGINE_DIR}/snow_utils.f90
         ${ENGINE_DIR}/soil_utils.f90
         ${ENGINE_DIR}/updatState.f90
-        ${ENGINE_DIR}/matrixOper.f90
-        # ${INTERFACE_DIR}/openWQInterface.f90
-        ${INTERFACE_DIR}/openWQ.f90)
+        ${ENGINE_DIR}/matrixOper.f90)
 
         # Solver
         set(SOLVER
@@ -207,7 +206,7 @@ IF(UNIX)
 
           # compile openWQ into an object file
           add_library(openWQ OBJECT 
-          ${OPENWQ_FILES})
+          ${SOURCES})
           target_compile_options(openWQ PRIVATE
                   -g3 -Wall -pedantic)
           target_include_directories(openWQ PRIVATE

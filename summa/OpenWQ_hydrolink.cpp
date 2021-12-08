@@ -31,7 +31,7 @@ void ClassWQ_OpenWQ::decl(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
     OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
-    OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
+    OpenWQ_chem& OpenWQ_chem,                    // biochemistry modules
     OpenWQ_sinksource& OpenWQ_sinksource,        // sink and source modules)
     OpenWQ_output& OpenWQ_output,
     unsigned long nhru)

@@ -16,7 +16,6 @@
 #ifndef OPENWQ_HYDROLINK_INCLUDED
 #define OPENWQ_HYDROLINK_INCLUDED
 
-
 #include "OpenWQ_couplercalls.h"
 #include "OpenWQ_global.h"
 #include "OpenWQ_readjson.h"
@@ -32,20 +31,33 @@ class ClassWQ_OpenWQ
 {
     // Instance Variables
     private:
-        int num;
+        int numHRU;
+        OpenWQ_couplercalls *OpenWQ_couplercalls_ref;
+        OpenWQ_hostModelconfig *OpenWQ_hostModelconfig_ref;
+        OpenWQ_json *OpenWQ_json_ref;
+        OpenWQ_wqconfig *OpenWQ_wqconfig_ref;
+        OpenWQ_units *OpenWQ_units_ref;
+        OpenWQ_readjson *OpenWQ_readjson_ref;
+        OpenWQ_vars *OpenWQ_vars_ref;
+        OpenWQ_initiate *OpenWQ_initiate_ref;
+        OpenWQ_watertransp *OpenWQ_watertransp_ref;
+        OpenWQ_chem *OpenWQ_chem_ref;            
+        OpenWQ_sinksource *OpenWQ_sinksource_ref;
+        OpenWQ_output *OpenWQ_output_ref;        
+
     
     // Constructor
     public:
-        ClassWQ_OpenWQ(int num);
+        ClassWQ_OpenWQ(int numHRU);
         ~ClassWQ_OpenWQ();
     
     // Methods
     void printNum() {
-        std::cout << "num = " << this->num << std::endl;
+        std::cout << "num = " << this->numHRU << std::endl;
     }
     int getNum() const;
 
-    void decl(int num_hru);
+    int decl();
 
     void run_time_start();
 
@@ -64,11 +76,14 @@ extern "C" {
     typedef struct CLASSWQ_OPENWQ CLASSWQ_OPENWQ;
 #endif
 
+// Create OpenWQ Object
 CLASSWQ_OPENWQ* create_openwq(int num);
-
+// Delete OpenWQ Object
 void delete_openwq(CLASSWQ_OPENWQ* openWQ);
-
+// Test Method
 int openwq_getNum(const CLASSWQ_OPENWQ *openWQ);
+// OpenWQ initalization method
+int openwq_decl(CLASSWQ_OPENWQ *openWQ);
 #ifdef __cplusplus
 }
 #endif

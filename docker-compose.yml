@@ -6,3 +6,5 @@ services:
     container_name: openWQ
     volumes:
       - ./:/code:Z
+      - /home/local/kck540/SUMMA/./:/SUMMA:Z
+      - /home/local/kck540/forcing_data/./:/forcing_data:Z

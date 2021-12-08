@@ -20,17 +20,61 @@
 // using namespace CRHM;
 #include <iostream>
 
-
-ClassWQ_OpenWQ::ClassWQ_OpenWQ(int _num): num(_num) {
+// Constructor
+ClassWQ_OpenWQ::ClassWQ_OpenWQ(int _numHru): numHRU(_numHru) {
     std::cout << "OpenWQ Class Created C++" << std::endl;
 }
+// Deconstructor
 ClassWQ_OpenWQ::~ClassWQ_OpenWQ() {
     std::cout << "C++ deconstructor" << std::endl;
 }
+// Methods
 int ClassWQ_OpenWQ::getNum() const {
-    return num;
+    return numHRU;
 }
 
+int ClassWQ_OpenWQ::decl() {
+    std::cout << "C++ decl, Initalizing structures" << std::endl;
+    std::cout << numHRU << std::endl;
+    OpenWQ_hostModelconfig_ref = new OpenWQ_hostModelconfig(); // Initalize hostModelconfig
+    OpenWQ_couplercalls_ref = new OpenWQ_couplercalls();
+    OpenWQ_json_ref = new OpenWQ_json();
+    OpenWQ_wqconfig_ref = new OpenWQ_wqconfig();
+    OpenWQ_units_ref = new OpenWQ_units();
+    OpenWQ_readjson_ref = new OpenWQ_readjson();
+    OpenWQ_vars_ref = new OpenWQ_vars(1);
+    OpenWQ_initiate_ref = new OpenWQ_initiate();
+    OpenWQ_watertransp_ref = new OpenWQ_watertransp();
+    OpenWQ_chem_ref = new OpenWQ_chem();
+    OpenWQ_sinksource_ref = new OpenWQ_sinksource();
+    OpenWQ_output_ref = new OpenWQ_output();
+
+    if (OpenWQ_hostModelconfig_ref->HydroComp.size()==0) {
+        std::cout << "Host Model size = 0" << std::endl;
+
+        OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(0,"SWE",numHRU,1,1));
+        std::cout << OpenWQ_hostModelconfig_ref->HydroComp.size() << std::endl;
+
+        OpenWQ_couplercalls_ref->InitialConfig(
+            *OpenWQ_hostModelconfig_ref,
+            *OpenWQ_json_ref,                    // create OpenWQ_json object
+            *OpenWQ_wqconfig_ref,            // create OpenWQ_wqconfig object
+            *OpenWQ_units_ref,                  // functions for unit conversion
+            *OpenWQ_readjson_ref,            // read json files
+            *OpenWQ_vars_ref,
+            *OpenWQ_initiate_ref,            // initiate modules
+            *OpenWQ_watertransp_ref,      // transport modules
+            *OpenWQ_chem_ref,                   // biochemistry modules
+            *OpenWQ_sinksource_ref,        // sink and source modules)
+            *OpenWQ_output_ref);
+    }
+
+    return 0;
+}
+
+
+
+// Interface functions to create Object
 CLASSWQ_OPENWQ* create_openwq(int num) {
     std::cout << "C API, create_openwq" << std::endl;
     return new ClassWQ_OpenWQ(num);
@@ -41,72 +85,12 @@ void delete_openwq(CLASSWQ_OPENWQ* openWQ) {
     delete openWQ;
 }
 
+int openwq_decl(ClassWQ_OpenWQ *openWQ) {
+    std::cout << "C API, Decl" << std::endl;
+    return openWQ->decl();
+}
+
 int openwq_getNum(const CLASSWQ_OPENWQ *openWQ) {
     return openWQ->getNum();
 }
 
-
-
-
-extern "C" { 
-
-
-
-    // int *dummy_(int *num) {
-    //     std::cout << *num << std::endl;
-    //     int newNum = 1;
-
-    //     return newNum;
-    // }
-
-    void *GetObject(int *num);
-
-    void checkVal(void * obj);
-
-    // void *openWQ_decl_(void*, int);
-
-    // void *openWQ_run_time_start_(void*);
-
-    // void *openWQ_run_space_(void*);
-
-    // void *openWQ_run_time_end_(void*);
-}
-
-void *GetObject(int* num) {
-    std::cout << "HERE IN Get OBject" << std::endl;
-    std::cout << *num << std::endl;
-    ClassWQ_OpenWQ *openWQ = new ClassWQ_OpenWQ(*num);
-    std::cout << &openWQ << std::endl;
-    openWQ->printNum();
-    return (void *)openWQ;
-}
-
-void checkVal(void *obj) {
-    ClassWQ_OpenWQ *openWQ = (ClassWQ_OpenWQ*)obj;
-    std::cout << &openWQ << std::endl;
-    std::cout << "HERE" << std::endl;
-
-    openWQ->printNum();
-
-}
-
-
-// void *openWQ_decl(void * openWQ, int num_hrus) {
-
-
-// }
-
-// void *openWQ_run_time_start(void *openWQ) {
-
-//     return;
-// }
-
-// void *openWQ_run_space(void *openWQ) {
-
-//     return;
-// }
-
-// void *openWQ_run_time_end(void *openWQ) {
-
-//     return;
-// }

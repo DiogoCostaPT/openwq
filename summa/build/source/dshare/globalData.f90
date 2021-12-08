@@ -53,6 +53,8 @@ MODULE globalData
  USE var_lookup,only:maxvarBpar      ! basin-average parameters: maximum number variables
  USE var_lookup,only:maxvarDecisions ! maximum number of decisions
  USE var_lookup,only:maxvarFreq      ! maximum number of output files
+ ! OpenWQ interface
+ USE openWQ,only:ClassWQ_OpenWQ
  implicit none
  private
 
@@ -340,5 +342,9 @@ MODULE globalData
  ! define fixed dimensions
  integer(i4b),parameter,public               :: nBand=2          ! number of spectral bands
  integer(i4b),parameter,public               :: nTimeDelay=2000  ! number of hours in the time delay histogram (default: ~1 season = 24*365/4)
+
+ ! OpenWQ variable
+ type(ClassWQ_OpenWQ),save,public            :: openWQ_obj
+
 
 END MODULE globalData
