@@ -55,6 +55,10 @@ int ClassWQ_OpenWQ::decl() {
         std::cout << OpenWQ_hostModelconfig_ref->HydroComp.size() << std::endl;
 
         OpenWQ_vars_ref = new OpenWQ_vars(OpenWQ_hostModelconfig_ref->HydroComp.size());
+        
+        // Master Json
+        OpenWQ_wqconfig_ref->OpenWQ_masterjson = "/code/bin/openWQ_master.json";
+
 
         OpenWQ_couplercalls_ref->InitialConfig(
             *OpenWQ_hostModelconfig_ref,
@@ -73,8 +77,30 @@ int ClassWQ_OpenWQ::decl() {
     return 0;
 }
 
+//TODO: Needs to be passed simtime from SUMMA
 int ClassWQ_OpenWQ::run_time_start() {
     std::cout << "C++ run_time_start" << std::endl;
+    
+    time_t simtime = 0; // needs to be passed in
+
+    OpenWQ_couplercalls_ref->RunTimeLoopStart(
+        *OpenWQ_hostModelconfig_ref,
+        *OpenWQ_json_ref,
+        *OpenWQ_wqconfig_ref,            // create OpenWQ_wqconfig object
+        *OpenWQ_units_ref,                  // functions for unit conversion
+        *OpenWQ_readjson_ref,            // read json files
+        *OpenWQ_vars_ref,
+        *OpenWQ_initiate_ref,            // initiate modules
+        *OpenWQ_watertransp_ref,      // transport modules
+        *OpenWQ_chem_ref,                   // biochemistry modules
+        *OpenWQ_sinksource_ref,        // sink and source modules)
+        *OpenWQ_solver_ref,
+        *OpenWQ_output_ref,
+        simtime);
+
+
+
+
     return 0;
 }
 
@@ -83,8 +109,28 @@ int ClassWQ_OpenWQ::run_space() {
     return 0;
 }
 
+
+// TODO: We need SimTime for this function as well
 int ClassWQ_OpenWQ::run_time_end() {
     std::cout << "C++ run_time_end" << std::endl;
+
+    time_t simtime = 0; // needs to be passed in
+
+    OpenWQ_couplercalls_ref->RunTimeLoopEnd(
+        *OpenWQ_hostModelconfig_ref,
+        *OpenWQ_json_ref,
+        *OpenWQ_wqconfig_ref,            // create OpenWQ_wqconfig object
+        *OpenWQ_units_ref,                  // functions for unit conversion
+        *OpenWQ_readjson_ref,            // read json files
+        *OpenWQ_vars_ref,
+        *OpenWQ_initiate_ref,            // initiate modules
+        *OpenWQ_watertransp_ref,      // transport modules
+        *OpenWQ_chem_ref,                   // biochemistry modules
+        *OpenWQ_sinksource_ref,        // sink and source modules)
+        *OpenWQ_solver_ref,
+        *OpenWQ_output_ref,
+        simtime);
+
     return 0;
 }
 

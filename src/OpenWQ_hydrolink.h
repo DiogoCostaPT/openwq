@@ -43,6 +43,7 @@ class ClassWQ_OpenWQ
         OpenWQ_watertransp *OpenWQ_watertransp_ref;
         OpenWQ_chem *OpenWQ_chem_ref;            
         OpenWQ_sinksource *OpenWQ_sinksource_ref;
+        OpenWQ_solver *OpenWQ_solver_ref;
         OpenWQ_output *OpenWQ_output_ref;        
 
     
