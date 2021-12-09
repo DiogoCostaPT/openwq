@@ -39,7 +39,9 @@ USE summa_util, only: stop_program                          ! used to stop the s
 USE summa_util, only: handle_err                            ! used to process errors
 ! global data
 USE globalData, only: numtim                                ! number of model time steps
-USE openwq
+! OpenWQ coupling 
+USE globalData,only:openWQ_obj
+USE openWQ
 USE, intrinsic :: iso_c_binding
 implicit none
 
@@ -57,17 +59,6 @@ integer(i4b)                       :: random2
 ! error control
 integer(i4b)                       :: err=0                      ! error code
 character(len=1024)                :: message=''                 ! error message
-! type(openWQ_obj)                   :: openWQ_classobj
-
-
-! openWQ_classobj = openWQ_obj(76)
-! print*, openWQ_classobj%get_num()
-! random = 86
-! call GetObject(openWQ_obj, random)
-
-! call checkVal(openWQ_obj)
-! call checkVal(openWQ_obj)
-! call checkVal(openWQ_obj)
 
 ! *****************************************************************************
 ! * preliminaries
@@ -83,7 +74,6 @@ if(err/=0) call stop_program(1, 'problem allocating master summa structure')
 ! declare and allocate summa data structures and initialize model state to known values
 call summa_initialize(summa1_struc(n), err, message)
 call handle_err(err, message)
-return;
 
 ! initialize parameter data structures (e.g. vegetation and soil parameters)
 call summa_paramSetup(summa1_struc(n), err, message)
@@ -103,6 +93,12 @@ do modelTimeStep=1,numtim
  ! read model forcing data
  call summa_readForcing(modelTimeStep, summa1_struc(n), err, message)
  call handle_err(err, message)
+
+ ! Call OpenW run_time_start
+ err=openWQ_obj%run(1)
+ err=openWQ_obj%run(2)
+ err=openWQ_obj%run(3)
+ return;
 
  ! run the summa physics for one time step
  call summa_runPhysics(modelTimeStep, summa1_struc(n), err, message)
