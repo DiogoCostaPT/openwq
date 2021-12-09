@@ -59,11 +59,11 @@ class ClassWQ_OpenWQ
 
     int decl();
 
-    void run_time_start();
+    int run_time_start();
 
-    void run_space();
+    int run_space();
 
-    void run_time_end();
+    int run_time_end();
 
 };
 
@@ -80,10 +80,10 @@ extern "C" {
 CLASSWQ_OPENWQ* create_openwq(int num);
 // Delete OpenWQ Object
 void delete_openwq(CLASSWQ_OPENWQ* openWQ);
-// Test Method
-int openwq_getNum(const CLASSWQ_OPENWQ *openWQ);
 // OpenWQ initalization method
 int openwq_decl(CLASSWQ_OPENWQ *openWQ);
+// OpenWQ run functions, this function decides which C++ code to call
+int openwq_run(CLASSWQ_OPENWQ *openWQ, int func);
 #ifdef __cplusplus
 }
 #endif

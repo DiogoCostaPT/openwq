@@ -42,7 +42,6 @@ int ClassWQ_OpenWQ::decl() {
     OpenWQ_wqconfig_ref = new OpenWQ_wqconfig();
     OpenWQ_units_ref = new OpenWQ_units();
     OpenWQ_readjson_ref = new OpenWQ_readjson();
-    OpenWQ_vars_ref = new OpenWQ_vars(1);
     OpenWQ_initiate_ref = new OpenWQ_initiate();
     OpenWQ_watertransp_ref = new OpenWQ_watertransp();
     OpenWQ_chem_ref = new OpenWQ_chem();
@@ -54,6 +53,8 @@ int ClassWQ_OpenWQ::decl() {
 
         OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(0,"SWE",numHRU,1,1));
         std::cout << OpenWQ_hostModelconfig_ref->HydroComp.size() << std::endl;
+
+        OpenWQ_vars_ref = new OpenWQ_vars(OpenWQ_hostModelconfig_ref->HydroComp.size());
 
         OpenWQ_couplercalls_ref->InitialConfig(
             *OpenWQ_hostModelconfig_ref,
@@ -69,6 +70,21 @@ int ClassWQ_OpenWQ::decl() {
             *OpenWQ_output_ref);
     }
 
+    return 0;
+}
+
+int ClassWQ_OpenWQ::run_time_start() {
+    std::cout << "C++ run_time_start" << std::endl;
+    return 0;
+}
+
+int ClassWQ_OpenWQ::run_space() {
+    std::cout << "C++ run_space" << std::endl;
+    return 0;
+}
+
+int ClassWQ_OpenWQ::run_time_end() {
+    std::cout << "C++ run_time_end" << std::endl;
     return 0;
 }
 
@@ -92,5 +108,25 @@ int openwq_decl(ClassWQ_OpenWQ *openWQ) {
 
 int openwq_getNum(const CLASSWQ_OPENWQ *openWQ) {
     return openWQ->getNum();
+}
+
+int openwq_run(ClassWQ_OpenWQ *openWQ, int func) {
+    if (func == 1) { // run_time_start()
+        std::cout << "C API func = 1" << std::endl;
+        return openWQ->run_time_start();
+    
+    } else if (func == 2) { // run_space()
+        std::cout << "C API func = 2" << std::endl;
+        return openWQ->run_space();
+
+    } else if (func == 3) { // run_time_end()
+        std::cout << "C API func = 3" << std::endl;
+        return openWQ->run_time_end();
+    
+    } 
+    
+    std::cout << "C API func = ERROR" << std::endl;
+    return -1;
+    
 }
 

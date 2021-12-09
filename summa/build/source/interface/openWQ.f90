@@ -3,12 +3,6 @@ module openwq
  USE, intrinsic :: iso_c_binding
  private
  public :: ClassWQ_OpenWQ
-!  public :: InitObj
-!  public :: Decl
-!  public :: RunTimeStart
-!  public :: RunSpace
-!  public :: RunTimeEnd
-
  include "openWQInterface.f90"
 
  type ClassWQ_OpenWQ
@@ -18,6 +12,7 @@ module openwq
  contains
    !  procedure :: get_num => openWQ_get_num
     procedure :: decl => openWQ_init
+    procedure :: run => openWQ_run
  end type
 
  interface ClassWQ_OpenWQ
@@ -32,13 +27,8 @@ module openwq
         create_openwq%ptr = create_openwq_c(num)
     end function
 
-   !  integer function openWQ_get_num(this)
-   !      implicit none
-   !      class(ClassWQ_OpenWQ) :: this
-   !      openwq_get_num = openwq_get_num_c(this%ptr)
-   !  end function
-
     ! supposed to be decl but needed to openWQ_decl in the interface file
+    ! returns integer of either a failure(-1) or success(0)
    integer function openWQ_init(this)
       implicit none
       class(ClassWQ_OpenWQ) :: this
@@ -46,35 +36,19 @@ module openwq
     end function
 !  ! Globaly accessible variable
 
-!  type(c_ptr), save, public :: openWQ_obj
+   ! The func variables denotes which c++ function to call
+   ! This is needed b/c we cannot create interface functions in
+   ! Fortran that take the same variables
+   ! func = 1: OpenWQ::run_time_start
+   ! func = 2: OpenWQ::run_space
+   ! func = 3: OpenWQ::run_time_end
+   integer function openWQ_run(this, func)
+      implicit none
+      class(ClassWQ_OpenWQ) :: this
+      integer, intent(in)   :: func
+      openWQ_run = openwq_run_c(this%ptr, func)
+   end function
 
-    
-!     subroutine Decl(num_hrus)
-!        integer(c_int), intent(in) :: num_hrus
-!        ! Might need this eventually
-!        ! if (c_associated(openWQ_obj)
-!        ! endif
-!        call openWQ_decl(openWQ_obj, num_hrus)
-   
-!        return
-!     end subroutine Decl
-   
-!     subroutine RunTimeStart()
-!        call openWQ_run_time_start(openWQ_obj)
-!        return
-!     end subroutine
-   
-!     subroutine RunSpace()
-   
-!        call openWQ_run_space(openWQ_obj)
-    
-!     end subroutine RunSpace
-   
-!     subroutine RunTimeEnd()
-   
-!        call openWQ_run_time_end(openWQ_obj)
-    
-!     end subroutine RunTimeEnd
 
 
 end module openwq
