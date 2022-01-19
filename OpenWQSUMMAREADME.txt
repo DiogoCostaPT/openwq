@@ -13,5 +13,17 @@ The location of calls to openWQ are located in the folllowing:
 Notes on the interface:
     - Creating seperate function calls on the fortran side is not possible 
     due to the fact that each call takes exaclty the same parameters. Therefore 
-    the interface function for running openWQ takes an integer argument to denote 
+    the interface function for running openWQ takes an integer argument to denote
     which OpenWQ method to call. 
+
+
+Interface Functions:
+    - These functions are located in summa/interface
+
+
+
+Program Trace:
+  - Program starts in Summa with the first call to openWQ coming in summa_init.f90 (NEAR END OF FILE)
+    - Here is where we initalize the openWQ object in fortran
+        - This is a c++ object that Fortran holds a reference for.
+    - Summa then calls decl()

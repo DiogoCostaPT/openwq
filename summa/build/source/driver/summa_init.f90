@@ -344,7 +344,6 @@ contains
  hruCount = sum( gru_struc(:)%hruCount )
  openwq_obj = ClassWQ_OpenWQ(hruCount)
  err=openwq_obj%decl()
- err=openwq_obj%decl()
  ! end associate statements
  end associate summaVars
 

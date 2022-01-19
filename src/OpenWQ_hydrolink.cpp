@@ -52,7 +52,8 @@ int ClassWQ_OpenWQ::decl() {
         std::cout << "Host Model size = 0" << std::endl;
 
         OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(0,"SWE",numHRU,1,1));
-        std::cout << OpenWQ_hostModelconfig_ref->HydroComp.size() << std::endl;
+        std::cout << "Host Model Size is now = " << 
+            OpenWQ_hostModelconfig_ref->HydroComp.size() << std::endl;
 
         OpenWQ_vars_ref = new OpenWQ_vars(OpenWQ_hostModelconfig_ref->HydroComp.size());
         
@@ -73,6 +74,9 @@ int ClassWQ_OpenWQ::decl() {
             *OpenWQ_sinksource_ref,        // sink and source modules)
             *OpenWQ_output_ref);
     }
+
+    // Testing output to know when the function exits
+    std::cout << "Exiting decl Function" << std::endl;
 
     return 0;
 }

@@ -9,29 +9,29 @@
 		"USE_NUM_THREADS": "all" // "all" or integer of number of threads to use (e.g., 10)
 	},
     "OPENWQ_INPUT": {
-    	"CONFIG_FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_config.json",
-        //"BGC_CYCLES_FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_BGC_cycling.json",
+    	"CONFIG_FILEPATH": "/code/bin/openWQ_config.json",
+        "BGC_CYCLES_FILEPATH": "/code/bin/openWQ_BGC_cycling.json",
     	"SINKSOURCE_FILEPATHS": {
     		"1": {
     			"LABEL": "fertilizer_N",
-    			"FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_source_fertN.json"
+    			"FILEPATH": "/code/bin/openWQ_source_fertN.json"
     		},
     		"2": {
     			"LABEL": "fertilizer_P",
-    			"FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_source_fertP.json"
+    			"FILEPATH": "/code/bin/openWQ_source_fertP.json"
     		}
     	}
 	},
 	"MODULES": {
 		"BIOGEOCHEMISTRY":{
 			"MODULE_NAME": "OPENWQ_NATIVE_BGC",
-			//"MODULE_CONFIG_FILE": "build/SWAT_Soil_BGC.json",
-			"MODULE_CONFIG_FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_MODULE_BGC_cycling.json"
+			"MODULE_CONFIG_FILE": "/code/bin/SWAT_Soil_BGC.json",
+			"MODULE_CONFIG_FILEPATH": "/code/bin/openWQ_MODULE_BGC_cycling.json"
 		},
 		"TRANSPORT_EROSION":{
 			"MODULE_NAME": "OPENWQ_NATIVE_TE_NO_ADVDISP", // needed for CRHM because it already uses its native transport routined
-			//"MODULE_CONFIG_FILE": "build/SWAT_Soil_BGC.json",
-			"MODULE_CONFIG_FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_MODULE_TE.json"	
+			"MODULE_CONFIG_FILE": "/code/bin/SWAT_Soil_BGC.json",
+			"MODULE_CONFIG_FILEPATH": "/code/bin/openWQ_MODULE_TE.json"	
 		}
 	},
 	"OPENWQ_OUTPUT": {

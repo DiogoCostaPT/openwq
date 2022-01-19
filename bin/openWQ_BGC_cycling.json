@@ -16,7 +16,7 @@
                 "10": "labile_orgP",
                 "11": "refractory_orgP"
             },
-            "BGC_general_mobile_species": [1,2,4,7,8,9]
+            "MOBILE_SPECIES": [1,2,4,7,8,9]
         },
         "CYCLING_FRAMEWORKS": {
             "N_inorg": {
