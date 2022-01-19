@@ -1,0 +1,29 @@
+{
+    
+        "MODULE_NAME": "OPENWQ_NATIVE_TE_NO_ADVDISP",
+    
+        "TRANSPORT_CONFIGURATION": {
+            "disperson_x_m2/s": 0.3,
+            "disperson_y_m2/s": 0.3,
+            "disperson_z_m2/s": 0.3
+        },
+        // Internal mobilization module
+        "INTMOB_CONFIGURATION": {
+            "K_val": [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
+        },
+        // Boundary mixing module
+        "BOUNDMIX_CONFIGURATION":{
+            "1": {
+                "direction": "z",
+                "upper_compartment": "RUNOFF",
+                "lower_compartment": "SURFSOIL",
+                "K_val": 0.01
+            },
+            "2": {
+                "direction": "z",
+                "upper_compartment": "SSR",
+                "lower_compartment": "SURFSOIL",
+                "K_val": 0.01
+            }
+        }
+    }

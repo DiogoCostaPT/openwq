@@ -9,55 +9,66 @@
 		"USE_NUM_THREADS": "all" // "all" or integer of number of threads to use (e.g., 10)
 	},
     "OPENWQ_INPUT": {
-    	"CONFIG_FILEPATH": "/code/bin/openWQ_config.json",
-    	//"BGC_CYCLES_FILEPATH": "build/SWAT_Soil_BGC.json",
-        "BGC_CYCLES_FILEPATH": "/code/bin/openWQ_BGC_cycling.json",
-    	"SINKSOURCE_FILES": {
+    	"CONFIG_FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_config.json",
+        //"BGC_CYCLES_FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_BGC_cycling.json",
+    	"SINKSOURCE_FILEPATHS": {
     		"1": {
     			"LABEL": "fertilizer_N",
-    			"FILEPATH": "/code/bin/openWQ_source_fertN.json"
+    			"FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_source_fertN.json"
     		},
     		"2": {
     			"LABEL": "fertilizer_P",
-    			"FILEPATH": "/code/bin/openWQ_source_fertP.json"
+    			"FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_source_fertP.json"
     		}
     	}
+	},
+	"MODULES": {
+		"BIOGEOCHEMISTRY":{
+			"MODULE_NAME": "OPENWQ_NATIVE_BGC",
+			//"MODULE_CONFIG_FILE": "build/SWAT_Soil_BGC.json",
+			"MODULE_CONFIG_FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_MODULE_BGC_cycling.json"
+		},
+		"TRANSPORT_EROSION":{
+			"MODULE_NAME": "OPENWQ_NATIVE_TE_NO_ADVDISP", // needed for CRHM because it already uses its native transport routined
+			//"MODULE_CONFIG_FILE": "build/SWAT_Soil_BGC.json",
+			"MODULE_CONFIG_FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_MODULE_TE.json"	
+		}
 	},
 	"OPENWQ_OUTPUT": {
 		"RESULTS_FOLDERPATH": "Output_OpenWQ",
         "FORMAT": "HDF5", // HDF5, CSV, VTK
         // "CHEMICAL_SPECIES":["NO3","NH4","N2","DON","labile_orgN","refractory_orgN","SRP","DOP","partP","labile_orgP","refractory_orgP"],
-        "CHEMICAL_SPECIES":["NO3","NH4"],
+        "CHEMICAL_SPECIES":["NO3","NH4","N2","DON"],
 		"UNITS":"kg",
 		"COMPARTMENTS_AND_CELLS": {
-			//"SWE": {
-			//	"1": [304,1,1],
-			//	"2": [281,1,1]
-			//},
-			"RUNOFF": {
+			"SWE": {
 				"1": [304,1,1],
 				"2": [281,1,1]
-			},
+			}
+			// "RUNOFF": {
+			// 	"1": [304,1,1],
+			// 	"2": [281,1,1]
+			// },
 			//"SD": {
 			//	"1": [304,1,1],
 			//	"2": [281,1,1]
 			//},
-			"SOIL_RECHR": {
-				"1": [304,1,1],
-				"2": [281,1,1]
-			},
-			"SOIL_LOWER": {
-				"1": [304,1,1],
-				"2": [281,1,1]
-			//},
-			//"SURFSOIL": {
-			//	"1": [304,1,1],
-			//	"2": [281,1,1]
+			// "SOIL_RECHR": {
+			// 	"1": [304,1,1],
+			// 	"2": [281,1,1]
+			// },
+			// "SOIL_LOWER": {
+			// 	"1": [304,1,1],
+			// 	"2": [281,1,1]
+			// },
+			// "SURFSOIL": {
+			// 	"1": [304,1,1],
+			// 	"2": [281,1,1]
 			//},
 			//"GW": {
 			//	"1": [304,1,1],
 			//	"2": [281,1,1]
-			}
+			// }
 		},
 		"TIMESTEP": [15,"min"]
 	}

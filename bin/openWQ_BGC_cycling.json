@@ -1,148 +1,151 @@
 {
-    "CHEMICAL_SPECIES": {
-        "LIST": {
-            "1": "NO3",
-            "2": "NH4",
-            "3": "N2",
-            "4": "DON",
-            "5": "labile_orgN",
-            "6": "refractory_orgN",
-            "7": "SRP",
-            "8": "DOP",
-            "9": "partP",
-            "10": "labile_orgP",
-            "11": "refractory_orgP"
+    
+        "MODULE_NAME": "OPENWQ_NATIVE_BGC",
+    
+        "CHEMICAL_SPECIES": {
+            "LIST": {
+                "1": "NO3",
+                "2": "NH4",
+                "3": "N2",
+                "4": "DON",
+                "5": "labile_orgN",
+                "6": "refractory_orgN",
+                "7": "SRP",
+                "8": "DOP",
+                "9": "partP",
+                "10": "labile_orgP",
+                "11": "refractory_orgP"
+            },
+            "BGC_general_mobile_species": [1,2,4,7,8,9]
         },
-        "MOBILE_SPECIES": [1,2,4,7,8,9]
-    },
-    "CYCLING_FRAMEWORKS": {
-        "N_inorg": {
-            "LIST_TRANSFORMATIONS":{
-                "1": "nitrification",
-                "2": "denitrification"
-            },
-            "1":{
-                "CONSUMED": "NH4",
-                "PRODUCED": "NO3",
-                "KINETICS_PER_DAY": "NH4 * k", // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
-                "PARAMETER_NAMES": ["k","p"],
-                "PARAMETER_VALUES":{
-                    "k": 0.01,
-                    "p": 10
+        "CYCLING_FRAMEWORKS": {
+            "N_inorg": {
+                "LIST_TRANSFORMATIONS":{
+                    "1": "nitrification",
+                    "2": "denitrification"
+                },
+                "1":{
+                    "CONSUMED": "NH4",
+                    "PRODUCED": "NO3",
+                    "KINETICS_PER_DAY": "NH4 * k", // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                    "PARAMETER_NAMES": ["k","p"],
+                    "PARAMETER_VALUES":{
+                        "k": 0.01,
+                        "p": 10
+                    }
+                },
+                "2":{
+                    "CONSUMED": "NO3",
+                    "PRODUCED": "N2",
+                    "KINETICS_PER_DAY": "NO3 * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                    "PARAMETER_NAMES": ["k","p"],
+                    "PARAMETER_VALUES":{
+                        "k": 0.01,
+                        "p": 10
+                    }
                 }
             },
-            "2":{
-                "CONSUMED": "NO3",
-                "PRODUCED": "N2",
-                "KINETICS_PER_DAY": "NO3 * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
-                "PARAMETER_NAMES": ["k","p"],
-                "PARAMETER_VALUES":{
-                    "k": 0.01,
-                    "p": 10
-                }
-            }
-        },
-        "P_inorg": {
-            "LIST_TRANSFORMATIONS":{
-                "1": "dynamic_equilibrium"
-            },
-            "1":{
-                "CONSUMED": "SRP",
-                "PRODUCED": "partP",
-                "KINETICS_PER_DAY": "SRP *+ k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
-                "PARAMETER_NAMES": ["k"],
-                "PARAMETER_VALUES":{
-                    "k": 0.01
-                }
-            }
-        },
-        "N_soil_org": {
-            "LIST_TRANSFORMATIONS":{
-                "1": "degradation",
-                "2": "dissolution_1",
-                "3": "dissolution_2",
-                "4": "mineralization"
-            },
-            "1":{
-                "CONSUMED": "refractory_orgN",
-                "PRODUCED": "labile_orgN",
-                "KINETICS_PER_DAY": "refractory_orgN * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
-                "PARAMETER_NAMES": ["k"],
-                "PARAMETER_VALUES":{
-                    "k": 0.01
+            "P_inorg": {
+                "LIST_TRANSFORMATIONS":{
+                    "1": "dynamic_equilibrium"
+                },
+                "1":{
+                    "CONSUMED": "SRP",
+                    "PRODUCED": "partP",
+                    "KINETICS_PER_DAY": "SRP *+ k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                    "PARAMETER_NAMES": ["k"],
+                    "PARAMETER_VALUES":{
+                        "k": 0.01
+                    }
                 }
             },
-            "2":{
-                "CONSUMED": "refractory_orgN",
-                "PRODUCED": "DON",
-                "KINETICS_PER_DAY": "refractory_orgN * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
-                "PARAMETER_NAMES": ["k"],
-                "PARAMETER_VALUES":{
-                    "k": 0.01
+            "N_soil_org": {
+                "LIST_TRANSFORMATIONS":{
+                    "1": "degradation",
+                    "2": "dissolution_1",
+                    "3": "dissolution_2",
+                    "4": "mineralization"
+                },
+                "1":{
+                    "CONSUMED": "refractory_orgN",
+                    "PRODUCED": "labile_orgN",
+                    "KINETICS_PER_DAY": "refractory_orgN * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                    "PARAMETER_NAMES": ["k"],
+                    "PARAMETER_VALUES":{
+                        "k": 0.01
+                    }
+                },
+                "2":{
+                    "CONSUMED": "refractory_orgN",
+                    "PRODUCED": "DON",
+                    "KINETICS_PER_DAY": "refractory_orgN * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                    "PARAMETER_NAMES": ["k"],
+                    "PARAMETER_VALUES":{
+                        "k": 0.01
+                    }
+                },
+                "3":{
+                    "CONSUMED": "labile_orgN",
+                    "PRODUCED": "DON",
+                    "KINETICS_PER_DAY": "labile_orgN * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                    "PARAMETER_NAMES": ["k"],
+                    "PARAMETER_VALUES":{
+                        "k": 0.01
+                    }
+                },
+                "4":{
+                    "CONSUMED": "labile_orgN",
+                    "PRODUCED": "NH4",
+                    "KINETICS_PER_DAY": "labile_orgN * k", // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                    "PARAMETER_NAMES": ["k"],
+                    "PARAMETER_VALUES":{
+                        "k": 0.01
+                    }
                 }
             },
-            "3":{
-                "CONSUMED": "labile_orgN",
-                "PRODUCED": "DON",
-                "KINETICS_PER_DAY": "labile_orgN * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
-                "PARAMETER_NAMES": ["k"],
-                "PARAMETER_VALUES":{
-                    "k": 0.01
-                }
-            },
-            "4":{
-                "CONSUMED": "labile_orgN",
-                "PRODUCED": "NH4",
-                "KINETICS_PER_DAY": "labile_orgN * k", // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
-                "PARAMETER_NAMES": ["k"],
-                "PARAMETER_VALUES":{
-                    "k": 0.01
-                }
-            }
-        },
-        "P_soil_org": {
-            "LIST_TRANSFORMATIONS":{
-                "1": "degradation",
-                "2": "dissolution_1",
-                "3": "dissolution_2",
-                "4": "mineralization"
-            },
-            "1":{
-                "CONSUMED": "refractory_orgP",
-                "PRODUCED": "labile_orgP",
-                "KINETICS_PER_DAY": "refractory_orgP * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
-                "PARAMETER_NAMES": ["k"],
-                "PARAMETER_VALUES":{
-                    "k": 0.01
-                }
-            },
-            "2":{
-                "CONSUMED": "refractory_orgP",
-                "PRODUCED": "DOP",
-                "KINETICS_PER_DAY": "refractory_orgP * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
-                "PARAMETER_NAMES": ["k"],
-                "PARAMETER_VALUES":{
-                    "k": 0.01
-                }
-            },
-            "3":{
-                "CONSUMED": "labile_orgP",
-                "PRODUCED": "DOP",
-                "KINETICS_PER_DAY": "labile_orgP * k", // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
-                "PARAMETER_NAMES": ["k"],
-                "PARAMETER_VALUES":{
-                    "k": 0.01
-                }
-            },
-            "4":{
-                "CONSUMED": "labile_orgP",
-                "PRODUCED": "SRP",
-                "KINETICS_PER_DAY": "labile_orgP * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
-                "PARAMETER_NAMES": ["k"],
-                "PARAMETER_VALUES":{
-                    "k": 0.01
+            "P_soil_org": {
+                "LIST_TRANSFORMATIONS":{
+                    "1": "degradation",
+                    "2": "dissolution_1",
+                    "3": "dissolution_2",
+                    "4": "mineralization"
+                },
+                "1":{
+                    "CONSUMED": "refractory_orgP",
+                    "PRODUCED": "labile_orgP",
+                    "KINETICS_PER_DAY": "refractory_orgP * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                    "PARAMETER_NAMES": ["k"],
+                    "PARAMETER_VALUES":{
+                        "k": 0.01
+                    }
+                },
+                "2":{
+                    "CONSUMED": "refractory_orgP",
+                    "PRODUCED": "DOP",
+                    "KINETICS_PER_DAY": "refractory_orgP * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                    "PARAMETER_NAMES": ["k"],
+                    "PARAMETER_VALUES":{
+                        "k": 0.01
+                    }
+                },
+                "3":{
+                    "CONSUMED": "labile_orgP",
+                    "PRODUCED": "DOP",
+                    "KINETICS_PER_DAY": "labile_orgP * k", // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                    "PARAMETER_NAMES": ["k"],
+                    "PARAMETER_VALUES":{
+                        "k": 0.01
+                    }
+                },
+                "4":{
+                    "CONSUMED": "labile_orgP",
+                    "PRODUCED": "SRP",
+                    "KINETICS_PER_DAY": "labile_orgP * k",  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                    "PARAMETER_NAMES": ["k"],
+                    "PARAMETER_VALUES":{
+                        "k": 0.01
+                    }
                 }
             }
         }
     }
-}
