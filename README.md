@@ -11,7 +11,7 @@
 ## Introduction
 * Soure code for the multi-chemistry, multi-scale OpenWQ modelling framework.
 * Reading material:
-	* `Documentation <https://openwq.readthedocs.io>` 
+	* `Documentation <https://openwq.readthedocs.io>`__
 	* Articles: Coming soon!
 <!-- Sample syntax from FLUXOS README
 	* Theoretical background (original FLUXOS):
