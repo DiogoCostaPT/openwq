@@ -7,15 +7,21 @@ Linux
 	``sudo apt-get install liblapack-dev``
 	
 	``sudo apt-get install libblas-dev``
+
+	``sudo apt-get install libopenblas-dev``
 	
 	``sudo apt-get install libboost-dev``
 
-	You could download the Armadillo with the apt package manager, but the version provided is really old, which is lower than our required version 9.9. So Download the package from the website 
+	You could download the Armadillo with the apt package manager, but the version provided is really old, which is lower than our required version 10.3. So Download the package from the website 
 	
 	arma.sourceforge.net/download.html
 	
-	Extract the package and go to the armadillo folder, then run:
+	Extract the package and go to the armadillo folder, then open the ``CMakeList.txt`` file. Activate ``HDF5`` support by changing:
+
+	``set(ARMA_USE_HDF5_ALT   false)`` to ``set(ARMA_USE_HDF5_ALT   true)``
 	
+	Then open a terminal and run:
+
 	``cmake .``
 	
 	``make``
@@ -27,6 +33,10 @@ Linux
 	You could directly install OpenMP with the command below, which meets our version requirement 
 	
 	``sudo apt-get install libomp-dev``
+
+3. HDF5
+	You  could install 
+
 	
 3.cmake
 	You could download the cmake package from the website

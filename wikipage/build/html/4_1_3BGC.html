@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biogeochemistry file(s) &mdash; OpenWQ 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Source/Sink file(s)" href="4_1_4Source.html" />
+    <link rel="prev" title="Configuration file" href="4_1_2Config.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> OpenWQ
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1_0_Home.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_0_Installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="4_1_In.html">Input</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="4_1_0JSON_format.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_1_1Master.html">Master file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_1_2Config.html">Configuration file</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Biogeochemistry file(s)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_1_4Source.html">Source/Sink file(s)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4_2_out.html">Output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_3_Coupler_guide.html">How to couple to hydro-models?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Developer: Join us!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_0_Reference.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OpenWQ</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="4_1_In.html">Input</a> &raquo;</li>
+      <li>Biogeochemistry file(s)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/4_1_3BGC.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="biogeochemistry-file-s">
+<h1>Biogeochemistry file(s)<a class="headerlink" href="#biogeochemistry-file-s" title="Permalink to this headline"></a></h1>
+<p>The biogeochemical cycling file is a JSON file that defines both the chemical species to include in the model configuration and the transformations that define each cycling framework.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 24%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head" colspan="2"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CHEMICAL_SPECIES</p></td>
+<td colspan="2"><p>Define chemical species to model and indicate if mobile</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>LIST</p></td>
+<td><p>Numbered list of chemical species,
+e.g., <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;:&quot;NO3&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>MOBILE_SPECIES</p></td>
+<td><p>List of numbers of mobile species</p></td>
+</tr>
+<tr class="row-odd"><td><p>CYCLING_FRAMEWORK</p></td>
+<td colspan="2"><p>Define each cycling framework</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>Name</p></td>
+<td><p>Name given to framework e.g., <code class="docutils literal notranslate"><span class="pre">N_inorg</span></code></p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>LIST_TRANSFORMATIONS</p></td>
+<td><p>Numbered list of transformations,
+e.g., <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;:&quot;nitrification&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>CONSUMED</p></td>
+<td><p>Species consumed. e.g, <code class="docutils literal notranslate"><span class="pre">&quot;NH4&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>PRODUCED</p></td>
+<td><p>Species produced, e.g., <code class="docutils literal notranslate"><span class="pre">&quot;NO3&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>KINETICS_PER_DAY</p></td>
+<td><p>Kinetics equation for transformation</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>PARAMETER_NAMES</p></td>
+<td><p>List of parameter names
+in transformation equation</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>PARAMETER_VALUES</p></td>
+<td><p>Define parameter values for equation in
+format <code class="docutils literal notranslate"><span class="pre">&quot;name&quot;:value</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>The JSON file supports C/C++ syntax for comments: single-line comment (<code class="docutils literal notranslate"><span class="pre">//</span></code>) or comment blocks (<code class="docutils literal notranslate"><span class="pre">/*</span></code> and <code class="docutils literal notranslate"><span class="pre">*/</span></code>).</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
+    &quot;CHEMICAL_SPECIES&quot;: {
+        &quot;LIST&quot;: {
+            &quot;1&quot;: &quot;NO3&quot;,
+            &quot;2&quot;: &quot;NH4&quot;,
+            &quot;3&quot;: &quot;N2&quot;,
+            &quot;4&quot;: &quot;DON&quot;,
+            &quot;5&quot;: &quot;labile_orgN&quot;,
+            &quot;6&quot;: &quot;refractory_orgN&quot;,
+            &quot;7&quot;: &quot;SRP&quot;,
+            &quot;8&quot;: &quot;DOP&quot;,
+            &quot;9&quot;: &quot;partP&quot;,
+            &quot;10&quot;: &quot;labile_orgP&quot;,
+            &quot;11&quot;: &quot;refractory_orgP&quot;
+        },
+        &quot;MOBILE_SPECIES&quot;: [1,2,4,7,8,9]
+    },
+    &quot;CYCLING_FRAMEWORKS&quot;: {
+        &quot;N_inorg&quot;: {
+            &quot;LIST_TRANSFORMATIONS&quot;:{
+                &quot;1&quot;: &quot;nitrification&quot;,
+                &quot;2&quot;: &quot;denitrification&quot;
+            },
+            &quot;1&quot;:{
+                &quot;CONSUMED&quot;: &quot;NH4&quot;,
+                &quot;PRODUCED&quot;: &quot;NO3&quot;,
+                &quot;KINETICS_PER_DAY&quot;: &quot;NH4 * k&quot;, // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                &quot;PARAMETER_NAMES&quot;: [&quot;k&quot;,&quot;p&quot;],
+                &quot;PARAMETER_VALUES&quot;:{
+                    &quot;k&quot;: 0.01,
+                    &quot;p&quot;: 10
+                }
+            },
+            &quot;2&quot;:{
+                &quot;CONSUMED&quot;: &quot;NO3&quot;,
+                &quot;PRODUCED&quot;: &quot;N2&quot;,
+                &quot;KINETICS_PER_DAY&quot;: &quot;NO3 * k&quot;,  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                &quot;PARAMETER_NAMES&quot;: [&quot;k&quot;,&quot;p&quot;],
+                &quot;PARAMETER_VALUES&quot;:{
+                    &quot;k&quot;: 0.01,
+                    &quot;p&quot;: 10
+                }
+            }
+        },
+        &quot;P_inorg&quot;: {
+            &quot;LIST_TRANSFORMATIONS&quot;:{
+                &quot;1&quot;: &quot;dynamic_equilibrium&quot;
+            },
+            &quot;1&quot;:{
+                &quot;CONSUMED&quot;: &quot;SRP&quot;,
+                &quot;PRODUCED&quot;: &quot;partP&quot;,
+                &quot;KINETICS_PER_DAY&quot;: &quot;SRP *+ k&quot;,  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                &quot;PARAMETER_NAMES&quot;: [&quot;k&quot;],
+                &quot;PARAMETER_VALUES&quot;:{
+                    &quot;k&quot;: 0.01
+                }
+            }
+        },
+        &quot;N_soil_org&quot;: {
+            &quot;LIST_TRANSFORMATIONS&quot;:{
+                &quot;1&quot;: &quot;degradation&quot;,
+                &quot;2&quot;: &quot;dissolution_1&quot;,
+                &quot;3&quot;: &quot;dissolution_2&quot;,
+                &quot;4&quot;: &quot;mineralization&quot;
+            },
+            &quot;1&quot;:{
+                &quot;CONSUMED&quot;: &quot;refractory_orgN&quot;,
+                &quot;PRODUCED&quot;: &quot;labile_orgN&quot;,
+                &quot;KINETICS_PER_DAY&quot;: &quot;refractory_orgN * k&quot;,  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                &quot;PARAMETER_NAMES&quot;: [&quot;k&quot;],
+                &quot;PARAMETER_VALUES&quot;:{
+                    &quot;k&quot;: 0.01
+                }
+            },
+            &quot;2&quot;:{
+                &quot;CONSUMED&quot;: &quot;refractory_orgN&quot;,
+                &quot;PRODUCED&quot;: &quot;DON&quot;,
+                &quot;KINETICS_PER_DAY&quot;: &quot;refractory_orgN * k&quot;,  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                &quot;PARAMETER_NAMES&quot;: [&quot;k&quot;],
+                &quot;PARAMETER_VALUES&quot;:{
+                    &quot;k&quot;: 0.01
+                }
+            },
+            &quot;3&quot;:{
+                &quot;CONSUMED&quot;: &quot;labile_orgN&quot;,
+                &quot;PRODUCED&quot;: &quot;DON&quot;,
+                &quot;KINETICS_PER_DAY&quot;: &quot;labile_orgN * k&quot;,  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                &quot;PARAMETER_NAMES&quot;: [&quot;k&quot;],
+                &quot;PARAMETER_VALUES&quot;:{
+                    &quot;k&quot;: 0.01
+                }
+            },
+            &quot;4&quot;:{
+                &quot;CONSUMED&quot;: &quot;labile_orgN&quot;,
+                &quot;PRODUCED&quot;: &quot;NH4&quot;,
+                &quot;KINETICS_PER_DAY&quot;: &quot;labile_orgN * k&quot;, // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                &quot;PARAMETER_NAMES&quot;: [&quot;k&quot;],
+                &quot;PARAMETER_VALUES&quot;:{
+                    &quot;k&quot;: 0.01
+                }
+            }
+        },
+        &quot;P_soil_org&quot;: {
+            &quot;LIST_TRANSFORMATIONS&quot;:{
+                &quot;1&quot;: &quot;degradation&quot;,
+                &quot;2&quot;: &quot;dissolution_1&quot;,
+                &quot;3&quot;: &quot;dissolution_2&quot;,
+                &quot;4&quot;: &quot;mineralization&quot;
+            },
+            &quot;1&quot;:{
+                &quot;CONSUMED&quot;: &quot;refractory_orgP&quot;,
+                &quot;PRODUCED&quot;: &quot;labile_orgP&quot;,
+                &quot;KINETICS_PER_DAY&quot;: &quot;refractory_orgP * k&quot;,  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                &quot;PARAMETER_NAMES&quot;: [&quot;k&quot;],
+                &quot;PARAMETER_VALUES&quot;:{
+                    &quot;k&quot;: 0.01
+                }
+            },
+            &quot;2&quot;:{
+                &quot;CONSUMED&quot;: &quot;refractory_orgP&quot;,
+                &quot;PRODUCED&quot;: &quot;DOP&quot;,
+                &quot;KINETICS_PER_DAY&quot;: &quot;refractory_orgP * k&quot;,  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                &quot;PARAMETER_NAMES&quot;: [&quot;k&quot;],
+                &quot;PARAMETER_VALUES&quot;:{
+                    &quot;k&quot;: 0.01
+                }
+            },
+            &quot;3&quot;:{
+                &quot;CONSUMED&quot;: &quot;labile_orgP&quot;,
+                &quot;PRODUCED&quot;: &quot;DOP&quot;,
+                &quot;KINETICS_PER_DAY&quot;: &quot;labile_orgP * k&quot;, // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                &quot;PARAMETER_NAMES&quot;: [&quot;k&quot;],
+                &quot;PARAMETER_VALUES&quot;:{
+                    &quot;k&quot;: 0.01
+                }
+            },
+            &quot;4&quot;:{
+                &quot;CONSUMED&quot;: &quot;labile_orgP&quot;,
+                &quot;PRODUCED&quot;: &quot;SRP&quot;,
+                &quot;KINETICS_PER_DAY&quot;: &quot;labile_orgP * k&quot;,  // adds to produced, removes from consumed (needs to be positive, otherwise it will be zeroed)
+                &quot;PARAMETER_NAMES&quot;: [&quot;k&quot;],
+                &quot;PARAMETER_VALUES&quot;:{
+                    &quot;k&quot;: 0.01
+                }
+            }
+        }
+    }
+}
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="4_1_2Config.html" class="btn btn-neutral float-left" title="Configuration file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="4_1_4Source.html" class="btn btn-neutral float-right" title="Source/Sink file(s)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Diogo Costa.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
