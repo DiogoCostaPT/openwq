@@ -1,4 +1,4 @@
-Master configuration file
+Master file
 ==================================
 
 The master configuration is a JSON file that provides OpenWQ with information and instructions to run a simulation. It contains key-values pairs defined below: 

@@ -1,3 +1,13 @@
 Overview
 ==================================
 
+OpenWQ is a multi-scale, multi-chemistry modelling framework.
+It aims to be fast, free, and extendable.
+
+OpenWQ was specifically designed to promote flexible collaboration between modellers, scientists and stakeholders in the design and implementation of biogeochemical reaction networks (easily customizable via `rich JSON-based files <https://en.wikipedia.org/wiki/JSON#:~:text=JSON%20(JavaScript%20Object%20Notation%2C%20pronounced,(or%20other%20serializable%20values).>`_) in existing hydrological, hydrodynamic and groundwater models (1D to 3D models). The model is written in C++ and benefits from the powerful Armadillo template-based \CC library for linear algebra  `(Sanderson and Curtin, 2016) <https://joss.theoj.org/papers/10.21105/joss.00026>`_ that enables the use of modern, flexible, efficient and compact data structures.
+
+The OpenWQ system stems from previous models developed by `Environment and Climate Change Canada <https://www.canada.ca/en/environment-climate-change.html>`_ and the `University of Saskatchewan <https://www.usask.ca/>`_, particularly `CRHM-WQ <https://www.sciencedirect.com/science/article/abs/pii/S0022169421009513>`_ (Cold Regions Hydrological Model - Water Quality) that extends the original `CRHM platform <https://onlinelibrary.wiley.com/doi/10.1002/hyp.6787>`_ (hydrology) model to nitrogen and phosphorus simulations, the `WINTRA <https://onlinelibrary.wiley.com/doi/10.1002/hyp.11346>`_ framework, the multiphase multilayer `PULSE <https://www.sciencedirect.com/science/article/abs/pii/S0309170818300095>`_ snow hydrochemistry model, and the `FLUXOS-OVERLAND <agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2020WR027984>`_ model for watershed hydrodynamic-water quality simulations suitable for Prairie regions.
+
+Our vision is to provide a multi-scale, multi-chemistry OpenWQ modelling framework suitable for flexible hypothesis testing. OpenWQ does not run standalone. It runs coupled to existing hydro-models, which makes it ideal for scientists and engineers that want to enable biogeochemical modelling capabilities in their prefered modelling systems.
+
+The model is currently being coupled to `CRHM <https://research-groups.usask.ca/hydrology/modelling/crhm.php>`_, `SUMMA <https://ral.ucar.edu/solutions/products/summa>`_ and `MESH <https://research-groups.usask.ca/hydrology/modelling/mesh.php>`_. See [PLACEHOLDER for link to coupler page]

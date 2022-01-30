@@ -1,3 +1,0 @@
-Digital Elevation Model (DEM)
-==================================
-
