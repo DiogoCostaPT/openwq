@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Overview &mdash; OpenWQ 0.0.1 documentation</title>
+  <title>What do you need? &mdash; OpenWQ 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,7 +18,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API calls" href="5_3_00_APIs.html" />
+    <link rel="next" title="Steps to perform the coupling?" href="5_3_0_Coupling_steps.html" />
     <link rel="prev" title="How to couple to hydro-models?" href="5_3_Coupler_guide.html" /> 
 </head>
 
@@ -43,9 +43,15 @@
 <li class="toctree-l1"><a class="reference internal" href="3_0_Installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_1_In.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_2_out.html">Output</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="5_3_Coupler_guide.html">How to couple to hydro-models?</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="5_3_00_APIs.html">API calls</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="5_3_0_Hydro_coupled_models.html">Existing couplings</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="5_3_Coupler_guide.html">How to couple to hydro-models?</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">What do you need?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_0_Coupling_steps.html">Steps to perform the coupling?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_00_APIs.html">C++ API reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_000_Wrapper_interfaces.html">Language binding</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Developer: Join us!</a></li>
@@ -66,10 +72,11 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a> &raquo;</li>
           <li><a href="5_3_Coupler_guide.html">How to couple to hydro-models?</a> &raquo;</li>
-      <li>Overview</li>
+      <li>What do you need?</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/5_3_0_Coupling_overview.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/5_3_0_Coupling_what_do_you_need.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -77,29 +84,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h1>
+  <section id="what-do-you-need">
+<h1>What do you need?<a class="headerlink" href="#what-do-you-need" title="Permalink to this headline"></a></h1>
 <ul>
-<li><p>OpenWQ can be coupled to an existing model through the following API calls.</p>
+<li><p>OpenWQ can be coupled to an existing hydro-model through the following API calls.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">OpenWQ::decl</span></code> (<a class="reference external" href="file:///C:/Users/bewise/OpenWQ/openwq/wikipage/build/html/5_3_1_OpenWQ_decl.html">see API</a>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">OpenWQ::run_time_start</span></code> (<a class="reference external" href="file:///C:/Users/bewise/OpenWQ/openwq/wikipage/build/html/5_3_2_OpenWQ_run_time_star.html">see API.</a>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">OpenWQ::run_space</span></code> (<a class="reference external" href="file:///C:/Users/bewise/OpenWQ/openwq/wikipage/build/html/5_3_3_OpenWQ_run_space.html">see API</a>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">OpenWQ::run_time_end</span></code> (<a class="reference external" href="file:///C:/Users/bewise/OpenWQ/openwq/wikipage/build/html/5_3_4_OpenWQ_run_time_end.html">see API.</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OpenWQ::decl</span></code> (<a class="reference external" href="file:///C:/Users/bewise/OpenWQ/openwq/wikipage/build/html/5_3_1_OpenWQ_decl.html">see API reference</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OpenWQ::run_time_start</span></code> (<a class="reference external" href="file:///C:/Users/bewise/OpenWQ/openwq/wikipage/build/html/5_3_2_OpenWQ_run_time_star.html">see API reference</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OpenWQ::run_space</span></code> (<a class="reference external" href="file:///C:/Users/bewise/OpenWQ/openwq/wikipage/build/html/5_3_3_OpenWQ_run_space.html">see API reference</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OpenWQ::run_time_end</span></code> (<a class="reference external" href="file:///C:/Users/bewise/OpenWQ/openwq/wikipage/build/html/5_3_4_OpenWQ_run_time_end.html">see API reference</a>)</p></li>
 </ul>
 </div></blockquote>
 </li>
-<li><p>How to perform the coupling?</p></li>
-</ul>
-<p>Identify the following components of your hydro-model:</p>
-<img alt="coupling_steps_1.jpg" src="coupling_steps_1.jpg" />
-<p>OpenWQ APIs need to be called from the following hydro-model components/functions (refer to image above):</p>
-<ul class="simple">
-<li><p>API 1 (<code class="docutils literal notranslate"><span class="pre">OpenWQ::decl</span></code>): should be called from the main host-model <code class="docutils literal notranslate"><span class="pre">CONFIGURATION</span></code> function/block, before the time and space loops are initiated</p></li>
-<li><p>API 2 (<code class="docutils literal notranslate"><span class="pre">OpenWQ::run_time_start</span></code>): should be called from the host-model function where the runtime workflow is located at <code class="docutils literal notranslate"><span class="pre">SIMULATION</span> <span class="pre">&gt;</span> <span class="pre">TIME</span> <span class="pre">LOOP</span> <span class="pre">&gt;</span> <span class="pre">Before</span> <span class="pre">space</span> <span class="pre">loop</span></code></p></li>
-<li><p>API 3 (<code class="docutils literal notranslate"><span class="pre">OpenWQ::run_space</span></code>): should be called from main host-model function/block within the <code class="docutils literal notranslate"><span class="pre">SPACE</span> <span class="pre">LOOP</span></code></p></li>
-<li><p>API 4 (<code class="docutils literal notranslate"><span class="pre">OpenWQ::run_time_end</span></code>): should be called from the host-model function/bock where the runtime workflow is located at <code class="docutils literal notranslate"><span class="pre">SIMULATION</span> <span class="pre">&gt;</span> <span class="pre">TIME</span> <span class="pre">LOOP</span> <span class="pre">&gt;</span> <span class="pre">After</span> <span class="pre">space</span> <span class="pre">loop</span></code></p></li>
 </ul>
 </section>
 
@@ -108,7 +105,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="5_3_Coupler_guide.html" class="btn btn-neutral float-left" title="How to couple to hydro-models?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="5_3_00_APIs.html" class="btn btn-neutral float-right" title="API calls" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="5_3_0_Coupling_steps.html" class="btn btn-neutral float-right" title="Steps to perform the coupling?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
