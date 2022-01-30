@@ -1,4 +1,4 @@
-API calls
+C++ API reference
 ==========================================
 
 .. toctree::

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OpenWQ::run_time_start &mdash; OpenWQ 0.0.1 documentation</title>
+  <title>API 2 RunTimeLoopStart &mdash; OpenWQ 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="OpenWQ::run_space" href="5_3_3_OpenWQ_run_space.html" />
-    <link rel="prev" title="OpenWQ::decl" href="5_3_1_OpenWQ_decl.html" /> 
+    <link rel="next" title="API 3 RunSpaceStep" href="5_3_3_OpenWQ_run_space.html" />
+    <link rel="prev" title="API 1 InitialConfig" href="5_3_1_OpenWQ_decl.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,13 +43,19 @@
 <li class="toctree-l1"><a class="reference internal" href="3_0_Installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_1_In.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_2_out.html">Output</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="5_3_Coupler_guide.html">How to couple to hydro-models?</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="5_3_0_Coupling_overview.html">Overview</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="5_3_00_APIs.html">API calls</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="5_3_1_OpenWQ_decl.html"><code class="docutils literal notranslate"><span class="pre">OpenWQ::decl</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">OpenWQ::run_time_start</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="5_3_3_OpenWQ_run_space.html"><code class="docutils literal notranslate"><span class="pre">OpenWQ::run_space</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="5_3_4_OpenWQ_run_time_end.html"><code class="docutils literal notranslate"><span class="pre">OpenWQ::run_time_end</span></code></a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="5_3_0_Hydro_coupled_models.html">Existing couplings</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="5_3_Coupler_guide.html">How to couple to hydro-models?</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="5_3_0_Coupling_what_do_you_need.html">What do you need?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_0_Coupling_steps.html">Steps to perform the coupling</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="5_3_00_APIs.html">C++ API reference</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="5_3_1_OpenWQ_decl.html">API 1 <code class="docutils literal notranslate"><span class="pre">InitialConfig</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">API 2 <code class="docutils literal notranslate"><span class="pre">RunTimeLoopStart</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="5_3_3_OpenWQ_run_space.html">API 3 <code class="docutils literal notranslate"><span class="pre">RunSpaceStep</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="5_3_4_OpenWQ_run_time_end.html">API 4 <code class="docutils literal notranslate"><span class="pre">RunTimeLoopEnd</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_000_Wrapper_interfaces.html">Language binding</a></li>
 </ul>
 </li>
 </ul>
@@ -72,9 +78,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a> &raquo;</li>
           <li><a href="5_3_Coupler_guide.html">How to couple to hydro-models?</a> &raquo;</li>
-          <li><a href="5_3_00_APIs.html">API calls</a> &raquo;</li>
-      <li><code class="docutils literal notranslate"><span class="pre">OpenWQ::run_time_start</span></code></li>
+          <li><a href="5_3_00_APIs.html">C++ API reference</a> &raquo;</li>
+      <li>API 2 <code class="docutils literal notranslate"><span class="pre">RunTimeLoopStart</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/5_3_2_OpenWQ_run_time_star.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -84,20 +91,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="openwq-run-time-start">
-<h1><code class="docutils literal notranslate"><span class="pre">OpenWQ::run_time_start</span></code><a class="headerlink" href="#openwq-run-time-start" title="Permalink to this headline"></a></h1>
-<blockquote>
-<div><p>Developers should GITHUB-fork the “master” branch to carry out new developments: <a class="reference external" href="https://github.com/DiogoCostaPT/PULSE_cpp/tree/master">https://github.com/DiogoCostaPT/PULSE_cpp/tree/master</a>. However, new developers are encouraged to contact <a class="reference external" href="mailto:diogo&#46;pinhodacosta&#37;&#52;&#48;canada&#46;ca">diogo<span>&#46;</span>pinhodacosta<span>&#64;</span>canada<span>&#46;</span>ca</a> before doing this to make sure that the “master” branch is updated.</p>
-<p>For more information about the please see <a class="reference external" href="https://github.com/DiogoCostaPT/openwq/blob/master/README.md">https://github.com/DiogoCostaPT/openwq/blob/master/README.md</a></p>
-</div></blockquote>
+  <section id="api-2-runtimeloopstart">
+<h1>API 2 <code class="docutils literal notranslate"><span class="pre">RunTimeLoopStart</span></code><a class="headerlink" href="#api-2-runtimeloopstart" title="Permalink to this headline"></a></h1>
+<p>API 2 <code class="docutils literal notranslate"><span class="pre">RunTimeLoopStart</span></code> is inside Class <code class="docutils literal notranslate"><span class="pre">OpenWQ_couplercalls</span></code>.</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">void</span> <span class="n">OpenWQ_couplercalls</span><span class="p">::</span><span class="n">RunTimeLoopStart</span><span class="p">(</span>
+    <span class="n">OpenWQ_hostModelconfig</span><span class="o">&amp;</span> <span class="n">OpenWQ_hostModelconfig</span><span class="p">,</span>
+    <span class="n">OpenWQ_json</span><span class="o">&amp;</span> <span class="n">OpenWQ_json</span><span class="p">,</span>                    <span class="o">//</span> <span class="n">create</span> <span class="n">OpenWQ_json</span> <span class="n">object</span>
+    <span class="n">OpenWQ_wqconfig</span><span class="o">&amp;</span> <span class="n">OpenWQ_wqconfig</span><span class="p">,</span>            <span class="o">//</span> <span class="n">create</span> <span class="n">OpenWQ_wqconfig</span> <span class="n">object</span>
+    <span class="n">OpenWQ_units</span><span class="o">&amp;</span> <span class="n">OpenWQ_units</span><span class="p">,</span>                  <span class="o">//</span> <span class="n">functions</span> <span class="k">for</span> <span class="n">unit</span> <span class="n">conversion</span>
+    <span class="n">OpenWQ_readjson</span><span class="o">&amp;</span> <span class="n">OpenWQ_readjson</span><span class="p">,</span>            <span class="o">//</span> <span class="n">read</span> <span class="n">json</span> <span class="n">files</span>
+    <span class="n">OpenWQ_vars</span><span class="o">&amp;</span> <span class="n">OpenWQ_vars</span><span class="p">,</span>
+    <span class="n">OpenWQ_initiate</span><span class="o">&amp;</span> <span class="n">OpenWQ_initiate</span><span class="p">,</span>            <span class="o">//</span> <span class="n">initiate</span> <span class="n">modules</span>
+    <span class="n">OpenWQ_watertransp</span><span class="o">&amp;</span> <span class="n">OpenWQ_watertransp</span><span class="p">,</span>      <span class="o">//</span> <span class="n">transport</span> <span class="n">modules</span>
+    <span class="n">OpenWQ_chem</span><span class="o">&amp;</span> <span class="n">OpenWQ_chem</span><span class="p">,</span>                   <span class="o">//</span> <span class="n">biochemistry</span> <span class="n">modules</span>
+    <span class="n">OpenWQ_sinksource</span><span class="o">&amp;</span> <span class="n">OpenWQ_sinksource</span><span class="p">,</span>        <span class="o">//</span> <span class="n">sink</span> <span class="ow">and</span> <span class="n">source</span> <span class="n">modules</span><span class="p">)</span>
+    <span class="n">OpenWQ_solver</span><span class="o">&amp;</span> <span class="n">OpenWQ_solver</span><span class="p">,</span>
+    <span class="n">OpenWQ_output</span><span class="o">&amp;</span> <span class="n">OpenWQ_output</span><span class="p">,</span>
+    <span class="n">time_t</span> <span class="n">simtime</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="5_3_1_OpenWQ_decl.html" class="btn btn-neutral float-left" title="OpenWQ::decl" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="5_3_3_OpenWQ_run_space.html" class="btn btn-neutral float-right" title="OpenWQ::run_space" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="5_3_1_OpenWQ_decl.html" class="btn btn-neutral float-left" title="API 1 InitialConfig" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="5_3_3_OpenWQ_run_space.html" class="btn btn-neutral float-right" title="API 3 RunSpaceStep" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Input/Output &mdash; OpenWQ 0.0.1 documentation</title>
+  <title>CRHM &mdash; OpenWQ 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -17,7 +17,9 @@
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="SUMMA" href="5_3_0_SUMMA.html" />
+    <link rel="prev" title="Existing couplings" href="5_3_0_Hydro_coupled_models.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,13 +37,23 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="1_0_Home.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_0_Installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_1_In.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_2_out.html">Output</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_3_Coupler_guide.html">How to couple to hydro-models?</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="5_3_0_Hydro_coupled_models.html">Existing couplings</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">CRHM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_0_SUMMA.html">SUMMA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_0_SUMMA_CHM.html">CHM-SUMMA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_0_MESH.html">MESH</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="5_3_Coupler_guide.html">How to couple to hydro-models?</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Developer: Join us!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="6_0_Reference.html">Reference</a></li>
 </ul>
@@ -60,9 +72,11 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Input/Output</li>
+          <li><a href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a> &raquo;</li>
+          <li><a href="5_3_0_Hydro_coupled_models.html">Existing couplings</a> &raquo;</li>
+      <li>CRHM</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/4_0_IO.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/5_3_0_CRHM.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -70,36 +84,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="input-output">
-<h1>Input/Output<a class="headerlink" href="#input-output" title="Permalink to this headline"></a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="4_1_In.html">Input</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="4_1_0JSON_format.html">Overview</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="4_1_0JSON_format.html#input-file-requirements">Input file requirements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="4_1_0JSON_format.html#standard-input-file-format">Standard input file format</a></li>
-<li class="toctree-l3"><a class="reference internal" href="4_1_0JSON_format.html#json-files-in-openwq">JSON files in OpenWQ</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_1Master.html">Master file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_2Config.html">Configuration file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_3BGC.html">Biogeochemistry file(s)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_4Source.html">Source/Sink file(s)</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="4_2_out.html">Output</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="4_2_1file.html">Output formats</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_2_2support.html">Supporting scripts (Matlab and Python)</a></li>
-</ul>
-</li>
-</ul>
-</div>
+  <section id="crhm">
+<h1>CRHM<a class="headerlink" href="#crhm" title="Permalink to this headline"></a></h1>
+<p>Cold Regions Hydrological Model (<a class="reference external" href="https://research-groups.usask.ca/hydrology/modelling/crhm.php">CRHM</a>)</p>
+<p>Coming soon!</p>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="5_3_0_Hydro_coupled_models.html" class="btn btn-neutral float-left" title="Existing couplings" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="5_3_0_SUMMA.html" class="btn btn-neutral float-right" title="SUMMA" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
