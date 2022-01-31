@@ -26,6 +26,8 @@
 #include "OpenWQ_units.h"
 #include "OpenWQ_solver.h"
 #include "OpenWQ_output.h"
+#include <iostream>
+#include <time.h>
 
 class ClassWQ_OpenWQ
 {
@@ -44,7 +46,13 @@ class ClassWQ_OpenWQ
         OpenWQ_chem *OpenWQ_chem_ref;            
         OpenWQ_sinksource *OpenWQ_sinksource_ref;
         OpenWQ_solver *OpenWQ_solver_ref;
-        OpenWQ_output *OpenWQ_output_ref;        
+        OpenWQ_output *OpenWQ_output_ref;
+        int refYear   = 1970;  // Reference year for converting sim_time
+        int refMonth  = 1;     // Reference Month for converting sim_time
+        int refDay    = 1;     // Reference Day for converting sim_time
+        int refMinute = 0;     // Reference Minute for converting sim_time
+        int refSecond = 0;     // Reference Second for converting sim_time
+        const int days_in_month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     
     // Constructor
@@ -65,6 +73,8 @@ class ClassWQ_OpenWQ
     int run_space();
 
     int run_time_end();
+
+    time_t convert_time(int year, int month, int day, int hour, int minute);
 
 };
 

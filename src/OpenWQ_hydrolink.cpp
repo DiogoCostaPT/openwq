@@ -17,8 +17,6 @@
 
 #include "OpenWQ_hydrolink.h"
 
-// using namespace CRHM;
-#include <iostream>
 
 // Constructor
 ClassWQ_OpenWQ::ClassWQ_OpenWQ(int _numHru): numHRU(_numHru) {
@@ -31,6 +29,21 @@ ClassWQ_OpenWQ::~ClassWQ_OpenWQ() {
 // Methods
 int ClassWQ_OpenWQ::getNum() const {
     return numHRU;
+}
+
+time_t ClassWQ_OpenWQ::convert_time(int year, int month, int day, int hour, int minute) {
+    std::time_t sim_time;
+    std::tm tm{};
+    tm.tm_year = year - 1900; // -1900 is needed to get the conversion to produce the correct output
+    tm.tm_mon = month - 1;
+    tm.tm_hour = hour;
+    tm.tm_mday = day;
+    tm.tm_min = minute;
+    sim_time = timegm(&tm);
+
+    std::cout << asctime(gmtime(&sim_time)) << std::endl;
+
+    return sim_time;
 }
 
 int ClassWQ_OpenWQ::decl() {
@@ -90,11 +103,13 @@ int ClassWQ_OpenWQ::run_time_start(int year, int month,  int day, int hour, int 
     std::cout << "Hour = "      << hour   << std::endl;
     std::cout << "Minute = "    << minute << std::endl;
     //TODO: Needs to be passed simtime from SUMMA
-    // get_sim_time() this is the time from Summa
+
+
     // Convert sim time to OpenWQ simtime which is seconds since 00:00 Jan 1, 1970 UTC
     // Call the method below
     
-    time_t simtime = 0; // needs to be passed in
+    time_t simtime = convert_time(year, month, day, hour, minute); // needs to be passed in
+    std::cout << "simtime = " << simtime << std::endl;
 
     OpenWQ_couplercalls_ref->RunTimeLoopStart(
         *OpenWQ_hostModelconfig_ref,
@@ -126,6 +141,7 @@ int ClassWQ_OpenWQ::run_space() {
 // TODO: We need SimTime for this function as well
 int ClassWQ_OpenWQ::run_time_end() {
     std::cout << "C++ run_time_end" << std::endl;
+    
 
     time_t simtime = 0; // needs to be passed in
 
@@ -146,6 +162,8 @@ int ClassWQ_OpenWQ::run_time_end() {
 
     return 0;
 }
+
+
 
 
 
