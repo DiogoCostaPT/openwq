@@ -94,23 +94,24 @@
              
   <section id="steps-to-perform-the-coupling">
 <h1>Steps to perform the coupling<a class="headerlink" href="#steps-to-perform-the-coupling" title="Permalink to this headline"></a></h1>
-<p>To couple OpenWQ to an hydro-model, we need to call OpenWQ’s coupler functions that contain a series o <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">API calls</a>. The coupler functions provided are generic and were designed to require minimal editing, but each hydro-model is different so some adjustments are always needed. We refer to there adjustments as <code class="docutils literal notranslate"><span class="pre">COUPLER</span> <span class="pre">CODE</span></code>.
+<p>To couple OpenWQ to an hydro-model, you need to call OpenWQ’s coupler functions that contain a series of <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">API calls</a>. The coupler functions provided are generic and were designed to require minimal editing, but each hydro-model is different so some adjustments are always needed. We refer to there adjustments as <code class="docutils literal notranslate"><span class="pre">COUPLER</span> <span class="pre">CODE</span></code>.
 This editable <code class="docutils literal notranslate"><span class="pre">COUPLER</span> <span class="pre">CODE</span></code> is to ensure that the data types used in the hydro-model are properly converted to OpenWQ’s own data types, so that the <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">API calls</a> calls can perform adequately.
-We suggest to place all the coupler call inside the same file and name it <code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink.cpp</span></code>. It may be convenient to have an header file with the same name (<code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink.h</span></code>).
-Inside this files, we also suggest that the couplers are placed inside a class with the name <code class="docutils literal notranslate"><span class="pre">OpenWQ</span></code>. All the steps described below, as well as the class names, are based on these assumptions.</p>
-<p>However, editing the <code class="docutils literal notranslate"><span class="pre">COUPLER</span> <span class="pre">CODE</span></code> is the last step in the coupling process.</p>
+We suggest to place all the coupler calls inside the same file and name it <code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink.cpp</span></code>. It may be convenient to have an header file with the same name (<code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink.h</span></code>).
+Inside these <code class="docutils literal notranslate"><span class="pre">hydrolink</span></code> files, we also suggest that the couplers are placed inside a class with the name <code class="docutils literal notranslate"><span class="pre">OpenWQ</span></code>. These suggestions are all optional and may not be relevant to your specific hydro-model.
+However, all the steps described below, as well as the class names, consider these suggestions.</p>
+<p>For now, don’t worry with editing the <code class="docutils literal notranslate"><span class="pre">COUPLER</span> <span class="pre">CODE</span></code>; it’s the last step in the coupling process.</p>
 <p>Bellow are all the steps you need to perform the coupling:</p>
 <section id="step-1-hydro-model-structure">
 <h2>STEP 1: Hydro-model structure<a class="headerlink" href="#step-1-hydro-model-structure" title="Permalink to this headline"></a></h2>
-<p>Identify the following components of your hydro-model. It is important that you understand the source code of your hydro-model.</p>
+<p>Identify the following components of your hydro-model. It is important that you understand the source code of your model.</p>
 <a class="reference internal image-reference" href="_images/coupling_steps_1.png"><img alt="Host-model structure" src="_images/coupling_steps_1.png" style="width: 500px;" /></a>
 </section>
 <section id="step-2-create-class-objects">
 <h2>STEP 2: Create class objects<a class="headerlink" href="#step-2-create-class-objects" title="Permalink to this headline"></a></h2>
 <p>Before you can call OpenWQ’s coupler functions, you need to create OpenWQ class objects inside your hydro-model.
 This can be accomplished by introducing the code below inside your hydro-model.</p>
-<p>This code should be placed in a <code class="docutils literal notranslate"><span class="pre">main</span></code> function of your hydro-model from which the created objects objects can be passed to OpenWQ’s APIS.
-This is a critical step because these objects are input arguments of the different <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">OpenWQ’s APIs</a> (passed by reference).</p>
+<p>This code should be placed in a <code class="docutils literal notranslate"><span class="pre">main</span></code> function of your hydro-model from where the created objects objects can be passed to OpenWQ’s coupler functions.
+This is a critical step since these objects are input arguments of the different <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">OpenWQ’s APIs</a> (passed by reference).</p>
 <div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">Include</span> <span class="n">OpenWQ</span> <span class="n">header</span> <span class="n">files</span>
 <span class="c1">#include &quot;&lt;path&gt;/OpenWQ_couplercalls.h&quot;</span>
 <span class="c1">#include &quot;&lt;path&gt;/OpenWQ_global.h&quot;</span>
@@ -159,41 +160,46 @@ This is a critical step because these objects are input arguments of the differe
 <section id="step-4-call-coupler-functions">
 <h2>STEP 4: Call coupler functions<a class="headerlink" href="#step-4-call-coupler-functions" title="Permalink to this headline"></a></h2>
 <dl class="simple">
-<dt>From each of those hydro-model functions or code blocks, call the respective <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">OpenWQ API functions</a>:</dt><dd><ul class="simple">
-<li><p>[<code class="docutils literal notranslate"><span class="pre">CONFIGURATION</span></code>]: call Coupler Function 1 (<code class="docutils literal notranslate"><span class="pre">ClassWQ_OpenWQ::InitialConfig</span></code>)</p></li>
-<li><p>[<code class="docutils literal notranslate"><span class="pre">SIMULATION</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">TIME</span> <span class="pre">LOOP</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">Before</span> <span class="pre">space</span> <span class="pre">loop</span></code>]: call Coupler Function 2 (<code class="docutils literal notranslate"><span class="pre">ClassWQ_OpenWQ::RunTimeLoopStart</span></code>)</p></li>
-<li><p>[<code class="docutils literal notranslate"><span class="pre">SPACE</span> <span class="pre">LOOP</span></code>]: call Coupler Function 3 (<code class="docutils literal notranslate"><span class="pre">ClassWQ_OpenWQ::RunSpaceStep</span></code>)</p></li>
-<li><p>[<code class="docutils literal notranslate"><span class="pre">SIMULATION</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">TIME</span> <span class="pre">LOOP</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">After</span> <span class="pre">space</span> <span class="pre">loop</span></code>]: Coupler Function 4 (<code class="docutils literal notranslate"><span class="pre">ClassWQ_OpenWQ::RunTimeLoopEnd</span></code>)</p></li>
+<dt>From each of those hydro-model functions or code blocks, call the following <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">OpenWQ coupler functions</a>:</dt><dd><ul class="simple">
+<li><p>[<code class="docutils literal notranslate"><span class="pre">CONFIGURATION</span></code>]: call Coupler Function 1 (<code class="docutils literal notranslate"><span class="pre">OpenWQ::decl</span></code>)</p></li>
+<li><p>[<code class="docutils literal notranslate"><span class="pre">SIMULATION</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">TIME</span> <span class="pre">LOOP</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">Before</span> <span class="pre">space</span> <span class="pre">loop</span></code>]: call Coupler Function 2 (<code class="docutils literal notranslate"><span class="pre">OpenWQ::run_time_start</span></code>)</p></li>
+<li><p>[<code class="docutils literal notranslate"><span class="pre">SPACE</span> <span class="pre">LOOP</span></code>]: call Coupler Function 3 (<code class="docutils literal notranslate"><span class="pre">OpenWQ::run_space</span></code>)</p></li>
+<li><p>[<code class="docutils literal notranslate"><span class="pre">SIMULATION</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">TIME</span> <span class="pre">LOOP</span></code> &gt; <code class="docutils literal notranslate"><span class="pre">After</span> <span class="pre">space</span> <span class="pre">loop</span></code>]: Coupler Function 4 (<code class="docutils literal notranslate"><span class="pre">OpenWQ::run_time_end</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
+<p>The diagram below shows these coupler calls:</p>
 <a class="reference internal image-reference" href="_images/coupling_steps_2.png"><img alt="API calls" src="_images/coupling_steps_2.png" style="width: 600px;" /></a>
 </section>
 <section id="step-5-adjust-coupler-to-hydro-model">
 <h2>STEP 5: Adjust coupler to hydro-model<a class="headerlink" href="#step-5-adjust-coupler-to-hydro-model" title="Permalink to this headline"></a></h2>
 <p>OpenWQ’s coupler functions are generic and have been designed to require minimal editing.
-However, each hydro-model is different and so small adjustments may need to be made to make sure that the hydro-model passes the correct arguments to <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">OpenWQ’s APIs</a>.</p>
+However, as previously said, each hydro-model is different and small adjustments are needed to ensure the hydro-model passes the correct arguments to <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">OpenWQ’s APIs</a>.</p>
 <p>The diagrams below list code editing needed, identified as <code class="docutils literal notranslate"><span class="pre">COUPLE</span> <span class="pre">CODE</span></code>.</p>
 <ul class="simple">
 <li><p>Coupler Function 1 (<code class="docutils literal notranslate"><span class="pre">OpenWQ::decl</span></code>)</p></li>
 </ul>
+<p>This coupler function contains a series of API calls that deal with the initial configuration of the model, initialization of variables, and pre-processing of the input data.</p>
 <a class="reference internal image-reference" href="_images/coupling_steps_3.png"><img alt="API calls" src="_images/coupling_steps_3.png" style="width: 700px;" /></a>
 <ul class="simple">
 <li><p>Coupler Function 2 (<code class="docutils literal notranslate"><span class="pre">OpenWQ::run_time_start</span></code>)</p></li>
 </ul>
+<p>This coupler function contains a series of API calls that handle tasks required at the start of each time step.</p>
 <a class="reference internal image-reference" href="_images/coupling_steps_4.png"><img alt="API calls" src="_images/coupling_steps_4.png" style="width: 700px;" /></a>
 <ul class="simple">
 <li><p>Coupler Function 3 (<code class="docutils literal notranslate"><span class="pre">OpenWQ::run_space</span></code>)</p></li>
 </ul>
+<p>This coupler function contains a series of API calls that handles tasks related to the spatial domain of the model.</p>
 <a class="reference internal image-reference" href="_images/coupling_steps_5.png"><img alt="API calls" src="_images/coupling_steps_5.png" style="width: 700px;" /></a>
 <ul class="simple">
 <li><p>Coupler Function 4 (<code class="docutils literal notranslate"><span class="pre">ClassWQ_OpenWQ::OpenWQ::run_time_end</span></code>)</p></li>
 </ul>
+<p>This coupler call function contains a series of API calls that handle tasks required at the end of each time step.</p>
 <a class="reference internal image-reference" href="_images/coupling_steps_6.png"><img alt="API calls" src="_images/coupling_steps_6.png" style="width: 700px;" /></a>
 </section>
 <section id="step-6-compile-your-coupled-code">
 <h2>STEP 6: Compile your coupled code<a class="headerlink" href="#step-6-compile-your-coupled-code" title="Permalink to this headline"></a></h2>
-<p>Now you need to adapt your <code class="docutils literal notranslate"><span class="pre">MakeFile</span></code> or ‘<cite>CMakeLists</cite> file to properly link and compile OpenWQ together with you hydro-model.</p>
+<p>Now you need to adapt your <code class="docutils literal notranslate"><span class="pre">MakeFile</span></code> or ‘<cite>CMakeLists</cite> files to properly link and compile OpenWQ together with your hydro-model.</p>
 <ul class="simple">
 <li><p>External libraries: include flag for Armdadillo (<code class="docutils literal notranslate"><span class="pre">--larmadillo</span></code>)</p></li>
 <li><p>Link OpenWQ objects in your compilation instruction:</p></li>
