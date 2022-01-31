@@ -39,7 +39,7 @@ int ClassWQ_OpenWQ::decl() {
     OpenWQ_hostModelconfig_ref = new OpenWQ_hostModelconfig(); // Initalize hostModelconfig
     OpenWQ_couplercalls_ref = new OpenWQ_couplercalls();
     OpenWQ_json_ref = new OpenWQ_json();
-    OpenWQ_wqconfig_ref = new OpenWQ_wqconfig();
+    OpenWQ_wqconfig_ref = new OpenWQ_wqconfig(11); // This is 11 because the OpenWQ_global.h says it should be in the class definition
     OpenWQ_units_ref = new OpenWQ_units();
     OpenWQ_readjson_ref = new OpenWQ_readjson();
     OpenWQ_initiate_ref = new OpenWQ_initiate();
@@ -81,9 +81,18 @@ int ClassWQ_OpenWQ::decl() {
     return 0;
 }
 
-//TODO: Needs to be passed simtime from SUMMA
-int ClassWQ_OpenWQ::run_time_start() {
-    std::cout << "C++ run_time_start" << std::endl;
+
+int ClassWQ_OpenWQ::run_time_start(int year, int month,  int day, int hour, int minute) {
+    std::cout << "C++ run_time_start"     << std::endl;
+    std::cout << "Year = "      << year   << std::endl;
+    std::cout << "Month = "     << month  << std::endl;
+    std::cout << "Day = "       << day    << std::endl;
+    std::cout << "Hour = "      << hour   << std::endl;
+    std::cout << "Minute = "    << minute << std::endl;
+    //TODO: Needs to be passed simtime from SUMMA
+    // get_sim_time() this is the time from Summa
+    // Convert sim time to OpenWQ simtime which is seconds since 00:00 Jan 1, 1970 UTC
+    // Call the method below
     
     time_t simtime = 0; // needs to be passed in
 
@@ -160,10 +169,15 @@ int openwq_getNum(const CLASSWQ_OPENWQ *openWQ) {
     return openWQ->getNum();
 }
 
+int openwq_run_time_start(ClassWQ_OpenWQ *openWQ, int year, int month, 
+                    int day, int hour, int minute) {
+    return openWQ->run_time_start(year, month, day, hour, minute);
+}
+
 int openwq_run(ClassWQ_OpenWQ *openWQ, int func) {
     if (func == 1) { // run_time_start()
         std::cout << "C API func = 1" << std::endl;
-        return openWQ->run_time_start();
+
     
     } else if (func == 2) { // run_space()
         std::cout << "C API func = 2" << std::endl;

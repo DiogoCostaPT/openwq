@@ -12,6 +12,7 @@ module openwq
  contains
    !  procedure :: get_num => openWQ_get_num
     procedure :: decl => openWQ_init
+    procedure :: run_time_start => openWQ_run_time_start
     procedure :: run => openWQ_run
  end type
 
@@ -36,6 +37,16 @@ module openwq
     end function
 !  ! Globaly accessible variable
 
+   integer function openWQ_run_time_start(this, year, month, day, hour, minute)
+      implicit none
+      class(ClassWQ_OpenWQ) :: this
+      integer, intent(in)   :: year
+      integer, intent(in)   :: month
+      integer, intent(in)   :: day
+      integer, intent(in)   :: hour
+      integer, intent(in)   :: minute
+      openWQ_run_time_start = openwq_run_time_start_c(this%ptr, year, month, day, hour, minute)
+   end function
    ! The func variables denotes which c++ function to call
    ! This is needed b/c we cannot create interface functions in
    ! Fortran that take the same variables

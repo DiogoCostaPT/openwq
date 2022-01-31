@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../SUMMA"
 		}
 	],
 	"settings": {
@@ -71,6 +74,7 @@
 			"filesystem": "cpp",
 			"codecvt": "cpp",
 			"armadillo": "cpp"
-		}
+		},
+		"fortran.ignoreWarning.fortls": true
 	}
 }

@@ -13,6 +13,19 @@ interface openWQ_interface
         type(c_ptr), intent(in), value :: openWQ
     end function
 
+    function openwq_run_time_start_c(openWQ, year, month, hour, day, minute) bind(C, name="openwq_run_time_start")
+        use iso_c_binding
+        implicit none
+        integer(c_int)                       :: openwq_run_time_start_c ! returns 0 (success) or -1 (failure)
+        type(c_ptr), intent(in), value       :: openWQ
+        integer(c_int), intent(in), value    :: year
+        integer(c_int), intent(in), value    :: month
+        integer(c_int), intent(in), value    :: hour
+        integer(c_int), intent(in), value    :: day
+        integer(c_int), intent(in), value    :: minute
+    end function
+
+
     function openwq_run_c(openWQ, func) bind(C, name="openwq_run")
         use iso_c_binding
         implicit none

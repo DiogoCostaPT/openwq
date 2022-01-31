@@ -174,7 +174,7 @@ IF(UNIX)
 
         set(CMAKE_CXX_STANDARD 17)
         #set(CMAKE_CXX_FLAGS "-O3")
-        set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic")
+        set(CMAKE_CXX_FLAGS "-g -O0 -Wall -pedantic")
         IF(APPLE)
                 MESSAGE(STATUS "add flags")
                 set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic -Wno-c++11-narrowing")
@@ -227,7 +227,7 @@ IF(UNIX)
                 ${NRUTIL})
                 target_compile_options(SUMMA_NOAHMP PRIVATE
                         -ffree-form -ffree-line-length-none -fmax-errors=0)
-                set(CMAKE_Fortran_FLAGS "-ffree-line-length-none -fmax-errors=0 -lstdc++")
+                set(CMAKE_Fortran_FLAGS "-g -O0 -ffree-line-length-none -fmax-errors=0 -lstdc++")
         
         # Compile Summa_Comm into object/.mod files
         add_library(SUMMA_COMM OBJECT

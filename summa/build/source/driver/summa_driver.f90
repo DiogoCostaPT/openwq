@@ -39,6 +39,8 @@ USE summa_util, only: stop_program                          ! used to stop the s
 USE summa_util, only: handle_err                            ! used to process errors
 ! global data
 USE globalData, only: numtim                                ! number of model time steps
+USE var_lookup, only: iLookTIME  ! named variables for time data structure
+
 ! OpenWQ coupling 
 USE globalData,only:openWQ_obj
 USE openWQ
@@ -95,11 +97,14 @@ do modelTimeStep=1,numtim
  call handle_err(err, message)
 
  ! Call OpenW run_time_start
- err=openWQ_obj%run(1)
- err=openWQ_obj%run(2)
- err=openWQ_obj%run(3)
- return;
-
+ ! We Also need to pass in the timestep data which is in summa1_struc(1)%timeStruct%var
+ err=openWQ_obj%run_time_start(summa1_struc(1)%timeStruct%var(iLookTIME%iyyy), &
+                               summa1_struc(1)%timeStruct%var(iLookTIME%im),   &
+                               summa1_struc(1)%timeStruct%var(iLookTIME%id),   &
+                               summa1_struc(1)%timeStruct%var(iLookTIME%ih),   &
+                               summa1_struc(1)%timeStruct%var(iLookTIME%imin))
+ print*, "Fortran/summa_driver.f90: Done openWQ_obj%run(1)"
+ 
  ! run the summa physics for one time step
  call summa_runPhysics(modelTimeStep, summa1_struc(n), err, message)
  call handle_err(err, message)

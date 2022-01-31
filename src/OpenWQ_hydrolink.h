@@ -60,7 +60,7 @@ class ClassWQ_OpenWQ
 
     int decl();
 
-    int run_time_start();
+    int run_time_start(int year, int month, int day, int hour, int minute);
 
     int run_space();
 
@@ -83,6 +83,7 @@ CLASSWQ_OPENWQ* create_openwq(int num);
 void delete_openwq(CLASSWQ_OPENWQ* openWQ);
 // OpenWQ initalization method
 int openwq_decl(CLASSWQ_OPENWQ *openWQ);
+int openwq_run_time_start(CLASSWQ_OPENWQ *openWQ, int year, int month, int day, int hour, int minute);
 // OpenWQ run functions, this function decides which C++ code to call
 int openwq_run(CLASSWQ_OPENWQ *openWQ, int func);
 #ifdef __cplusplus
