@@ -1,9 +1,7 @@
 What do you need?
 =================
 
-
-
-* OpenWQ can be coupled to an existing hydro-model through the series of coupler functions.
+OpenWQ can be coupled to an existing hydro-model through the series of coupler functions.
 These coupler functions call the different OpenWQ APIs.
 
     * ``OpenWQ::decl`` (`see API reference <https://openwq.readthedocs.io/en/latest/5_3_1_OpenWQ_decl.html>`_)
