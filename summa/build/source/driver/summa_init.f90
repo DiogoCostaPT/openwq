@@ -43,10 +43,6 @@ USE globalData,only:statFlux_meta                           ! child metadata for
 USE globalData,only:statIndx_meta                           ! child metadata for stats
 USE globalData,only:statBvar_meta                           ! child metadata for stats
 
-! openWQ object
-USE globalData,only:openWQ_obj
-USE openWQ
-
 ! provide access to file paths
 USE summaFileManager,only:SETTINGS_PATH                     ! define path to settings files (e.g., parameters, soil and veg. tables)
 USE summaFileManager,only:STATE_PATH                        ! optional path to state/init. condition files (defaults to SETTINGS_PATH)
@@ -340,10 +336,6 @@ contains
  ! aggregate the elapsed time for the initialization
  elapsedInit = elapsedSec(startInit, endInit)
 
- ! Initalize openWQ and call decl
- hruCount = sum( gru_struc(:)%hruCount )
- openwq_obj = ClassWQ_OpenWQ(hruCount)
- err=openwq_obj%decl()
  ! end associate statements
  end associate summaVars
 

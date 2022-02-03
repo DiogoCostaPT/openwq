@@ -41,8 +41,6 @@ time_t ClassWQ_OpenWQ::convert_time(int year, int month, int day, int hour, int 
     tm.tm_min = minute;
     sim_time = timegm(&tm);
 
-    std::cout << asctime(gmtime(&sim_time)) << std::endl;
-
     return sim_time;
 }
 
@@ -95,7 +93,7 @@ int ClassWQ_OpenWQ::decl() {
 }
 
 
-int ClassWQ_OpenWQ::run_time_start(int year, int month,  int day, int hour, int minute) {
+int ClassWQ_OpenWQ::run_time_start(int year, int month, int day, int hour, int minute) {
     std::cout << "C++ run_time_start"     << std::endl;
     std::cout << "Year = "      << year   << std::endl;
     std::cout << "Month = "     << month  << std::endl;
@@ -109,7 +107,14 @@ int ClassWQ_OpenWQ::run_time_start(int year, int month,  int day, int hour, int 
     // Call the method below
     
     time_t simtime = convert_time(year, month, day, hour, minute); // needs to be passed in
-    std::cout << "simtime = " << simtime << std::endl;
+
+    // for (unsigned int hru=0;hru<this->getNum();hru++) {
+    //     (OpenWQ_hostModelconfig_ref.SM)(hru,0,0) = 
+    //     (OpenWQ_hostModelconfig_ref.Tair)(hru,0,0) =
+    //     (OpenWQ_hostModelconfig_ref.Tsoil)(hru,0,0) =
+
+    // }
+
 
     OpenWQ_couplercalls_ref->RunTimeLoopStart(
         *OpenWQ_hostModelconfig_ref,
@@ -125,10 +130,6 @@ int ClassWQ_OpenWQ::run_time_start(int year, int month,  int day, int hour, int 
         *OpenWQ_solver_ref,
         *OpenWQ_output_ref,
         simtime);
-
-
-
-
     return 0;
 }
 

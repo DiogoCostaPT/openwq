@@ -41,6 +41,9 @@ USE summa_util, only: handle_err                            ! used to process er
 USE globalData, only: numtim                                ! number of model time steps
 USE var_lookup, only: iLookTIME  ! named variables for time data structure
 
+USE globalData,only:gru_struc                               ! gru-hru mapping structures
+
+
 ! OpenWQ coupling 
 USE globalData,only:openWQ_obj
 USE openWQ
@@ -61,6 +64,7 @@ integer(i4b)                       :: random2
 ! error control
 integer(i4b)                       :: err=0                      ! error code
 character(len=1024)                :: message=''                 ! error message
+integer(i4b)                       :: hruCount
 
 ! *****************************************************************************
 ! * preliminaries
@@ -85,6 +89,11 @@ call handle_err(err, message)
 call summa_readRestart(summa1_struc(n), err, message)
 call handle_err(err, message)
 
+ ! Initalize openWQ and call decl
+hruCount = sum( gru_struc(:)%hruCount )
+openwq_obj = ClassWQ_OpenWQ(hruCount)
+err=openwq_obj%decl()
+
 ! *****************************************************************************
 ! * model simulation
 ! *****************************************************************************
@@ -108,6 +117,8 @@ do modelTimeStep=1,numtim
  ! run the summa physics for one time step
  call summa_runPhysics(modelTimeStep, summa1_struc(n), err, message)
  call handle_err(err, message)
+
+ ! This is where we will call the run_time_end routine
 
  ! write the model output
  call summa_writeOutputFiles(modelTimeStep, summa1_struc(n), err, message)
