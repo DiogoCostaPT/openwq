@@ -1,16 +1,6 @@
 Overview
 ==================================
 
-Input file requirements
-~~~~~~~~~~~~~~~~~~~~~~~
-The model requires 4 input files or groups of files.
-
-* `Master file <https://openwq.readthedocs.io/en/latest/4_1_1Master.html>`_
-* `Configuration file <https://openwq.readthedocs.io/en/latest/4_1_2Config.html>`_
-* `Biogeochemistry file(s) <https://openwq.readthedocs.io/en/latest/4_1_3BGC.html>`_
-* `Source/Sink file(s) <https://openwq.readthedocs.io/en/latest/4_1_4Source.html>`_
-
-
 Standard input file format
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 The configuration and forcing of the model is provided via JSON `(JavaScript Object Notation) <https://en.wikipedia.org/wiki/JSON>`_ files.
@@ -28,6 +18,9 @@ JSON's basic data types supported:
 * ``Boolean``: either of the values ``true`` or ``false``
 * ``Array``: an ordered list of zero or more elements, each of which may be of any type. Arrays use square bracket notation with comma-separated elements, e.g., ``[2, 4, 5]```.
 * ``null``: an empty value, using the word ``null``
+
+The entries (keys or values) are not case sensitive. You can use both capital or lower case characters, or a mix of the two, for both the keys and values.
+For example, you can write the JSON key ``OPENWQ_INPUT`` like that or like that ``openwq_input`` or like that ``OpenWQ_Input`` or like that ``OpEnWq_inPUt``, or whatever your prefer. OpenWQ will recognize the commands.
 
 Example:
 
@@ -49,4 +42,4 @@ Example:
         }
     }
 
-
+For the sake of clarity, we wrote all OpenWQ JSON ``keys`` in capital letters through this document.

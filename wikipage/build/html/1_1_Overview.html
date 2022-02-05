@@ -47,11 +47,10 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_0_Installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_1_In.html">Input</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_2_out.html">Output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_1_OpenWQ_IO.html">OpenWQ I/O</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Developer: Join us!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="6_0_Reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_0_Contact.html">Contact</a></li>
 </ul>
 
         </div>
@@ -81,12 +80,12 @@
              
   <section id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h1>
-<p>OpenWQ is a multi-scale, multi-chemistry modelling framework.
-It aims to be fast, free, and extendable.</p>
 <p>OpenWQ was specifically designed to promote flexible collaboration between modellers, scientists and stakeholders in the design and implementation of biogeochemical reaction networks (easily customizable via <a class="reference external" href="https://en.wikipedia.org/wiki/JSON#:~:text=JSON%20(JavaScript%20Object%20Notation%2C%20pronounced,(or%20other%20serializable%20values).">rich JSON-based files</a>) in existing hydrological, hydrodynamic and groundwater models (1D to 3D models). The model is written in C++ and benefits from the powerful Armadillo template-based CC library for linear algebra  <a class="reference external" href="https://joss.theoj.org/papers/10.21105/joss.00026">(Sanderson and Curtin, 2016)</a> that enables the use of modern, flexible, efficient and compact data structures.</p>
 <p>The OpenWQ system stems from previous models developed by <a class="reference external" href="https://www.canada.ca/en/environment-climate-change.html">Environment and Climate Change Canada</a> and the <a class="reference external" href="https://www.usask.ca/">University of Saskatchewan</a>, particularly <a class="reference external" href="https://www.sciencedirect.com/science/article/abs/pii/S0022169421009513">CRHM-WQ</a> (Cold Regions Hydrological Model - Water Quality) that extends the original <a class="reference external" href="https://onlinelibrary.wiley.com/doi/10.1002/hyp.6787">CRHM platform</a> (hydrology) model to nitrogen and phosphorus simulations, the <a class="reference external" href="https://onlinelibrary.wiley.com/doi/10.1002/hyp.11346">WINTRA</a> framework, the multiphase multilayer <a class="reference external" href="https://www.sciencedirect.com/science/article/abs/pii/S0309170818300095">PULSE</a> snow hydrochemistry model, and the <a class="reference external" href="agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2020WR027984">FLUXOS-OVERLAND</a> model for watershed hydrodynamic-water quality simulations suitable for Prairie regions.</p>
-<p>Our vision is to provide a multi-scale, multi-chemistry OpenWQ modelling framework suitable for flexible hypothesis testing. OpenWQ does not run standalone. It runs coupled to existing hydro-models, which makes it ideal for scientists and engineers that want to enable biogeochemical modelling capabilities in their prefered modelling systems.</p>
-<p>The model is currently being coupled to <a class="reference external" href="https://research-groups.usask.ca/hydrology/modelling/crhm.php">CRHM</a>, <a class="reference external" href="https://ral.ucar.edu/solutions/products/summa">SUMMA</a> and <a class="reference external" href="https://research-groups.usask.ca/hydrology/modelling/mesh.php">MESH</a>. See [PLACEHOLDER for link to coupler page]</p>
+<p>Our vision is to provide a customizable, multi-scale, multi-chemistry modelling framework suitable for flexible model hypothesis testing and uncertainty analysis. This is extremely important in a time of great climate uncertainty.</p>
+<p>OpenWQ does not run standalone. It runs coupled to existing hydro-models, which makes it ideal for scientists and engineers that want to enable biogeochemical modelling capabilities in their preferred modelling systems. The model is currently being coupled to <a class="reference external" href="https://research-groups.usask.ca/hydrology/modelling/crhm.php">CRHM</a>, <a class="reference external" href="https://ral.ucar.edu/solutions/products/summa">SUMMA</a> and <a class="reference external" href="https://research-groups.usask.ca/hydrology/modelling/mesh.php">MESH</a>.
+Explore the <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_0_Hydro_coupled_models.html">Existing couplings</a> section or learn how OpenWQ can be <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_Coupler_guide.html">coupled to your model</a>.</p>
+<p><a class="reference external" href="https://openwq.readthedocs.io/en/latest/6_0_Contact.html">Contact us</a> if you’re wondering if OpenWQ could be useful to your research.</p>
 </section>
 
 

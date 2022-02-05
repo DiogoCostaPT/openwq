@@ -1,4 +1,4 @@
-Master file
+Master
 ==================================
 
 The master configuration is a JSON file that provides OpenWQ with information and instructions to run a simulation. It contains key-values pairs defined below: 
@@ -46,71 +46,52 @@ The master configuration is a JSON file that provides OpenWQ with information an
 | TIMESTEP                    | Temporal resolution of output file e.g., ``[1,"hour"]``               |
 +-----------------------------+-----------------------------------------------------------------------+
 
-The JSON file supports C/C++ syntax for comments: single-line comment (``//``) or comment blocks (``/*`` and ``*/``). 
- 
-
 Example:
 
 .. code-block:: json
 
   {
-      "PROJECT_NAME": "big_creek_openwq",
-      "GEOGRAPHICAL_LOCATION": "Bi Creek, Ontario",
-      "AUTHORS": "Diogo Costa",
-      "DATE": "May_2020",
-      "COMMENT": "First set up of model",
+      "PROJECT_NAME": "My project",
+      "GEOGRAPHICAL_LOCATION": "Neverland",
+      "AUTHORS": "Barack Obama",
+      "DATE": "Jan 2009",
+      "COMMENT": "This is my first project as the 44th president of the United States",
       "COMPUTATIONAL_SETTINGS":{
-      "RUN_MODE_DEBUG": true, 
-      "USE_NUM_THREADS": "all" 
+        "RUN_MODE_DEBUG": true,
+        "USE_NUM_THREADS": "all"
       },
       "OPENWQ_INPUT": {
-        "CONFIG_FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_config.json",
-        //"BGC_CYCLES_FILEPATH": "build/SWAT_Soil_BGC.json",
-          "BGC_CYCLES_FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_BGC_cycling.json",
+        "CONFIG_FILEPATH": "openWQ_config.json",
+         "BGC_CYCLES_FILEPATH": "openWQ_BGC_cycling.json",
         "SINKSOURCE_FILES": {
           "1": {
             "LABEL": "fertilizer_N",
-            "FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_source_fertN.json"
+            "FILEPATH": "openWQ_source_fertN.json"
           },
-          "2": {
+          "2":
+          {
             "LABEL": "fertilizer_P",
-            "FILEPATH": "build/Case_Studies/big_creek_openwq/openWQ_source_fertP.json"
+            "FILEPATH": "openWQ_source_fertP.json"
           }
         }
       },
     "OPENWQ_OUTPUT": {
       "RESULTS_FOLDERPATH": "Output_OpenWQ",
-      "FORMAT": "HDF5", // HDF5, CSV, VTK
+      "FORMAT": "HDF5",
       "CHEMICAL_SPECIES":["NO3","NH4","N2","DON","labile_orgN","refractory_orgN","SRP","DOP","partP","labile_orgP","refractory_orgP"],
       "UNITS":"mg/l",
       "COMPARTMENTS_AND_CELLS": {
-        //"SWE": {
-        //	"1": [304,1,1],
-        //	"2": [281,1,1]
-        //},
         "RUNOFF": {
           "1": [304,1,1],
           "2": [281,1,1]
         },
-        //"SD": {
-        //	"1": [304,1,1],
-        //	"2": [281,1,1]
-        //},
         "SOIL_RECHR": {
           "1": [304,1,1],
           "2": [281,1,1]
         },
-        //"SOIL_LOWER": {
-        //	"1": [304,1,1],
-        //	"2": [281,1,1]
-        //},
-        "SURFSOIL": {
-          "1": [304,1,1],
-          "2": [281,1,1]
-        //},
-        //"GW": {
-        //	"1": [304,1,1],
-        //	"2": [281,1,1]
+        "GW": {
+        	"1": [304,1,1],
+            "2": [281,1,1]
         }
       },
       "TIMESTEP": [1,"hour"]

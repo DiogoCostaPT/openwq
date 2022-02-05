@@ -1,10 +1,11 @@
-Input
+Input files
 ==================================
+
+The model requires 4 input files or groups of files.
 
 .. toctree::
    :maxdepth: 2
-   
-   4_1_0JSON_format
+
    4_1_1Master
    4_1_2Config
    4_1_3BGC

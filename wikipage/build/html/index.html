@@ -40,11 +40,10 @@
 <li class="toctree-l1"><a class="reference internal" href="1_0_Home.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_0_Installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_1_In.html">Input</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_2_out.html">Output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_1_OpenWQ_IO.html">OpenWQ I/O</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Developer: Join us!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="6_0_Reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_0_Contact.html">Contact</a></li>
 </ul>
 
         </div>
@@ -73,9 +72,10 @@
              
   <section id="welcome-to-openwq-s-documentation">
 <h1>Welcome to OpenWQ’s documentation!<a class="headerlink" href="#welcome-to-openwq-s-documentation" title="Permalink to this headline"></a></h1>
-<p>OpenWQ is a generalised reaction-network model written in C++.
-It was designed as a coupler that can be linked to existing hydro-models to enable flexible, multi-chemistry biogeochemical simulations.
-It aims to be fast, free, and extendable.</p>
+<p>OpenWQ is a generalised biogeochemical reaction-network model written in C++.
+It was designed as a coupler for integration with existing hydro-models to enable flexible, multi-scale, multi-chemistry simulations.
+OpenWQ adapts to the host hydro-model spatial and temporal configurations, which can include 1D, 2D or 3D spatial discretizations based on structured or unstructured meshes.
+It aims to be flexible, fast, free, and extendable.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="1_0_Home.html">Home</a><ul>
@@ -86,7 +86,11 @@ It aims to be fast, free, and extendable.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="2_1_Theoretical.html">Theoretical Foundation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_1_Theoretical.html">Theoretical Foundation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="2_1_Theoretical.html#conservation-equations">Conservation Equations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_1_Theoretical.html#biogeochemistry-reaction-networks">Biogeochemistry: Reaction networks</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="2_2_Example.html">Example of Case Studies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_3_Software.html">Software Documentation</a></li>
 </ul>
@@ -103,22 +107,30 @@ It aims to be fast, free, and extendable.</p>
 <li class="toctree-l2"><a class="reference internal" href="3_4_Trouble.html">Troubleshooting</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="4_1_In.html">Input</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="4_1_OpenWQ_IO.html">OpenWQ I/O</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="4_1_0JSON_format.html">Overview</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="4_1_0JSON_format.html#input-file-requirements">Input file requirements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="4_1_0JSON_format.html#standard-input-file-format">Standard input file format</a></li>
 <li class="toctree-l3"><a class="reference internal" href="4_1_0JSON_format.html#json-files-in-openwq">JSON files in OpenWQ</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_1Master.html">Master file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_2Config.html">Configuration file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_3BGC.html">Biogeochemistry file(s)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_4Source.html">Source/Sink file(s)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_1_In.html">Input files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="4_1_1Master.html">Master</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_1_2Config.html">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_1_3BGC.html">Biogeochemistry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_1_4Source.html">Source/Sink</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="4_2_out.html">Output</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="4_2_1file.html">Output formats</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_2_2support.html">Supporting scripts (Matlab and Python)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_2_out.html">Output files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="4_2_1file.html">Output formats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_2_2support.html">Supporting scripts (Matlab and Python)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="4_3_units.html">Units</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="4_3_units.html#mass-l">Mass (<span class="math notranslate nohighlight">\(L\)</span>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_3_units.html#volume-l-3">Volume (<span class="math notranslate nohighlight">\(L^3\)</span>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_3_units.html#time-t">Time (<span class="math notranslate nohighlight">\(T\)</span>)</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a><ul>
@@ -161,9 +173,7 @@ It aims to be fast, free, and extendable.</p>
 <li class="toctree-l2"><a class="reference internal" href="5_2_Git.html">Git and GithHub</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="6_0_Reference.html">Reference</a><ul class="simple">
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="6_0_Contact.html">Contact</a></li>
 </ul>
 </div>
 </section>
