@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Master file &mdash; OpenWQ 0.0.1 documentation</title>
+  <title>Master &mdash; OpenWQ 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Configuration file" href="4_1_2Config.html" />
-    <link rel="prev" title="Overview" href="4_1_0JSON_format.html" /> 
+    <link rel="next" title="Configuration" href="4_1_2Config.html" />
+    <link rel="prev" title="Input files" href="4_1_In.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,18 +41,21 @@
 <li class="toctree-l1"><a class="reference internal" href="1_0_Home.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_0_Installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="4_1_In.html">Input</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="4_1_OpenWQ_IO.html">OpenWQ I/O</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="4_1_0JSON_format.html">Overview</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Master file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_2Config.html">Configuration file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_3BGC.html">Biogeochemistry file(s)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_4Source.html">Source/Sink file(s)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="4_1_In.html">Input files</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Master</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_1_2Config.html">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_1_3BGC.html">Biogeochemistry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_1_4Source.html">Source/Sink</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="4_2_out.html">Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_2_out.html">Output files</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Developer: Join us!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="6_0_Reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_0_Contact.html">Contact</a></li>
 </ul>
 
         </div>
@@ -69,8 +72,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="4_1_In.html">Input</a> &raquo;</li>
-      <li>Master file</li>
+          <li><a href="4_1_OpenWQ_IO.html">OpenWQ I/O</a> &raquo;</li>
+          <li><a href="4_1_In.html">Input files</a> &raquo;</li>
+      <li>Master</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/4_1_1Master.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -80,8 +84,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="master-file">
-<h1>Master file<a class="headerlink" href="#master-file" title="Permalink to this headline"></a></h1>
+  <section id="master">
+<h1>Master<a class="headerlink" href="#master" title="Permalink to this headline"></a></h1>
 <p>The master configuration is a JSON file that provides OpenWQ with information and instructions to run a simulation. It contains key-values pairs defined below:</p>
 <table class="docutils align-default">
 <colgroup>
@@ -154,71 +158,54 @@ e.g. <code class="docutils literal notranslate"><span class="pre">fertilizer_N</
 </tr>
 </tbody>
 </table>
-<p>The JSON file supports C/C++ syntax for comments: single-line comment (<code class="docutils literal notranslate"><span class="pre">//</span></code>) or comment blocks (<code class="docutils literal notranslate"><span class="pre">/*</span></code> and <code class="docutils literal notranslate"><span class="pre">*/</span></code>).</p>
 <p>Example:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
-    &quot;PROJECT_NAME&quot;: &quot;big_creek_openwq&quot;,
-    &quot;GEOGRAPHICAL_LOCATION&quot;: &quot;Bi Creek, Ontario&quot;,
-    &quot;AUTHORS&quot;: &quot;Diogo Costa&quot;,
-    &quot;DATE&quot;: &quot;May_2020&quot;,
-    &quot;COMMENT&quot;: &quot;First set up of model&quot;,
-    &quot;COMPUTATIONAL_SETTINGS&quot;:{
-    &quot;RUN_MODE_DEBUG&quot;: true,
-    &quot;USE_NUM_THREADS&quot;: &quot;all&quot;
-    },
-    &quot;OPENWQ_INPUT&quot;: {
-      &quot;CONFIG_FILEPATH&quot;: &quot;build/Case_Studies/big_creek_openwq/openWQ_config.json&quot;,
-      //&quot;BGC_CYCLES_FILEPATH&quot;: &quot;build/SWAT_Soil_BGC.json&quot;,
-        &quot;BGC_CYCLES_FILEPATH&quot;: &quot;build/Case_Studies/big_creek_openwq/openWQ_BGC_cycling.json&quot;,
-      &quot;SINKSOURCE_FILES&quot;: {
-        &quot;1&quot;: {
-          &quot;LABEL&quot;: &quot;fertilizer_N&quot;,
-          &quot;FILEPATH&quot;: &quot;build/Case_Studies/big_creek_openwq/openWQ_source_fertN.json&quot;
-        },
-        &quot;2&quot;: {
-          &quot;LABEL&quot;: &quot;fertilizer_P&quot;,
-          &quot;FILEPATH&quot;: &quot;build/Case_Studies/big_creek_openwq/openWQ_source_fertP.json&quot;
-        }
-      }
-    },
-  &quot;OPENWQ_OUTPUT&quot;: {
-    &quot;RESULTS_FOLDERPATH&quot;: &quot;Output_OpenWQ&quot;,
-    &quot;FORMAT&quot;: &quot;HDF5&quot;, // HDF5, CSV, VTK
-    &quot;CHEMICAL_SPECIES&quot;:[&quot;NO3&quot;,&quot;NH4&quot;,&quot;N2&quot;,&quot;DON&quot;,&quot;labile_orgN&quot;,&quot;refractory_orgN&quot;,&quot;SRP&quot;,&quot;DOP&quot;,&quot;partP&quot;,&quot;labile_orgP&quot;,&quot;refractory_orgP&quot;],
-    &quot;UNITS&quot;:&quot;mg/l&quot;,
-    &quot;COMPARTMENTS_AND_CELLS&quot;: {
-      //&quot;SWE&quot;: {
-      //      &quot;1&quot;: [304,1,1],
-      //      &quot;2&quot;: [281,1,1]
-      //},
-      &quot;RUNOFF&quot;: {
-        &quot;1&quot;: [304,1,1],
-        &quot;2&quot;: [281,1,1]
-      },
-      //&quot;SD&quot;: {
-      //      &quot;1&quot;: [304,1,1],
-      //      &quot;2&quot;: [281,1,1]
-      //},
-      &quot;SOIL_RECHR&quot;: {
-        &quot;1&quot;: [304,1,1],
-        &quot;2&quot;: [281,1,1]
-      },
-      //&quot;SOIL_LOWER&quot;: {
-      //      &quot;1&quot;: [304,1,1],
-      //      &quot;2&quot;: [281,1,1]
-      //},
-      &quot;SURFSOIL&quot;: {
-        &quot;1&quot;: [304,1,1],
-        &quot;2&quot;: [281,1,1]
-      //},
-      //&quot;GW&quot;: {
-      //      &quot;1&quot;: [304,1,1],
-      //      &quot;2&quot;: [281,1,1]
-      }
-    },
-    &quot;TIMESTEP&quot;: [1,&quot;hour&quot;]
-  }
-}
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;PROJECT_NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;My project&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;GEOGRAPHICAL_LOCATION&quot;</span><span class="p">:</span> <span class="s2">&quot;Neverland&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;AUTHORS&quot;</span><span class="p">:</span> <span class="s2">&quot;Barack Obama&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;DATE&quot;</span><span class="p">:</span> <span class="s2">&quot;Jan 2009&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;COMMENT&quot;</span><span class="p">:</span> <span class="s2">&quot;This is my first project as the 44th president of the United States&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;COMPUTATIONAL_SETTINGS&quot;</span><span class="p">:{</span>
+      <span class="nt">&quot;RUN_MODE_DEBUG&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="nt">&quot;USE_NUM_THREADS&quot;</span><span class="p">:</span> <span class="s2">&quot;all&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;OPENWQ_INPUT&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;CONFIG_FILEPATH&quot;</span><span class="p">:</span> <span class="s2">&quot;openWQ_config.json&quot;</span><span class="p">,</span>
+       <span class="nt">&quot;BGC_CYCLES_FILEPATH&quot;</span><span class="p">:</span> <span class="s2">&quot;openWQ_BGC_cycling.json&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;SINKSOURCE_FILES&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;LABEL&quot;</span><span class="p">:</span> <span class="s2">&quot;fertilizer_N&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;FILEPATH&quot;</span><span class="p">:</span> <span class="s2">&quot;openWQ_source_fertN.json&quot;</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;2&quot;</span><span class="p">:</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;LABEL&quot;</span><span class="p">:</span> <span class="s2">&quot;fertilizer_P&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;FILEPATH&quot;</span><span class="p">:</span> <span class="s2">&quot;openWQ_source_fertP.json&quot;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+  <span class="nt">&quot;OPENWQ_OUTPUT&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;RESULTS_FOLDERPATH&quot;</span><span class="p">:</span> <span class="s2">&quot;Output_OpenWQ&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;FORMAT&quot;</span><span class="p">:</span> <span class="s2">&quot;HDF5&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;CHEMICAL_SPECIES&quot;</span><span class="p">:[</span><span class="s2">&quot;NO3&quot;</span><span class="p">,</span><span class="s2">&quot;NH4&quot;</span><span class="p">,</span><span class="s2">&quot;N2&quot;</span><span class="p">,</span><span class="s2">&quot;DON&quot;</span><span class="p">,</span><span class="s2">&quot;labile_orgN&quot;</span><span class="p">,</span><span class="s2">&quot;refractory_orgN&quot;</span><span class="p">,</span><span class="s2">&quot;SRP&quot;</span><span class="p">,</span><span class="s2">&quot;DOP&quot;</span><span class="p">,</span><span class="s2">&quot;partP&quot;</span><span class="p">,</span><span class="s2">&quot;labile_orgP&quot;</span><span class="p">,</span><span class="s2">&quot;refractory_orgP&quot;</span><span class="p">],</span>
+    <span class="nt">&quot;UNITS&quot;</span><span class="p">:</span><span class="s2">&quot;mg/l&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;COMPARTMENTS_AND_CELLS&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;RUNOFF&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">304</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+        <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">281</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;SOIL_RECHR&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">304</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+        <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">281</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;GW&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">304</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+          <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">281</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;TIMESTEP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;hour&quot;</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -227,8 +214,8 @@ e.g. <code class="docutils literal notranslate"><span class="pre">fertilizer_N</
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="4_1_0JSON_format.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="4_1_2Config.html" class="btn btn-neutral float-right" title="Configuration file" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="4_1_In.html" class="btn btn-neutral float-left" title="Input files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="4_1_2Config.html" class="btn btn-neutral float-right" title="Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Units &mdash; OpenWQ 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Hydro-models (forcing)" href="5_3_base_Hydro_models.html" />
+    <link rel="prev" title="Supporting scripts (Matlab and Python)" href="4_2_2support.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> OpenWQ
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1_0_Home.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_0_Installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="4_1_OpenWQ_IO.html">OpenWQ I/O</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="4_1_0JSON_format.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_1_In.html">Input files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_2_out.html">Output files</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Units</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mass-l">Mass (<span class="math notranslate nohighlight">\(L\)</span>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#volume-l-3">Volume (<span class="math notranslate nohighlight">\(L^3\)</span>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#time-t">Time (<span class="math notranslate nohighlight">\(T\)</span>)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Developer: Join us!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_0_Contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OpenWQ</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="4_1_OpenWQ_IO.html">OpenWQ I/O</a> &raquo;</li>
+      <li>Units</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/4_3_units.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="units">
+<h1>Units<a class="headerlink" href="#units" title="Permalink to this headline"></a></h1>
+<p>OpenWQ’s internal units generally follow the <a class="reference external" href="https://en.wikipedia.org/wiki/International_System_of_Units">IS</a> convention, except for mass. Instead of length ((<span class="math notranslate nohighlight">\(L\)</span>)) we specify volume (<span class="math notranslate nohighlight">\(L^3\)</span>) because it makes more sense when dealing with dissolved solutes in water.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Mass</span></code> (<span class="math notranslate nohighlight">\(M\)</span>): gram (not IS unit to avoid very small numbers generally associated with concentrations in the environment)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Volume</span></code> (<span class="math notranslate nohighlight">\(L^3\)</span>): cubic meter (using basic IS unit for length (meter))</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Time</span></code> (<span class="math notranslate nohighlight">\(T\)</span>): second (IS unit)</p></li>
+</ul>
+<p>Different units may be used in the input and output files. They just need to specified in the respective json keys or values.
+Below is a list of all the units permitted in OpenWQ together with the respective flags.</p>
+<section id="mass-l">
+<h2>Mass (<span class="math notranslate nohighlight">\(L\)</span>)<a class="headerlink" href="#mass-l" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>gigatonne (flag: <code class="docutils literal notranslate"><span class="pre">GT</span></code>)</p></li>
+<li><p>negatonne (flag: <code class="docutils literal notranslate"><span class="pre">MT</span></code>)</p></li>
+<li><p>tonne (flag: <code class="docutils literal notranslate"><span class="pre">T</span></code>)</p></li>
+<li><p>tonne US (flag: <code class="docutils literal notranslate"><span class="pre">TON_US</span></code>)</p></li>
+<li><p>tonne UK (flag: <code class="docutils literal notranslate"><span class="pre">TON_UK</span></code>)</p></li>
+<li><p>kilogram (flag: <code class="docutils literal notranslate"><span class="pre">KG</span></code>)</p></li>
+<li><p>gram (flag: <code class="docutils literal notranslate"><span class="pre">G</span></code>)</p></li>
+<li><p>miligram (flag: <code class="docutils literal notranslate"><span class="pre">MG</span></code>)</p></li>
+<li><p>micro gram  (flag: <code class="docutils literal notranslate"><span class="pre">UG</span></code>)</p></li>
+<li><p>nano gram (flag: <code class="docutils literal notranslate"><span class="pre">NG</span></code>)</p></li>
+<li><p>pico gram (flag: <code class="docutils literal notranslate"><span class="pre">PG</span></code>)</p></li>
+<li><p>pound (flag: <code class="docutils literal notranslate"><span class="pre">LB</span></code>)</p></li>
+<li><p>ounce (flag: <code class="docutils literal notranslate"><span class="pre">OZ</span></code>)</p></li>
+</ul>
+</section>
+<section id="volume-l-3">
+<h2>Volume (<span class="math notranslate nohighlight">\(L^3\)</span>)<a class="headerlink" href="#volume-l-3" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>cubic kilometer (flag: <code class="docutils literal notranslate"><span class="pre">KM3</span></code>)</p></li>
+<li><p>cubic meter (flag: <code class="docutils literal notranslate"><span class="pre">M3</span></code>)</p></li>
+<li><p>cubic centimeter (flag: <code class="docutils literal notranslate"><span class="pre">CM3</span></code>)</p></li>
+<li><p>cubic millimeter (flag: <code class="docutils literal notranslate"><span class="pre">MM3</span></code>)</p></li>
+<li><p>liter (flag: <code class="docutils literal notranslate"><span class="pre">L</span></code>)</p></li>
+<li><p>milliliter (flag: <code class="docutils literal notranslate"><span class="pre">ML</span></code>)</p></li>
+<li><p>gallon (US) (flag: <code class="docutils literal notranslate"><span class="pre">GAL_US</span></code>)</p></li>
+<li><p>quart (US) (flag: <code class="docutils literal notranslate"><span class="pre">QT_US</span></code>)</p></li>
+<li><p>cubic mile (flag: <code class="docutils literal notranslate"><span class="pre">MI3</span></code>)</p></li>
+<li><p>gigatonne (flag: <code class="docutils literal notranslate"><span class="pre">GT</span></code>)</p></li>
+<li><p>cubic yard (flag: <code class="docutils literal notranslate"><span class="pre">YD3</span></code>)</p></li>
+<li><p>cubic foot (flag: <code class="docutils literal notranslate"><span class="pre">FT3</span></code>)</p></li>
+<li><p>cubic inch (flag: <code class="docutils literal notranslate"><span class="pre">IN3</span></code>)</p></li>
+<li><p>cubic decimeter (flag: <code class="docutils literal notranslate"><span class="pre">DM3</span></code>)</p></li>
+<li><p>exaliter (flag: <code class="docutils literal notranslate"><span class="pre">EL</span></code>)</p></li>
+<li><p>petaliter (flag: <code class="docutils literal notranslate"><span class="pre">PL</span></code>)</p></li>
+<li><p>teraliter (flag: <code class="docutils literal notranslate"><span class="pre">TL</span></code>)</p></li>
+<li><p>gigaliter (flag: <code class="docutils literal notranslate"><span class="pre">GL</span></code>)</p></li>
+<li><p>megaliter (flag: <code class="docutils literal notranslate"><span class="pre">MEGL</span></code>)</p></li>
+<li><p>kiloliter (flag: <code class="docutils literal notranslate"><span class="pre">KL</span></code>)</p></li>
+<li><p>hectoliter (flag: <code class="docutils literal notranslate"><span class="pre">HL</span></code>)</p></li>
+<li><p>dekaliter (flag: <code class="docutils literal notranslate"><span class="pre">AL</span></code>)</p></li>
+<li><p>deciliter (flag: <code class="docutils literal notranslate"><span class="pre">DL</span></code>)</p></li>
+<li><p>centiliter (flag: <code class="docutils literal notranslate"><span class="pre">CL</span></code>)</p></li>
+<li><p>microliter (flag: <code class="docutils literal notranslate"><span class="pre">UL</span></code>)</p></li>
+<li><p>nanoliter (flag: <code class="docutils literal notranslate"><span class="pre">NL</span></code>)</p></li>
+<li><p>picoliter (flag: <code class="docutils literal notranslate"><span class="pre">PL</span></code>)</p></li>
+<li><p>barrel (US) (flag: <code class="docutils literal notranslate"><span class="pre">BBL_US</span></code>)</p></li>
+<li><p>barrel (UK) (flag: <code class="docutils literal notranslate"><span class="pre">BBL</span></code>)</p></li>
+<li><p>gallon (UK) (flag: <code class="docutils literal notranslate"><span class="pre">GAL_UK</span></code>)</p></li>
+<li><p>quart (UK) (flag: <code class="docutils literal notranslate"><span class="pre">QT_UK</span></code>)</p></li>
+<li><p>pint (UK) (flag: <code class="docutils literal notranslate"><span class="pre">PT_UK</span></code>)</p></li>
+<li><p>fluid ounce (US) (flag: <code class="docutils literal notranslate"><span class="pre">FL_OZ_US</span></code>)</p></li>
+<li><p>fluid ounce (UK) (flag: <code class="docutils literal notranslate"><span class="pre">FL_OZ_UK</span></code>)</p></li>
+<li><p>acre-foot [ac*ft] (flag: <code class="docutils literal notranslate"><span class="pre">AC_FT</span></code>)</p></li>
+<li><p>acre-foot (US survey) (flag: <code class="docutils literal notranslate"><span class="pre">AC_FT_US</span></code>)</p></li>
+<li><p>acre-inch [ac*in] (flag: <code class="docutils literal notranslate"><span class="pre">AC_IN</span></code>)</p></li>
+</ul>
+</section>
+<section id="time-t">
+<h2>Time (<span class="math notranslate nohighlight">\(T\)</span>)<a class="headerlink" href="#time-t" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>second (flag: <code class="docutils literal notranslate"><span class="pre">SEC</span></code>)</p></li>
+<li><p>minute (flag: <code class="docutils literal notranslate"><span class="pre">MIN</span></code>)</p></li>
+<li><p>hour (flag: <code class="docutils literal notranslate"><span class="pre">HOUR</span></code>)</p></li>
+<li><p>day (flag: <code class="docutils literal notranslate"><span class="pre">DAY</span></code>)</p></li>
+<li><p>week (flag: <code class="docutils literal notranslate"><span class="pre">WEEK</span></code>)</p></li>
+<li><p>month (flag: <code class="docutils literal notranslate"><span class="pre">MONTH</span></code>)</p></li>
+<li><p>year (flag: <code class="docutils literal notranslate"><span class="pre">YEAR</span></code>)</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="4_2_2support.html" class="btn btn-neutral float-left" title="Supporting scripts (Matlab and Python)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="5_3_base_Hydro_models.html" class="btn btn-neutral float-right" title="Hydro-models (forcing)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Diogo Costa.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

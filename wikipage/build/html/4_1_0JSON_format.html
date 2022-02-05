@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Master file" href="4_1_1Master.html" />
-    <link rel="prev" title="Input" href="4_1_In.html" /> 
+    <link rel="next" title="Input files" href="4_1_In.html" />
+    <link rel="prev" title="OpenWQ I/O" href="4_1_OpenWQ_IO.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,23 +41,19 @@
 <li class="toctree-l1"><a class="reference internal" href="1_0_Home.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_0_Installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="4_1_In.html">Input</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="4_1_OpenWQ_IO.html">OpenWQ I/O</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Overview</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#input-file-requirements">Input file requirements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#standard-input-file-format">Standard input file format</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#json-files-in-openwq">JSON files in OpenWQ</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_1Master.html">Master file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_2Config.html">Configuration file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_3BGC.html">Biogeochemistry file(s)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_1_4Source.html">Source/Sink file(s)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_1_In.html">Input files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_2_out.html">Output files</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="4_2_out.html">Output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Developer: Join us!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="6_0_Reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_0_Contact.html">Contact</a></li>
 </ul>
 
         </div>
@@ -74,7 +70,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="4_1_In.html">Input</a> &raquo;</li>
+          <li><a href="4_1_OpenWQ_IO.html">OpenWQ I/O</a> &raquo;</li>
       <li>Overview</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/4_1_0JSON_format.rst.txt" rel="nofollow"> View page source</a>
@@ -87,16 +83,6 @@
              
   <section id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h1>
-<section id="input-file-requirements">
-<h2>Input file requirements<a class="headerlink" href="#input-file-requirements" title="Permalink to this headline"></a></h2>
-<p>The model requires 4 input files or groups of files.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_1Master.html">Master file</a></p></li>
-<li><p><a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_2Config.html">Configuration file</a></p></li>
-<li><p><a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_3BGC.html">Biogeochemistry file(s)</a></p></li>
-<li><p><a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_4Source.html">Source/Sink file(s)</a></p></li>
-</ul>
-</section>
 <section id="standard-input-file-format">
 <h2>Standard input file format<a class="headerlink" href="#standard-input-file-format" title="Permalink to this headline"></a></h2>
 <p>The configuration and forcing of the model is provided via JSON <a class="reference external" href="https://en.wikipedia.org/wiki/JSON">(JavaScript Object Notation)</a> files.</p>
@@ -114,6 +100,8 @@ Unlike the native JSON files, the implementation is OpenWQ supports C/C++ syntax
 <li><p><code class="docutils literal notranslate"><span class="pre">Array</span></code>: an ordered list of zero or more elements, each of which may be of any type. Arrays use square bracket notation with comma-separated elements, e.g., <code class="docutils literal notranslate"><span class="pre">[2,</span> <span class="pre">4,</span> <span class="pre">5]`</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">null</span></code>: an empty value, using the word <code class="docutils literal notranslate"><span class="pre">null</span></code></p></li>
 </ul>
+<p>The entries (keys or values) are not case sensitive. You can use both capital or lower case characters, or a mix of the two, for both the keys and values.
+For example, you can write the JSON key <code class="docutils literal notranslate"><span class="pre">OPENWQ_INPUT</span></code> like that or like that <code class="docutils literal notranslate"><span class="pre">openwq_input</span></code> or like that <code class="docutils literal notranslate"><span class="pre">OpenWQ_Input</span></code> or like that <code class="docutils literal notranslate"><span class="pre">OpEnWq_inPUt</span></code>, or whatever your prefer. OpenWQ will recognize the commands.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="nt">&quot;Key_name_1&quot;</span><span class="p">:</span> <span class="mi">456</span><span class="p">,</span>
@@ -132,6 +120,7 @@ Unlike the native JSON files, the implementation is OpenWQ supports C/C++ syntax
 <span class="p">}</span>
 </pre></div>
 </div>
+<p>For the sake of clarity, we wrote all OpenWQ JSON <code class="docutils literal notranslate"><span class="pre">keys</span></code> in capital letters through this document.</p>
 </section>
 </section>
 
@@ -139,8 +128,8 @@ Unlike the native JSON files, the implementation is OpenWQ supports C/C++ syntax
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="4_1_In.html" class="btn btn-neutral float-left" title="Input" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="4_1_1Master.html" class="btn btn-neutral float-right" title="Master file" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="4_1_OpenWQ_IO.html" class="btn btn-neutral float-left" title="OpenWQ I/O" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="4_1_In.html" class="btn btn-neutral float-right" title="Input files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

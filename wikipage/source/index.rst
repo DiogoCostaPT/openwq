@@ -6,9 +6,10 @@
 Welcome to OpenWQ's documentation!
 ==================================
 
-OpenWQ is a generalised reaction-network model written in C++.
-It was designed as a coupler that can be linked to existing hydro-models to enable flexible, multi-chemistry biogeochemical simulations.
-It aims to be fast, free, and extendable.
+OpenWQ is a generalised biogeochemical reaction-network model written in C++.
+It was designed as a coupler for integration with existing hydro-models to enable flexible, multi-scale, multi-chemistry simulations.
+OpenWQ adapts to the host hydro-model spatial and temporal configurations, which can include 1D, 2D or 3D spatial discretizations based on structured or unstructured meshes.
+It aims to be flexible, fast, free, and extendable.
 
 .. toctree::
    :maxdepth: 4
@@ -16,11 +17,10 @@ It aims to be fast, free, and extendable.
    1_0_Home
    2_0_Documentation
    3_0_Installation
-   4_1_In
-   4_2_out
+   4_1_OpenWQ_IO
    5_3_base_Hydro_models
    5_0_Developer
-   6_0_Reference
+   6_0_Contact
    
 
 
