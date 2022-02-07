@@ -18,7 +18,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="C++ API reference" href="5_3_00_APIs.html" />
+    <link rel="next" title="Example of OpenWQ_hydrolink files" href="5_3_00_hydrolink_example.html" />
     <link rel="prev" title="What do you need?" href="5_3_0_Coupling_what_do_you_need.html" /> 
 </head>
 
@@ -55,6 +55,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#step-6-compile-your-coupled-code">STEP 6: Compile your coupled code</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_00_hydrolink_example.html">Example of <code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink</span></code> files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="5_3_00_APIs.html">C++ API reference</a></li>
 <li class="toctree-l3"><a class="reference internal" href="5_3_000_Wrapper_interfaces.html">Language binding</a></li>
 </ul>
@@ -93,10 +94,13 @@
              
   <section id="steps-to-perform-the-coupling">
 <h1>Steps to perform the coupling<a class="headerlink" href="#steps-to-perform-the-coupling" title="Permalink to this headline"></a></h1>
-<p>To couple OpenWQ to an hydro-model, you need to call OpenWQ’s coupler functions that contain a series of <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">API calls</a>. The coupler functions provided are generic and were designed to require minimal editing, but each hydro-model is different so some adjustments are always needed. We refer to there adjustments as <code class="docutils literal notranslate"><span class="pre">COUPLER</span> <span class="pre">CODE</span></code>.
-This editable <code class="docutils literal notranslate"><span class="pre">COUPLER</span> <span class="pre">CODE</span></code> is to ensure that the data types used in the hydro-model are properly converted to OpenWQ’s own data types, so that the <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">API calls</a> calls can perform adequately.
-We suggest to place all the coupler calls inside the same file and name it <code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink.cpp</span></code>. It may be convenient to have an header file with the same name (<code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink.h</span></code>).
-Inside these <code class="docutils literal notranslate"><span class="pre">hydrolink</span></code> files, we also suggest that the couplers are placed inside a class with the name <code class="docutils literal notranslate"><span class="pre">OpenWQ</span></code>. These suggestions are all optional and may not be relevant to your specific hydro-model.
+<p>To couple OpenWQ to an hydro-model, you need to call OpenWQ’s coupler functions that contain a series of <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">API calls</a>.
+The coupler functions provided are generic and were designed to require minimal editing, but each hydro-model is different so some adjustments are always needed. We refer to there adjustments as <code class="docutils literal notranslate"><span class="pre">COUPLER</span> <span class="pre">CODE</span></code>.
+This editable <code class="docutils literal notranslate"><span class="pre">COUPLER</span> <span class="pre">CODE</span></code> is to ensure that the data types used in the hydro-model are properly converted to OpenWQ’s own data types, so that the <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">API calls</a> can perform adequately.
+We suggest to place all the coupler calls inside the same file and name it <code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink.cpp</span></code>.
+It may be convenient to have an header file with the same name (<code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink.h</span></code>).
+An example of these <code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink</span></code> files can be seen <a class="reference external" href="????">here</a>.
+Inside these <code class="docutils literal notranslate"><span class="pre">hydrolink</span></code> files, we also suggest that the couplers are placed inside a class with the name <code class="docutils literal notranslate"><span class="pre">OpenWQ</span></code>.
 However, all the steps described below, as well as the class names, consider these suggestions.</p>
 <p>For now, don’t worry with editing the <code class="docutils literal notranslate"><span class="pre">COUPLER</span> <span class="pre">CODE</span></code>; it’s the last step in the coupling process.</p>
 <p>Bellow are all the steps you need to perform the coupling:</p>
@@ -223,7 +227,7 @@ However, as previously said, each hydro-model is different and small adjustments
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="5_3_0_Coupling_what_do_you_need.html" class="btn btn-neutral float-left" title="What do you need?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="5_3_00_APIs.html" class="btn btn-neutral float-right" title="C++ API reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="5_3_00_hydrolink_example.html" class="btn btn-neutral float-right" title="Example of OpenWQ_hydrolink files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,7 +1,7 @@
 Units
 ==================================
 
-OpenWQ's internal units generally follow the `IS <https://en.wikipedia.org/wiki/International_System_of_Units>`_ convention, except for mass. Instead of length ((:math:`L`)) we specify volume (:math:`L^3`) because it makes more sense when dealing with dissolved solutes in water.
+OpenWQ's internal units generally follow the `IS <https://en.wikipedia.org/wiki/International_System_of_Units>`_ convention, except for mass. Instead of length (:math:`L`) we specify volume (:math:`L^3`) because it makes more sense when dealing with dissolved solutes in water.
 
 * ``Mass`` (:math:`M`): gram (not IS unit to avoid very small numbers generally associated with concentrations in the environment)
 * ``Volume`` (:math:`L^3`): cubic meter (using basic IS unit for length (meter))
