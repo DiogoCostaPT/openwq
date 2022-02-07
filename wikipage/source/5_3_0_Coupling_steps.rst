@@ -1,10 +1,13 @@
 Steps to perform the coupling
 ==============================
 
-To couple OpenWQ to an hydro-model, you need to call OpenWQ's coupler functions that contain a series of `API calls <https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html>`_. The coupler functions provided are generic and were designed to require minimal editing, but each hydro-model is different so some adjustments are always needed. We refer to there adjustments as ``COUPLER CODE``.
-This editable ``COUPLER CODE`` is to ensure that the data types used in the hydro-model are properly converted to OpenWQ's own data types, so that the `API calls <https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html>`_ calls can perform adequately.
-We suggest to place all the coupler calls inside the same file and name it ``OpenWQ_hydrolink.cpp``. It may be convenient to have an header file with the same name (``OpenWQ_hydrolink.h``).
-Inside these ``hydrolink`` files, we also suggest that the couplers are placed inside a class with the name ``OpenWQ``. These suggestions are all optional and may not be relevant to your specific hydro-model.
+To couple OpenWQ to an hydro-model, you need to call OpenWQ's coupler functions that contain a series of `API calls <https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html>`_.
+The coupler functions provided are generic and were designed to require minimal editing, but each hydro-model is different so some adjustments are always needed. We refer to there adjustments as ``COUPLER CODE``.
+This editable ``COUPLER CODE`` is to ensure that the data types used in the hydro-model are properly converted to OpenWQ's own data types, so that the `API calls <https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html>`_ can perform adequately.
+We suggest to place all the coupler calls inside the same file and name it ``OpenWQ_hydrolink.cpp``.
+It may be convenient to have an header file with the same name (``OpenWQ_hydrolink.h``).
+An example of these ``OpenWQ_hydrolink`` files can be seen `here <????>`_.
+Inside these ``hydrolink`` files, we also suggest that the couplers are placed inside a class with the name ``OpenWQ``.
 However, all the steps described below, as well as the class names, consider these suggestions.
 
 For now, don't worry with editing the ``COUPLER CODE``; it's the last step in the coupling process.
