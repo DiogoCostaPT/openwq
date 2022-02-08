@@ -204,7 +204,14 @@ However, as previously said, each hydro-model is different and small adjustments
 <h2>STEP 6: Compile your coupled code<a class="headerlink" href="#step-6-compile-your-coupled-code" title="Permalink to this headline"></a></h2>
 <p>Now you need to adapt your <code class="docutils literal notranslate"><span class="pre">MakeFile</span></code> or ‘<cite>CMakeLists</cite> files to properly link and compile OpenWQ together with your hydro-model.</p>
 <ul class="simple">
-<li><p>External libraries: include flag for Armdadillo (<code class="docutils literal notranslate"><span class="pre">--larmadillo</span></code>)</p></li>
+<li><dl class="simple">
+<dt>Include flags for external libraries:</dt><dd><ul>
+<li><p>Armdadillo (fag: <code class="docutils literal notranslate"><span class="pre">--larmadillo</span></code>)</p></li>
+<li><p>OpenMP (flag: <code class="docutils literal notranslate"><span class="pre">-fopenmp</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
 <li><p>Link OpenWQ objects in your compilation instruction:</p></li>
 </ul>
 <div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>&lt;path&gt;/OpenWQ_couplercalls.o \
