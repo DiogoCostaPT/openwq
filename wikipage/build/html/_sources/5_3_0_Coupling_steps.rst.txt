@@ -138,7 +138,9 @@ STEP 6: Compile your coupled code
 
 Now you need to adapt your ``MakeFile`` or '`CMakeLists` files to properly link and compile OpenWQ together with your hydro-model.
 
-* External libraries: include flag for Armdadillo (``--larmadillo``)
+* Include flags for external libraries:
+    * Armdadillo (fag: ``--larmadillo``)
+    * OpenMP (flag: ``-fopenmp``)
 * Link OpenWQ objects in your compilation instruction:
 
 .. code-block:: guess
