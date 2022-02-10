@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Example of OpenWQ_hydrolink files" href="5_3_00_hydrolink_example.html" />
-    <link rel="prev" title="What do you need?" href="5_3_0_Coupling_what_do_you_need.html" /> 
+    <link rel="prev" title="Overview" href="5_3_0_Coupling_what_do_you_need.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,14 +45,15 @@
 <li class="toctree-l1 current"><a class="reference internal" href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="5_3_0_Hydro_coupled_models.html">Existing couplings</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="5_3_Coupler_guide.html">How to couple to hydro-models?</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="5_3_0_Coupling_what_do_you_need.html">What do you need?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_0_Coupling_what_do_you_need.html">Overview</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Steps to perform the coupling</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#step-1-hydro-model-structure">STEP 1: Hydro-model structure</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-2-create-class-objects">STEP 2: Create class objects</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-3-locate-coupler-functions">STEP 3: Locate coupler functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-4-call-coupler-functions">STEP 4: Call coupler functions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-5-adjust-coupler-to-hydro-model">STEP 5: Adjust coupler to hydro-model</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-6-compile-your-coupled-code">STEP 6: Compile your coupled code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-2-get-openwq">STEP 2: Get OpenWQ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-create-class-objects">STEP 3: Create class objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-4-locate-coupler-functions">STEP 4: Locate coupler functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-5-call-coupler-functions">STEP 5: Call coupler functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-6-adjust-coupler-to-hydro-model">STEP 6: Adjust coupler to hydro-model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-7-compile-your-coupled-code">STEP 7: Compile your coupled code</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="5_3_00_hydrolink_example.html">Example of <code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink</span></code> files</a></li>
@@ -109,8 +110,12 @@ However, all the steps described below, as well as the class names, consider the
 <p>Identify the following components of your hydro-model. It is important that you understand the source code of your model.</p>
 <a class="reference internal image-reference" href="_images/coupling_steps_1.png"><img alt="Host-model structure" src="_images/coupling_steps_1.png" style="width: 500px;" /></a>
 </section>
-<section id="step-2-create-class-objects">
-<h2>STEP 2: Create class objects<a class="headerlink" href="#step-2-create-class-objects" title="Permalink to this headline"></a></h2>
+<section id="step-2-get-openwq">
+<h2>STEP 2: Get OpenWQ<a class="headerlink" href="#step-2-get-openwq" title="Permalink to this headline"></a></h2>
+<p>To download OpenWQ in your machine, follow the steps indicated in section <a class="reference external" href="https://openwq.readthedocs.io/en/latest/3_1_Download.html#">Get OpenWQ</a>.</p>
+</section>
+<section id="step-3-create-class-objects">
+<h2>STEP 3: Create class objects<a class="headerlink" href="#step-3-create-class-objects" title="Permalink to this headline"></a></h2>
 <p>Before you can call OpenWQ’s coupler functions, you need to create OpenWQ class objects inside your hydro-model.
 This can be accomplished by introducing the code below inside your hydro-model.</p>
 <p>This code should be placed in a <code class="docutils literal notranslate"><span class="pre">main</span></code> function of your hydro-model from where the created objects objects can be passed to OpenWQ’s coupler functions.
@@ -148,8 +153,8 @@ This is a critical step since these objects are input arguments of the different
 </pre></div>
 </div>
 </section>
-<section id="step-3-locate-coupler-functions">
-<h2>STEP 3: Locate coupler functions<a class="headerlink" href="#step-3-locate-coupler-functions" title="Permalink to this headline"></a></h2>
+<section id="step-4-locate-coupler-functions">
+<h2>STEP 4: Locate coupler functions<a class="headerlink" href="#step-4-locate-coupler-functions" title="Permalink to this headline"></a></h2>
 <p>Referring to the diagram in STEP 1, now you need to identify the main functions or code blocks of your hydro-model that are responsible for the tasks listed below.</p>
 <blockquote>
 <div><ul class="simple">
@@ -160,8 +165,8 @@ This is a critical step since these objects are input arguments of the different
 </ul>
 </div></blockquote>
 </section>
-<section id="step-4-call-coupler-functions">
-<h2>STEP 4: Call coupler functions<a class="headerlink" href="#step-4-call-coupler-functions" title="Permalink to this headline"></a></h2>
+<section id="step-5-call-coupler-functions">
+<h2>STEP 5: Call coupler functions<a class="headerlink" href="#step-5-call-coupler-functions" title="Permalink to this headline"></a></h2>
 <dl class="simple">
 <dt>From each of those hydro-model functions or code blocks, call the following <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">OpenWQ coupler functions</a>:</dt><dd><ul class="simple">
 <li><p>[<code class="docutils literal notranslate"><span class="pre">CONFIGURATION</span></code>]: call Coupler Function 1 (<code class="docutils literal notranslate"><span class="pre">OpenWQ::decl</span></code>)</p></li>
@@ -174,8 +179,8 @@ This is a critical step since these objects are input arguments of the different
 <p>The diagram below shows these coupler calls:</p>
 <a class="reference internal image-reference" href="_images/coupling_steps_2.png"><img alt="API calls" src="_images/coupling_steps_2.png" style="width: 600px;" /></a>
 </section>
-<section id="step-5-adjust-coupler-to-hydro-model">
-<h2>STEP 5: Adjust coupler to hydro-model<a class="headerlink" href="#step-5-adjust-coupler-to-hydro-model" title="Permalink to this headline"></a></h2>
+<section id="step-6-adjust-coupler-to-hydro-model">
+<h2>STEP 6: Adjust coupler to hydro-model<a class="headerlink" href="#step-6-adjust-coupler-to-hydro-model" title="Permalink to this headline"></a></h2>
 <p>OpenWQ’s coupler functions are generic and have been designed to require minimal editing.
 However, as previously said, each hydro-model is different and small adjustments are needed to ensure the hydro-model passes the correct arguments to <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html">OpenWQ’s APIs</a>.</p>
 <p>The diagrams below list code editing needed, identified as <code class="docutils literal notranslate"><span class="pre">COUPLE</span> <span class="pre">CODE</span></code>.</p>
@@ -200,8 +205,8 @@ However, as previously said, each hydro-model is different and small adjustments
 <p>This coupler call function contains a series of API calls that handle tasks required at the end of each time step.</p>
 <a class="reference internal image-reference" href="_images/coupling_steps_6.png"><img alt="API calls" src="_images/coupling_steps_6.png" style="width: 700px;" /></a>
 </section>
-<section id="step-6-compile-your-coupled-code">
-<h2>STEP 6: Compile your coupled code<a class="headerlink" href="#step-6-compile-your-coupled-code" title="Permalink to this headline"></a></h2>
+<section id="step-7-compile-your-coupled-code">
+<h2>STEP 7: Compile your coupled code<a class="headerlink" href="#step-7-compile-your-coupled-code" title="Permalink to this headline"></a></h2>
 <p>Now you need to adapt your <code class="docutils literal notranslate"><span class="pre">MakeFile</span></code> or ‘<cite>CMakeLists</cite> files to properly link and compile OpenWQ together with your hydro-model.</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -233,7 +238,7 @@ However, as previously said, each hydro-model is different and small adjustments
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="5_3_0_Coupling_what_do_you_need.html" class="btn btn-neutral float-left" title="What do you need?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="5_3_0_Coupling_what_do_you_need.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="5_3_00_hydrolink_example.html" class="btn btn-neutral float-right" title="Example of OpenWQ_hydrolink files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

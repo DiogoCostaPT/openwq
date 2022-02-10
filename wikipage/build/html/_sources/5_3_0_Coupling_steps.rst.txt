@@ -23,7 +23,14 @@ Identify the following components of your hydro-model. It is important that you 
    :width: 500
    :alt: Host-model structure
 
-STEP 2: Create class objects
+
+STEP 2: Get OpenWQ
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To download OpenWQ in your machine, follow the steps indicated in section `Get OpenWQ <https://openwq.readthedocs.io/en/latest/3_1_Download.html#>`_.
+
+
+STEP 3: Create class objects
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Before you can call OpenWQ's coupler functions, you need to create OpenWQ class objects inside your hydro-model.
@@ -66,7 +73,7 @@ This is a critical step since these objects are input arguments of the different
     #include "<path>/OpenWQ_hydrolink.h"
 
 
-STEP 3: Locate coupler functions
+STEP 4: Locate coupler functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Referring to the diagram in STEP 1, now you need to identify the main functions or code blocks of your hydro-model that are responsible for the tasks listed below.
@@ -77,7 +84,7 @@ Referring to the diagram in STEP 1, now you need to identify the main functions 
     * [``SIMULATION`` > ``TIME LOOP`` > ``After space loop``]
 
 
-STEP 4: Call coupler functions
+STEP 5: Call coupler functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 From each of those hydro-model functions or code blocks, call the following `OpenWQ coupler functions <https://openwq.readthedocs.io/en/latest/5_3_00_APIs.html>`_:
@@ -92,7 +99,7 @@ The diagram below shows these coupler calls:
    :width: 600
    :alt: API calls
 
-STEP 5: Adjust coupler to hydro-model
+STEP 6: Adjust coupler to hydro-model
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 OpenWQ's coupler functions are generic and have been designed to require minimal editing.
@@ -133,7 +140,7 @@ This coupler call function contains a series of API calls that handle tasks requ
    :alt: API calls
 
 
-STEP 6: Compile your coupled code
+STEP 7: Compile your coupled code
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now you need to adapt your ``MakeFile`` or '`CMakeLists` files to properly link and compile OpenWQ together with your hydro-model.
