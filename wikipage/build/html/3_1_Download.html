@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Download &mdash; OpenWQ 0.0.1 documentation</title>
+  <title>Get OpenWQ &mdash; OpenWQ 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -41,7 +41,12 @@
 <li class="toctree-l1"><a class="reference internal" href="1_0_Home.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="3_0_Installation.html">Installation</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Download</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Get OpenWQ</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-identify-download-folder">STEP 1: Identify download folder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-clone-openwq">STEP 2: Clone OpenWQ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-keep-openwq-updated">STEP 3: Keep OpenWQ updated</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="3_2_Build.html">Building requirement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_3_Compile.html">Build and Compile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_4_Trouble.html">Troubleshooting</a></li>
@@ -68,7 +73,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="3_0_Installation.html">Installation</a> &raquo;</li>
-      <li>Download</li>
+      <li>Get OpenWQ</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/3_1_Download.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -78,10 +83,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="download">
-<h1>Download<a class="headerlink" href="#download" title="Permalink to this headline"></a></h1>
-<p>The source code of the application can be obtained from github
-<a class="reference external" href="https://github.com/DiogoCostaPT/PULSE_cpp">https://github.com/DiogoCostaPT/PULSE_cpp</a></p>
+  <section id="get-openwq">
+<h1>Get OpenWQ<a class="headerlink" href="#get-openwq" title="Permalink to this headline"></a></h1>
+<p>It is important that you follow the following steps in order to <code class="docutils literal notranslate"><span class="pre">clone</span></code> OpenWQ in your machine, but to also make sure that you can easily <code class="docutils literal notranslate"><span class="pre">pull</span></code> and integrate updates in an efficient and hassle-free manner.</p>
+<section id="step-1-identify-download-folder">
+<h2>STEP 1: Identify download folder<a class="headerlink" href="#step-1-identify-download-folder" title="Permalink to this headline"></a></h2>
+<p>OpenWQ’s source code should be cloned inside your hydro-model source code folder.</p>
+</section>
+<section id="step-2-clone-openwq">
+<h2>STEP 2: Clone OpenWQ<a class="headerlink" href="#step-2-clone-openwq" title="Permalink to this headline"></a></h2>
+<p>To clone OpenWQ in your machine you should first install <a class="reference external" href="https://git-scm.com/">Git</a>.
+Once Git is installed, open a Terminal and go to the hydro-model source-code folder identified in STEP 1.</p>
+<p>In the terminal, run the following command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/DiogoCostaPT/openwq.git</span></code></p>
+<p>This will create a new folder named <code class="docutils literal notranslate"><span class="pre">openwq</span></code> where the source code is located.</p>
+</section>
+<section id="step-3-keep-openwq-updated">
+<h2>STEP 3: Keep OpenWQ updated<a class="headerlink" href="#step-3-keep-openwq-updated" title="Permalink to this headline"></a></h2>
+<p>We are continuously working on improvements to OpenWQ, so it is important that you regularly <code class="docutils literal notranslate"><span class="pre">pull</span></code> changes from OpenWQ’s remote repository in GitHub.
+Doing so, should not break OpenWQ’s API call inside your <code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink.cpp</span></code> file.</p>
+<p>To update OpenWQ, regularly:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Open a Terminal,</p></li>
+<li><p>Go inside the <code class="docutils literal notranslate"><span class="pre">openwq</span></code> folder created in the source-code folder identified in STEP 1</p></li>
+<li><p>Run the following command: <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span></code></p></li>
+</ul>
+</div></blockquote>
+</section>
 </section>
 
 
