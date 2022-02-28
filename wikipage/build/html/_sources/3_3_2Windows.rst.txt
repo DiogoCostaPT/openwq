@@ -42,7 +42,7 @@ Download "blas.lib", "libf2c.lib" and "lapack.lib". Remember the directory to th
 	
 	Extract the package, then go to the VTK folder and create new folder named "build". As the first picture below, select the source directory (VTK) and the build target directory (build). Then by pressing "Configure", it will ask you to choose the generator (For me, I choose the Unix Makefile. You could choose to use the Visual Studio if you are more comfortable with that).
 	
-	After that, it will bring you to the next picture. You could modify the configuration and press "Configure" to apply the changes (the default setting should be fine to run this application). After the configuration is finished, press "Generate", the Makefile (or .sln file if you choose to use visual studio) will be generated to the "build" folder. Finally, open the cmd and go to the "build" folder. By using ``make``, the installation can be finished.
+	Here we show how to build the VTK with Unix Makefiles. You could follow the instruction https://www.youtube.com/watch?v=6S3_sl5Sc0E&t=12s to build the VTK with Visual Studio. So by pressing Configure, it brings you to the next picture. You could modify the configuration and press "Configure" to apply the changes (the default setting should be fine to run this application). After the configuration is finished, press "Generate", the Makefile (or .sln file if you choose to use visual studio) will be generated to the "build" folder. Finally, open the cmd and go to the "build" folder. By using ``make``, the installation can be finished.
 	
 .. image:: vtkwin1.PNG
 

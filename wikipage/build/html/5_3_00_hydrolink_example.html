@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example of OpenWQ_hydrolink files &mdash; OpenWQ 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="C++ API reference" href="5_3_00_APIs.html" />
+    <link rel="prev" title="Steps to perform the coupling" href="5_3_0_Coupling_steps.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> OpenWQ
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1_0_Home.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_0_Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_1_OpenWQ_IO.html">OpenWQ I/O</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="5_3_0_Hydro_coupled_models.html">Existing couplings</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="5_3_Coupler_guide.html">How to couple to hydro-models?</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="5_3_0_Coupling_what_do_you_need.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_0_Coupling_steps.html">Steps to perform the coupling</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Example of <code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink</span></code> files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#openwq-hydrolink-h">OpenWQ_hydrolink.h</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#openwq-hydrolink-cpp">OpenWQ_hydrolink.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_00_APIs.html">C++ API reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_000_Wrapper_interfaces.html">Language binding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Developer: Join us!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_0_Contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OpenWQ</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a> &raquo;</li>
+          <li><a href="5_3_Coupler_guide.html">How to couple to hydro-models?</a> &raquo;</li>
+      <li>Example of <code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink</span></code> files</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/5_3_00_hydrolink_example.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="example-of-openwq-hydrolink-files">
+<h1>Example of <code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink</span></code> files<a class="headerlink" href="#example-of-openwq-hydrolink-files" title="Permalink to this headline"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">hydrolink</span></code> files are the interface between the hydro-model and OpenWQ.</p>
+<p>They serve two main purposes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Convert data types between the hydro-model and OpenWQ (<code class="docutils literal notranslate"><span class="pre">COUPLER</span> <span class="pre">CODE</span></code>)</p></li>
+<li><p>Make calls to OpenWQ’s coupler functions</p></li>
+</ul>
+</div></blockquote>
+<p>The <code class="docutils literal notranslate"><span class="pre">hydrolink</span></code> files provided below (<code class="docutils literal notranslate"><span class="pre">cpp</span></code> and <code class="docutils literal notranslate"><span class="pre">header</span></code>) are just an example of an implementation of the steps prescribed in section <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_0_Coupling_steps.html">“Steps to perform the coupling”</a>.
+This was an implementation developed for the <a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_0_CRHM.html">Cold Regions Hydrological Model (CRHM)</a>.
+However, as previously mentioned, each model is different so these files have to be adapted accordingly.
+Please also bear in mind that the <code class="docutils literal notranslate"><span class="pre">COUPLER</span> <span class="pre">CODE</span></code> here is very specific to this implementation and the structure of CRHM.
+However, you should be able to clearly identify the calls to the different OpenWQ coupler functions.</p>
+<section id="openwq-hydrolink-h">
+<h2>OpenWQ_hydrolink.h<a class="headerlink" href="#openwq-hydrolink-h" title="Permalink to this headline"></a></h2>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="c1">// This program, openWQ, is free software: you can redistribute it and/or modify</span>
+<span class="c1">// it under the terms of the GNU General Public License as published by</span>
+<span class="c1">// the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">// (at your option) aNCOLS later version.</span>
+<span class="c1">//</span>
+<span class="c1">// This program is distributed in the hope that it will be useful,</span>
+<span class="c1">// but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">// GNU General Public License for more details.</span>
+
+<span class="c1">// You should have received a copy of the GNU General Public License</span>
+<span class="c1">// along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="cp">#ifndef OPENWQ_HYDROLINK_INCLUDED</span>
+<span class="cp">#define OPENWQ_HYDROLINK_INCLUDED</span>
+
+<span class="c1">// from CRHM</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;../vcl.h&quot;</span><span class="cp"></span>
+<span class="c1">//#pragma hdrstop</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;../WQ_CRHM.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;../NewModules.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;../GlobalDll.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;../ClassModule.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;math.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+
+<span class="c1">//#pragma package(smart_init)</span>
+<span class="n">using</span><span class="w"> </span><span class="n">namespace</span><span class="w"> </span><span class="nn">CRHM</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">// for OpenWQ</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fstream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;armadillo&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;OpenWQ_couplercalls.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;OpenWQ_global.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;OpenWQ_readjson.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;OpenWQ_initiate.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;OpenWQ_chem.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;OpenWQ_watertransp.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;OpenWQ_sinksource.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;OpenWQ_units.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;OpenWQ_solver.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;OpenWQ_output.h&quot;</span><span class="cp"></span>
+
+
+<span class="kr">class</span> <span class="nc">ClassWQ_OpenWQ</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kr">public</span><span class="w"> </span><span class="n">ClassModule</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+
+<span class="w">    </span><span class="kr">public</span><span class="o">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">ClassWQ_OpenWQ</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kr">string</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kr">string</span><span class="w"> </span><span class="n">Version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;undefined&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">CRHM</span><span class="o">::</span><span class="n">LMODULE</span><span class="w"> </span><span class="n">Lvl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CRHM</span><span class="o">::</span><span class="n">PROTO</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ClassModule</span><span class="p">(</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Version</span><span class="p">,</span><span class="w"> </span><span class="n">Lvl</span><span class="p">)</span><span class="w"> </span><span class="p">{};</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// Variables from CRHM</span>
+<span class="w">    </span><span class="kr">const</span><span class="w"> </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">hru_t</span><span class="p">;</span><span class="w"> </span><span class="c1">// has to be converted to soil temperatures.</span>
+<span class="w">    </span><span class="kr">const</span><span class="w"> </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">hru_area</span><span class="p">;</span><span class="w"> </span><span class="c1">//</span>
+<span class="w">    </span><span class="kr">const</span><span class="w"> </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">SWE</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">SWE_conc</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">**</span><span class="n">SWE_conc_lay</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">const</span><span class="w"> </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">soil_runoff</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">soil_runoff_cWQ</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">**</span><span class="n">soil_runoff_cWQ_lay</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">const</span><span class="w"> </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">soil_ssr</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">soil_ssr_conc</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">**</span><span class="n">soil_ssr_conc_lay</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">const</span><span class="w"> </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">soil_lower</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">soil_lower_conc</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">**</span><span class="n">soil_lower_conc_lay</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">const</span><span class="w"> </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">soil_rechr</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">conc_soil_rechr</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">**</span><span class="n">conc_soil_rechr_lay</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">surfsoil_solub_mWQ</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">**</span><span class="n">surfsoil_solub_mWQ_lay</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">conc_soil_lower</span><span class="p">;</span><span class="w">   </span><span class="c1">// concentration of organic nitrogen *** from soilstate</span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">**</span><span class="n">conc_soil_lower_lay</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">const</span><span class="w"> </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">soil_moist</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">Sd</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">Sd_conc</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">**</span><span class="n">Sd_conc_lay</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">gw</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">gw_conc</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="o">**</span><span class="n">gw_conc_lay</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">const</span><span class="w"> </span><span class="kr">float</span><span class="w"> </span><span class="o">*</span><span class="n">soil_rechr_max</span><span class="p">;</span><span class="w"></span>
+
+
+<span class="w">    </span><span class="kr">void</span><span class="w"> </span><span class="nf">decl</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_couplercalls</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_couplercalls</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_hostModelconfig</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_json</span><span class="p">,</span><span class="w">                    </span><span class="c1">// create OpenWQ_json object</span>
+<span class="w">        </span><span class="n">OpenWQ_wqconfig</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_wqconfig</span><span class="p">,</span><span class="w">            </span><span class="c1">// create OpenWQ_wqconfig object</span>
+<span class="w">        </span><span class="n">OpenWQ_units</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_units</span><span class="p">,</span><span class="w">                  </span><span class="c1">// functions for unit conversion</span>
+<span class="w">        </span><span class="n">OpenWQ_readjson</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_readjson</span><span class="p">,</span><span class="w">            </span><span class="c1">// read json files</span>
+<span class="w">        </span><span class="n">OpenWQ_vars</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_vars</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_initiate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_initiate</span><span class="p">,</span><span class="w">            </span><span class="c1">// initiate modules</span>
+<span class="w">        </span><span class="n">OpenWQ_watertransp</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_watertransp</span><span class="p">,</span><span class="w">      </span><span class="c1">// transport modules</span>
+<span class="w">        </span><span class="n">OpenWQ_chem</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_chem</span><span class="p">,</span><span class="w">                   </span><span class="c1">// biochemistry modules</span>
+<span class="w">        </span><span class="n">OpenWQ_sinksource</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_sinksource</span><span class="p">,</span><span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">sink</span><span class="w"> </span><span class="o">and</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">modules</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_output</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_output</span><span class="p">,</span><span class="w">                </span><span class="c1">// output modules (needed for console/logfile)</span>
+<span class="w">        </span><span class="kr">unsigned</span><span class="w"> </span><span class="kr">long</span><span class="w"> </span><span class="n">num_hru</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="kr">void</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_couplercalls</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_couplercalls</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_hostModelconfig</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_json</span><span class="p">,</span><span class="w">                    </span><span class="c1">// create OpenWQ_json object</span>
+<span class="w">        </span><span class="n">OpenWQ_wqconfig</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_wqconfig</span><span class="p">,</span><span class="w">            </span><span class="c1">// create OpenWQ_wqconfig object</span>
+<span class="w">        </span><span class="n">OpenWQ_units</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_units</span><span class="p">,</span><span class="w">                  </span><span class="c1">// functions for unit conversion</span>
+<span class="w">        </span><span class="n">OpenWQ_readjson</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_readjson</span><span class="p">,</span><span class="w">            </span><span class="c1">// read json files</span>
+<span class="w">        </span><span class="n">OpenWQ_vars</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_vars</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_initiate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_initiate</span><span class="p">,</span><span class="w">            </span><span class="c1">// initiate modules</span>
+<span class="w">        </span><span class="n">OpenWQ_watertransp</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_watertransp</span><span class="p">,</span><span class="w">      </span><span class="c1">// transport modules</span>
+<span class="w">        </span><span class="n">OpenWQ_chem</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_chem</span><span class="p">,</span><span class="w">                   </span><span class="c1">// biochemistry modules</span>
+<span class="w">        </span><span class="n">OpenWQ_sinksource</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_sinksource</span><span class="p">,</span><span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">sink</span><span class="w"> </span><span class="o">and</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">modules</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_solver</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_solver</span><span class="p">,</span><span class="w">                </span><span class="c1">// solver module</span>
+<span class="w">        </span><span class="n">OpenWQ_output</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_output</span><span class="p">);</span><span class="w">               </span><span class="c1">// output modules</span>
+
+<span class="p">};</span><span class="w"></span>
+
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+<section id="openwq-hydrolink-cpp">
+<h2>OpenWQ_hydrolink.cpp<a class="headerlink" href="#openwq-hydrolink-cpp" title="Permalink to this headline"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Copyright 2020-22, Diogo Costa, diogo.costa@usask.ca</span>
+<span class="c1">// This file is part of OpenWQ model.</span>
+
+<span class="c1">// This program, openWQ, is free software: you can redistribute it and/or modify</span>
+<span class="c1">// it under the terms of the GNU General Public License as published by</span>
+<span class="c1">// the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">// (at your option) aNCOLS later version.</span>
+<span class="c1">//</span>
+<span class="c1">// This program is distributed in the hope that it will be useful,</span>
+<span class="c1">// but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">// GNU General Public License for more details.</span>
+
+<span class="c1">// You should have received a copy of the GNU General Public License</span>
+<span class="c1">// along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;OpenWQ_hydrolink.h&quot;</span><span class="cp"></span>
+
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">CRHM</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">//************************************************************************************************</span>
+<span class="c1">// Declare and initiate variables</span>
+<span class="c1">// function that calls coupler function: OpenWQ_couplercalls.InitialConfig</span>
+<span class="c1">//************************************************************************************************</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">ClassWQ_OpenWQ::decl</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">OpenWQ_couplercalls</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_couplercalls</span><span class="p">,</span><span class="w">     </span><span class="c1">// Class with all call from coupler</span>
+<span class="w">    </span><span class="n">OpenWQ_hostModelconfig</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">OpenWQ_json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_json</span><span class="p">,</span><span class="w">                    </span><span class="c1">// create OpenWQ_json object</span>
+<span class="w">    </span><span class="n">OpenWQ_wqconfig</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_wqconfig</span><span class="p">,</span><span class="w">            </span><span class="c1">// create OpenWQ_wqconfig object</span>
+<span class="w">    </span><span class="n">OpenWQ_units</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_units</span><span class="p">,</span><span class="w">                  </span><span class="c1">// functions for unit conversion</span>
+<span class="w">    </span><span class="n">OpenWQ_readjson</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_readjson</span><span class="p">,</span><span class="w">            </span><span class="c1">// read json files</span>
+<span class="w">    </span><span class="n">OpenWQ_vars</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_vars</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">OpenWQ_initiate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_initiate</span><span class="p">,</span><span class="w">            </span><span class="c1">// initiate modules</span>
+<span class="w">    </span><span class="n">OpenWQ_watertransp</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_watertransp</span><span class="p">,</span><span class="w">      </span><span class="c1">// transport modules</span>
+<span class="w">    </span><span class="n">OpenWQ_chem</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_chem</span><span class="p">,</span><span class="w">                   </span><span class="c1">// biochemistry modules</span>
+<span class="w">    </span><span class="n">OpenWQ_sinksource</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_sinksource</span><span class="p">,</span><span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">sink</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">modules</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">OpenWQ_output</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_output</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">nhru</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// Check if the call is from ::decl (allow to set OpenWQ_hostModelconfig)</span>
+<span class="w">    </span><span class="c1">// or ::initbase (do not allow because OpenWQ_hostModelconfig has already been</span>
+<span class="w">    </span><span class="c1">// defined)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">HydroComp</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="o">==</span><span class="mi">0</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">        </span><span class="c1">// #######################################</span>
+<span class="w">        </span><span class="c1">// Characterize the Host model domain</span>
+<span class="w">        </span><span class="c1">// Host model specific</span>
+<span class="w">        </span><span class="c1">// #######################################</span>
+<span class="w">        </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">HydroComp</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">OpenWQ_hostModelconfig</span><span class="o">::</span><span class="n">hydroTuple</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s">&quot;SWE&quot;</span><span class="p">,</span><span class="n">nhru</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">HydroComp</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">OpenWQ_hostModelconfig</span><span class="o">::</span><span class="n">hydroTuple</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;RUNOFF&quot;</span><span class="p">,</span><span class="n">nhru</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">HydroComp</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">OpenWQ_hostModelconfig</span><span class="o">::</span><span class="n">hydroTuple</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="s">&quot;SSR&quot;</span><span class="p">,</span><span class="n">nhru</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">HydroComp</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">OpenWQ_hostModelconfig</span><span class="o">::</span><span class="n">hydroTuple</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="s">&quot;SD&quot;</span><span class="p">,</span><span class="n">nhru</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">HydroComp</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">OpenWQ_hostModelconfig</span><span class="o">::</span><span class="n">hydroTuple</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="s">&quot;SOIL_RECHR&quot;</span><span class="p">,</span><span class="n">nhru</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">HydroComp</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">OpenWQ_hostModelconfig</span><span class="o">::</span><span class="n">hydroTuple</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="s">&quot;SOIL_LOWER&quot;</span><span class="p">,</span><span class="n">nhru</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">HydroComp</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">OpenWQ_hostModelconfig</span><span class="o">::</span><span class="n">hydroTuple</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="s">&quot;SURFSOIL&quot;</span><span class="p">,</span><span class="n">nhru</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">HydroComp</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">OpenWQ_hostModelconfig</span><span class="o">::</span><span class="n">hydroTuple</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="s">&quot;GW&quot;</span><span class="p">,</span><span class="n">nhru</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// (add other compartments as needed)...</span>
+
+
+<span class="w">        </span><span class="n">OpenWQ_couplercalls</span><span class="p">.</span><span class="n">InitialConfig</span><span class="p">(</span><span class="w"></span>
+<span class="w">            </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">OpenWQ_json</span><span class="p">,</span><span class="w">                    </span><span class="c1">// create OpenWQ_json object</span>
+<span class="w">            </span><span class="n">OpenWQ_wqconfig</span><span class="p">,</span><span class="w">            </span><span class="c1">// create OpenWQ_wqconfig object</span>
+<span class="w">            </span><span class="n">OpenWQ_units</span><span class="p">,</span><span class="w">                  </span><span class="c1">// functions for unit conversion</span>
+<span class="w">            </span><span class="n">OpenWQ_readjson</span><span class="p">,</span><span class="w">            </span><span class="c1">// read json files</span>
+<span class="w">            </span><span class="n">OpenWQ_vars</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">OpenWQ_initiate</span><span class="p">,</span><span class="w">            </span><span class="c1">// initiate modules</span>
+<span class="w">            </span><span class="n">OpenWQ_watertransp</span><span class="p">,</span><span class="w">      </span><span class="c1">// transport modules</span>
+<span class="w">            </span><span class="n">OpenWQ_chem</span><span class="p">,</span><span class="w">                   </span><span class="c1">// biochemistry modules</span>
+<span class="w">            </span><span class="n">OpenWQ_sinksource</span><span class="p">,</span><span class="w">        </span><span class="c1">// sink and source modules)</span>
+<span class="w">            </span><span class="n">OpenWQ_output</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// ################################</span>
+<span class="w">    </span><span class="c1">// Get Variables from other modules or meteorology</span>
+<span class="w">    </span><span class="c1">// ################################</span>
+<span class="w">    </span><span class="c1">// SWE</span>
+<span class="w">    </span><span class="n">declgetvar</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SWE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mm)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">SWE</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">declputvar</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SWE_conc&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mg/l)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">SWE_conc</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">SWE_conc_lay</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// runoff</span>
+<span class="w">    </span><span class="n">declgetvar</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;soil_runoff&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mm)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">soil_runoff</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">declputvar</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;soil_runoff_cWQ&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mm)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">soil_runoff_cWQ</span><span class="p">,</span><span class="o">&amp;</span><span class="n">soil_runoff_cWQ_lay</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// ssr</span>
+<span class="w">    </span><span class="n">declgetvar</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;soil_ssr&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mm)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">soil_ssr</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">declputvar</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;soil_ssr_conc&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mm)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">soil_ssr_conc</span><span class="p">,</span><span class="o">&amp;</span><span class="n">soil_ssr_conc_lay</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Sd</span>
+<span class="w">    </span><span class="n">declstatvar</span><span class="p">(</span><span class="s">&quot;Sd&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NHRU</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Depression storage.&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mm)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">Sd</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">declstatvar</span><span class="p">(</span><span class="s">&quot;Sd_conc&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NDEFN</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Concentration: Depression storage.&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mg/l)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">Sd_conc</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">Sd_conc_lay</span><span class="p">,</span><span class="w"> </span><span class="n">Global</span><span class="o">::</span><span class="n">numsubstances</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// soil_rechr</span>
+<span class="w">    </span><span class="n">declgetvar</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;soil_rechr&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mm)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">soil_rechr</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">declputvar</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;conc_soil_rechr&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mg/l)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">conc_soil_rechr</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">conc_soil_rechr_lay</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// soil moist (vol) &amp; soil_lower (conc)</span>
+<span class="w">    </span><span class="n">declgetvar</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;soil_moist&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mm)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">soil_moist</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">declputvar</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;conc_soil_lower&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mg/l)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">conc_soil_lower</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">conc_soil_lower_lay</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// surficial soil (only mass)</span>
+<span class="w">    </span><span class="n">declputvar</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;surfsoil_solub_mWQ&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mg/l)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">surfsoil_solub_mWQ</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">surfsoil_solub_mWQ_lay</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// gw</span>
+<span class="w">    </span><span class="n">declstatvar</span><span class="p">(</span><span class="s">&quot;gw&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NHRU</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ground water storage.&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mm)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">gw</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">declstatvar</span><span class="p">(</span><span class="s">&quot;gw_conc&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NDEFN</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Concentration: ground water storage.&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(mg/l)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">gw_conc</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">gw_conc_lay</span><span class="p">,</span><span class="w"> </span><span class="n">Global</span><span class="o">::</span><span class="n">numsubstances</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// ################################</span>
+<span class="w">    </span><span class="c1">// Get Parameters from other modules or meteorology</span>
+<span class="w">    </span><span class="c1">// ################################</span>
+<span class="w">    </span><span class="c1">// air temperature</span>
+<span class="w">    </span><span class="n">declgetvar</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;hru_t&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(°C)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">hru_t</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">declparam</span><span class="p">(</span><span class="s">&quot;hru_area&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NHRU</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;[1]&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;1e-6&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;1e+09&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;hru area&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(km^2)&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">hru_area</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">declparam</span><span class="p">(</span><span class="s">&quot;soil_rechr_max&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NHRU</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;[60.0]&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;0.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;350.0&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="s">&quot;Maximum value for soil recharge zone (upper portion of soil_moist where losses occur as both evaporation &quot;</span><span class="c1">//</span>
+<span class="w">    </span><span class="s">&quot;and transpiration).  Must be less than or equal to soil_moist.&quot;</span><span class="p">,</span><span class="s">&quot;( )&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">soil_rechr_max</span><span class="p">);</span><span class="w"></span>
+
+
+<span class="p">}</span><span class="w"></span>
+
+<span class="c1">//************************************************************************************************</span>
+<span class="c1">// Declare and initiate variables</span>
+<span class="c1">// function that calls coupler functions:</span>
+<span class="c1">// 1) OpenWQ_couplercalls.RunTimeLoopStart</span>
+<span class="c1">// 2) OpenWQ_couplercalls.RunSpaceStep</span>
+<span class="c1">// 3) OpenWQ_couplercalls.RunTimeLoopEnd</span>
+<span class="c1">//************************************************************************************************</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">ClassWQ_OpenWQ::run</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">OpenWQ_couplercalls</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_couplercalls</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">OpenWQ_hostModelconfig</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">OpenWQ_json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_json</span><span class="p">,</span><span class="w">                    </span><span class="c1">// create OpenWQ_json object</span>
+<span class="w">    </span><span class="n">OpenWQ_wqconfig</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_wqconfig</span><span class="p">,</span><span class="w">            </span><span class="c1">// create OpenWQ_wqconfig object</span>
+<span class="w">    </span><span class="n">OpenWQ_units</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_units</span><span class="p">,</span><span class="w">                  </span><span class="c1">// functions for unit conversion</span>
+<span class="w">    </span><span class="n">OpenWQ_readjson</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_readjson</span><span class="p">,</span><span class="w">            </span><span class="c1">// read json files</span>
+<span class="w">    </span><span class="n">OpenWQ_vars</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_vars</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">OpenWQ_initiate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_initiate</span><span class="p">,</span><span class="w">            </span><span class="c1">// initiate modules</span>
+<span class="w">    </span><span class="n">OpenWQ_watertransp</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_watertransp</span><span class="p">,</span><span class="w">      </span><span class="c1">// transport modules</span>
+<span class="w">    </span><span class="n">OpenWQ_chem</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_chem</span><span class="p">,</span><span class="w">                    </span><span class="c1">// biochemistry modules</span>
+<span class="w">    </span><span class="n">OpenWQ_sinksource</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_sinksource</span><span class="p">,</span><span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="n">sink</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="n">modules</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">OpenWQ_solver</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_solver</span><span class="p">,</span><span class="w">                </span><span class="c1">// solver module</span>
+<span class="w">    </span><span class="n">OpenWQ_output</span><span class="o">&amp;</span><span class="w"> </span><span class="n">OpenWQ_output</span><span class="p">)</span><span class="w">                </span><span class="c1">// output modules</span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// Local Variables</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Sub_mob</span><span class="p">;</span><span class="w">   </span><span class="c1">// interactive species index (for mobile species)</span>
+
+<span class="w">    </span><span class="c1">// Retrieve simulation timestamp</span>
+<span class="w">    </span><span class="c1">// convert to OpenWQ time convention: seconds since 00:00 hours, Jan 1, 1970 UTC</span>
+<span class="w">    </span><span class="c1">// this allows the use of a number of funtions of C++</span>
+
+<span class="w">    </span><span class="kt">time_t</span><span class="w"> </span><span class="n">simtime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Global</span><span class="o">::</span><span class="n">DTnow</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">70</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">365</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">21</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">3600</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// Update Dependencies to kinetic formulas (needs loop to get hydro model variables</span>
+<span class="w">    </span><span class="c1">// that are dependencies to OpenWQ)</span>
+<span class="w">    </span><span class="cp">#pragma omp parallel for num_threads(OpenWQ_wqconfig.num_threads_requested)</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">hru</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">hru</span><span class="o">&lt;</span><span class="n">nhru</span><span class="p">;</span><span class="n">hru</span><span class="o">++</span><span class="p">){</span><span class="w"></span>
+<span class="w">        </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">SM</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">soil_rechr</span><span class="p">[</span><span class="n">hru</span><span class="p">]</span><span class="o">/</span><span class="n">soil_rechr_max</span><span class="p">[</span><span class="n">hru</span><span class="p">];</span><span class="w">  </span><span class="c1">// loop needed - Save all SM data from hostmodel at time t</span>
+<span class="w">        </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">Tair</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hru_t</span><span class="p">[</span><span class="n">hru</span><span class="p">];</span><span class="w">  </span><span class="c1">// loop needed - Save all Tair data from hostmodel at time t</span>
+<span class="w">        </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">Tsoil</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hru_t</span><span class="p">[</span><span class="n">hru</span><span class="p">];</span><span class="w">   </span><span class="c1">// keeping the same as Tair for now</span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+
+<span class="w">    </span><span class="c1">// Get Fluxes from Hydrological model</span>
+<span class="w">    </span><span class="c1">// Save them to (*OpenWQ_hostModelconfig.waterVol_hydromodel)</span>
+<span class="w">    </span><span class="c1">// Convert units to m3</span>
+
+<span class="w">    </span><span class="c1">// CRHM water units are in mm</span>
+<span class="w">    </span><span class="c1">// CRHM area units are in km2</span>
+<span class="w">    </span><span class="c1">// So conversion of mm (water) to m3 is calculated as follows:</span>
+<span class="w">    </span><span class="c1">// water_m3 = (water_mm / 1000) * (area_km2 * 1000000) &lt;=&gt;</span>
+<span class="w">    </span><span class="c1">// water_m3 = water_mm * area_km2 * 1000</span>
+<span class="w">    </span><span class="cp">#pragma omp parallel for num_threads(OpenWQ_wqconfig.num_threads_requested)</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">hru</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">hru</span><span class="o">&lt;</span><span class="n">nhru</span><span class="p">;</span><span class="n">hru</span><span class="o">++</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">        </span><span class="c1">// SWE</span>
+<span class="w">        </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">0</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">SWE</span><span class="p">[</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hru_area</span><span class="p">[</span><span class="n">hru</span><span class="p">],</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// soil_runoff</span>
+<span class="w">        </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">1</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">soil_runoff</span><span class="p">[</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hru_area</span><span class="p">[</span><span class="n">hru</span><span class="p">],</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// soil ssr</span>
+<span class="w">        </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">2</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">soil_ssr</span><span class="p">[</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hru_area</span><span class="p">[</span><span class="n">hru</span><span class="p">],</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Sd</span>
+<span class="w">        </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">3</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">Sd</span><span class="p">[</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hru_area</span><span class="p">[</span><span class="n">hru</span><span class="p">],</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Soi_rechr</span>
+<span class="w">        </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">4</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">soil_rechr</span><span class="p">[</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hru_area</span><span class="p">[</span><span class="n">hru</span><span class="p">],</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Soil_moist</span>
+<span class="w">        </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">5</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">((</span><span class="n">soil_moist</span><span class="p">[</span><span class="n">hh</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">soil_rechr</span><span class="p">[</span><span class="n">hh</span><span class="p">])</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hru_area</span><span class="p">[</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Surfsoil (not water in it)</span>
+<span class="w">        </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">6</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// gw</span>
+<span class="w">        </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">7</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">gw</span><span class="p">[</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hru_area</span><span class="p">[</span><span class="n">hru</span><span class="p">],</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// ##############################################</span>
+<span class="w">    </span><span class="c1">// Calls all functions required</span>
+<span class="w">    </span><span class="c1">// INSIDE the TIME loop</span>
+<span class="w">    </span><span class="c1">// But BEFORE the SPACE loop is initiated</span>
+<span class="w">    </span><span class="c1">// ##############################################</span>
+<span class="w">    </span><span class="n">OpenWQ_couplercalls</span><span class="p">.</span><span class="n">RunTimeLoopStart</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_json</span><span class="p">,</span><span class="w">                    </span><span class="c1">// create OpenWQ_json object</span>
+<span class="w">        </span><span class="n">OpenWQ_wqconfig</span><span class="p">,</span><span class="w">            </span><span class="c1">// create OpenWQ_wqconfig object</span>
+<span class="w">        </span><span class="n">OpenWQ_units</span><span class="p">,</span><span class="w">                  </span><span class="c1">// functions for unit conversion</span>
+<span class="w">        </span><span class="n">OpenWQ_readjson</span><span class="p">,</span><span class="w">            </span><span class="c1">// read json files</span>
+<span class="w">        </span><span class="n">OpenWQ_vars</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_initiate</span><span class="p">,</span><span class="w">            </span><span class="c1">// initiate modules</span>
+<span class="w">        </span><span class="n">OpenWQ_watertransp</span><span class="p">,</span><span class="w">      </span><span class="c1">// transport modules</span>
+<span class="w">        </span><span class="n">OpenWQ_chem</span><span class="p">,</span><span class="w">                   </span><span class="c1">// biochemistry modules</span>
+<span class="w">        </span><span class="n">OpenWQ_sinksource</span><span class="p">,</span><span class="w">        </span><span class="c1">// sink and source modules)</span>
+<span class="w">        </span><span class="n">OpenWQ_solver</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">OpenWQ_output</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">simtime</span><span class="p">);</span><span class="w"></span>
+
+
+<span class="w">    </span><span class="c1">// ##############################################</span>
+<span class="w">    </span><span class="c1">// Calls all functions required</span>
+<span class="w">    </span><span class="c1">// INSIDE the SPACE loop</span>
+<span class="w">    </span><span class="c1">// TRANSPORT routines</span>
+<span class="w">    </span><span class="c1">// ##############################################</span>
+
+<span class="w">    </span><span class="c1">// Initiation steps that only need to be done once (at the start of the simulation)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">interaction_step</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">        </span><span class="c1">// ################################</span>
+<span class="w">        </span><span class="c1">// Retried current state of state variables form CRHM</span>
+<span class="w">        </span><span class="c1">// Convert from concentration (default unit in CRHM) to mass (default unit of OpenWQ)</span>
+<span class="w">        </span><span class="c1">// ################################</span>
+
+<span class="w">        </span><span class="c1">// iteractive compartment index</span>
+<span class="w">        </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">icmp</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">        </span><span class="cp">#pragma omp parallel for private(Sub_mob) num_threads(OpenWQ_wqconfig.num_threads_requested)</span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">hru</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">hru</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">nhru</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">hru</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">for</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Sub_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">Sub_i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">OpenWQ_wqconfig</span><span class="p">.</span><span class="n">BGC_general_mobile_species</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">Sub_i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">                </span><span class="c1">// ################################</span>
+<span class="w">                </span><span class="c1">// Adv-Disp directly from CRHM&#39;s modules</span>
+
+<span class="w">                </span><span class="c1">// Get mobile species indexes</span>
+<span class="w">                </span><span class="c1">// Only update mass/concentrations using CRHM&#39;s water for mobile species</span>
+<span class="w">                </span><span class="n">Sub_mob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OpenWQ_wqconfig</span><span class="p">.</span><span class="n">BGC_general_mobile_species</span><span class="p">[</span><span class="n">Sub_i</span><span class="p">];</span><span class="w"></span>
+
+<span class="w">                </span><span class="c1">// SWE</span>
+<span class="w">                </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">d_chemass_dt_transp</span><span class="p">)(</span><span class="mi">0</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">SWE_conc_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">],</span><span class="mf">0.0f</span><span class="p">)</span><span class="w"></span>
+<span class="w">                        </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">0</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">0</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">                </span><span class="c1">// RUNOFF</span>
+<span class="w">                </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">d_chemass_dt_transp</span><span class="p">)(</span><span class="mi">1</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">soil_runoff_cWQ_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">],</span><span class="mf">0.0f</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">1</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">1</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">                </span><span class="c1">// SSR</span>
+<span class="w">                </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">d_chemass_dt_transp</span><span class="p">)(</span><span class="mi">2</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">soil_ssr_conc_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">],</span><span class="mf">0.0f</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">2</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">2</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">                </span><span class="c1">// SD</span>
+<span class="w">                </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">d_chemass_dt_transp</span><span class="p">)(</span><span class="mi">3</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">Sd_conc_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">],</span><span class="mf">0.0f</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">3</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">3</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+
+<span class="w">                </span><span class="c1">// SOIL_RECHR</span>
+<span class="w">                </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">d_chemass_dt_transp</span><span class="p">)(</span><span class="mi">4</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">conc_soil_rechr_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">],</span><span class="mf">0.0f</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">4</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">4</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">                </span><span class="c1">// SOIL LOWER</span>
+<span class="w">                </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">d_chemass_dt_transp</span><span class="p">)(</span><span class="mi">5</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">conc_soil_lower_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">],</span><span class="mf">0.0f</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">5</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">5</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">                </span><span class="c1">// SURFSOIL</span>
+<span class="w">                </span><span class="c1">// (does not multiply by volume of water because CRHM uses mass</span>
+<span class="w">                </span><span class="c1">//for this specific compartment)</span>
+<span class="w">                </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">d_chemass_dt_transp</span><span class="p">)(</span><span class="mi">6</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">surfsoil_solub_mWQ_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">],</span><span class="mf">0.0f</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">6</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+
+<span class="w">                </span><span class="c1">// GW</span>
+<span class="w">                </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">d_chemass_dt_transp</span><span class="p">)(</span><span class="mi">7</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fmax</span><span class="p">(</span><span class="n">gw_conc_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">],</span><span class="mf">0.0f</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">7</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">7</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// ################################</span>
+<span class="w">            </span><span class="c1">// EROSION: Called to calculation erosion</span>
+<span class="w">            </span><span class="c1">// Transport is calculated by native CRHM routines</span>
+<span class="w">            </span><span class="c1">// only need to consider</span>
+
+<span class="w">            </span><span class="c1">// Runoff</span>
+<span class="w">            </span><span class="n">icmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="n">OpenWQ_couplercalls</span><span class="p">.</span><span class="n">RunSpaceStep</span><span class="p">(</span><span class="w"></span>
+<span class="w">                </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">OpenWQ_json</span><span class="p">,</span><span class="w">                    </span><span class="c1">// create OpenWQ_json object</span>
+<span class="w">                </span><span class="n">OpenWQ_wqconfig</span><span class="p">,</span><span class="w">            </span><span class="c1">// create OpenWQ_wqconfig object</span>
+<span class="w">                </span><span class="n">OpenWQ_units</span><span class="p">,</span><span class="w">                  </span><span class="c1">// functions for unit conversion</span>
+<span class="w">                </span><span class="n">OpenWQ_readjson</span><span class="p">,</span><span class="w">            </span><span class="c1">// read json files</span>
+<span class="w">                </span><span class="n">OpenWQ_vars</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">OpenWQ_initiate</span><span class="p">,</span><span class="w">            </span><span class="c1">// initiate modules</span>
+<span class="w">                </span><span class="n">OpenWQ_watertransp</span><span class="p">,</span><span class="w">      </span><span class="c1">// transport modules</span>
+<span class="w">                </span><span class="n">OpenWQ_chem</span><span class="p">,</span><span class="w">                   </span><span class="c1">// biochemistry modules</span>
+<span class="w">                </span><span class="n">OpenWQ_sinksource</span><span class="p">,</span><span class="w">        </span><span class="c1">// sink and source modules)</span>
+<span class="w">                </span><span class="n">OpenWQ_solver</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">OpenWQ_output</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">simtime</span><span class="p">,</span><span class="w">                            </span><span class="c1">// simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC</span>
+<span class="w">                </span><span class="n">icmp</span><span class="p">,</span><span class="w">      </span><span class="c1">// source: runoff</span>
+<span class="w">                </span><span class="n">hru</span><span class="p">,</span><span class="w">    </span><span class="c1">// x</span>
+<span class="w">                </span><span class="mi">0</span><span class="p">,</span><span class="w">      </span><span class="c1">// y</span>
+<span class="w">                </span><span class="mi">0</span><span class="p">,</span><span class="w">      </span><span class="c1">// z</span>
+<span class="w">                </span><span class="n">icmp</span><span class="p">,</span><span class="w">      </span><span class="c1">// receipient: runoff (the same as source because for CRHM we&#39;ll only deal with erosion, and for simplicity we&#39;ll just put it in the same compartment)</span>
+<span class="w">                </span><span class="n">hru</span><span class="p">,</span><span class="w">    </span><span class="c1">// x</span>
+<span class="w">                </span><span class="mi">0</span><span class="p">,</span><span class="w">      </span><span class="c1">// y</span>
+<span class="w">                </span><span class="mi">0</span><span class="p">,</span><span class="w">      </span><span class="c1">// z</span>
+<span class="w">                </span><span class="n">soil_runoff</span><span class="p">[</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hru_area</span><span class="p">[</span><span class="n">hru</span><span class="p">],</span><span class="w">          </span><span class="c1">// water flux from source compartment to receipient compartment</span>
+<span class="w">                </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="n">icmp</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">));</span><span class="w">   </span><span class="c1">// water mass of the receipient compartment</span>
+
+<span class="w">            </span><span class="c1">// SSR</span>
+<span class="w">            </span><span class="n">icmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="n">OpenWQ_couplercalls</span><span class="p">.</span><span class="n">RunSpaceStep</span><span class="p">(</span><span class="w"></span>
+<span class="w">                </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">OpenWQ_json</span><span class="p">,</span><span class="w">                    </span><span class="c1">// create OpenWQ_json object</span>
+<span class="w">                </span><span class="n">OpenWQ_wqconfig</span><span class="p">,</span><span class="w">            </span><span class="c1">// create OpenWQ_wqconfig object</span>
+<span class="w">                </span><span class="n">OpenWQ_units</span><span class="p">,</span><span class="w">                  </span><span class="c1">// functions for unit conversion</span>
+<span class="w">                </span><span class="n">OpenWQ_readjson</span><span class="p">,</span><span class="w">            </span><span class="c1">// read json files</span>
+<span class="w">                </span><span class="n">OpenWQ_vars</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">OpenWQ_initiate</span><span class="p">,</span><span class="w">            </span><span class="c1">// initiate modules</span>
+<span class="w">                </span><span class="n">OpenWQ_watertransp</span><span class="p">,</span><span class="w">      </span><span class="c1">// transport modules</span>
+<span class="w">                </span><span class="n">OpenWQ_chem</span><span class="p">,</span><span class="w">                   </span><span class="c1">// biochemistry modules</span>
+<span class="w">                </span><span class="n">OpenWQ_sinksource</span><span class="p">,</span><span class="w">        </span><span class="c1">// sink and source modules)</span>
+<span class="w">                </span><span class="n">OpenWQ_solver</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">OpenWQ_output</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">simtime</span><span class="p">,</span><span class="w">                            </span><span class="c1">// simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC</span>
+<span class="w">                </span><span class="n">icmp</span><span class="p">,</span><span class="w">      </span><span class="c1">// source: runoff</span>
+<span class="w">                </span><span class="n">hru</span><span class="p">,</span><span class="w">    </span><span class="c1">// x</span>
+<span class="w">                </span><span class="mi">0</span><span class="p">,</span><span class="w">      </span><span class="c1">// y</span>
+<span class="w">                </span><span class="mi">0</span><span class="p">,</span><span class="w">      </span><span class="c1">// z</span>
+<span class="w">                </span><span class="n">icmp</span><span class="p">,</span><span class="w">      </span><span class="c1">// receipient: runoff (the same as source because for CRHM we&#39;ll only deal with erosion, and for simplicity we&#39;ll just put it in the same compartment)</span>
+<span class="w">                </span><span class="n">hru</span><span class="p">,</span><span class="w">    </span><span class="c1">// x</span>
+<span class="w">                </span><span class="mi">0</span><span class="p">,</span><span class="w">      </span><span class="c1">// y</span>
+<span class="w">                </span><span class="mi">0</span><span class="p">,</span><span class="w">      </span><span class="c1">// z</span>
+<span class="w">                </span><span class="n">soil_ssr</span><span class="p">[</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hru_area</span><span class="p">[</span><span class="n">hru</span><span class="p">],</span><span class="w">          </span><span class="c1">// water flux from source compartment to receipient compartment</span>
+<span class="w">                </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="n">icmp</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">));</span><span class="w">   </span><span class="c1">// water mass of the receipient compartment</span>
+
+
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">   </span><span class="c1">// ##############################################</span>
+<span class="w">    </span><span class="c1">// Calls all functions required</span>
+<span class="w">    </span><span class="c1">// INSIDE the TIME loop</span>
+<span class="w">    </span><span class="c1">// But AFTER the SPACE loop is initiated</span>
+<span class="w">    </span><span class="c1">// ##############################################</span>
+<span class="w">   </span><span class="n">OpenWQ_couplercalls</span><span class="p">.</span><span class="n">RunTimeLoopEnd</span><span class="p">(</span><span class="w"></span>
+<span class="w">       </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">OpenWQ_json</span><span class="p">,</span><span class="w">                    </span><span class="c1">// create OpenWQ_json object</span>
+<span class="w">            </span><span class="n">OpenWQ_wqconfig</span><span class="p">,</span><span class="w">            </span><span class="c1">// create OpenWQ_wqconfig object</span>
+<span class="w">            </span><span class="n">OpenWQ_units</span><span class="p">,</span><span class="w">                  </span><span class="c1">// functions for unit conversion</span>
+<span class="w">            </span><span class="n">OpenWQ_readjson</span><span class="p">,</span><span class="w">            </span><span class="c1">// read json files</span>
+<span class="w">            </span><span class="n">OpenWQ_vars</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">OpenWQ_initiate</span><span class="p">,</span><span class="w">            </span><span class="c1">// initiate modules</span>
+<span class="w">            </span><span class="n">OpenWQ_watertransp</span><span class="p">,</span><span class="w">      </span><span class="c1">// transport modules</span>
+<span class="w">            </span><span class="n">OpenWQ_chem</span><span class="p">,</span><span class="w">                   </span><span class="c1">// biochemistry modules</span>
+<span class="w">            </span><span class="n">OpenWQ_sinksource</span><span class="p">,</span><span class="w">        </span><span class="c1">// sink and source modules)</span>
+<span class="w">            </span><span class="n">OpenWQ_solver</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">OpenWQ_output</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">simtime</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">//}</span>
+
+<span class="w">    </span><span class="c1">// ################################</span>
+<span class="w">    </span><span class="c1">// Save the arma::variable results back to CRHM&#39;s variables (for each compartment)</span>
+<span class="w">    </span><span class="c1">// Convert from mass (default unit in OpenWQ) to concentrations (default unit of CRHM-WQ)</span>
+<span class="w">    </span><span class="c1">// ################################</span>
+
+<span class="w">    </span><span class="c1">// Water volume conversions</span>
+<span class="w">        </span><span class="c1">// CRHM water units are in mm</span>
+<span class="w">        </span><span class="c1">// CRHM area units are in km2</span>
+<span class="w">        </span><span class="c1">// So conversion of mm (water) to m3 is calculated as follows:</span>
+<span class="w">        </span><span class="c1">// water_m3 = (water_mm / 1000) * (area_km2 * 1000000) &lt;=&gt;</span>
+<span class="w">        </span><span class="c1">// water_m3 = water_mm * area_km2 * 1000</span>
+
+
+<span class="w">    </span><span class="cp">#pragma omp parallel for private(Sub_mob) collapse(2) num_threads(OpenWQ_wqconfig.num_threads_requested)</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">hru</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">hru</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">nhru</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">hru</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Sub_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">Sub_i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">OpenWQ_wqconfig</span><span class="p">.</span><span class="n">BGC_general_mobile_species</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">Sub_i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">                </span><span class="c1">// Get mobile species indexes</span>
+<span class="w">                </span><span class="c1">// Only update mass/concentrations using CRHM&#39;s water for mobile species</span>
+<span class="w">                </span><span class="n">Sub_mob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OpenWQ_wqconfig</span><span class="p">.</span><span class="n">BGC_general_mobile_species</span><span class="p">[</span><span class="n">Sub_i</span><span class="p">];</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// SWE</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">0</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">&gt;</span><span class="w"> </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">watervol_minlim</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">SWE_conc_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">0</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">0</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">            </span><span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">SWE_conc_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// RUNOFF</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">1</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">&gt;</span><span class="w"> </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">watervol_minlim</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">soil_runoff_cWQ_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">1</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">1</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">            </span><span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">soil_runoff_cWQ_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// SSR</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">2</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">&gt;</span><span class="w"> </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">watervol_minlim</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">soil_ssr_conc_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">2</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">2</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">            </span><span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">soil_ssr_conc_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// SD</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">3</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">&gt;</span><span class="w"> </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">watervol_minlim</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">Sd_conc_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">3</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">3</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">            </span><span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">Sd_conc_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// SOIL_RECHR</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">4</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">&gt;</span><span class="w"> </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">watervol_minlim</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">conc_soil_rechr_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">4</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">4</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">            </span><span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">conc_soil_rechr_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// SOIL LOWER</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">5</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">&gt;</span><span class="w"> </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">watervol_minlim</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">conc_soil_lower_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">5</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">5</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);;</span><span class="w"></span>
+
+<span class="w">            </span><span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">conc_soil_lower_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// SURFSOIL</span>
+<span class="w">            </span><span class="c1">// (does not divide by volume of water because CRHM uses mass</span>
+<span class="w">            </span><span class="c1">//for this specific compartment)</span>
+<span class="w">            </span><span class="n">surfsoil_solub_mWQ_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">6</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// GW</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">7</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">&gt;</span><span class="w"> </span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">watervol_minlim</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">                </span><span class="n">gw_conc_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">                    </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_vars</span><span class="p">.</span><span class="n">chemass</span><span class="p">)(</span><span class="mi">7</span><span class="p">)(</span><span class="n">Sub_mob</span><span class="p">)(</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">OpenWQ_hostModelconfig</span><span class="p">.</span><span class="n">waterVol_hydromodel</span><span class="p">)[</span><span class="mi">7</span><span class="p">](</span><span class="n">hru</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">            </span><span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">gw_conc_lay</span><span class="p">[</span><span class="n">Sub_mob</span><span class="p">][</span><span class="n">hru</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="5_3_0_Coupling_steps.html" class="btn btn-neutral float-left" title="Steps to perform the coupling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="5_3_00_APIs.html" class="btn btn-neutral float-right" title="C++ API reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Diogo Costa.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
