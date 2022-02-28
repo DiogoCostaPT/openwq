@@ -69,7 +69,7 @@ int ClassWQ_OpenWQ::decl() {
         OpenWQ_vars_ref = new OpenWQ_vars(OpenWQ_hostModelconfig_ref->HydroComp.size());
         
         // Master Json
-        OpenWQ_wqconfig_ref->OpenWQ_masterjson = "/code/bin/openWQ_master.json";
+        OpenWQ_wqconfig_ref->OpenWQ_masterjson = "/u1/kck540/openWQ/openwq/bin/openWQ_master.json";
 
 
         OpenWQ_couplercalls_ref->InitialConfig(

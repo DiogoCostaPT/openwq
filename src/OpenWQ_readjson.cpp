@@ -36,7 +36,7 @@ void OpenWQ_readjson::read_all(
     // ########################
     // Master file json
     // Get master file location
-    OpenWQ_wqconfig.OpenWQ_masterjson = "/code/bin/openWQ_master.json";
+    OpenWQ_wqconfig.OpenWQ_masterjson = "/u1/kck540/openWQ/openwq/bin/openWQ_master.json";
 
     // read
     OpenWQ_readjson::read_JSON_2class(

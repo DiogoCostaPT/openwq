@@ -9,29 +9,29 @@
 		"USE_NUM_THREADS": "all"
 	},
     "OPENWQ_INPUT": {
-    	"CONFIG_FILEPATH": "/code/bin/openWQ_config.json",
-        "BGC_CYCLES_FILEPATH": "/code/bin/openWQ_BGC_cycling.json",
+    	"CONFIG_FILEPATH": "/u1/kck540/openWQ/openwq/bin/openWQ_config.json",
+        "BGC_CYCLES_FILEPATH": "/u1/kck540/openWQ/openwq/bin/openWQ_BGC_cycling.json",
     	"SINKSOURCE_FILEPATHS": {
     		"1": {
     			"LABEL": "fertilizer_N",
-    			"FILEPATH": "/code/bin/openWQ_source_fertN.json"
+    			"FILEPATH": "/u1/kck540/openWQ/openwq/bin/openWQ_source_fertN.json"
     		},
     		"2": {
     			"LABEL": "fertilizer_P",
-    			"FILEPATH": "/code/bin/openWQ_source_fertP.json"
+    			"FILEPATH": "/u1/kck540/openWQ/openwq/bin/openWQ_source_fertP.json"
     		}
     	}
 	},
 	"MODULES": {
 		"BIOGEOCHEMISTRY":{
 			"MODULE_NAME": "OPENWQ_NATIVE_BGC",
-			"MODULE_CONFIG_FILE": "/code/bin/SWAT_Soil_BGC.json",
-			"MODULE_CONFIG_FILEPATH": "/code/bin/openWQ_MODULE_BGC_cycling.json"
+			"MODULE_CONFIG_FILE": "/u1/kck540/openWQ/openwq/bin/SWAT_Soil_BGC.json",
+			"MODULE_CONFIG_FILEPATH": "/u1/kck540/openWQ/openwq/bin/openWQ_MODULE_BGC_cycling.json"
 		},
 		"TRANSPORT_EROSION":{
 			"MODULE_NAME": "OPENWQ_NATIVE_TE_NO_ADVDISP",
-			"MODULE_CONFIG_FILE": "/code/bin/SWAT_Soil_BGC.json",
-			"MODULE_CONFIG_FILEPATH": "/code/bin/openWQ_MODULE_TE.json"	
+			"MODULE_CONFIG_FILE": "/u1/kck540/openWQ/openwq/bin/SWAT_Soil_BGC.json",
+			"MODULE_CONFIG_FILEPATH": "/u1/kck540/openWQ/openwq/bin/openWQ_MODULE_TE.json"	
 		}
 	},
 	"OPENWQ_OUTPUT": {

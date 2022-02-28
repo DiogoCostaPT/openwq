@@ -38,7 +38,7 @@
 
 # Define core directory below which everything resides. This is the
 # parent directory of the 'build' directory
-F_MASTER = /code/summa
+F_MASTER = /u1/kck540/openWQ/openwq/summa
 
 # Define the Fortran Compiler. If you are using gfortran, then this needs
 # to be version 6 or higher. This variable is simply used to select the right
@@ -351,7 +351,7 @@ check:
 
 # update version information
 update_version:
-	echo "character(len=64), parameter     :: summaVersion = '${VERSION}'" > $(VERSIONFILE)
+	echo "character(len=64), parameter     :: summaVersion = '${VERSION}'" >> $(VERSIONFILE)
 	echo "character(len=64), parameter     :: buildTime = '${BULTTIM}'" >> $(VERSIONFILE)
 	echo "character(len=64), parameter     :: gitBranch = '${GITBRCH}'" >> $(VERSIONFILE)
 	echo "character(len=64), parameter     :: gitHash = '${GITHASH}'" >> $(VERSIONFILE)
