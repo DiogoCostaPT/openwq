@@ -239,6 +239,7 @@ contains
  err=0; message="coupled_em/"
 
  ! This is the start of a data step for a local HRU
+ print*, "SWE", prog_data%var(iLookPROG%scalarSWE)%dat(1)
 
  ! check that the decision is supported
  if(model_decisions(iLookDECISIONS%groundwatr)%iDecision==bigBucket .and. &
@@ -542,7 +543,8 @@ contains
  ! ****************************************************************************************************
  ! *** MAIN SOLVER ************************************************************************************
  ! ****************************************************************************************************
-
+ print*, "SWE before main solver", prog_data%var(iLookPROG%scalarSWE)%dat(1)
+ 
  ! initialize the length of the sub-step
  dt_solv = 0._rkind   ! length of time step that has been completed (s)
  dt_init = min(data_step,maxstep)  ! initial substep length (s)
@@ -568,7 +570,7 @@ contains
 
   ! increment the number of sub-steps
   nsub = nsub+1
-
+  
   ! resize the "indx_data" structure
   ! NOTE: this is necessary because the length of index variables depends on a given split
   !        --> the resize here is overwritten later (in indexSplit)
@@ -743,6 +745,7 @@ contains
                   stepFailure,                            & ! intent(out):   flag to denote that the coupled step failed
                   ixSolution,                             & ! intent(out):   solution method used in this iteration
                   err,cmessage)                             ! intent(out):   error code and error message
+ print*, "SWE after opsplitting", prog_data%var(iLookPROG%scalarSWE)%dat(1)
 
   ! check for all errors (error recovery within opSplittin)
   if(err/=0)then; err=20; message=trim(message)//trim(cmessage); return; end if

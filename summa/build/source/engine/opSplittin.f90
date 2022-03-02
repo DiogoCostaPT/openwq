@@ -483,7 +483,7 @@ contains
   ! state splitting loop
   stateTypeSplitLoop: do iStateTypeSplit=1,nStateTypeSplit
 
-   !print*, 'iStateTypeSplit, nStateTypeSplit = ', iStateTypeSplit, nStateTypeSplit
+  !  print*, 'iStateTypeSplit, nStateTypeSplit = ', iStateTypeSplit, nStateTypeSplit
 
    ! -----
    ! * identify state-specific variables for a given state split...
@@ -753,7 +753,7 @@ contains
        ! * solve variable subset for one time step...
        ! --------------------------------------------
 
-       !print*, trim(message)//'before varSubstep: nSubset = ', nSubset
+       print*, trim(message)//'before varSubstep: nSubset = ', nSubset
 
        ! keep track of the number of scalar solutions
        if(ixSolution==scalar) numberScalarSolutions = numberScalarSolutions + 1

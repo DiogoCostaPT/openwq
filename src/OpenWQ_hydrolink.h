@@ -28,12 +28,13 @@
 #include "OpenWQ_output.h"
 #include <iostream>
 #include <time.h>
+#include <vector>
 
 class ClassWQ_OpenWQ
 {
     // Instance Variables
     private:
-        int numHRU;
+        
         OpenWQ_couplercalls *OpenWQ_couplercalls_ref;
         OpenWQ_hostModelconfig *OpenWQ_hostModelconfig_ref;
         OpenWQ_json *OpenWQ_json_ref;
@@ -47,6 +48,9 @@ class ClassWQ_OpenWQ
         OpenWQ_sinksource *OpenWQ_sinksource_ref;
         OpenWQ_solver *OpenWQ_solver_ref;
         OpenWQ_output *OpenWQ_output_ref;
+        int numHRU;
+        std::vector<int> hru_area;
+
         // int refYear   = 1970;  // Reference year for converting sim_time
         // int refMonth  = 1;     // Reference Month for converting sim_time
         // int refDay    = 1;     // Reference Day for converting sim_time
@@ -73,9 +77,14 @@ class ClassWQ_OpenWQ
 
     int run_time_start(int year, int month, int day, int hour, int minute);
 
+    int start_time_hru_info(int soilMoisture, double soilTemp, double airTemp,
+        double SWE_vol, double canopyWat, double matricHead_vol, double aquiferStorage);
+
     int run_space();
 
     int run_time_end();
+
+    int get_hru_area();
 
     time_t convert_time(int year, int month, int day, int hour, int minute);
 
@@ -97,6 +106,8 @@ void delete_openwq(CLASSWQ_OPENWQ* openWQ);
 // OpenWQ initalization method
 int openwq_decl(CLASSWQ_OPENWQ *openWQ);
 int openwq_run_time_start(CLASSWQ_OPENWQ *openWQ, int year, int month, int day, int hour, int minute);
+int openwq_start_time_hru_info(CLASSWQ_OPENWQ *openWQ, int soilMoisture, double soilTemp, double airTemp,
+    double SWE_vol, double canopyWat, double matricHead_vol, double aquiferStorage);
 // OpenWQ run functions, this function decides which C++ code to call
 int openwq_run(CLASSWQ_OPENWQ *openWQ, int func);
 #ifdef __cplusplus

@@ -13,6 +13,7 @@ module openwq
    !  procedure :: get_num => openWQ_get_num
     procedure :: decl => openWQ_init
     procedure :: run_time_start => openWQ_run_time_start
+    procedure :: start_time_hru_info => openWQ_start_time_hru_info
     procedure :: run => openWQ_run
  end type
 
@@ -46,6 +47,21 @@ module openwq
       integer, intent(in)   :: hour
       integer, intent(in)   :: minute
       openWQ_run_time_start = openwq_run_time_start_c(this%ptr, year, month, day, hour, minute)
+   end function
+
+   integer function openWQ_start_time_hru_info(this, soilMoisture, soilTemp, airTemp,&
+      swe_vol, canopyWat_vol, matricHead_vol, aquiferStorage_vol)
+      implicit none
+      class(ClassWQ_OpenWQ) :: this
+      integer, intent(in)   :: soilMoisture
+      real(8), intent(in)   :: soilTemp
+      real(8), intent(in)   :: airTemp
+      real(8), intent(in)   :: swe_vol
+      real(8), intent(in)   :: canopyWat_vol
+      real(8), intent(in)   :: matricHead_vol
+      real(8), intent(in)   :: aquiferStorage_vol
+      openWQ_start_time_hru_info = openwq_start_time_hru_info_c(this%ptr, soilMoisture, soilTemp, airTemp, &
+         swe_vol, canopyWat_vol, matricHead_vol, aquiferStorage_vol)
    end function
    ! The func variables denotes which c++ function to call
    ! This is needed b/c we cannot create interface functions in

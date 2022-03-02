@@ -6,7 +6,7 @@
     "COMMENT": "First set up of model",
 	"COMPUTATIONAL_SETTINGS":{
 		"RUN_MODE_DEBUG": true, 
-		"USE_NUM_THREADS": "all"
+		"USE_NUM_THREADS": 8
 	},
     "OPENWQ_INPUT": {
     	"CONFIG_FILEPATH": "/u1/kck540/openWQ/openwq/bin/openWQ_config.json",
@@ -41,8 +41,10 @@
 		"UNITS":"kg",
 		"COMPARTMENTS_AND_CELLS": {
 			"SWE": {
-				"1": [304,1,1],
-				"2": [281,1,1]
+				"1": [1,1,1]
+			},
+			"ScalarCanopyWat": {
+				"1": [1,1,1]
 			}
 		},
 		"TIMESTEP": [15,"min"]

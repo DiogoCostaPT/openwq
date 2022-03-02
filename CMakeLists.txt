@@ -236,7 +236,7 @@ IF(UNIX)
                 -ffree-line-length-none -fmax-errors=0 -lstdc++)
                 target_include_directories(SUMMA_COMM PRIVATE
                         "/usr/include/"
-                        "/code/build/")
+                        "/u1/kck540/openWQ/openwq/build/")
                 target_link_libraries(SUMMA_COMM PUBLIC
                         "/usr/lib/x86_64-linux-gnu/libnetcdff.a"
                         SUMMA_NOAHMP)
@@ -251,7 +251,7 @@ IF(UNIX)
                         ${LAPACK_INCLUDES}
                         ${netCDF_INCLUDES}
                         "/usr/include/"
-                        "/code/build/")
+                        "/u1/kck540/openWQ/openwq/build/")
                 target_link_libraries(summa PUBLIC
                         "/usr/lib/x86_64-linux-gnu/libnetcdff.a"
                         ${LAPACK_LIBRARIES}
