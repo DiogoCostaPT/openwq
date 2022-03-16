@@ -1,0 +1,3 @@
+/Users/diogocosta/usask/openwq/openwq/CMakeFiles/openwq.dir
+/Users/diogocosta/usask/openwq/openwq/CMakeFiles/edit_cache.dir
+/Users/diogocosta/usask/openwq/openwq/CMakeFiles/rebuild_cache.dir
