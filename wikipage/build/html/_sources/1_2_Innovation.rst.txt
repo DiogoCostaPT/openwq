@@ -8,50 +8,64 @@ OpenWQ addresses three main challenges with existing biogeochemical and water qu
 * ``Structural rigidity`` that hinder the effective use of models across landscapes and in complex, diverse environments (permafrost, peatlands, variable contributing areas) that require more investigative, open-ended, and interactive simulation approaches;
 * ``Hydro-flux calculations`` embedded in these modelling tools are often outdated, or limited, when compared to dedicated, disciplinary hydro-models (e.g., hydrologiocal or hydrodynamic modelling tools); and
 * ``Uncertainty`` in model structure, process representation, and future scenarios (e.g., climate change) cannot be properly addressed because the current models are not suitable for adequate testing of modelling hypothesis.
+<<<<<<< HEAD
 
 /*
 Structural rigidity
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=======
+>>>>>>> 3f7a2485282463d5911b3cb0af6a9a3c8ef742c1
 
-Water quality models have improved significantly over the last decades. There are more water quality models now than ever before, many of them quite well established.
-However, there a common issue with most of these models.
+..
+    Structural rigidity
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-CONTINUE HERE!
+    Water quality models have improved significantly over the last decades. There are more water quality models now than ever before, many of them quite well established.
+    However, there a common issue with most of these models.
 
-.. image:: inca.png
-    :width: 350 px
+    CONTINUE HERE!
 
-.. image:: SWAT.png
-    :width: 350 px
+    .. image:: inca.png
+        :width: 350 px
 
-.. image:: myLake.jpg
-    :width: 350 px
+    .. image:: SWAT.png
+        :width: 350 px
 
-
-Hydro-flux calculations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. image:: review_paper_process_representation.jpg
-    :width: 350 px
-
-.. image:: review_paper_process_representation_N.jpg
-    :width: 350 px
+    .. image:: myLake.jpg
+        :width: 350 px
 
 
-.. image:: review_paper_process_representation_p.jpg
-    :width: 350 px
+    Hydro-flux calculations
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. image:: 1-3D.png
-    :width: 350 px
+    .. image:: review_paper_process_representation.jpg
+        :width: 350 px
 
-.. image:: data_types.png
-    :width: 350 px
+    .. image:: review_paper_process_representation_N.jpg
+        :width: 350 px
 
 
-Uncertainty and modelling hypothesis
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    .. image:: review_paper_process_representation_p.jpg
+        :width: 350 px
 
+    .. image:: 1-3D.png
+        :width: 350 px
+
+    .. image:: data_types.png
+        :width: 350 px
+
+
+<<<<<<< HEAD
 .. image:: OpenWQ_structure.png
     :width: 350 px
 
 */
+=======
+    Uncertainty and modelling hypothesis
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    .. image:: OpenWQ_structure.png
+        :width: 350 px
+
+..
+>>>>>>> 3f7a2485282463d5911b3cb0af6a9a3c8ef742c1
