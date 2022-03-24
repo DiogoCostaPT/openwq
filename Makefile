@@ -48,19 +48,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /Applications/CMake.app/Contents/bin/cmake
+CMAKE_COMMAND = /opt/homebrew/Cellar/cmake/3.22.3/bin/cmake
 
 # The command to remove a file.
-RM = /Applications/CMake.app/Contents/bin/cmake -E rm -f
+RM = /opt/homebrew/Cellar/cmake/3.22.3/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/diogocosta/usask/openwq/openwq
+CMAKE_SOURCE_DIR = /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/diogocosta/usask/openwq/openwq
+CMAKE_BINARY_DIR = /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -68,7 +68,7 @@ CMAKE_BINARY_DIR = /Users/diogocosta/usask/openwq/openwq
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/Applications/CMake.app/Contents/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/opt/homebrew/Cellar/cmake/3.22.3/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -78,7 +78,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/Applications/CMake.app/Contents/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/opt/homebrew/Cellar/cmake/3.22.3/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/diogocosta/usask/openwq/openwq/CMakeFiles /Users/diogocosta/usask/openwq/openwq//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/CMakeFiles /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/diogocosta/usask/openwq/openwq/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -129,6 +129,30 @@ openwq/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/openwq.dir/build.make CMakeFiles/openwq.dir/build
 .PHONY : openwq/fast
 
+main.o: main.cpp.o
+.PHONY : main.o
+
+# target to build an object file
+main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/openwq.dir/build.make CMakeFiles/openwq.dir/main.cpp.o
+.PHONY : main.cpp.o
+
+main.i: main.cpp.i
+.PHONY : main.i
+
+# target to preprocess a source file
+main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/openwq.dir/build.make CMakeFiles/openwq.dir/main.cpp.i
+.PHONY : main.cpp.i
+
+main.s: main.cpp.s
+.PHONY : main.s
+
+# target to generate assembly for a file
+main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/openwq.dir/build.make CMakeFiles/openwq.dir/main.cpp.s
+.PHONY : main.cpp.s
+
 src/OpenWQ_chem.o: src/OpenWQ_chem.cpp.o
 .PHONY : src/OpenWQ_chem.o
 
@@ -152,6 +176,30 @@ src/OpenWQ_chem.s: src/OpenWQ_chem.cpp.s
 src/OpenWQ_chem.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/openwq.dir/build.make CMakeFiles/openwq.dir/src/OpenWQ_chem.cpp.s
 .PHONY : src/OpenWQ_chem.cpp.s
+
+src/OpenWQ_couplercalls.o: src/OpenWQ_couplercalls.cpp.o
+.PHONY : src/OpenWQ_couplercalls.o
+
+# target to build an object file
+src/OpenWQ_couplercalls.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/openwq.dir/build.make CMakeFiles/openwq.dir/src/OpenWQ_couplercalls.cpp.o
+.PHONY : src/OpenWQ_couplercalls.cpp.o
+
+src/OpenWQ_couplercalls.i: src/OpenWQ_couplercalls.cpp.i
+.PHONY : src/OpenWQ_couplercalls.i
+
+# target to preprocess a source file
+src/OpenWQ_couplercalls.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/openwq.dir/build.make CMakeFiles/openwq.dir/src/OpenWQ_couplercalls.cpp.i
+.PHONY : src/OpenWQ_couplercalls.cpp.i
+
+src/OpenWQ_couplercalls.s: src/OpenWQ_couplercalls.cpp.s
+.PHONY : src/OpenWQ_couplercalls.s
+
+# target to generate assembly for a file
+src/OpenWQ_couplercalls.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/openwq.dir/build.make CMakeFiles/openwq.dir/src/OpenWQ_couplercalls.cpp.s
+.PHONY : src/OpenWQ_couplercalls.cpp.s
 
 src/OpenWQ_initiate.o: src/OpenWQ_initiate.cpp.o
 .PHONY : src/OpenWQ_initiate.o
@@ -321,30 +369,6 @@ src/OpenWQ_watertransp.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/openwq.dir/build.make CMakeFiles/openwq.dir/src/OpenWQ_watertransp.cpp.s
 .PHONY : src/OpenWQ_watertransp.cpp.s
 
-src/main.o: src/main.cpp.o
-.PHONY : src/main.o
-
-# target to build an object file
-src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/openwq.dir/build.make CMakeFiles/openwq.dir/src/main.cpp.o
-.PHONY : src/main.cpp.o
-
-src/main.i: src/main.cpp.i
-.PHONY : src/main.i
-
-# target to preprocess a source file
-src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/openwq.dir/build.make CMakeFiles/openwq.dir/src/main.cpp.i
-.PHONY : src/main.cpp.i
-
-src/main.s: src/main.cpp.s
-.PHONY : src/main.s
-
-# target to generate assembly for a file
-src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/openwq.dir/build.make CMakeFiles/openwq.dir/src/main.cpp.s
-.PHONY : src/main.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -354,9 +378,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... openwq"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 	@echo "... src/OpenWQ_chem.o"
 	@echo "... src/OpenWQ_chem.i"
 	@echo "... src/OpenWQ_chem.s"
+	@echo "... src/OpenWQ_couplercalls.o"
+	@echo "... src/OpenWQ_couplercalls.i"
+	@echo "... src/OpenWQ_couplercalls.s"
 	@echo "... src/OpenWQ_initiate.o"
 	@echo "... src/OpenWQ_initiate.i"
 	@echo "... src/OpenWQ_initiate.s"
@@ -378,9 +408,6 @@ help:
 	@echo "... src/OpenWQ_watertransp.o"
 	@echo "... src/OpenWQ_watertransp.i"
 	@echo "... src/OpenWQ_watertransp.s"
-	@echo "... src/main.o"
-	@echo "... src/main.i"
-	@echo "... src/main.s"
 .PHONY : help
 
 

@@ -359,13 +359,13 @@ int OpenWQ_output::writeCSV(
             // only if concentration is asked as output
             // otherwise set it to 1 for no effect
             if (std::get<3>(OpenWQ_wqconfig.output_units) == true){
-                water_vol_i = (*OpenWQ_hostModelconfig.fluxes_hydromodel)[icmp](ix,iy,iz);
+                water_vol_i = (*OpenWQ_hostModelconfig.waterVol_hydromodel)[icmp](ix,iy,iz);
             }else{
                 water_vol_i = 1.0f;
             }
 
             // Get chemical name
-            chem_name = OpenWQ_wqconfig.chem_species_list[
+            chem_name = OpenWQ_wqconfig.BGC_general_chem_species_list[
                 OpenWQ_wqconfig.chem2print[ichem]];           // index of chemical to print
                 
             // Add chemical name to file header (add column)
@@ -474,7 +474,7 @@ int OpenWQ_output::writeHDF5(
         for (unsigned int ichem=0;ichem<num_chem2print;ichem++){
 
             // Get chemical name (convert to char for use in .save())
-            chem_name = OpenWQ_wqconfig.chem_species_list[
+            chem_name = OpenWQ_wqconfig.BGC_general_chem_species_list[
             OpenWQ_wqconfig.chem2print[ichem]].c_str();           // index of chemical to print
 
             // Reset file name for each compartment
@@ -538,7 +538,7 @@ int OpenWQ_output::writeHDF5(
         arma::mat data2print(num_cells2print,1);
 
         // Get chemical name (convert to char for use in .save())
-        chem_name = OpenWQ_wqconfig.chem_species_list[
+        chem_name = OpenWQ_wqconfig.BGC_general_chem_species_list[
             OpenWQ_wqconfig.chem2print[ichem]].c_str();           // index of chemical to print
 
         // Reset file name for each compartment
@@ -566,7 +566,7 @@ int OpenWQ_output::writeHDF5(
             // only if concentration is asked as output
             // otherwise set it to 1 for no effect
             if (std::get<3>(OpenWQ_wqconfig.output_units) == true){
-                water_vol_i = (*OpenWQ_hostModelconfig.fluxes_hydromodel)[icmp](ix,iy,iz);
+                water_vol_i = (*OpenWQ_hostModelconfig.waterVol_hydromodel)[icmp](ix,iy,iz);
             }else{
                 water_vol_i = 1.0f;
             }
@@ -716,7 +716,7 @@ int OpenWQ_output::writeVTU(
 
         // Set name of array (chem variable name)
         // Get chemical species name
-        chemname = (OpenWQ_wqconfig.chem_species_list)[ichem];
+        chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[ichem];
         // Add discription of output units
         chemname.append("#");
         chemname.append(std::get<0>(OpenWQ_wqconfig.output_units));
@@ -733,7 +733,7 @@ int OpenWQ_output::writeVTU(
                     for (unsigned int iy=0;iy<=ny;iy++){
 
                         // Get cell volume
-                        water_vol_i = (*OpenWQ_hostModelconfig.fluxes_hydromodel)[icmp](ix,iy,iy);
+                        water_vol_i = (*OpenWQ_hostModelconfig.waterVol_hydromodel)[icmp](ix,iy,iy);
 
                         if(iz!=nz && iy!=ny && ix!=nx
                             && water_vol_i > OpenWQ_hostModelconfig.watervol_minlim){

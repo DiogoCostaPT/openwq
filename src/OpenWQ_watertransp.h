@@ -17,8 +17,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef OpenWQ_watertranspH_INCLUDED
-#define OpenWQ_watertranspH_INCLUDED
+#ifndef OpenWQ_WATERTRANSPH_INCLUDED
+#define OpenWQ_WATERTRANSPH_INCLUDED
 
 #include <armadillo>
 #include <string>
@@ -36,18 +36,8 @@ class OpenWQ_watertransp{
 
     public:
 
-    //void ChemCompExchange(
-    //    OpenWQ_json& JSONfile, 
-    //    OpenWQ_vars& OpenWQ_vars, 
-    //    int source, 
-    //    std::string kinetics, 
-    //    std::vector<std::string> parameter_names, 
-    //    std::vector<double> parameter_values,
-    //    std::array<double,7> & linedata, 
-    //    int & index_chem);
-
-
-    void Adv(
+    // Advection and Dispersion
+    void AdvDisp(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         const int source,
@@ -59,11 +49,41 @@ class OpenWQ_watertransp{
         const int iy_r,
         const int iz_r,
         double wflux_s2r,
-        double wmass_recipient);
+        double wmass_source);
 
-    //void AdvDisp(
-    //    OpenWQ_json& OpenWQ_json,
-    //    OpenWQ_vars& OpenWQ_vars);
+    // Internal mobilization of immobile pools
+    // Erosion and weathering
+    void IntMob(
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        const int source,
+        const int ix_s, 
+        const int iy_s,
+        const int iz_s,
+        const int recipient,
+        const int ix_r,
+        const int iy_r,
+        const int iz_r,
+        double wflux_s2r,
+        double wmass_source);
+
+    // Boundary Mixing due to velocity gradients
+    // due to turbulence and cross-boarder eddies
+    void BoundMix(
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        const int source,
+        const int ix_s, 
+        const int iy_s,
+        const int iz_s,
+        const int recipient,
+        const int ix_r,
+        const int iy_r,
+        const int iz_r,
+        double wflux_s2r,
+        double wmass_source);
+
 
 };
 

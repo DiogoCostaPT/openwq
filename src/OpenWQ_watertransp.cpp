@@ -22,37 +22,41 @@
 /* #################################################
 // Mass transport
 ################################################# */
-void OpenWQ_watertransp::Adv(
-        OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
-        const int source,
-        const int ix_s, 
-        const int iy_s,
-        const int iz_s,
-        const int recipient,
-        const int ix_r,
-        const int iy_r,
-        const int iz_r,
-        double wflux_s2r,
-        double wmass_recipient){
+void OpenWQ_watertransp::AdvDisp(
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    const int source,
+    const int ix_s, 
+    const int iy_s,
+    const int iz_s,
+    const int recipient,
+    const int ix_r,
+    const int iy_r,
+    const int iz_r,
+    double wflux_s2r,
+    double wmass_source){
 
     double chemass_flux;
     unsigned int ichem_mob;
 
     // CHANGE THE LINE BELOW: see my notes -> there should be no icmp because all compartments should have the same number of mobile species
-    unsigned int numspec = OpenWQ_wqconfig.mobile_species.size();
+    unsigned int numspec = OpenWQ_wqconfig.BGC_general_mobile_species.size();
 
     // Loop for mobile chemical species
-    for (unsigned int c=0;c<numspec;c++){
+    for (unsigned int chemi=0;chemi<numspec;chemi++){
 
         // mobile chemical species index
-        ichem_mob = OpenWQ_wqconfig.mobile_species[c] - 1;
+        ichem_mob = OpenWQ_wqconfig.BGC_general_mobile_species[chemi];
 
         // Chemical mass flux between source and recipient 
         chemass_flux = 
             wflux_s2r
             * (*OpenWQ_vars.chemass)(source)(ichem_mob)(ix_s,iy_s,iz_s) // concentration calculation
-             / wmass_recipient;
+             / wmass_source;
+        
+        
+        //##########################################
+        // Set derivative for source and recipient 
         
         // Remove Chemical mass flux from SOURCE 
         (*OpenWQ_vars.d_chemass_dt_transp)(source)(ichem_mob)(ix_s,iy_s,iz_s) 
@@ -65,105 +69,177 @@ void OpenWQ_watertransp::Adv(
                 
 }
 
-/*
-// Mass exchange between compartments
-void OpenWQ_watertransp::ChemCompExchange(
-    OpenWQ_json& OpenWQ_json, 
-    OpenWQ_vars& OpenWQ_vars, 
-    int source, std::string kinetics, 
-    std::vector<std::string> parameter_names, 
-    std::vector<double> parameter_values,
-    std::array<double,7> & linedata, 
-    int & index_chem){
 
-    typedef exprtk::symbol_table<double> symbol_table_t;
-    typedef exprtk::expression<double> expression_t;
-    typedef exprtk::parser<double> parser_t;
+/* #################################################
+// Internal mobilization of immobile pools
+// Erosion and weathering
+################################################# */
+void OpenWQ_watertransp::IntMob(
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    const int source,
+    const int ix_s, 
+    const int iy_s,
+    const int iz_s,
+    const int recipient,
+    const int ix_r,
+    const int iy_r,
+    const int iz_r,
+    double wflux_s2r,       
+    double wmass_source){
 
-    double wmass_exchange;
-    std::string kinetics_modif = kinetics;
-    std::string chemname;
-    int index_i;
-    int index_transf;
-    double chemass_transf;
+    // Internal Variables
+    double chemass_flux;
+    unsigned int ichem_mob;
+
+    // Loop for immobile chemical species
+    for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_num_chem;chemi++){
+
+        //##########################################
+        // Check if the chem species is mobile
+        // Skip if mobile (mobile species are moved by OpenWQ_watertransp::AdvDisp)
+        std::vector<unsigned int>::iterator itr 
+            = std::find(
+                OpenWQ_wqconfig.BGC_general_mobile_species.begin(), 
+                OpenWQ_wqconfig.BGC_general_mobile_species.end(), 
+                chemi);
+
+        if (itr != end(OpenWQ_wqconfig.BGC_general_mobile_species))
+            continue;
+
+        //##########################################
+        // Chemical mass flux between source and recipient 
+        chemass_flux = 
+            OpenWQ_wqconfig.OpenWQ_TE_native_IntMob_Erodib_K[source]
+            * wflux_s2r
+            * (*OpenWQ_vars.chemass)(source)(chemi)(ix_s,iy_s,iz_s);
+        
+        
+        //##########################################
+        // Set derivative for source and recipient 
+        
+        // Remove Chemical mass flux from SOURCE 
+        (*OpenWQ_vars.d_chemass_dt_transp)(source)(chemi)(ix_s,iy_s,iz_s) 
+            -= chemass_flux;
+
+        // Add Chemical mass flux to RECIPIENT 
+        (*OpenWQ_vars.d_chemass_dt_transp)(recipient)(chemi)(ix_r,iy_r,iz_r) 
+            += chemass_flux;
+    }
+
+
+}
+
+
+/* #################################################
+// Boundary Mixing due to velocity gradients
+// due to turbulence and cross-boarder eddies
+################################################# */
+void OpenWQ_watertransp::BoundMix(
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    const int source,
+    const int ix_s, 
+    const int iy_s,
+    const int iz_s,
+    const int recipient,
+    const int ix_r,
+    const int iy_r,
+    const int iz_r,
+    double wflux_s2r,
+    double wmass_source){
+    
+    
+    // Local Variables
+    double chemass_exchange_upper_comprt;
+    double chemass_exchange_lower_comprt;
+    unsigned int chemi_mob;     // interactive index of mobile species
+    std::vector<unsigned int> xyz_source;
+    xyz_source.push_back(ix_s);
+    xyz_source.push_back(iy_s);
+    xyz_source.push_back(iz_s); // get x,y,z from source comparment in vector
+
+    // Interactive variables
+    unsigned int input_direction_index;
+    unsigned int input_upper_compartment_index;
+    unsigned int input_lower_compartment_index;
+    double input_k_val;
+    unsigned int index_lower_cell;     // index of lower cell for mass exchange
+    std::vector<int> xyz_upper_compartment;
+
+    // Return if flux across compartments
+    // This lateral mixing only occurs when fluxes occur when fluxes along the 
+    // interface of compartments
+    if (source != recipient)
+        return;
 
     
-    // Get chemical species in the source compartment
-    std::vector<std::string> chem_species = OpenWQ_json.WQ["compartments"][std::to_string(source+1)]["chem_species"];
+    for (unsigned int entry_i = 0; entry_i < OpenWQ_wqconfig.OpenWQ_TE_native_BoundMix_info.size(); entry_i++){
 
-   // Find chem of relevance
-    int ii = 0;
-    for(int chemi=0;chemi<chem_species.size();chemi++){
-        chemname = chem_species[chemi];
+        xyz_upper_compartment.clear();
 
-        // Consumedchemass_consumed, chemass_produced;ty()) 
-        index_i = kinetics.find(chemname);
-        if (index_i!=-1 && !kinetics.empty()){
+        // Get inputs of entry
+        input_direction_index = std::get<0>(OpenWQ_wqconfig.OpenWQ_TE_native_BoundMix_info[entry_i]);
+        input_upper_compartment_index = std::get<1>(OpenWQ_wqconfig.OpenWQ_TE_native_BoundMix_info[entry_i]);
+        input_lower_compartment_index = std::get<2>(OpenWQ_wqconfig.OpenWQ_TE_native_BoundMix_info[entry_i]);
+        input_k_val = std::get<3>(OpenWQ_wqconfig.OpenWQ_TE_native_BoundMix_info[entry_i]);
 
-            index_chem = chemi; // index
-            kinetics_modif.replace(index_i,index_i + chemname.size(),"chemass_transf");
+        // Num of cells in upper_compartment
+        xyz_upper_compartment.push_back(std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(input_upper_compartment_index)));
+        xyz_upper_compartment.push_back(std::get<3>(OpenWQ_hostModelconfig.HydroComp.at(input_upper_compartment_index)));
+        xyz_upper_compartment.push_back(std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(input_upper_compartment_index)));
 
-            break;
-            }
+        // Ignore if entry is not applicable to the current source compartment
+        if (input_upper_compartment_index != source)
+            continue;
+
+        // Get number of cells in input_direction_index
+        index_lower_cell = xyz_upper_compartment[input_direction_index] - 1;
+
+        // Ignore if current source cell is not the lower adjacent cell where mixing may occur
+        if (xyz_source[input_direction_index] != index_lower_cell)
+            continue;
+
+
+        // Loop over mobile species
+        for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_mobile_species.size();chemi++){
+   
+            // Get index of mobile species
+            chemi_mob = OpenWQ_wqconfig.BGC_general_mobile_species[chemi];
+            
+            //##########################################
+            // Chemical exxhange between upper and lower compartments
+            chemass_exchange_upper_comprt = 
+                fmin(
+                    input_k_val
+                    * wflux_s2r
+                    * (*OpenWQ_vars.chemass)(input_upper_compartment_index)(chemi_mob)(ix_s,iy_s,iz_s),
+                    (*OpenWQ_vars.chemass)(input_upper_compartment_index)(chemi_mob)(ix_s,iy_s,iz_s));
+            
+            chemass_exchange_lower_comprt = 
+                fmin(
+                    input_k_val
+                    * wflux_s2r
+                    * (*OpenWQ_vars.chemass)(input_lower_compartment_index)(chemi_mob)(ix_s,iy_s,iz_s),
+                    (*OpenWQ_vars.chemass)(input_lower_compartment_index)(chemi_mob)(ix_s,iy_s,iz_s));
+                
+            //##########################################
+            // Set derivative for source and recipient 
+            
+            // Remove Chemical mass flux from SOURCE 
+            (*OpenWQ_vars.d_chemass_dt_transp)(input_upper_compartment_index)(chemi_mob)(ix_s,iy_s,iz_s) 
+                += (chemass_exchange_lower_comprt - chemass_exchange_upper_comprt);
+
+            // Add Chemical mass flux to RECIPIENT 
+            (*OpenWQ_vars.d_chemass_dt_transp)(input_lower_compartment_index)(chemi_mob)(ix_r,iy_r,iz_r) 
+                += (chemass_exchange_upper_comprt - chemass_exchange_lower_comprt);
+
         }
 
-    // Parmeters
-    for (int i=0;i<parameter_names.size();i++){
-        index_i = kinetics_modif.find(parameter_names[i]);
-        kinetics_modif.replace(index_i,index_i + parameter_names[i].size(),std::to_string(parameter_values[i]));
     }
 
-    // Add variables to symbol_table
-    symbol_table_t symbol_table;
 
-    symbol_table.add_variable("chemass_transf",chemass_transf);
-    // symbol_table.add_constants();
-
-    expression_t expression;
-    expression.register_symbol_table(symbol_table);
-
-    parser_t parser;
-    parser.compile(kinetics_modif,expression);
-
-    chemass_transf = (*OpenWQ_vars.chemass)(source)(index_chem)(linedata[0],linedata[1],linedata[2]);
-
-    // mass transfered
-    linedata[6] = expression.value(); 
 
 }
 
-
-// main loop
-void OpenWQ_watertransp::AdvDisp(
-    OpenWQ_json& OpenWQ_json,
-    OpenWQ_vars& OpenWQ_vars){
-
-    int numspec;
-    int icmpMob, tmpst_i;
-    bool mobile;
-    std::vector<std::vector<std::string>> fluxes_filenames, compFluxInt_filenames;
-    std::vector<std::vector<double>> fluxes_filenames_num,compFluxInt_filenames_num,all_filenames_num;
-    std::string fluxes_fileExtention,compFluxInt_fileExtention;
-    std::vector<int> mobileCompt;
-    std::string res_folder = OpenWQ_json.Master["export_results_folder"];
-    std::vector<int>::iterator is_mobile; // to check if mobile in compartment loop
-    
-    int num_HydroComp = OpenWQ_json.H2O["compartments"].size();
-    double disp_x = OpenWQ_json.WQ["dispersion"]["x-dir"];
-    double disp_y = OpenWQ_json.WQ["dispersion"]["y-dir"];
-    double disp_z = OpenWQ_json.WQ["dispersion"]["z-dir"];
-
-        
-    is_mobile = find (mobileCompt.begin(), mobileCompt.end(), icmp);
-    if (is_mobile != mobileCompt.end()){// if mobile
-        // Run ADE_solver
-        icmp = mobileCompt[icmp]; // get mobile compartments
-        std::vector<std::string> chemspec_i = OpenWQ_json.WQ["compartments"][std::to_string(icmp+1)]["chem_species"];
-        numspec = chemspec_i.size();
-        for (int ichem=0;ichem<numspec;ichem++) 
-            ADE_solver_1(OpenWQ_json,OpenWQ_vars,icmp,ichem);                                       
-    }
-}
-
-          
- */

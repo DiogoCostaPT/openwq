@@ -38,8 +38,9 @@ class OpenWQ_json
 
     json Master;
     json Config;
-    json BGCcycling;
     json SinkSource;
+    json TE_module;     // Transport and Erosion
+    json BGC_module;    // Biogeochemistry
 
 };
 
@@ -50,22 +51,7 @@ class OpenWQ_hostModelconfig
 {
     public:
     
-    OpenWQ_hostModelconfig(){
-
-        fluxes_hydromodel = std::unique_ptr<
-            std::vector<
-            arma::Cube<
-            double>>>(new std::vector<arma::cube>); 
-
-        SM_space_hydromodel = std::unique_ptr<
-            arma::Cube<
-            double>>(new arma::cube); 
-
-        Tair_space_hydromodel = std::unique_ptr<
-            arma::Cube<
-            double>>(new arma::cube); 
-    }
-
+    // Host model characterization via tuple
     typedef std::tuple<int,std::string,int, int, int> hydroTuple;
     // Add host_hydrological_model compartment:
     // (1) int => index in openWQ 
@@ -73,13 +59,31 @@ class OpenWQ_hostModelconfig
     // (3) int => number of cells in x-direction
     // (4) int => number of cells in y-direction
     // (5) int => number of cells in z-direction
-    
-    public: 
-    
+
+    OpenWQ_hostModelconfig(){
+
+        waterVol_hydromodel = std::unique_ptr<
+            std::vector<
+            arma::Cube<
+            double>>>(new std::vector<arma::cube>); 
+
+        SM = std::unique_ptr<
+            arma::Cube<
+            double>>(new arma::cube); 
+
+        Tair = std::unique_ptr<
+            arma::Cube<
+            double>>(new arma::cube); 
+
+        Tsoil = std::unique_ptr<
+            arma::Cube<
+            double>>(new arma::cube); 
+    }
+
     std::vector<hydroTuple> HydroComp;
 
     // Host model iteraction step (dynamic value)
-    long interaction_step;
+    long interaction_step = 0;
 
     // Host model time step (in seconds)
     long time_step;
@@ -88,19 +92,21 @@ class OpenWQ_hostModelconfig
     unsigned int num_HydroComp;
 
     // Stores water fluxes when concentration are requested for outputs
-    std::unique_ptr<std::vector<arma::Cube<double>>> fluxes_hydromodel;
-
+    std::unique_ptr<std::vector<arma::Cube<double>>> waterVol_hydromodel;
+    
     // Water volume minimum limit (critical for concentration calculations)
     // to avoid concentration instabilities and numerical blowup
     // uses native units: m3
-    double watervol_minlim = 0.01;
+    const double watervol_minlim = 0.01;
 
     // Add dependencies for BGC calculations
-    std::unique_ptr<arma::Cube<double>> SM_space_hydromodel;    // Saves all SM data from hostmodel
-    std::unique_ptr<arma::Cube<double>> Tair_space_hydromodel;  // Saves all Tair data from hostmodel
-    double SM;                                                  // Used as iteractive variable to use with exprtk
-    double Tair;                                                // Used as iteractive variable to use with exprtk
-
+    std::unique_ptr<arma::Cube<double>> SM;    // Saves all SM data from hostmodel
+    std::unique_ptr<arma::Cube<double>> Tair;  // Saves all Tair data from hostmodel
+    std::unique_ptr<arma::Cube<double>> Tsoil;  // Saves all Tsoil data from hostmodel
+    double SM_txyz;                                                  // Used as iteractive variable to use with exprtk
+    double Tair_txyz;                                                // Used as iteractive variable to use with exprtk
+    double Tsoil_txyz;                                                // Used as iteractive variable to use with exprtk
+    
 };
 
 /* #################################################
@@ -111,12 +117,15 @@ class OpenWQ_wqconfig
     public:
     OpenWQ_wqconfig(){
 
+  
     }
     OpenWQ_wqconfig(size_t num_coldata){
 
         this -> num_coldata = num_coldata;
 
         // #################################################
+        // Since and source forcing
+        
         // num_coldata is, the moment, equal to 11
         // 0 - chemical
         // 1 - compartment
@@ -132,12 +141,12 @@ class OpenWQ_wqconfig
         // 11 - flag to tell if already used (1) or not (0) because models can run 
                 // timesteps smaller than the specified load and that would cause the 
                 // load to be added multiple times
-
+ 
         SinkSource_FORC = 
             std::unique_ptr<
                 arma::Mat<double>>
             ( new  arma::mat(0,num_coldata));
-        
+
     }
 
     size_t num_coldata;
@@ -155,34 +164,6 @@ class OpenWQ_wqconfig
     // Computation settings
     int num_threads_system;       // number of threads in the system
     int num_threads_requested;    // number of threads requested by user
-    
-    // #################################################
-    // Chemistry
-    unsigned int num_chem;                  //Number of chemical species  
-    std::vector
-        <std::string> chem_species_list;    // Chemical species list
-    std::vector
-        <unsigned int> mobile_species;    // index of mobile chem species
-
-    // BGC kinetic formulas (tuple with all the info needed)
-    // It includes also the formulas parsed and ready to be used
-    // for each BGC cyle provided by the user
-    typedef exprtk::expression<double> expression_t;
-    std::vector<
-        std::tuple<
-            std::string,                // Biogeochemical cycle name
-            std::string,                // Transformation name
-            std::string,                // kinetic equation provided
-            unsigned int,               // index of consumed species       
-            unsigned int,               // index of produced species
-            std::vector<unsigned int>   // index of chemical in transformation equation (needs to be here for loop reset)
-        >> BGCexpressions_info;
-    
-    std::vector<
-        exprtk::expression<double>     // Expression (exprtk) parsed
-        >BGCexpressions_eq;            // BGC kinetic formulas for all biogeochemical cycles
-    
-    std::vector<double> chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
 
     // #################################################
     // Sink anhd Source
@@ -222,6 +203,66 @@ class OpenWQ_wqconfig
     bool readSet_print_errmsg = true;
     bool BGC_Transform_print_errmsg = true;
     bool invalid_bgc_entry_errmsg = true;
+
+    // ########################################
+    // MODULES
+    // ########################################
+
+    // ##########################
+    // 1) Transport / Erosion (TE)
+    // ##########################
+
+    // ##########################
+    // General info 
+    // (needed for all TE modules, native and not native)
+    std::string TE_module;  // Get module name
+
+    // ##########################
+    // OpenWQ native module: OPENWQ_NATIVE_TE
+    std::vector<double> OpenWQ_TE_native_IntMob_Erodib_K;
+
+    std::vector
+        <std::tuple
+            <unsigned int,unsigned int,unsigned int,double>> 
+            OpenWQ_TE_native_BoundMix_info;
+
+    // ##########################
+    // 1) Biogeochemistry
+    // ##########################
+    
+    // ##########################
+    // General info 
+    // (needed for all BGC modules, native and not native)
+    std::string BGC_module;     // Get module name
+
+    unsigned int BGC_general_num_chem;                  //Number of chemical species  
+    std::vector
+        <std::string> BGC_general_chem_species_list;    // Chemical species list
+    std::vector
+        <unsigned int> BGC_general_mobile_species;    // index of mobile chem species
+
+    // ##########################
+    // OpenWQ native module: OPENWQ_NATIVE_BGC
+    
+    // BGC kinetic formulas (tuple with all the info needed)
+    // It includes also the formulas parsed and ready to be used
+    // for each BGC cyle provided by the user
+    typedef exprtk::expression<double> expression_t;
+    std::vector<
+        std::tuple<
+            std::string,                // Biogeochemical cycle name
+            std::string,                // Transformation name
+            std::string,                // kinetic equation provided
+            unsigned int,               // index of consumed species       
+            unsigned int,               // index of produced species
+            std::vector<unsigned int>   // index of chemical in transformation equation (needs to be here for loop reset)
+        >> openWQ_BGCnative_BGCexpressions_info;
+    
+    std::vector<
+        exprtk::expression<double>     // Expression (exprtk) parsed
+        >openWQ_BGCnative_BGCexpressions_eq;            // BGC kinetic formulas for all biogeochemical cycles
+    
+    std::vector<double> openWQ_BGCnative_chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
     
 };
 
