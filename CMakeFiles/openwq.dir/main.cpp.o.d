@@ -983,6 +983,7 @@ CMakeFiles/openwq.dir/main.cpp.o: \
  /usr/local/include/armadillo_bits/newarp_UpperHessenbergEigen_meat.hpp \
  /usr/local/include/armadillo_bits/newarp_UpperHessenbergQR_meat.hpp \
  /usr/local/include/armadillo_bits/compiler_setup_post.hpp \
+ /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_couplercalls.h \
  /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_global.h \
  /opt/homebrew/Cellar/gcc/11.2.0_3/include/c++/11/memory \
  /opt/homebrew/Cellar/gcc/11.2.0_3/include/c++/11/bits/stl_raw_storage_iter.h \
@@ -1026,7 +1027,6 @@ CMakeFiles/openwq.dir/main.cpp.o: \
  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/stat.h \
  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_s_ifmt.h \
  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_filesec_t.h \
- /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_global.h \
  /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_units.h \
  /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_output.h \
  /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_solver.h \
@@ -1034,6 +1034,12 @@ CMakeFiles/openwq.dir/main.cpp.o: \
  /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_chem.h \
  /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_watertransp.h \
  /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_sinksource.h \
+ /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_global.h \
+ /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_readjson.h \
+ /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_initiate.h \
+ /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_chem.h \
+ /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_watertransp.h \
+ /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_sinksource.h \
+ /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_units.h \
  /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_solver.h \
- /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_output.h \
- /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_units.h
+ /Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/openwq/src/OpenWQ_output.h

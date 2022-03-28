@@ -1,3 +1,7 @@
+
+# Build with
+# cmake . -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-11
+
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 IF(UNIX)

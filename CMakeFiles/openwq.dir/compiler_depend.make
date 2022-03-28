@@ -985,6 +985,7 @@ CMakeFiles/openwq.dir/main.cpp.o: main.cpp \
   /usr/local/include/armadillo_bits/newarp_UpperHessenbergEigen_meat.hpp \
   /usr/local/include/armadillo_bits/newarp_UpperHessenbergQR_meat.hpp \
   /usr/local/include/armadillo_bits/compiler_setup_post.hpp \
+  src/OpenWQ_couplercalls.h \
   src/OpenWQ_global.h \
   /opt/homebrew/Cellar/gcc/11.2.0_3/include/c++/11/memory \
   /opt/homebrew/Cellar/gcc/11.2.0_3/include/c++/11/bits/stl_raw_storage_iter.h \
@@ -1028,7 +1029,6 @@ CMakeFiles/openwq.dir/main.cpp.o: main.cpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/stat.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_s_ifmt.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_filesec_t.h \
-  src/OpenWQ_global.h \
   src/OpenWQ_units.h \
   src/OpenWQ_output.h \
   src/OpenWQ_solver.h \
@@ -1036,9 +1036,15 @@ CMakeFiles/openwq.dir/main.cpp.o: main.cpp \
   src/OpenWQ_chem.h \
   src/OpenWQ_watertransp.h \
   src/OpenWQ_sinksource.h \
+  src/OpenWQ_global.h \
+  src/OpenWQ_readjson.h \
+  src/OpenWQ_initiate.h \
+  src/OpenWQ_chem.h \
+  src/OpenWQ_watertransp.h \
+  src/OpenWQ_sinksource.h \
+  src/OpenWQ_units.h \
   src/OpenWQ_solver.h \
-  src/OpenWQ_output.h \
-  src/OpenWQ_units.h
+  src/OpenWQ_output.h
 
 CMakeFiles/openwq.dir/src/OpenWQ_chem.cpp.o: src/OpenWQ_chem.cpp \
   src/OpenWQ_chem.h \
@@ -10302,8 +10308,6 @@ src/OpenWQ_sinksource.cpp:
 
 src/OpenWQ_initiate.cpp:
 
-src/OpenWQ_couplercalls.h:
-
 src/OpenWQ_couplercalls.cpp:
 
 src/OpenWQ_chem.cpp:
@@ -10365,6 +10369,8 @@ src/exprtk.hpp:
 /opt/homebrew/Cellar/gcc/11.2.0_3/include/c++/11/bits/stl_raw_storage_iter.h:
 
 src/OpenWQ_global.h:
+
+src/OpenWQ_couplercalls.h:
 
 /usr/local/include/armadillo_bits/compiler_setup_post.hpp:
 
