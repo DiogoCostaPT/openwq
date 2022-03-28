@@ -1,3 +1,7 @@
+
+# Build with
+# cmake . -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-11
+
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 IF(UNIX)
@@ -8,14 +12,20 @@ IF(UNIX)
         ENDIF()
         project(openwq)
 
-        file(GLOB SOURCES "src/*.cpp")
-
+        file(GLOB SOURCES "main.cpp" "src/*.cpp")
+        
         set(CMAKE_CXX_STANDARD 17)
         #set(CMAKE_CXX_FLAGS "-O3")
         set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic")
         IF(APPLE)
                 MESSAGE(STATUS "add flags")
                 set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic -Wno-c++11-narrowing")
+                
+                include(CheckCCompilerFlag)
+                set(CMAKE_REQUIRED_LINK_OPTIONS "-arch;x86_64")
+                check_c_compiler_flag("-arch x86_64" x86_64Supported)
+                message("x86_64Supported=${x86_64Supported}")
+
         ENDIF()
         #set(CMAKE_CXX_FLAGS "-O2 -g ")
         #set(CMAKE_BUILD_TYPE RelWithDebInfo)
@@ -61,7 +71,7 @@ ELSE()
 
         set(CMAKE_CXX_STANDARD 17)
         #set(CMAKE_CXX_FLAGS "-O3")
-        set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic")
+        set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic -fopenmp")
         #set(CMAKE_CXX_FLAGS "-O2 -g ")
         #set(CMAKE_BUILD_TYPE RelWithDebInfo)
 

@@ -40,7 +40,7 @@ void OpenWQ_initiate::initmemory(
     std::string msg_string;             // error/warning message string
 
     // Create arma for chemical species
-    unsigned int numspec = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["LIST"].size(); // number of chemical species in BGCcycling
+    unsigned int numspec = OpenWQ_json.BGC_module["CHEMICAL_SPECIES"]["LIST"].size(); // number of chemical species in BGC_module
     typedef arma::field<arma::Cube<double>> arma_fieldcube; // typedef data structure: used for domain_field
 
     /* ########################################
@@ -97,14 +97,15 @@ void OpenWQ_initiate::initmemory(
         // Hydro model variables used as BGC dependencies
         // Just need to do this once (no need to repeat in this loop)
         if (icmp == 0){
-            (*OpenWQ_hostModelconfig.SM_space_hydromodel) = domain_xyz;
-            (*OpenWQ_hostModelconfig.Tair_space_hydromodel) = domain_xyz;
+            (*OpenWQ_hostModelconfig.SM) = domain_xyz;
+            (*OpenWQ_hostModelconfig.Tair) = domain_xyz;
+            (*OpenWQ_hostModelconfig.Tsoil) = domain_xyz;
         }
 
         // Hydro model variables (water volumes for calc of concentrations)
         // Set them to ones in case concentrations are not requested
         // In such cases, the output will multiply by one (so it's fine)
-        (*OpenWQ_hostModelconfig.fluxes_hydromodel).push_back(domain_xyz);
+        (*OpenWQ_hostModelconfig.waterVol_hydromodel).push_back(domain_xyz);
 
     }
 
@@ -227,7 +228,7 @@ void OpenWQ_initiate::readSet(
                         ix,
                         iy,
                         iz,
-                        (*OpenWQ_hostModelconfig.fluxes_hydromodel)[icmp](ix,iy,iz) );    // volume (water or soil) in m3
+                        (*OpenWQ_hostModelconfig.waterVol_hydromodel)[icmp](ix,iy,iz) );    // volume (water or soil) in m3
 
                 }
             }
@@ -268,9 +269,9 @@ void OpenWQ_initiate::setIC(
     // Loop over chemical species
     ######################################## */
 
-    for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.num_chem);chemi++){
+    for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){
 
-        chemname = (OpenWQ_wqconfig.chem_species_list)[chemi]; // chemical name in BGC-json list
+        chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi]; // chemical name in BGC-json list
 
         // Get tuple with IC information for compartment CompName_icmp and chemical chemname
         // If not found in compartment icmp, it's because IC were not defined - set to zero.
@@ -334,4 +335,38 @@ void OpenWQ_initiate::setIC(
                 true);              // print in log file
         }  
     }
+}
+
+
+/* #################################################
+// Get Time variables
+################################################# */
+void OpenWQ_initiate::setTimeVars(
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    time_t simtime){
+
+    // Update interaction number
+    OpenWQ_hostModelconfig.interaction_step += 1;
+
+    // Update other time variables
+    if (OpenWQ_hostModelconfig.interaction_step == 1){
+
+        // Initiate OpenWQ_wqconfig.nexttime_out with simtime
+        // this is only applicable at the start of the simulation
+        OpenWQ_wqconfig.nexttime_out = simtime;
+
+        // Initiate time_step
+        OpenWQ_hostModelconfig.time_step = 0.0f;
+    }else{
+
+        // Update time step and difference as fraction of 1 day (because reaction kinetics are
+        // given is rate per day. Then update time_previous for next time step
+        OpenWQ_hostModelconfig.time_step = (simtime - OpenWQ_wqconfig.time_previous);
+
+    }
+
+    // Update time previous
+    OpenWQ_wqconfig.time_previous = simtime;
+
 }

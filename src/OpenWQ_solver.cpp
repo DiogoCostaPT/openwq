@@ -49,7 +49,7 @@ void OpenWQ_solver::Numerical_Solver(
         nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // num of z elements
 
         // Chemical loop
-        for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.num_chem);chemi++){
+        for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){
 
             // X, Y, Z loops
             for (ix=0;ix<nx;ix++){
@@ -95,6 +95,10 @@ void OpenWQ_solver::Numerical_Solver(
                         // updating cumulative calc for output in debug mode
                         (*OpenWQ_vars.d_chemass_dt_transp_out)(icmp)(chemi)(ix,iy,iz) += dm_dt_trans;  
 
+                        //if (ix == 303){
+                        //   std::cout << std::to_string((*OpenWQ_vars.d_chemass_dt_transp)(0)(0)(303,0,0)) << std::endl; 
+
+                        //}
                         
                         // ####################################
                         // 5
@@ -136,7 +140,7 @@ void OpenWQ_solver::Reset_Deriv(
         for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
 
             // Chemical loop
-            for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.num_chem);chemi++){
+            for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){
 
                 // Reset derivatives of state-variables to zero after each time interaction
                 (*OpenWQ_vars.d_chemass_ic)(icmp)(chemi).zeros();
@@ -158,7 +162,7 @@ void OpenWQ_solver::Reset_Deriv(
         for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
 
             // Chemical loop
-            for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.num_chem);chemi++){
+            for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){
 
                 // Reset derivatives of state-variables to zero after each time interaction
                 (*OpenWQ_vars.d_chemass_ss_out)(icmp)(chemi).zeros();

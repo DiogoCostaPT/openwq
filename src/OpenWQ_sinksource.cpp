@@ -72,10 +72,10 @@ void OpenWQ_sinksource::SetSinkSource(
     }
 
     // Get model chemical names list
-    unsigned int num_chem = OpenWQ_wqconfig.num_chem;
-    for (unsigned int chemi=0;chemi<num_chem;chemi++){
+    unsigned int BGC_general_num_chem = OpenWQ_wqconfig.BGC_general_num_chem;
+    for (unsigned int chemi=0;chemi<BGC_general_num_chem;chemi++){
         chem_list.push_back(
-            (OpenWQ_wqconfig.chem_species_list)[chemi]);
+            (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi]);
     }
 
     // Get number of sub-structures of SinkSource
@@ -426,7 +426,7 @@ void OpenWQ_sinksource::Apply_Source(
             "<OpenWQ> WARNING: Sink/Source load out of boundaries."
             "Requested load ignored: Compartment=" 
             + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(cmpi))
-            + ", Chemical=" + OpenWQ_wqconfig.chem_species_list[chemi]
+            + ", Chemical=" + OpenWQ_wqconfig.BGC_general_chem_species_list[chemi]
             + ", ix=" + std::to_string(ix)
             + ", iy=" + std::to_string(iy)
             + ", iz=" + std::to_string(iz)
@@ -479,7 +479,7 @@ void OpenWQ_sinksource::Apply_Sink(
             "<OpenWQ> WARNING: Sink/Source load out of boundaries."
             "Requested load ignored: Compartment=" 
             + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(cmpi))
-            + ", Chemical=" + OpenWQ_wqconfig.chem_species_list[chemi]
+            + ", Chemical=" + OpenWQ_wqconfig.BGC_general_chem_species_list[chemi]
             + ", ix=" + std::to_string(ix)
             + ", iy=" + std::to_string(iy)
             + ", iz=" + std::to_string(iz);
