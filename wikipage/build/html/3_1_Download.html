@@ -88,7 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="3_0_Installation.html">Installation</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Get OpenWQ</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#step-1-identify-download-folder">STEP 1: Identify download folder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-locate-host-model-source-code-folder">STEP 1: Locate host-model source code folder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#step-2-clone-openwq">STEP 2: Clone OpenWQ</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#step-3-keep-openwq-updated">STEP 3: Keep OpenWQ updated</a></li>
 </ul>
@@ -171,26 +171,29 @@
   <section id="get-openwq">
 <h1>Get OpenWQ<a class="headerlink" href="#get-openwq" title="Permalink to this headline">¶</a></h1>
 <p>It is important that you follow the following steps in order to <code class="docutils literal notranslate"><span class="pre">clone</span></code> OpenWQ in your machine, but to also make sure that you can easily <code class="docutils literal notranslate"><span class="pre">pull</span></code> and integrate updates in an efficient and hassle-free manner.</p>
-<section id="step-1-identify-download-folder">
-<h2>STEP 1: Identify download folder<a class="headerlink" href="#step-1-identify-download-folder" title="Permalink to this headline">¶</a></h2>
-<p>OpenWQ’s source code should be cloned inside your hydro-model source code folder.</p>
+<section id="step-1-locate-host-model-source-code-folder">
+<h2>STEP 1: Locate host-model source code folder<a class="headerlink" href="#step-1-locate-host-model-source-code-folder" title="Permalink to this headline">¶</a></h2>
+<p>First locate the directory that contains your hydro-model source code.</p>
+<p>Open a Terminal and go to that folder:</p>
+<p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">&lt;hydro</span> <span class="pre">model</span> <span class="pre">code</span> <span class="pre">directory&gt;</span></code></p>
 </section>
 <section id="step-2-clone-openwq">
 <h2>STEP 2: Clone OpenWQ<a class="headerlink" href="#step-2-clone-openwq" title="Permalink to this headline">¶</a></h2>
-<p>To clone OpenWQ in your machine you should first install <a class="reference external" href="https://git-scm.com/">Git</a>.
-Once Git is installed, open a Terminal and go to the hydro-model source-code folder identified in STEP 1.</p>
-<p>Open a Terminal and go to that folder:</p>
-<p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">&lt;hydro</span> <span class="pre">model</span> <span class="pre">code</span> <span class="pre">directory&gt;</span></code></p>
-<p>Then, type the command below to create a new folder <code class="docutils literal notranslate"><span class="pre">OpenWQ_code</span></code>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">mkdir</span> <span class="pre">OpenWQ_code</span></code></p>
-<p>Then go inside the new folder</p>
-<p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">OpenWQ_code</span></code></p>
-<p>Finally, run the following command to clone <code class="docutils literal notranslate"><span class="pre">openwq</span></code> source code:</p>
+<p>To clone OpenWQ in your machine you should first install <a class="reference external" href="https://git-scm.com/">Git</a>.</p>
+<p>Now, lets clone the OpenWQ project in that folder. Go back to the Terminal, and run the following git command:</p>
 <p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/DiogoCostaPT/openwq.git</span></code></p>
-<p>This will create a new folder named <code class="docutils literal notranslate"><span class="pre">openwq</span></code> inside <a href="#id1"><span class="problematic" id="id2">``</span></a>OpenWQ_code` where the source code will be copied.</p>
-<p>ATENTION: never change the code inside the <code class="docutils literal notranslate"><span class="pre">OpenWQ_code</span></code>, except if for updating (see STEP 3).</p>
-<p>Once the clonning has been completed, you should see the following directory tree:</p>
+<p>This will create a new folder named <code class="docutils literal notranslate"><span class="pre">openwq</span></code> that will contain the OpenWQ project, which consists of:</p>
+<ol class="arabic simple">
+<li><p>folder <code class="docutils literal notranslate"><span class="pre">src</span></code>: contains the OpenWQ’s source code,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Git</span></code> folders and files</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmake</span></code> folders and files</p></li>
+<li><p>folder <code class="docutils literal notranslate"><span class="pre">json_files_repo</span></code>: contains samples of input JSON files</p></li>
+<li><p>folder <code class="docutils literal notranslate"><span class="pre">supporting_scripts</span></code>: contains several scripts in Python and MATLAB to support input generation and output extraction</p></li>
+<li><p>folder <code class="docutils literal notranslate"><span class="pre">wikipage</span></code>: contains the source code of the wiki pages (rst and html files)</p></li>
+</ol>
+<p>You should see the following directory tree:</p>
 <a class="reference internal image-reference" href="_images/source_code_folder.png"><img alt="Folder tree" src="_images/source_code_folder.png" style="width: 500px;" /></a>
+<p><strong>ATENTION</strong>: Never change the code inside the <code class="docutils literal notranslate"><span class="pre">openwq</span></code> folder, except if for updating openwq. For that, please follow STEP 3).</p>
 </section>
 <section id="step-3-keep-openwq-updated">
 <h2>STEP 3: Keep OpenWQ updated<a class="headerlink" href="#step-3-keep-openwq-updated" title="Permalink to this headline">¶</a></h2>
