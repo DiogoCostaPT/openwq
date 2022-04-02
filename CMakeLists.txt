@@ -30,6 +30,8 @@ IF(UNIX)
         #set(CMAKE_CXX_FLAGS "-O2 -g ")
         #set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
+        #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR} "/usr/src/openmp_stdl/vtk/build")
+
         find_package(VTK 
                 COMPONENTS 
                 CommonCore
