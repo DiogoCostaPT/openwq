@@ -1,8 +1,41 @@
 
 # Build with
-# cmake . -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-11
+# rm CMakeCache.txt; cmake . -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-11
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+
+# compile_OpenWQ_mode options:
+# 1) stdl -> compile standalone using main
+# 1) crhm -> compile with crhm using hydrolink
+# 1) summa -> compile with summa using hydrolink
+set(compile_OpenWQ_mode standalone)
+
+if("${compile_OpenWQ_mode}" STREQUAL "standalone")
+        file(GLOB SOURCES "main.cpp" "src/*.cpp")
+
+elseif("${compile_OpenWQ_mode}" STREQUAL "crhm")
+        file(GLOB SOURCES
+                "../vcl.cpp"
+                "../GlobalDll.cpp"
+                "../Common.cpp"
+                "../ClassCRHM.cpp"
+                "../ClassModule.cpp"
+                "../NewModules.cpp" 
+                "../CRHM_parse.cpp"
+                "../MacroUnit.cpp"
+                "../WQ_Soil_NPCcycling.cpp"
+                "../WQ_CRHM.cpp"
+                "../About.cpp"
+                "../Bld.cpp"
+                "../Log.cpp"
+                "../UpdateForm.cpp"
+                "../CRHMmain.cpp"
+                "src/*.cpp")
+        #include_directories("../")
+
+elseif("${compile_OpenWQ_mode}" STREQUAL "summa")
+        #file(GLOB SOURCES "main.cpp" "src/*.cpp")
+endif()
 
 IF(UNIX)
         IF(UNIX AND NOT APPLE)
@@ -11,12 +44,11 @@ IF(UNIX)
                 MESSAGE(STATUS "current platform : MacOS")
         ENDIF()
         project(openwq)
-
-        file(GLOB SOURCES "main.cpp" "src/*.cpp")
         
-        set(CMAKE_CXX_STANDARD 17)
+        set(CMAKE_CXX_STANDARD 11)
         #set(CMAKE_CXX_FLAGS "-O3")
         set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic")
+        
         IF(APPLE)
                 MESSAGE(STATUS "add flags")
                 set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic -Wno-c++11-narrowing")
@@ -30,6 +62,10 @@ IF(UNIX)
                 #set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE INTERNAL "" FORCE)
 
         ENDIF()
+
+        if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+                set(CXX_FILESYSTEM_LIBRARIES "stdc++fs")
+        endif()
         #set(CMAKE_CXX_FLAGS "-O2 -g ")
         #set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
@@ -58,23 +94,43 @@ IF(UNIX)
         add_executable(openwq
                 ${SOURCES})
 
-        target_include_directories(
-                openwq PUBLIC 
-                ${ARMADILLO_INCLUDE_DIR}
-                ${VTK_INCLUDE_DIR})
+        if("${compile_OpenWQ_mode}" STREQUAL "standalone")
+                target_include_directories(
+                        openwq PUBLIC 
+                        ${ARMADILLO_INCLUDE_DIR}
+                        ${VTK_INCLUDE_DIR})
 
-        target_link_libraries(
-                openwq
-                ${ARMADILLO_LIBRARIES}
-                ${VTK_LIBRARIES})
+                target_link_libraries(
+                        openwq PUBLIC
+                        ${ARMADILLO_LIBRARIES}
+                        ${VTK_LIBRARIES})
+
+        elseif("${compile_OpenWQ_mode}" STREQUAL "crhm")
+                find_package(boost_filesystem 1.71.0 REQUIRED CONFIG)
+                #find_package(Boost 1.72.0 EXACT REQUIRED PATHS "boost_1_72_0/")
+
+                target_include_directories(
+                        openwq PUBLIC 
+                        ${Boost_INCLUDE_DIRS}
+                        ${ARMADILLO_INCLUDE_DIR}
+                        ${VTK_INCLUDE_DIR})
+
+                target_link_libraries(
+                        openwq PUBLIC
+                        ${Boost_LIBRARIES}
+                        ${ARMADILLO_LIBRARIES}
+                        ${VTK_LIBRARIES})
+
+        elseif("${compile_OpenWQ_mode}" STREQUAL "summa")
+
+        endif()
+
 
 ELSE()
         MESSAGE(STATUS "current platform : Windows")
         project(openwq)
 
-        file(GLOB SOURCES "src/*.cpp")
-
-        set(CMAKE_CXX_STANDARD 17)
+        set(CMAKE_CXX_STANDARD 11)
         #set(CMAKE_CXX_FLAGS "-O3")
         set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic -fopenmp")
         #set(CMAKE_CXX_FLAGS "-O2 -g ")
