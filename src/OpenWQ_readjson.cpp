@@ -732,7 +732,7 @@ void OpenWQ_readjson::SetConfigInfo(
                 
             // Add values to tuple
             OpenWQ_wqconfig.OpenWQ_TE_native_BoundMix_info.push_back(
-                std::tuple(
+                std::tuple<unsigned int,unsigned int,unsigned int,double>(
                     input_direction_index,
                     input_upper_compartment_index,
                     input_lower_compartment_index,

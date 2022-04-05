@@ -21,10 +21,13 @@ IF(UNIX)
                 MESSAGE(STATUS "add flags")
                 set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic -Wno-c++11-narrowing")
                 
-                include(CheckCCompilerFlag)
-                set(CMAKE_REQUIRED_LINK_OPTIONS "-arch;x86_64")
-                check_c_compiler_flag("-arch x86_64" x86_64Supported)
-                message("x86_64Supported=${x86_64Supported}")
+                #include(CheckCCompilerFlag)
+                #set(CMAKE_REQUIRED_LINK_OPTIONS "-arch;x86_64")
+                #check_c_compiler_flag("-arch x86_64" x86_64Supported)
+                #message("x86_64Supported=${x86_64Supported}")
+
+                # Compiling for x86
+                #set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE INTERNAL "" FORCE)
 
         ENDIF()
         #set(CMAKE_CXX_FLAGS "-O2 -g ")
