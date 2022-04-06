@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # 1) stdl -> compile standalone using main
 # 1) crhm -> compile with crhm using hydrolink
 # 1) summa -> compile with summa using hydrolink
-set(compile_OpenWQ_mode standalone)
+set(compile_OpenWQ_mode crhm)
 
 if("${compile_OpenWQ_mode}" STREQUAL "standalone")
         file(GLOB SOURCES "main.cpp" "src/*.cpp")
@@ -45,7 +45,7 @@ IF(UNIX)
         ENDIF()
         project(openwq)
         
-        set(CMAKE_CXX_STANDARD 11)
+        set(CMAKE_CXX_STANDARD 17)
         #set(CMAKE_CXX_FLAGS "-O3")
         set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic")
         
@@ -57,9 +57,10 @@ IF(UNIX)
                 #set(CMAKE_REQUIRED_LINK_OPTIONS "-arch;x86_64")
                 #check_c_compiler_flag("-arch x86_64" x86_64Supported)
                 #message("x86_64Supported=${x86_64Supported}")
-
+                
                 # Compiling for x86
                 #set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE INTERNAL "" FORCE)
+                #set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE INTERNAL "" FORCE)
 
         ENDIF()
 
@@ -130,7 +131,7 @@ ELSE()
         MESSAGE(STATUS "current platform : Windows")
         project(openwq)
 
-        set(CMAKE_CXX_STANDARD 11)
+        set(CMAKE_CXX_STANDARD 17)
         #set(CMAKE_CXX_FLAGS "-O3")
         set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic -fopenmp")
         #set(CMAKE_CXX_FLAGS "-O2 -g ")
