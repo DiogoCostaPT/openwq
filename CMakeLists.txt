@@ -1,6 +1,6 @@
 
 # Build with
-# rm CMakeCache.txt; cmake . -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-11
+# rm CMakeCache.txt; cmake . -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-11; make -B
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # 1) stdl -> compile standalone using main
 # 1) crhm -> compile with crhm using hydrolink
 # 1) summa -> compile with summa using hydrolink
-set(compile_OpenWQ_mode crhm)
+set(compile_OpenWQ_mode standalone)
 
 if("${compile_OpenWQ_mode}" STREQUAL "standalone")
         file(GLOB SOURCES "main.cpp" "src/*.cpp")
@@ -30,6 +30,7 @@ elseif("${compile_OpenWQ_mode}" STREQUAL "crhm")
                 "../Log.cpp"
                 "../UpdateForm.cpp"
                 "../CRHMmain.cpp"
+                "../OpenWQ_hydrolink.cpp"
                 "src/*.cpp")
         #include_directories("../")
 
