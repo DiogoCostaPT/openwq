@@ -47,6 +47,7 @@ USE globalData,only:gru_struc                               ! gru-hru mapping st
 
 ! OpenWQ coupling 
 USE globalData,only:openWQ_obj
+USE summa_openWQ,only:run_time_start
 USE openWQ
 USE, intrinsic :: iso_c_binding
 implicit none
@@ -66,10 +67,7 @@ integer(i4b)                       :: random2
 integer(i4b)                       :: err=0                      ! error code
 character(len=1024)                :: message=''                 ! error message
 integer(i4b)                       :: hruCount
-integer(i4b)                       :: iGRU
-integer(i4b)                       :: iHRU
-real(8)                            :: soilTemp
-real(8)                            :: totalMatricHeadVol
+
 
 ! *****************************************************************************
 ! * preliminaries
@@ -110,34 +108,10 @@ do modelTimeStep=1,5
  call summa_readForcing(modelTimeStep, summa1_struc(n), err, message)
  call handle_err(err, message)
 
- ! Call OpenW run_time_start
- ! We Also need to pass in the timestep data which is in summa1_struc(1)%timeStruct%var
- err=openWQ_obj%run_time_start(summa1_struc(1)%timeStruct%var(iLookTIME%iyyy), &
-                               summa1_struc(1)%timeStruct%var(iLookTIME%im),   &
-                               summa1_struc(1)%timeStruct%var(iLookTIME%id),   &
-                               summa1_struc(1)%timeStruct%var(iLookTIME%ih),   &
-                               summa1_struc(1)%timeStruct%var(iLookTIME%imin))
- ! we need to pass the volumes for each timestep
- do iGRU = 1, size(gru_struc(:))
-  do iHRU = 1, gru_struc(iGRU)%hruCount
-    soilTemp = sum(summa1_struc(1)%progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerTemp)%dat(:)) / &
-      size(summa1_struc(1)%progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerTemp)%dat(:)) 
 
-    totalMatricHeadVol = sum(summa1_struc(1)%progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerMatricHead)%dat(:)) / &
-    size(summa1_struc(1)%progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerMatricHead)%dat(:))
+ call run_time_start(openwq_obj, summa1_struc(n))
+  ! we need to pass the volumes for each timestep
 
-
-    err=openWQ_obj%start_time_hru_info(0, soilTemp, &
-    summa1_struc(1)%progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarCanairTemp)%dat(1), &
-    summa1_struc(1)%progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarSWE)%dat(1), &
-    summa1_struc(1)%progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarCanopyWat)%dat(1), &
-    totalMatricHeadVol, &
-    summa1_struc(1)%progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarAquiferStorage)%dat(1))
-
-    
-  end do
- end do
- 
  print*, "Fortran/summa_driver.f90: Done openWQ_obj%run(1)"
  
  ! run the summa physics for one time step

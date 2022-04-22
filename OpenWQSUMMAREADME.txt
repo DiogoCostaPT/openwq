@@ -27,3 +27,17 @@ Program Trace:
     - Here is where we initalize the openWQ object in fortran
         - This is a c++ object that Fortran holds a reference for.
     - Summa then calls decl()
+
+
+
+Derivatives of Summa are calculated in updateVars.f90 which is called by eval8summa.
+After updateVars we call computFlux, which is where the fluxes get computed.
+updateProg() is when the state variables are updated.
+
+
+Main Solver:
+    CoupledEm -> opSplittin -> varSubstep -> systemSolv -> updateProg
+                                              -> eval8Summa(compute the flux and the residual vector for given state vector)
+                                              -> summaSolve (can call eval8Summa for updated state vector)
+
+    eval8Summa -> updateVars(Derivatives) -> computeFlux

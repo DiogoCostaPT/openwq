@@ -158,6 +158,7 @@ IF(UNIX)
         # Define the driver routine
         set(DRIVER
         ${DRIVER_DIR}/summa_type.f90
+        ${DRIVER_DIR}/summa_openWQ.f90
         ${DRIVER_DIR}/summa_util.f90
         ${DRIVER_DIR}/summa_alarms.f90
         ${DRIVER_DIR}/summa_globalData.f90

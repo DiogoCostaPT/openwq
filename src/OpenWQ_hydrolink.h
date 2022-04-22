@@ -34,7 +34,6 @@ class ClassWQ_OpenWQ
 {
     // Instance Variables
     private:
-        
         OpenWQ_couplercalls *OpenWQ_couplercalls_ref;
         OpenWQ_hostModelconfig *OpenWQ_hostModelconfig_ref;
         OpenWQ_json *OpenWQ_json_ref;
@@ -48,20 +47,10 @@ class ClassWQ_OpenWQ
         OpenWQ_sinksource *OpenWQ_sinksource_ref;
         OpenWQ_solver *OpenWQ_solver_ref;
         OpenWQ_output *OpenWQ_output_ref;
+
         int numHRU;
-        std::vector<int> hru_area;
+        const float *hru_area;
 
-        // int refYear   = 1970;  // Reference year for converting sim_time
-        // int refMonth  = 1;     // Reference Month for converting sim_time
-        // int refDay    = 1;     // Reference Day for converting sim_time
-        // int refMinute = 0;     // Reference Minute for converting sim_time
-        // int refSecond = 0;     // Reference Second for converting sim_time
-
-
-        
-
-
-    
     // Constructor
     public:
         ClassWQ_OpenWQ(int numHRU);
@@ -71,14 +60,12 @@ class ClassWQ_OpenWQ
     void printNum() {
         std::cout << "num = " << this->numHRU << std::endl;
     }
-    int getNum() const;
 
     int decl();
 
-    int run_time_start(int year, int month, int day, int hour, int minute);
-
-    int start_time_hru_info(int soilMoisture, double soilTemp, double airTemp,
-        double SWE_vol, double canopyWat, double matricHead_vol, double aquiferStorage);
+    int run_time_start(int numHRU, int year, int month, int day, int hour, int minute, 
+        double soilMoisture[], double soilTemp[], double airTemp[],
+        double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]);
 
     int run_space();
 
@@ -95,22 +82,26 @@ class ClassWQ_OpenWQ
 extern "C" { 
     class ClassWQ_OpenWQ;
     typedef ClassWQ_OpenWQ CLASSWQ_OPENWQ;
-#else
+    #else
     typedef struct CLASSWQ_OPENWQ CLASSWQ_OPENWQ;
-#endif
+    #endif
 
-// Create OpenWQ Object
-CLASSWQ_OPENWQ* create_openwq(int num);
-// Delete OpenWQ Object
-void delete_openwq(CLASSWQ_OPENWQ* openWQ);
-// OpenWQ initalization method
-int openwq_decl(CLASSWQ_OPENWQ *openWQ);
-int openwq_run_time_start(CLASSWQ_OPENWQ *openWQ, int year, int month, int day, int hour, int minute);
-int openwq_start_time_hru_info(CLASSWQ_OPENWQ *openWQ, int soilMoisture, double soilTemp, double airTemp,
-    double SWE_vol, double canopyWat, double matricHead_vol, double aquiferStorage);
-// OpenWQ run functions, this function decides which C++ code to call
-int openwq_run(CLASSWQ_OPENWQ *openWQ, int func);
-#ifdef __cplusplus
+    // Create OpenWQ Object
+    CLASSWQ_OPENWQ* create_openwq(int num);
+
+    // Delete OpenWQ Object
+    void delete_openwq(CLASSWQ_OPENWQ* openWQ);
+
+    // OpenWQ initalization method
+    int openwq_decl(CLASSWQ_OPENWQ *openWQ);
+
+    int openwq_run_time_start(CLASSWQ_OPENWQ *openWQ, int numHRU, int year, int month, int day, int hour, int minute,
+        double soilMoisture[], double soilTemp[], double airTemp[], double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]);
+
+    // OpenWQ run functions, this function decides which C++ code to call
+    int openwq_run(CLASSWQ_OPENWQ *openWQ, int func);
+
+    #ifdef __cplusplus
 }
 #endif
 #endif

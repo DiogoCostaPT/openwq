@@ -130,9 +130,9 @@ contains
  ! * dummy variables
  ! ---------------------------------------------------------------------------------------
  ! input: model control
- real(rkind),intent(in)             :: dt                            ! time step (seconds)
- real(rkind),intent(in)             :: dtInit                        ! initial time step (seconds)
- real(rkind),intent(in)             :: dt_min                        ! minimum time step (seconds)
+ real(rkind),intent(in)          :: dt                            ! time step (seconds)
+ real(rkind),intent(in)          :: dtInit                        ! initial time step (seconds)
+ real(rkind),intent(in)          :: dt_min                        ! minimum time step (seconds)
  integer(i4b),intent(in)         :: nState                        ! total number of state variables
  logical(lgt),intent(in)         :: doAdjustTemp                  ! flag to indicate if we adjust the temperature
  logical(lgt),intent(in)         :: firstSubStep                  ! flag to indicate if we are processing the first sub-step

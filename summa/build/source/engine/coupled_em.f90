@@ -745,7 +745,6 @@ contains
                   stepFailure,                            & ! intent(out):   flag to denote that the coupled step failed
                   ixSolution,                             & ! intent(out):   solution method used in this iteration
                   err,cmessage)                             ! intent(out):   error code and error message
- print*, "SWE after opsplitting", prog_data%var(iLookPROG%scalarSWE)%dat(1)
 
   ! check for all errors (error recovery within opSplittin)
   if(err/=0)then; err=20; message=trim(message)//trim(cmessage); return; end if
