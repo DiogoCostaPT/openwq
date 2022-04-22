@@ -13,6 +13,8 @@ set(compile_OpenWQ_mode crhm)
 if("${compile_OpenWQ_mode}" STREQUAL "standalone")
         file(GLOB SOURCES "main.cpp" "src/*.cpp")
 
+        set(exec_name openwq)
+
 elseif("${compile_OpenWQ_mode}" STREQUAL "crhm")
         file(GLOB SOURCES
                 "../vcl.cpp"
@@ -35,8 +37,13 @@ elseif("${compile_OpenWQ_mode}" STREQUAL "crhm")
         #include_directories("../")
         list(REMOVE_ITEM SOURCES "src/main.cpp")
 
+        set(exec_name crhm_openwq)
+
 elseif("${compile_OpenWQ_mode}" STREQUAL "summa")
         #file(GLOB SOURCES "main.cpp" "src/*.cpp")
+
+        set(exec_name summa_openwq)
+
 endif()
 
 IF(UNIX)
@@ -94,17 +101,17 @@ IF(UNIX)
 
         set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-        add_executable(openwq
+        add_executable("${exec_name}"
                 ${SOURCES})
 
         if("${compile_OpenWQ_mode}" STREQUAL "standalone")
                 target_include_directories(
-                        openwq PUBLIC 
+                        "${exec_name}" PUBLIC 
                         ${ARMADILLO_INCLUDE_DIR}
                         ${VTK_INCLUDE_DIR})
 
                 target_link_libraries(
-                        openwq PUBLIC
+                        "${exec_name}" PUBLIC
                         ${ARMADILLO_LIBRARIES}
                         ${VTK_LIBRARIES})
 
@@ -113,13 +120,13 @@ IF(UNIX)
                 #find_package(Boost 1.72.0 EXACT REQUIRED PATHS "boost_1_72_0/")
 
                 target_include_directories(
-                        openwq PUBLIC 
+                        "${exec_name}" PUBLIC 
                         ${Boost_INCLUDE_DIRS}
                         ${ARMADILLO_INCLUDE_DIR}
                         ${VTK_INCLUDE_DIR})
 
                 target_link_libraries(
-                        openwq PUBLIC
+                        "${exec_name}" PUBLIC
                         ${Boost_LIBRARIES}
                         ${ARMADILLO_LIBRARIES}
                         ${VTK_LIBRARIES})
@@ -131,7 +138,7 @@ IF(UNIX)
 
 ELSE()
         MESSAGE(STATUS "current platform : Windows")
-        project(openwq)
+        project("${exec_name}")
 
         set(CMAKE_CXX_STANDARD 17)
         #set(CMAKE_CXX_FLAGS "-O3")
@@ -158,7 +165,7 @@ ELSE()
 
         set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-        add_executable(openwq
+        add_executable("${exec_name}"
                 ${SOURCES})
 
         #please set the directory to the "Armadillo" and "vtk" manually here
@@ -168,7 +175,7 @@ ELSE()
                 ${VTK_INCLUDE_DIR})
 
         target_link_libraries(
-                openwq
+                 "${exec_name}"
                 ${VTK_LIBRARIES})
 
 ENDIF()
