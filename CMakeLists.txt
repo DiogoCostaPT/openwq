@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # 1) stdl -> compile standalone using main
 # 1) crhm -> compile with crhm using hydrolink
 # 1) summa -> compile with summa using hydrolink
-set(compile_OpenWQ_mode standalone)
+set(compile_OpenWQ_mode crhm)
 
 if("${compile_OpenWQ_mode}" STREQUAL "standalone")
         file(GLOB SOURCES "main.cpp" "src/*.cpp")
@@ -33,6 +33,7 @@ elseif("${compile_OpenWQ_mode}" STREQUAL "crhm")
                 "../OpenWQ_hydrolink.cpp"
                 "src/*.cpp")
         #include_directories("../")
+        list(REMOVE_ITEM SOURCES "src/main.cpp")
 
 elseif("${compile_OpenWQ_mode}" STREQUAL "summa")
         #file(GLOB SOURCES "main.cpp" "src/*.cpp")
