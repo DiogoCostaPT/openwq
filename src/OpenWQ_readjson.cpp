@@ -111,14 +111,15 @@ void OpenWQ_readjson::read_all(
 void OpenWQ_readjson::read_JSON_2class(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_output& OpenWQ_output,
-    json &jsondata,                       // JSON structure to save to
-    const bool substruc_flag,             // Save in subfield of JSON structure? only if multiple files (e.g., source and sinks)
-    const std::string JsonSubStruct_name, // if true, name of subfield
-    const std::string jsonfile)
-{ // Name of JSON file
+    json &jsondata,                         // JSON structure to save to
+    const bool substruc_flag,               // Save in subfield of JSON structure? only if multiple files (e.g., source and sinks)
+    const std::string JsonSubStruct_name,   // if true, name of subfield
+    const std::string jsonfile)             // Name of JSON file
+{ 
 
     // Local Variables
     std::string msg_string;             // error/warning message string
+    bool readfail = false;
 
     /* ####################################
     // Save JSON file in JSON data structure
@@ -128,6 +129,19 @@ void OpenWQ_readjson::read_JSON_2class(
     {
         // Read json file with ifstrem
         std::ifstream f(jsonfile);
+
+        // Raise exit flag if cannot find file
+        if(f.fail()){
+
+            // Error file
+            readfail = true;
+
+            // Create Message
+            msg_string = 
+                "<OpenWQ> ERROR: Could not find file: " 
+                + jsonfile;
+                
+        }
 
         //* ##########################
         // If substruc_flag = true
@@ -159,15 +173,22 @@ void OpenWQ_readjson::read_JSON_2class(
         }
     }
     /* ####################################
-// Handle exceptions 
-#################################### */
+    // Handle exceptions 
+    #################################### */
     catch (const std::exception &e)
     {
-        
+        // Error flag
+        readfail = true;
+
         // Create Message
         msg_string = 
             "<OpenWQ> ERROR: An exception occurred parsing JSON file: " 
             + jsonfile;
+
+    }
+
+    // Exist if problem with file
+    if(readfail){
 
         // Print it (Console and/or Log file)
         OpenWQ_output.ConsoleLog(
@@ -178,6 +199,7 @@ void OpenWQ_readjson::read_JSON_2class(
         
         // Abort (Fatal error)
         exit(EXIT_FAILURE);
+
     }
 }
 
