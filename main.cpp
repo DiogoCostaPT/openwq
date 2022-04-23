@@ -65,7 +65,12 @@ int main(int argc, char* argv[])
     // #####################################################################################################################
 
     // #######################################
-    // 1.1) COUPLER CODE 
+    // 1.1) Pass Location of Masterfile
+    // #######################################
+    OpenWQ_wqconfig.OpenWQ_masterjson = "/Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/code_crhm/build/Case_Studies/big_creek_openwq/openWQ_master.json";
+
+    // #######################################
+    // 1.2) COUPLER CODE 
     // Characterize the host model domains
     // #######################################
 
@@ -95,7 +100,7 @@ int main(int argc, char* argv[])
     }
 
     // #######################################
-    // 1.2( COUPLER CALL 
+    // 1.3( COUPLER CALL 
     // (DO NOT CHANGE THIS CALL!!!)
     // #######################################
 
@@ -111,9 +116,6 @@ int main(int argc, char* argv[])
             OpenWQ_chem,                   // biochemistry modules
             OpenWQ_sinksource,        // sink and source modules)
             OpenWQ_output);
-
-
-    
 
     time_t simtime;
 
