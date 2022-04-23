@@ -116,8 +116,9 @@ IF(UNIX)
                         ${VTK_LIBRARIES})
 
         elseif("${compile_OpenWQ_mode}" STREQUAL "crhm")
-                find_package(boost_filesystem 1.71.0 REQUIRED CONFIG)
+                #find_package(boost_filesystem 1.71.0 REQUIRED CONFIG)
                 #find_package(Boost 1.72.0 EXACT REQUIRED PATHS "boost_1_72_0/")
+                find_package(boost)
 
                 target_include_directories(
                         "${exec_name}" PUBLIC 
