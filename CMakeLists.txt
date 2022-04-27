@@ -1,11 +1,12 @@
 
 # Build with
+# rm CMakeCache.txt; cmake . -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-11 -DARMA_DONT_USE_WRAPPER -DARMA_USE_BLAS -DARMA_USE_LAPACK -DARMA_USE_HDF5 -lblas -llapack -lhdf5; make -B
 # rm CMakeCache.txt; cmake . -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-11; make -B
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 # compile_OpenWQ_mode options:
-# 1) stdl -> compile standalone using main
+# 1) standalone -> compile standalone using main
 # 1) crhm -> compile with crhm using hydrolink
 # 1) summa -> compile with summa using hydrolink
 set(compile_OpenWQ_mode crhm)
@@ -94,7 +95,7 @@ IF(UNIX)
 
                 REQUIRED)
 
-        find_package(Armadillo 10.3.0 REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
+        find_package(Armadillo 11.0.1 REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
         find_package(OpenMP REQUIRED)
 
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
