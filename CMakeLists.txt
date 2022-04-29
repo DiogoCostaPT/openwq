@@ -17,10 +17,11 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # 2) crhm_openwq -> compile with crhm using hydrolink
 # 3) summa_openwq -> compile with summa using hydrolink
 # 4) mesh_openwq -> compile with mesh using hydrolink
-set(COMPILE_MODE crhm_openwq)
+set(COMPILE_MODE openwq)
+
 # Choose where to create the executable
 set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-set(EXEC_DIR ${PARENT_DIR}/openwq/bin)
+set(EXEC_DIR ${PARENT_DIR}/bin)
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Don't change beyond this point
@@ -157,26 +158,30 @@ elseif("${COMPILE_MODE}" STREQUAL "crhm_openwq")
 
         set(exec_name crhm_openwq)
 
+        set(CRHM_DIR ${PARENT_DIR}/crhm)
+        set(OPENWQ_DIR ${PARENT_DIR}/openwq)
+        set(HYDROLINK_DIR ${PARENT_DIR})
+
         file(GLOB SOURCES
-                "../vcl.cpp"
-                "../GlobalDll.cpp"
-                "../Common.cpp"
-                "../ClassCRHM.cpp"
-                "../ClassModule.cpp"
-                "../NewModules.cpp" 
-                "../CRHM_parse.cpp"
-                "../MacroUnit.cpp"
-                "../WQ_Soil_NPCcycling.cpp"
-                "../WQ_CRHM.cpp"
-                "../About.cpp"
-                "../Bld.cpp"
-                "../Log.cpp"
-                "../UpdateForm.cpp"
-                "../CRHMmain.cpp"
-                "../OpenWQ_hydrolink.cpp"
-                "src/*.cpp")
+                ${CRHM_DIR}/vcl.cpp
+                ${CRHM_DIR}/GlobalDll.cpp
+                ${CRHM_DIR}/Common.cpp
+                ${CRHM_DIR}/ClassCRHM.cpp
+                ${CRHM_DIR}/ClassModule.cpp
+                ${CRHM_DIR}/NewModules.cpp
+                ${CRHM_DIR}/CRHM_parse.cpp
+                ${CRHM_DIR}/MacroUnit.cpp
+                ${CRHM_DIR}/WQ_Soil_NPCcycling.cpp
+                ${CRHM_DIR}/WQ_CRHM.cpp
+                ${CRHM_DIR}/About.cpp
+                ${CRHM_DIR}/Bld.cpp
+                ${CRHM_DIR}/Log.cpp
+                ${CRHM_DIR}/UpdateForm.cpp
+                ${CRHM_DIR}/CRHMmain.cpp
+                ${OPENWQ_DIR}/src/*.cpp
+                ${HYDROLINK_DIR}/OpenWQ_hydrolink.cpp)
         #include_directories("../")
-        list(REMOVE_ITEM SOURCES "main.cpp")
+        list(REMOVE_ITEM SOURCES ${OPENWQ_DIR}/main.cpp)
 
         if(UNIX)
                 if(UNIX AND NOT APPLE)
