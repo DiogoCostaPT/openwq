@@ -1,3 +1,15 @@
+Compiling With Docker:
+ - The docker file should be good as is. The docker-compose.yml file will need some slight modification.
+ - The bottom two volumes will need to be removed if you are just compiling. They are needed to attach the data for SUMMA when running.
+ - Once this is done starting the dockerfile is done :
+    docker compose up
+    older versions of docker may require docker-compose up
+
+- Once the docker container is running you have to connect to it. Once connected make the directory build/ and cd into it.
+- Once in the build directory perform the following commands:
+    - cmake ..
+    - make
+
 The interface for openWQ functions are located in the interface folder in 
 the summa source code. There are two files openWQ.f90 and openWQInterface.f90.
 
