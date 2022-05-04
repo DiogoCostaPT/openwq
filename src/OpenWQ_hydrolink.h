@@ -69,9 +69,7 @@ class ClassWQ_OpenWQ
 
     int run_space();
 
-    int run_time_end();
-
-    int get_hru_area();
+    int run_time_end(int year, int month, int day, int hour, int minute);
 
     time_t convert_time(int year, int month, int day, int hour, int minute);
 
@@ -108,7 +106,7 @@ extern "C" {
     // OpenWQ run functions, this function decides which C++ code to call
     int openwq_run_space(CLASSWQ_OPENWQ *openWQ);
 
-    int openwq_run_time_end(CLASSWQ_OPENWQ *openWQ);
+    int openwq_run_time_end(CLASSWQ_OPENWQ *openWQ, int year, int month, int day, int hour, int minute);
 
 
 

@@ -48,6 +48,7 @@ USE globalData,only:gru_struc                               ! gru-hru mapping st
 ! OpenWQ coupling 
 USE globalData,only:openWQ_obj
 USE summa_openWQ,only:run_time_start
+USE summa_openWQ,only:run_time_end
 USE openWQ
 USE, intrinsic :: iso_c_binding
 implicit none
@@ -124,8 +125,9 @@ do modelTimeStep=1,5
  call handle_err(err, message)
 
  ! *** OPENWQ Run_Time_End ***
+ call run_time_end(openwq_obj, summa1_struc(n))
 
- 
+
 
 end do  ! looping through time
 
