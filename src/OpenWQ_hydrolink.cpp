@@ -80,7 +80,7 @@ int ClassWQ_OpenWQ::decl() {
     return 0;
 }
 
-
+// SoilMoisture does not have a value - it is passed as 0
 int ClassWQ_OpenWQ::run_time_start(int numHRU, int year, int month, int day, int hour, int minute,
         double soilMoisture[], double soilTemp[], double airTemp[],
         double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]) {
@@ -150,7 +150,12 @@ int ClassWQ_OpenWQ::run_time_end() {
 
 
 
-
+/**
+ * Below is the implementation of the C interface for SUMMA. When Summa calls a function 
+ * the functions below are the ones that are invoked first. 
+ * The openWQ object is then passed from Fortran to these functions so that the OpenWQ object
+ * can be called. The openWQ object methods are defined above.
+ */
 // Interface functions to create Object
 CLASSWQ_OPENWQ* create_openwq(int num) {
     std::cout << "C API, create_openwq" << std::endl;
@@ -177,23 +182,13 @@ int openwq_run_time_start(ClassWQ_OpenWQ *openWQ, int numHRU, int year, int mont
 }
 
 
-int openwq_run(ClassWQ_OpenWQ *openWQ, int func) {
-    if (func == 1) { // run_time_start()
-        std::cout << "C API func = 1" << std::endl;
+int openwq_run_space(ClassWQ_OpenWQ *openWQ) {
 
-    
-    } else if (func == 2) { // run_space()
-        std::cout << "C API func = 2" << std::endl;
-        return openWQ->run_space();
+    return openWQ->run_space();
+}
 
-    } else if (func == 3) { // run_time_end()
-        std::cout << "C API func = 3" << std::endl;
-        return openWQ->run_time_end();
-    
-    } 
-    
-    std::cout << "C API func = ERROR" << std::endl;
-    return -1;
-   
+int openwq_run_time_end(ClassWQ_OpenWQ *openWQ) {
+
+    return openWQ->run_time_end();
 }
 

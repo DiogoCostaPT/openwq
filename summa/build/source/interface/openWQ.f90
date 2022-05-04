@@ -15,7 +15,8 @@ module openwq
    !  procedure :: get_num => openWQ_get_num
     procedure :: decl => openWQ_init
     procedure :: run_time_start => openWQ_run_time_start
-    procedure :: run => openWQ_run
+    procedure :: run_space => openWQ_run_space
+    procedure :: run_time_end => openWQ_run_time_end
 
  end type
 
@@ -60,13 +61,19 @@ module openwq
          soilMoisture, soilTemp, airTemp, swe_vol, canopyWat_vol, matricHead_vol, aquiferStorage_vol)
    end function
 
-   integer function openWQ_run(this, func)
+   integer function openWQ_run_space(this)
       implicit none
       class(ClassWQ_OpenWQ) :: this
-      integer, intent(in)   :: func
-      openWQ_run = openwq_run_c(this%ptr, func)
+      openWQ_run_space = openwq_run_space_c(this%ptr)
    end function
 
+
+   integer function openWQ_run_time_end(this)
+      implicit none
+      class(ClassWQ_OpenWQ)  :: this
+      openWQ_run_time_end = openWQ_run_time_end_c(this%ptr)
+   end function
+      
 
    
 

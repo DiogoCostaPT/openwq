@@ -78,6 +78,13 @@ class ClassWQ_OpenWQ
 };
 
 
+
+/**
+ * This is the C interface for SUMMA, these are the functions that are called 
+ * by SUMMA and the iso bindings. 
+ * These are only their definition and their actual implementation is in
+ * OpenWQ_hydrolink.cpp 
+ */
 #ifdef __cplusplus
 extern "C" { 
     class ClassWQ_OpenWQ;
@@ -99,7 +106,11 @@ extern "C" {
         double soilMoisture[], double soilTemp[], double airTemp[], double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]);
 
     // OpenWQ run functions, this function decides which C++ code to call
-    int openwq_run(CLASSWQ_OPENWQ *openWQ, int func);
+    int openwq_run_space(CLASSWQ_OPENWQ *openWQ);
+
+    int openwq_run_time_end(CLASSWQ_OPENWQ *openWQ);
+
+
 
     #ifdef __cplusplus
 }
