@@ -21,7 +21,7 @@ set(COMPILE_MODE openwq)
 
 # Choose where to create the executable
 set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-set(EXEC_DIR ${PARENT_DIR}/bin)
+set(EXEC_DIR ${PARENT_DIR}/apply)
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Don't change beyond this point
