@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # 2) crhm_openwq -> compile with crhm using hydrolink
 # 3) summa_openwq -> compile with summa using hydrolink
 # 4) mesh_openwq -> compile with mesh using hydrolink
-set(COMPILE_MODE openwq)
+set(COMPILE_MODE summa_openwq)
 
 # Choose where to create the executable
 set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
@@ -499,8 +499,7 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                         ${OpenMP_INCLUDE_DIR})
                 target_link_libraries(openWQ PUBLIC
                         ${ARMADILLO_LIBRARIES}
-                        #${VTK_LIBRARIES
-                        }
+                        #${VTK_LIBRARIES}
                         -fopenmp)
 
                 # Compile the NOAHMP into object/.mod files
