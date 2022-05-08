@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # 2) crhm_openwq -> compile with crhm using hydrolink
 # 3) summa_openwq -> compile with summa using hydrolink
 # 4) mesh_openwq -> compile with mesh using hydrolink
-set(COMPILE_MODE crhm_openwq)
+set(COMPILE_MODE openwq)
 
 # Choose where to create the executable
 set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
@@ -72,18 +72,18 @@ if("${COMPILE_MODE}" STREQUAL "openwq")
 
                 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR} "/usr/src/openmp_stdl/vtk/build")
 
-                find_package(VTK 
-                        COMPONENTS 
-                        CommonCore
-                        CommonDataModel
-                        FiltersGeneral
-                        IOXML
-                        InteractionStyle
-                        RenderingCore
-                        RenderingFreeType
-                        RenderingOpenGL2 
+                #find_package(VTK 
+                #        COMPONENTS 
+                #        CommonCore
+                #        CommonDataModel
+                #        FiltersGeneral
+                #        IOXML
+                #        InteractionStyle
+                #        RenderingCore
+                #        RenderingFreeType
+                #        RenderingOpenGL2 
 
-                        REQUIRED)
+                #        REQUIRED)
 
                 find_package(Armadillo 11.0.1 REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
                 find_package(OpenMP REQUIRED)
@@ -99,12 +99,14 @@ if("${COMPILE_MODE}" STREQUAL "openwq")
                 target_include_directories(
                         ${exec_name} PUBLIC 
                         ${ARMADILLO_INCLUDE_DIR}
-                        ${VTK_INCLUDE_DIR})
+                        #${VTK_INCLUDE_DIR}
+                        )
 
                 target_link_libraries(
                         ${exec_name} PUBLIC
                         ${ARMADILLO_LIBRARIES}
-                        ${VTK_LIBRARIES})
+                        #${VTK_LIBRARIES}
+                        )
 
         ELSE()
                 MESSAGE(STATUS "current platform : Windows")
@@ -116,18 +118,18 @@ if("${COMPILE_MODE}" STREQUAL "openwq")
                 #set(CMAKE_CXX_FLAGS "-O2 -g ")
                 #set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
-                find_package(VTK 
-                        COMPONENTS 
-                        CommonCore
-                        CommonDataModel
-                        FiltersGeneral
-                        IOXML
-                        InteractionStyle
-                        RenderingCore
-                        RenderingFreeType
-                        RenderingOpenGL2 
+                #find_package(VTK 
+                #        COMPONENTS 
+                #        CommonCore
+                #        CommonDataModel
+                #        FiltersGeneral
+                #        IOXML
+                #        InteractionStyle
+                #        RenderingCore
+                #        RenderingFreeType
+                #        RenderingOpenGL2 
 
-                        REQUIRED)
+                #        REQUIRED)
 
                 find_package(OpenMP REQUIRED)
 
@@ -143,11 +145,13 @@ if("${COMPILE_MODE}" STREQUAL "openwq")
                 target_include_directories(
                         ${exec_name} PUBLIC 
                         "I:/FLUXOS_cpp/Armadillo/include"
-                        ${VTK_INCLUDE_DIR})
+                        #${VTK_INCLUDE_DIR}
+                        )
 
                 target_link_libraries(
                         ${exec_name}
-                        ${VTK_LIBRARIES})
+                        #${VTK_LIBRARIES}
+                        )
 
         endif()
 
@@ -220,18 +224,18 @@ elseif("${COMPILE_MODE}" STREQUAL "crhm_openwq")
 
                 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR} "/usr/src/openmp_stdl/vtk/build")
 
-                find_package(VTK 
-                        COMPONENTS 
-                        CommonCore
-                        CommonDataModel
-                        FiltersGeneral
-                        IOXML
-                        InteractionStyle
-                        RenderingCore
-                        RenderingFreeType
-                        RenderingOpenGL2 
+                #find_package(VTK 
+                #        COMPONENTS 
+                #        CommonCore
+                #        CommonDataModel
+                #        FiltersGeneral
+                #        IOXML
+                #        InteractionStyle
+                #        RenderingCore
+                #        RenderingFreeType
+                #        RenderingOpenGL2 
 
-                        REQUIRED)
+                #        REQUIRED)
 
                 find_package(Armadillo 11.0.1 REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
                 find_package(OpenMP REQUIRED)
@@ -252,13 +256,15 @@ elseif("${COMPILE_MODE}" STREQUAL "crhm_openwq")
                         ${exec_name} PUBLIC 
                         ${Boost_INCLUDE_DIRS}
                         ${ARMADILLO_INCLUDE_DIR}
-                        ${VTK_INCLUDE_DIR})
+                        #${VTK_INCLUDE_DIR}
+                        )
 
                 target_link_libraries(
                         ${exec_name} PUBLIC
                         ${Boost_LIBRARIES}
                         ${ARMADILLO_LIBRARIES}
-                        ${VTK_LIBRARIES})
+                        #${VTK_LIBRARIES}
+                        )
 
         ELSE()
                 MESSAGE(STATUS "current platform : Windows")
@@ -304,7 +310,9 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                 ############################################################################
                 ## File definitions for subcomponents - For OpenWQ
                 ############################################################################
-                file(GLOB OPENWQ_SOURCES ${OPENWQ_DIR}/src/*.cpp ${PARENT_DIR}/OpenWQ_hydrolink.cpp)
+                file(GLOB OPENWQ_SOURCES 
+                        ${OPENWQ_DIR}/src/*.cpp 
+                        ${PARENT_DIR}/OpenWQ_hydrolink.cpp)
 
                 ############################################################################
                 ## File definitions for subcomponents - For Summa
@@ -458,18 +466,18 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                 #set(CMAKE_CXX_FLAGS "-O2 -g ")
                 #set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
-                find_package(VTK 
-                        COMPONENTS 
-                        CommonCore
-                        CommonDataModel
-                        FiltersGeneral
-                        IOXML
-                        InteractionStyle
-                        RenderingCore
-                        RenderingFreeType
-                        RenderingOpenGL2 
+                #find_package(VTK 
+                #        COMPONENTS 
+                #        CommonCore
+                #        CommonDataModel
+                #        FiltersGeneral
+                #        IOXML
+                #        InteractionStyle
+                #        RenderingCore
+                #        RenderingFreeType
+                #        RenderingOpenGL2 
 
-                        REQUIRED)
+                #        REQUIRED)
 
                 find_package(Armadillo 10.3.0 REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
                 find_package(OpenMP REQUIRED)
@@ -487,11 +495,12 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                         -g3 -Wall -pedantic)
                 target_include_directories(openWQ PRIVATE
                         ${ARMADILLO_INCLUDE_DIR}
-                        ${VTK_INCLUDE_DIR}
+                        #${VTK_INCLUDE_DIR}
                         ${OpenMP_INCLUDE_DIR})
                 target_link_libraries(openWQ PUBLIC
                         ${ARMADILLO_LIBRARIES}
-                        ${VTK_LIBRARIES}
+                        #${VTK_LIBRARIES
+                        }
                         -fopenmp)
 
                 # Compile the NOAHMP into object/.mod files
