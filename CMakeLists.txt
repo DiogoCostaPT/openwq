@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # 2) crhm_openwq -> compile with crhm using hydrolink
 # 3) summa_openwq -> compile with summa using hydrolink
 # 4) mesh_openwq -> compile with mesh using hydrolink
-set(COMPILE_MODE openwq)
+set(COMPILE_MODE crhm_openwq)
 
 # Choose where to create the executable
 set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
@@ -92,22 +92,23 @@ if("${COMPILE_MODE}" STREQUAL "openwq")
 
                 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
 
-                add_executable("${exec_name}"
+                add_executable(
+                        ${exec_name}
                         ${SOURCES})
 
                 target_include_directories(
-                        "${exec_name}" PUBLIC 
+                        ${exec_name} PUBLIC 
                         ${ARMADILLO_INCLUDE_DIR}
                         ${VTK_INCLUDE_DIR})
 
                 target_link_libraries(
-                        "${exec_name}" PUBLIC
+                        ${exec_name} PUBLIC
                         ${ARMADILLO_LIBRARIES}
                         ${VTK_LIBRARIES})
 
         ELSE()
                 MESSAGE(STATUS "current platform : Windows")
-                project("${exec_name}")
+                project(${exec_name})
 
                 set(CMAKE_CXX_STANDARD 17)
                 #set(CMAKE_CXX_FLAGS "-O3")
@@ -134,17 +135,18 @@ if("${COMPILE_MODE}" STREQUAL "openwq")
 
                 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
 
-                add_executable("${exec_name}"
+                add_executable(
+                        ${exec_name}
                         ${SOURCES})
 
                 #please set the directory to the "Armadillo" and "vtk" manually here
                 target_include_directories(
-                        openwq PUBLIC 
-                        "I:/FLUXOS_cpp/Armadillo/include"}
+                        ${exec_name} PUBLIC 
+                        "I:/FLUXOS_cpp/Armadillo/include"
                         ${VTK_INCLUDE_DIR})
 
                 target_link_libraries(
-                        "${exec_name}"
+                        ${exec_name}
                         ${VTK_LIBRARIES})
 
         endif()
@@ -242,17 +244,18 @@ elseif("${COMPILE_MODE}" STREQUAL "crhm_openwq")
                 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
 
                 # Create the executable with openWQ coupled to CRHM   
-                add_executable("${exec_name}"
+                add_executable(
+                        ${exec_name}
                         ${SOURCES})
 
                 target_include_directories(
-                        "${exec_name}" PUBLIC 
+                        ${exec_name} PUBLIC 
                         ${Boost_INCLUDE_DIRS}
                         ${ARMADILLO_INCLUDE_DIR}
                         ${VTK_INCLUDE_DIR})
 
                 target_link_libraries(
-                        "${exec_name}" PUBLIC
+                        ${exec_name} PUBLIC
                         ${Boost_LIBRARIES}
                         ${ARMADILLO_LIBRARIES}
                         ${VTK_LIBRARIES})
@@ -276,6 +279,8 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
         #FLAGS_NOAH = -p -g -ffree-form -ffree-line-length-none -fmax-errors=0 -fbacktrace -Wno-unused -Wno-unused-dummy-argument
         #FLAGS_COMM = -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds
         #FLAGS_SUMMA = -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds
+
+        set(exec_name summa_openwq)
 
         IF(UNIX)
                 IF(UNIX AND NOT APPLE)
@@ -516,12 +521,12 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                                 SUMMA_NOAHMP)
 
                 # Create the executable with openWQ coupled to Summa                 
-                add_executable(summa
+                add_executable(${exec_name}
                         ${SUMMA_ALL}
                         ${DRIVER})
-                        set_property(TARGET summa PROPERTY LINKER_LANGUAGE Fortran)
+                        set_property(TARGET ${exec_name} PROPERTY LINKER_LANGUAGE Fortran)
                         target_include_directories(
-                                summa PUBLIC
+                                ${exec_name} PUBLIC
                                 ${LAPACK_INCLUDES}
                                 ${netCDF_INCLUDES}
                                 "/usr/include/"
@@ -529,7 +534,8 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                                 "/opt/local/"
                                 "/opt/homebrew/Cellar/"
                                 "/opt/homebrew/include/")
-                        target_link_libraries(summa PUBLIC
+                        target_link_libraries(
+                                ${exec_name} PUBLIC
                                 "/opt/homebrew/Cellar/netcdf/4.8.1_2/lib/libnetcdff.a"
                                 ${LAPACK_LIBRARIES}
                                 ${netCDF_LIBRARIES}
