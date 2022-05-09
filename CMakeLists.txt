@@ -2,9 +2,13 @@
 #################################################
 # How to use this CMakeLists
 # 1) Change the compilation mode below: set(COMPILE_MODE XXXX)
-# 2) Open terminal and go to the folder that contains CMakeLists.txt.
-# 3) Compile with: rm CMakeCache.txt; cmake . -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-11; make -B
-# That's all that needs to be changed
+# 2) Open terminal and go to the folder openwq folder that contains CMakeLists.txt, Dockerfile, and docker-compose.yml
+# 3) Create a docker container: docker compose up -d
+# 4) check the container id: docker ps
+# 5) Open a shell inside that container: docker exec -it <container id> /bin/bash
+# 6) Inside the contained, go to the openwq folder
+# 7) Compile with: rm CMakeCache.txt; rm -r CMakeFiles; cmake . ; make -B
+# That's all !!!
 #################################################
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
@@ -17,7 +21,7 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # 2) crhm_openwq -> compile with crhm using hydrolink
 # 3) summa_openwq -> compile with summa using hydrolink
 # 4) mesh_openwq -> compile with mesh using hydrolink
-set(COMPILE_MODE summa_openwq)
+set(COMPILE_MODE openwq)
 
 # Choose where to create the executable
 set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
@@ -85,7 +89,8 @@ if("${COMPILE_MODE}" STREQUAL "openwq")
 
                 #        REQUIRED)
 
-                find_package(Armadillo 11.0.1 REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
+                find_package(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
+                find_package(HDF5 REQUIRED)
                 find_package(OpenMP REQUIRED)
 
                 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
@@ -99,12 +104,14 @@ if("${COMPILE_MODE}" STREQUAL "openwq")
                 target_include_directories(
                         ${exec_name} PUBLIC 
                         ${ARMADILLO_INCLUDE_DIR}
+                        ${HDF5_INCLUDE_DIRS}
                         #${VTK_INCLUDE_DIR}
                         )
 
                 target_link_libraries(
                         ${exec_name} PUBLIC
                         ${ARMADILLO_LIBRARIES}
+                        ${HDF5_C_LIBRARY_hdf5}
                         #${VTK_LIBRARIES}
                         )
 
@@ -145,11 +152,13 @@ if("${COMPILE_MODE}" STREQUAL "openwq")
                 target_include_directories(
                         ${exec_name} PUBLIC 
                         "I:/FLUXOS_cpp/Armadillo/include"
+                        ${HDF5_INCLUDE_DIRS}
                         #${VTK_INCLUDE_DIR}
                         )
 
                 target_link_libraries(
                         ${exec_name}
+                        ${HDF5_C_LIBRARY_hdf5}
                         #${VTK_LIBRARIES}
                         )
 
@@ -237,11 +246,12 @@ elseif("${COMPILE_MODE}" STREQUAL "crhm_openwq")
 
                 #        REQUIRED)
 
-                find_package(Armadillo 11.0.1 REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
+                find_package(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
+                find_package(HDF5 REQUIRED)
                 find_package(OpenMP REQUIRED)
                 #find_package(boost_filesystem 1.71.0 REQUIRED CONFIG)
                 #find_package(Boost 1.72.0 EXACT REQUIRED PATHS "boost_1_72_0/")
-                find_package(boost)
+                find_package(Boost)
 
                 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
@@ -256,6 +266,7 @@ elseif("${COMPILE_MODE}" STREQUAL "crhm_openwq")
                         ${exec_name} PUBLIC 
                         ${Boost_INCLUDE_DIRS}
                         ${ARMADILLO_INCLUDE_DIR}
+                        ${HDF5_INCLUDE_DIRS}
                         #${VTK_INCLUDE_DIR}
                         )
 
@@ -263,6 +274,7 @@ elseif("${COMPILE_MODE}" STREQUAL "crhm_openwq")
                         ${exec_name} PUBLIC
                         ${Boost_LIBRARIES}
                         ${ARMADILLO_LIBRARIES}
+                        ${HDF5_C_LIBRARY_hdf5}
                         #${VTK_LIBRARIES}
                         )
 
@@ -479,7 +491,8 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
 
                 #        REQUIRED)
 
-                find_package(Armadillo 10.3.0 REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
+                find_package(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
+                find_package(HDF5 REQUIRED)
                 find_package(OpenMP REQUIRED)
                 find_package(netCDF REQUIRED)
                 find_package(LAPACK REQUIRED)
@@ -496,9 +509,11 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                 target_include_directories(openWQ PRIVATE
                         ${ARMADILLO_INCLUDE_DIR}
                         #${VTK_INCLUDE_DIR}
+                        ${HDF5_INCLUDE_DIRS}
                         ${OpenMP_INCLUDE_DIR})
                 target_link_libraries(openWQ PUBLIC
                         ${ARMADILLO_LIBRARIES}
+                        ${HDF5_C_LIBRARY_hdf5}
                         #${VTK_LIBRARIES}
                         -fopenmp)
 
