@@ -8,6 +8,7 @@
 # 5) Open a shell inside that container: docker exec -it <container id> /bin/bash
 # 6) Inside the contained, go to the openwq folder
 # 7) Compile with: rm CMakeCache.txt; rm -r CMakeFiles; cmake . ; make -B
+# Caveat: it seems that armadillo now disables default hdf5 support for save/load, so you need to go to “/usr/include/armadillo_bits/config.hpp” and uncomment #define ARMA_USE_HDF5
 # That's all !!!
 #################################################
 
@@ -540,7 +541,7 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                                 "/opt/homebrew/Cellar/"
                                 "/opt/homebrew/include/")
                         target_link_libraries(SUMMA_COMM PUBLIC
-                                "/opt/homebrew/Cellar/netcdf/4.8.1_2/lib/libnetcdff.a"
+                                "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
                                 SUMMA_NOAHMP)
 
                 # Create the executable with openWQ coupled to Summa                 
@@ -559,7 +560,7 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                                 "/opt/homebrew/include/")
                         target_link_libraries(
                                 ${exec_name} PUBLIC
-                                "/opt/homebrew/Cellar/netcdf/4.8.1_2/lib/libnetcdff.a"
+                                "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
                                 ${LAPACK_LIBRARIES}
                                 ${netCDF_LIBRARIES}
                                 SUMMA_COMM
