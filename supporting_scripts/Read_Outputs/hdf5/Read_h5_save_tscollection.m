@@ -102,7 +102,7 @@ function output_tscollect = Read_h5_save_tscollection(...
         ['Extracting requested data from OpenWQ *.h5 files for (-',...
         file_extensions_i,'): ',num2str(num_valid_info2print),' file(s)']);
 
-    for i = 1:num_valid_info2print
+    parfor i = 1:num_valid_info2print
 
         filename_i = extractElm_info_valid{i,1};
         filepath_i = [folderpath,filename_i,'.h5'];
