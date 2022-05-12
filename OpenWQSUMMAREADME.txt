@@ -1,3 +1,15 @@
+Compiling With Docker:
+ - The docker file should be good as is. The docker-compose.yml file will need some slight modification.
+ - The bottom two volumes will need to be removed if you are just compiling. They are needed to attach the data for SUMMA when running.
+ - Once this is done starting the dockerfile is done :
+    docker compose up
+    older versions of docker may require docker-compose up
+
+- Once the docker container is running you have to connect to it. Once connected make the directory build/ and cd into it.
+- Once in the build directory perform the following commands:
+    - cmake ..
+    - make
+
 The interface for openWQ functions are located in the interface folder in 
 the summa source code. There are two files openWQ.f90 and openWQInterface.f90.
 
@@ -27,3 +39,17 @@ Program Trace:
     - Here is where we initalize the openWQ object in fortran
         - This is a c++ object that Fortran holds a reference for.
     - Summa then calls decl()
+
+
+
+Derivatives of Summa are calculated in updateVars.f90 which is called by eval8summa.
+After updateVars we call computFlux, which is where the fluxes get computed.
+updateProg() is when the state variables are updated.
+
+
+Main Solver:
+    CoupledEm -> opSplittin -> varSubstep -> systemSolv -> updateProg
+                                              -> eval8Summa(compute the flux and the residual vector for given state vector)
+                                              -> summaSolve (can call eval8Summa for updated state vector)
+
+    eval8Summa -> updateVars(Derivatives) -> computeFlux

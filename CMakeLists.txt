@@ -158,6 +158,7 @@ IF(UNIX)
         # Define the driver routine
         set(DRIVER
         ${DRIVER_DIR}/summa_type.f90
+        ${DRIVER_DIR}/summa_openWQ.f90
         ${DRIVER_DIR}/summa_util.f90
         ${DRIVER_DIR}/summa_alarms.f90
         ${DRIVER_DIR}/summa_globalData.f90
@@ -196,6 +197,7 @@ IF(UNIX)
                 REQUIRED)
 
         find_package(Armadillo 10.3.0 REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
+        find_package(HDF5 REQUIRED)
         find_package(OpenMP REQUIRED)
         find_package(netCDF REQUIRED)
         find_package(LAPACK REQUIRED)
@@ -212,9 +214,11 @@ IF(UNIX)
           target_include_directories(openWQ PRIVATE
                   ${ARMADILLO_INCLUDE_DIR}
                   ${VTK_INCLUDE_DIR}
+                  ${HDF5_INCLUDE_DIRS}
                   ${OpenMP_INCLUDE_DIR})
           target_link_libraries(openWQ PUBLIC
                   ${ARMADILLO_LIBRARIES}
+                  ${HDF5_C_LIBRARY_hdf5}
                   ${VTK_LIBRARIES}
                   -fopenmp)
 

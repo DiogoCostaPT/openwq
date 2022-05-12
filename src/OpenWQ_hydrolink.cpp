@@ -19,17 +19,11 @@
 
 
 // Constructor
-ClassWQ_OpenWQ::ClassWQ_OpenWQ(int _numHru): numHRU(_numHru) {
-    std::cout << "OpenWQ Class Created C++" << std::endl;
-}
+// initalize numHRUs value
+ClassWQ_OpenWQ::ClassWQ_OpenWQ(int _numHru): numHRU(_numHru) {}
+
 // Deconstructor
-ClassWQ_OpenWQ::~ClassWQ_OpenWQ() {
-    std::cout << "C++ deconstructor" << std::endl;
-}
-// Methods
-int ClassWQ_OpenWQ::getNum() const {
-    return numHRU;
-}
+ClassWQ_OpenWQ::~ClassWQ_OpenWQ() {}
 
 time_t ClassWQ_OpenWQ::convert_time(int year, int month, int day, int hour, int minute) {
     std::time_t sim_time;
@@ -45,8 +39,6 @@ time_t ClassWQ_OpenWQ::convert_time(int year, int month, int day, int hour, int 
 }
 
 int ClassWQ_OpenWQ::decl() {
-    std::cout << "C++ decl, Initalizing structures" << std::endl;
-    std::cout << numHRU << std::endl;
     OpenWQ_hostModelconfig_ref = new OpenWQ_hostModelconfig(); // Initalize hostModelconfig
     OpenWQ_couplercalls_ref = new OpenWQ_couplercalls();
     OpenWQ_json_ref = new OpenWQ_json();
@@ -60,16 +52,16 @@ int ClassWQ_OpenWQ::decl() {
     OpenWQ_output_ref = new OpenWQ_output();
 
     if (OpenWQ_hostModelconfig_ref->HydroComp.size()==0) {
-        std::cout << "Host Model size = 0" << std::endl;
 
         OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(0,"SWE",numHRU,1,1));
-        std::cout << "Host Model Size is now = " << 
-            OpenWQ_hostModelconfig_ref->HydroComp.size() << std::endl;
+        OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(1,"ScalarCanopyWat",numHRU,1,1));
+        OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(2,"mLayerMatricHead",numHRU,1,1));
+        OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(3,"scalarAquifer",numHRU,1,1));
 
         OpenWQ_vars_ref = new OpenWQ_vars(OpenWQ_hostModelconfig_ref->HydroComp.size());
         
         // Master Json
-        OpenWQ_wqconfig_ref->OpenWQ_masterjson = "/u1/kck540/openWQ/openwq/bin/openWQ_master.json";
+        OpenWQ_wqconfig_ref->OpenWQ_masterjson = "/code/bin/openWQ_master.json";
 
 
         OpenWQ_couplercalls_ref->InitialConfig(
@@ -85,36 +77,27 @@ int ClassWQ_OpenWQ::decl() {
             *OpenWQ_sinksource_ref,        // sink and source modules)
             *OpenWQ_output_ref);
     }
-
-    // Testing output to know when the function exits
-    std::cout << "Exiting decl Function" << std::endl;
-
     return 0;
 }
 
-
-int ClassWQ_OpenWQ::run_time_start(int year, int month, int day, int hour, int minute) {
-    std::cout << "C++ run_time_start"     << std::endl;
-    std::cout << "Year = "      << year   << std::endl;
-    std::cout << "Month = "     << month  << std::endl;
-    std::cout << "Day = "       << day    << std::endl;
-    std::cout << "Hour = "      << hour   << std::endl;
-    std::cout << "Minute = "    << minute << std::endl;
-    //TODO: Needs to be passed simtime from SUMMA
-
-
-    // Convert sim time to OpenWQ simtime which is seconds since 00:00 Jan 1, 1970 UTC
-    // Call the method below
+// SoilMoisture does not have a value - it is passed as 0
+int ClassWQ_OpenWQ::run_time_start(int numHRU, int year, int month, int day, int hour, int minute,
+        double soilMoisture[], double soilTemp[], double airTemp[],
+        double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]) {
     
     time_t simtime = convert_time(year, month, day, hour, minute); // needs to be passed in
 
-    // for (unsigned int hru=0;hru<this->getNum();hru++) {
-    //     (OpenWQ_hostModelconfig_ref.SM)(hru,0,0) = 
-    //     (OpenWQ_hostModelconfig_ref.Tair)(hru,0,0) =
-    //     (OpenWQ_hostModelconfig_ref.Tsoil)(hru,0,0) =
+    for (int i = 0; i < numHRU; i++) {
+        (*OpenWQ_hostModelconfig_ref->SM)   (i,0,0) = soilMoisture[i]; 
+        (*OpenWQ_hostModelconfig_ref->Tair) (i,0,0) = airTemp[i];
+        (*OpenWQ_hostModelconfig_ref->Tsoil)(i,0,0) = soilTemp[i];
+        (*OpenWQ_hostModelconfig_ref->waterVol_hydromodel)[0](i,0,0) = SWE_vol[i];
+        (*OpenWQ_hostModelconfig_ref->waterVol_hydromodel)[1](i,0,0) = canopyWat[i];
+        (*OpenWQ_hostModelconfig_ref->waterVol_hydromodel)[2](i,0,0) = matricHead_vol[i];
+        (*OpenWQ_hostModelconfig_ref->waterVol_hydromodel)[3](i,0,0) = aquiferStorage[i];
+    }
 
-    // }
-
+    // *OpenWQ_hostModelconfig_ref.time_step = 5;
 
     OpenWQ_couplercalls_ref->RunTimeLoopStart(
         *OpenWQ_hostModelconfig_ref,
@@ -133,18 +116,20 @@ int ClassWQ_OpenWQ::run_time_start(int year, int month, int day, int hour, int m
     return 0;
 }
 
-int ClassWQ_OpenWQ::run_space() {
+int ClassWQ_OpenWQ::run_space(int source, int ix_s, int iy_s, int iz_s,
+        int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source) {
     std::cout << "C++ run_space" << std::endl;
+    std::cout << source << ", " << ix_s << ", " << iy_s << ", " << iz_s << ", " << recipient << ", " << ix_r 
+        << ", " << iy_r << ", " << iz_r << ", " << wflux_s2r << ", " << wmass_source << std::endl;
+    
+    OpenWQ_couplercalls->
+
     return 0;
 }
 
-
-// TODO: We need SimTime for this function as well
-int ClassWQ_OpenWQ::run_time_end() {
-    std::cout << "C++ run_time_end" << std::endl;
+int ClassWQ_OpenWQ::run_time_end(int year, int month, int day, int hour, int minute) {
     
-
-    time_t simtime = 0; // needs to be passed in
+    time_t simtime = convert_time(year, month, day, hour, minute);
 
     OpenWQ_couplercalls_ref->RunTimeLoopEnd(
         *OpenWQ_hostModelconfig_ref,
@@ -160,14 +145,18 @@ int ClassWQ_OpenWQ::run_time_end() {
         *OpenWQ_solver_ref,
         *OpenWQ_output_ref,
         simtime);
-
     return 0;
 }
 
 
 
 
-
+/**
+ * Below is the implementation of the C interface for SUMMA. When Summa calls a function 
+ * the functions below are the ones that are invoked first. 
+ * The openWQ object is then passed from Fortran to these functions so that the OpenWQ object
+ * can be called. The openWQ object methods are defined above.
+ */
 // Interface functions to create Object
 CLASSWQ_OPENWQ* create_openwq(int num) {
     std::cout << "C API, create_openwq" << std::endl;
@@ -184,32 +173,25 @@ int openwq_decl(ClassWQ_OpenWQ *openWQ) {
     return openWQ->decl();
 }
 
-int openwq_getNum(const CLASSWQ_OPENWQ *openWQ) {
-    return openWQ->getNum();
+
+int openwq_run_time_start(ClassWQ_OpenWQ *openWQ, int numHRU, int year, int month, 
+    int day, int hour, int minute, double soilMoisture[], double soilTemp[], double airTemp[],
+    double SWE_vol[], double canopyWat_vol[], double matricHead_vol[], double aquiferStorage_vol[]) {
+    
+    return openWQ->run_time_start(numHRU, year, month, day, hour, minute,
+        soilMoisture, soilTemp, airTemp, SWE_vol, canopyWat_vol, matricHead_vol, aquiferStorage_vol);
 }
 
-int openwq_run_time_start(ClassWQ_OpenWQ *openWQ, int year, int month, 
-                    int day, int hour, int minute) {
-    return openWQ->run_time_start(year, month, day, hour, minute);
+
+int openwq_run_space(ClassWQ_OpenWQ *openWQ, int source, int ix_s, int iy_s, int iz_s,
+        int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source) {
+
+    return openWQ->run_space(source, ix_s, iy_s, iz_s,
+        recipient, ix_r, iy_r, iz_r, wflux_s2r, wmass_source);
 }
 
-int openwq_run(ClassWQ_OpenWQ *openWQ, int func) {
-    if (func == 1) { // run_time_start()
-        std::cout << "C API func = 1" << std::endl;
+int openwq_run_time_end(ClassWQ_OpenWQ *openWQ, int year, int month, int day, int hour, int minute) {
 
-    
-    } else if (func == 2) { // run_space()
-        std::cout << "C API func = 2" << std::endl;
-        return openWQ->run_space();
-
-    } else if (func == 3) { // run_time_end()
-        std::cout << "C API func = 3" << std::endl;
-        return openWQ->run_time_end();
-    
-    } 
-    
-    std::cout << "C API func = ERROR" << std::endl;
-    return -1;
-    
+    return openWQ->run_time_end(year, month, day, hour, minute);
 }
 

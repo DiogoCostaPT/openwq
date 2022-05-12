@@ -40,12 +40,15 @@ USE summa_util, only: handle_err                            ! used to process er
 ! global data
 USE globalData, only: numtim                                ! number of model time steps
 USE var_lookup, only: iLookTIME  ! named variables for time data structure
+USE var_lookup, only: iLookPROG  ! named variables for state variables
 
 USE globalData,only:gru_struc                               ! gru-hru mapping structures
 
 
 ! OpenWQ coupling 
 USE globalData,only:openWQ_obj
+USE summa_openWQ,only:run_time_start
+USE summa_openWQ,only:run_time_end
 USE openWQ
 USE, intrinsic :: iso_c_binding
 implicit none
@@ -65,6 +68,7 @@ integer(i4b)                       :: random2
 integer(i4b)                       :: err=0                      ! error code
 character(len=1024)                :: message=''                 ! error message
 integer(i4b)                       :: hruCount
+
 
 ! *****************************************************************************
 ! * preliminaries
@@ -99,20 +103,16 @@ err=openwq_obj%decl()
 ! *****************************************************************************
 
 ! loop through time
-do modelTimeStep=1,numtim
+do modelTimeStep=1,2
 
  ! read model forcing data
  call summa_readForcing(modelTimeStep, summa1_struc(n), err, message)
  call handle_err(err, message)
 
- ! Call OpenW run_time_start
- ! We Also need to pass in the timestep data which is in summa1_struc(1)%timeStruct%var
- err=openWQ_obj%run_time_start(summa1_struc(1)%timeStruct%var(iLookTIME%iyyy), &
-                               summa1_struc(1)%timeStruct%var(iLookTIME%im),   &
-                               summa1_struc(1)%timeStruct%var(iLookTIME%id),   &
-                               summa1_struc(1)%timeStruct%var(iLookTIME%ih),   &
-                               summa1_struc(1)%timeStruct%var(iLookTIME%imin))
- print*, "Fortran/summa_driver.f90: Done openWQ_obj%run(1)"
+ ! *** OPENWQ Run_Time_Start ***
+ call run_time_start(openwq_obj, summa1_struc(n))
+  ! we need to pass the volumes for each timestep
+
  
  ! run the summa physics for one time step
  call summa_runPhysics(modelTimeStep, summa1_struc(n), err, message)
@@ -123,6 +123,11 @@ do modelTimeStep=1,numtim
  ! write the model output
  call summa_writeOutputFiles(modelTimeStep, summa1_struc(n), err, message)
  call handle_err(err, message)
+
+ ! *** OPENWQ Run_Time_End ***
+ call run_time_end(openwq_obj, summa1_struc(n))
+
+
 
 end do  ! looping through time
 

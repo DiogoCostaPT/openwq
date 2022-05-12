@@ -1,4 +1,4 @@
-Developer:Join us!
+Developer: Join us!
 ==================================
 
 .. toctree::

@@ -130,9 +130,9 @@ contains
  ! * dummy variables
  ! ---------------------------------------------------------------------------------------
  ! input: model control
- real(rkind),intent(in)             :: dt                            ! time step (seconds)
- real(rkind),intent(in)             :: dtInit                        ! initial time step (seconds)
- real(rkind),intent(in)             :: dt_min                        ! minimum time step (seconds)
+ real(rkind),intent(in)          :: dt                            ! time step (seconds)
+ real(rkind),intent(in)          :: dtInit                        ! initial time step (seconds)
+ real(rkind),intent(in)          :: dt_min                        ! minimum time step (seconds)
  integer(i4b),intent(in)         :: nState                        ! total number of state variables
  logical(lgt),intent(in)         :: doAdjustTemp                  ! flag to indicate if we adjust the temperature
  logical(lgt),intent(in)         :: firstSubStep                  ! flag to indicate if we are processing the first sub-step
@@ -235,7 +235,6 @@ contains
  ! *********************************************************************************************************************************************************
  ! *********************************************************************************************************************************************************
  ! Procedure starts here
-
  ! initialize error control
  err=0; message='varSubstep/'
 
@@ -335,6 +334,7 @@ contains
    if(err>0) return
   endif
 
+
   ! if too much melt or need to reduce length of the coupled step then return
   ! NOTE: need to go all the way back to coupled_em and merge snow layers, as all splitting operations need to occur with the same layer geometry
   if(tooMuchMelt .or. reduceCoupledStep) return
@@ -404,6 +404,7 @@ contains
    message=trim(message)//trim(cmessage)
    if(err>0) return
   endif
+
 
   ! if water balance error then reduce the length of the coupled step
   if(waterBalanceError .or. tooMuchMelt)then

@@ -1,8 +1,10 @@
 module openwq
-
+   
  USE, intrinsic :: iso_c_binding
+ USE nrtype
  private
  public :: ClassWQ_OpenWQ
+
  include "openWQInterface.f90"
 
  type ClassWQ_OpenWQ
@@ -13,13 +15,14 @@ module openwq
    !  procedure :: get_num => openWQ_get_num
     procedure :: decl => openWQ_init
     procedure :: run_time_start => openWQ_run_time_start
-    procedure :: run => openWQ_run
+    procedure :: run_space => openWQ_run_space
+    procedure :: run_time_end => openWQ_run_time_end
+
  end type
 
  interface ClassWQ_OpenWQ
     procedure create_openwq
  end interface
-
  contains
     function create_openwq(num)
         implicit none
@@ -37,29 +40,58 @@ module openwq
     end function
 !  ! Globaly accessible variable
 
-   integer function openWQ_run_time_start(this, year, month, day, hour, minute)
+   integer function openWQ_run_time_start(this, numHRU, year, month, day, hour, minute, &
+      soilMoisture, soilTemp, airTemp, swe_vol, canopyWat_vol, matricHead_vol, aquiferStorage_vol)
       implicit none
-      class(ClassWQ_OpenWQ) :: this
-      integer, intent(in)   :: year
-      integer, intent(in)   :: month
-      integer, intent(in)   :: day
-      integer, intent(in)   :: hour
-      integer, intent(in)   :: minute
-      openWQ_run_time_start = openwq_run_time_start_c(this%ptr, year, month, day, hour, minute)
-   end function
-   ! The func variables denotes which c++ function to call
-   ! This is needed b/c we cannot create interface functions in
-   ! Fortran that take the same variables
-   ! func = 1: OpenWQ::run_time_start
-   ! func = 2: OpenWQ::run_space
-   ! func = 3: OpenWQ::run_time_end
-   integer function openWQ_run(this, func)
-      implicit none
-      class(ClassWQ_OpenWQ) :: this
-      integer, intent(in)   :: func
-      openWQ_run = openwq_run_c(this%ptr, func)
+      class(ClassWQ_OpenWQ)      :: this
+      integer(i4b), intent(in)   :: numHRU
+      integer(i4b), intent(in)   :: year
+      integer(i4b), intent(in)   :: month
+      integer(i4b), intent(in)   :: day
+      integer(i4b), intent(in)   :: hour
+      integer(i4b), intent(in)   :: minute
+      real(rkind),  intent(in)   :: soilMoisture(numHRU)
+      real(rkind),  intent(in)   :: soilTemp(numHRU)
+      real(rkind),  intent(in)   :: airTemp(numHRU)
+      real(rkind),  intent(in)   :: swe_vol(numHRU)
+      real(rkind),  intent(in)   :: canopyWat_vol(numHRU)
+      real(rkind),  intent(in)   :: matricHead_vol(numHRU)
+      real(rkind),  intent(in)   :: aquiferStorage_vol(numHRU)
+      openWQ_run_time_start = openwq_run_time_start_c(this%ptr, numHRU, year, month, day, hour, minute, &
+         soilMoisture, soilTemp, airTemp, swe_vol, canopyWat_vol, matricHead_vol, aquiferStorage_vol)
    end function
 
+   integer function openWQ_run_space(this,source,ix_s,iy_s,iz_s, &
+         recipient,ix_r,iy_r,iz_r,wflux_s2r,wmass_source)
+      implicit none
+      class(ClassWQ_OpenWQ)      :: this
+      integer(i4b), intent(in)   :: source
+      integer(i4b), intent(in)   :: ix_s
+      integer(i4b), intent(in)   :: iy_s
+      integer(i4b), intent(in)   :: iz_s
+      integer(i4b), intent(in)   :: recipient
+      integer(i4b), intent(in)   :: ix_r
+      integer(i4b), intent(in)   :: iy_r
+      integer(i4b), intent(in)   :: iz_r
+      real(rkind),  intent(in)   :: wflux_s2r
+      real(rkind),  intent(in)   :: wmass_source
+      openWQ_run_space = openwq_run_space_c(this%ptr,source,ix_s,iy_s,iz_s,recipient,ix_r,iy_r,iz_r,wflux_s2r,wmass_source)
+   end function
+
+
+   integer function openWQ_run_time_end(this,year, month, day, hour, minute)
+      implicit none
+      class(ClassWQ_OpenWQ)      :: this
+      integer(i4b), intent(in)   :: year
+      integer(i4b), intent(in)   :: month
+      integer(i4b), intent(in)   :: day
+      integer(i4b), intent(in)   :: hour
+      integer(i4b), intent(in)   :: minute
+      openWQ_run_time_end = openWQ_run_time_end_c(this%ptr,year, month, day, hour, minute)
+   end function
+      
+
+   
 
 
 end module openwq

@@ -19,7 +19,7 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'OpenWQ'
-copyright = '2021, Diogo Costa'
+copyright = '2022, Diogo Costa'
 author = 'Diogo Costa'
 
 # The full version, including alpha/beta/rc tags

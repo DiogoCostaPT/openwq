@@ -71,6 +71,10 @@ USE noahmp_globals,only:RSMIN              ! minimum stomatal resistance (vegTyp
 ! urban vegetation category (could be local)
 USE globalData,only:urbanVegCategory       ! vegetation category for urban areas
 
+! import the openWQ object
+USE globalData,only:openWQ_obj
+
+
 implicit none
 private
 public::run_oneHRU
@@ -132,6 +136,11 @@ contains
  ! error control
  integer(i4b)      , intent(out)   :: err                 ! error code
  character(*)      , intent(out)   :: message             ! error message
+ 
+ ! OpenWQ Test Varaibles
+ real(rkind)                        :: test1
+ real(rkind)                        :: test2
+
 
  ! ----- define local variables ------------------------------------------------------------------------------------------
 
@@ -228,6 +237,16 @@ contains
  nSnow   = indxData%var(iLookINDEX%nSnow)%dat(1)     ! number of snow layers
  nSoil   = indxData%var(iLookINDEX%nSoil)%dat(1)     ! number of soil layers
  nLayers = indxData%var(iLookINDEX%nLayers)%dat(1)   ! total number of layers
+
+ 
+ test1 = 9.9
+ test2 = 10.10
+
+
+ ! Add call to transport routine
+ err=openWQ_obj%run_space(&
+    1,2,3,4,5,6,7,8,test1,test2)
+
 
  end subroutine run_oneHRU
 
