@@ -61,10 +61,21 @@ module openwq
          soilMoisture, soilTemp, airTemp, swe_vol, canopyWat_vol, matricHead_vol, aquiferStorage_vol)
    end function
 
-   integer function openWQ_run_space(this)
+   integer function openWQ_run_space(this,source,ix_s,iy_s,iz_s, &
+         recipient,ix_r,iy_r,iz_r,wflux_s2r,wmass_source)
       implicit none
-      class(ClassWQ_OpenWQ) :: this
-      openWQ_run_space = openwq_run_space_c(this%ptr)
+      class(ClassWQ_OpenWQ)      :: this
+      integer(i4b), intent(in)   :: source
+      integer(i4b), intent(in)   :: ix_s
+      integer(i4b), intent(in)   :: iy_s
+      integer(i4b), intent(in)   :: iz_s
+      integer(i4b), intent(in)   :: recipient
+      integer(i4b), intent(in)   :: ix_r
+      integer(i4b), intent(in)   :: iy_r
+      integer(i4b), intent(in)   :: iz_r
+      real(rkind),  intent(in)   :: wflux_s2r
+      real(rkind),  intent(in)   :: wmass_source
+      openWQ_run_space = openwq_run_space_c(this%ptr,source,ix_s,iy_s,iz_s,recipient,ix_r,iy_r,iz_r,wflux_s2r,wmass_source)
    end function
 
 

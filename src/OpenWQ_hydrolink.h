@@ -67,7 +67,8 @@ class ClassWQ_OpenWQ
         double soilMoisture[], double soilTemp[], double airTemp[],
         double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]);
 
-    int run_space();
+    int run_space(int source, int ix_s, int iy_s, int iz_s,
+        int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source);
 
     int run_time_end(int year, int month, int day, int hour, int minute);
 
@@ -104,7 +105,9 @@ extern "C" {
         double soilMoisture[], double soilTemp[], double airTemp[], double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]);
 
     // OpenWQ run functions, this function decides which C++ code to call
-    int openwq_run_space(CLASSWQ_OPENWQ *openWQ);
+    int openwq_run_space(CLASSWQ_OPENWQ *openWQ, int source, int ix_s, int iy_s, int iz_s,
+        int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source);
+
 
     int openwq_run_time_end(CLASSWQ_OPENWQ *openWQ, int year, int month, int day, int hour, int minute);
 
