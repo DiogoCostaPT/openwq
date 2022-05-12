@@ -61,7 +61,7 @@ int ClassWQ_OpenWQ::decl() {
         OpenWQ_vars_ref = new OpenWQ_vars(OpenWQ_hostModelconfig_ref->HydroComp.size());
         
         // Master Json
-        OpenWQ_wqconfig_ref->OpenWQ_masterjson = "/u1/kck540/openWQ/openwq/bin/openWQ_master.json";
+        OpenWQ_wqconfig_ref->OpenWQ_masterjson = "/code/bin/openWQ_master.json";
 
 
         OpenWQ_couplercalls_ref->InitialConfig(
@@ -116,8 +116,14 @@ int ClassWQ_OpenWQ::run_time_start(int numHRU, int year, int month, int day, int
     return 0;
 }
 
-int ClassWQ_OpenWQ::run_space() {
+int ClassWQ_OpenWQ::run_space(int source, int ix_s, int iy_s, int iz_s,
+        int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source) {
     std::cout << "C++ run_space" << std::endl;
+    std::cout << source << ", " << ix_s << ", " << iy_s << ", " << iz_s << ", " << recipient << ", " << ix_r 
+        << ", " << iy_r << ", " << iz_r << ", " << wflux_s2r << ", " << wmass_source << std::endl;
+    
+    OpenWQ_couplercalls->
+
     return 0;
 }
 
@@ -177,9 +183,11 @@ int openwq_run_time_start(ClassWQ_OpenWQ *openWQ, int numHRU, int year, int mont
 }
 
 
-int openwq_run_space(ClassWQ_OpenWQ *openWQ) {
+int openwq_run_space(ClassWQ_OpenWQ *openWQ, int source, int ix_s, int iy_s, int iz_s,
+        int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source) {
 
-    return openWQ->run_space();
+    return openWQ->run_space(source, ix_s, iy_s, iz_s,
+        recipient, ix_r, iy_r, iz_r, wflux_s2r, wmass_source);
 }
 
 int openwq_run_time_end(ClassWQ_OpenWQ *openWQ, int year, int month, int day, int hour, int minute) {
