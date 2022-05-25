@@ -121,8 +121,6 @@ int ClassWQ_OpenWQ::run_space(int source, int ix_s, int iy_s, int iz_s,
     std::cout << "C++ run_space" << std::endl;
     std::cout << source << ", " << ix_s << ", " << iy_s << ", " << iz_s << ", " << recipient << ", " << ix_r 
         << ", " << iy_r << ", " << iz_r << ", " << wflux_s2r << ", " << wmass_source << std::endl;
-    
-    OpenWQ_couplercalls->
 
     return 0;
 }
