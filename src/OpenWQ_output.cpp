@@ -173,6 +173,7 @@ int OpenWQ_output::writeResults(
             // MAIN: label file and call main function
             // print: OpenWQ_vars.chemas
             output_file_label.assign("main");
+            
             OpenWQ_output::writeHDF5(
                 OpenWQ_json,
                 OpenWQ_hostModelconfig,

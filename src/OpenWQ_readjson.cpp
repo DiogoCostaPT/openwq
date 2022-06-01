@@ -515,15 +515,15 @@ void OpenWQ_readjson::SetConfigInfo(
     std::string cells_input;                                // interactive string for cells input for each compartment
     arma::mat cells2print_cmpt;                             // cumulative vector with all cells to print for each compartment
     arma::mat cells2print_row(1,3,arma::fill::zeros);       // iteractive vector with cell x, y and z indexes
-    unsigned int ix_json;                                            // iteractive ix info for COMPARTMENTS_AND_CELLS cell data 
-    unsigned int iy_json;                                            // iteractive iy info for COMPARTMENTS_AND_CELLS cell data  
-    unsigned int iz_json;                                            // iteractive iz info for COMPARTMENTS_AND_CELLS cell data  
-    unsigned int nx;                                                 // interactive nx inforationfor each compartment
-    unsigned int ny;                                                 // interactive ny inforationfor each compartment
-    unsigned int nz;                                                 // interactive nz inforationfor each compartment
+    unsigned int ix_json;                                   // iteractive ix info for COMPARTMENTS_AND_CELLS cell data 
+    unsigned int iy_json;                                   // iteractive iy info for COMPARTMENTS_AND_CELLS cell data  
+    unsigned int iz_json;                                   // iteractive iz info for COMPARTMENTS_AND_CELLS cell data  
+    unsigned int nx;                                        // interactive nx inforationfor each compartment
+    unsigned int ny;                                        // interactive ny inforationfor each compartment
+    unsigned int nz;                                        // interactive nz inforationfor each compartment
     std::vector<int>::iterator it;                          // iteractor for flagging if compartment i has been selected for printing
     std::vector<double> unit_multiplers;                    // multiplers (numerator and denominator)
-    bool volume_unit_flag;                // flag to note if denominator is a volume (needed for calculation of concentration in output)
+    bool volume_unit_flag;                                  // flag to note if denominator is a volume (needed for calculation of concentration in output)
     std::string num_cores_input;                            // input of threads info as string
     bool threads_input_err_flag = false;                    // flag for error in threads input (initiate a false, no error)
     std::string msg_string;                                 // error/warning message string
@@ -817,11 +817,13 @@ void OpenWQ_readjson::SetConfigInfo(
     
      // Convert time units from host model units to seconds (OpenWQ time units)
     // 1) Calculate unit multiplers
+    std::vector<std::string> units;                         // units (numerator and denominator)
     volume_unit_flag = OpenWQ_units.Calc_Unit_Multipliers(
                 OpenWQ_wqconfig,
                 OpenWQ_output,
                 unit_multiplers,                            // multiplers (numerator and denominator)
                 std::get<0>(OpenWQ_wqconfig.output_units),  // input units
+                units,
                 false);              // direction of the conversion: 
                                      // to native (true) or 
                                      // from native to desired output units (false)
@@ -898,14 +900,17 @@ void OpenWQ_readjson::SetConfigInfo(
     
     // Convert time units from host model units to seconds (OpenWQ time units)
     // 1) Calculate unit multiplers
+    units.clear();                           // units (numerator and denominator)
     OpenWQ_units.Calc_Unit_Multipliers(
         OpenWQ_wqconfig,
         OpenWQ_output,
         unit_multiplers,                    // multiplers (numerator and denominator)
         OpenWQ_wqconfig.timestep_out_unit,  // input units
-        true);              // direction of the conversion: 
-                            // to native (true) or 
-                            // from native to desired output units (false)
+        units,                              // units (numerator and denominator)
+        true);                              // direction of the conversion: 
+                                            // to native (true) or 
+                                            // from native to desired output units (false)
+    
     // 2) Calculate value with new units
     OpenWQ_units.Convert_Units(
         OpenWQ_wqconfig.timetep_out,    // ic_value passed by reference so that it can be changed
