@@ -110,7 +110,7 @@ function plot_OpenWQ_outputs(...
                 
             end
             
-            datetick('x','keeplimits')
+            datetick('x','keeplimits','keepticks')
 
             % Prepare legend
             legend(legend_labels,...
