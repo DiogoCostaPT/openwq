@@ -6,9 +6,10 @@
 # 3) Create a docker container: docker compose up -d
 # 4) check the container id: docker ps
 # 5) Open a shell inside that container: docker exec -it <container id> /bin/bash
-# 6) Inside the contained, go to the openwq folder
-# 7) Compile with: rm CMakeCache.txt; rm -r CMakeFiles; cmake . ; make -B
-# Caveat: it seems that armadillo now disables default hdf5 support for save/load, so you need to go to “/usr/include/armadillo_bits/config.hpp” and uncomment #define ARMA_USE_HDF5
+# 6) Armadillo now disables default hdf5 support for save/load, so inside the container you need to go to “/usr/include/armadillo_bits/config.hpp” and uncomment #define ARMA_USE_HDF5
+# 7) Inside the contained, go to the openwq folder
+# 8) Compile with: rm CMakeCache.txt; rm -r CMakeFiles; cmake . ; make -B
+
 # That's all !!!
 #################################################
 
@@ -22,7 +23,7 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # 2) crhm_openwq -> compile with crhm using hydrolink
 # 3) summa_openwq -> compile with summa using hydrolink
 # 4) mesh_openwq -> compile with mesh using hydrolink
-set(COMPILE_MODE openwq)
+set(COMPILE_MODE crhm_openwq)
 
 # Choose where to create the executable
 set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
