@@ -51,6 +51,21 @@ class OpenWQ_watertransp{
         double wflux_s2r,
         double wmass_source);
 
+    // Advection and Dispersion
+    void Adv(
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        const int source,
+        const int ix_s, 
+        const int iy_s,
+        const int iz_s,
+        const int recipient,
+        const int ix_r,
+        const int iy_r,
+        const int iz_r,
+        double wflux_s2r,
+        double wmass_source);
+
     // Internal mobilization of immobile pools
     // Erosion and weathering
     void IntMob(
@@ -83,7 +98,6 @@ class OpenWQ_watertransp{
         const int iz_r,
         double wflux_s2r,
         double wmass_source);
-
 
 };
 

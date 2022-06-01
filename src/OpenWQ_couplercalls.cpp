@@ -279,7 +279,7 @@ void OpenWQ_couplercalls::RunSpaceStep(
     ################################################# */
 
     // NATIVE TE model
-    if ((OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE") == 0)
+    if ((OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_ADVDISP") == 0)
     {
 
         // Advection and dispersion
@@ -333,6 +333,60 @@ void OpenWQ_couplercalls::RunSpaceStep(
             wflux_s2r,
             wmass_source);
     
+    }else if ((OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_ADVP") == 0)
+    {
+
+        // Advection and dispersion
+        OpenWQ_watertransp.Adv(
+            OpenWQ_vars,
+            OpenWQ_wqconfig,
+            source,
+            ix_s, 
+            iy_s,
+            iz_s,
+            recipient,
+            ix_r,
+            iy_r,
+            iz_r,
+            wflux_s2r,
+            wmass_source);
+
+
+        // Internal mobilization of immobile pools
+        // Erosion and weathering
+        OpenWQ_watertransp.IntMob(
+            OpenWQ_vars,
+            OpenWQ_wqconfig,
+            source,
+            ix_s, 
+            iy_s,
+            iz_s,
+            recipient,
+            ix_r,
+            iy_r,
+            iz_r,
+            wflux_s2r,
+            wmass_source);
+   
+
+        // Boundary Mixing due to velocity gradients
+        // due to turbulence and cross-boarder eddies
+        // only apply if fluxe between cells in same compartment          
+        OpenWQ_watertransp.BoundMix(
+            OpenWQ_hostModelconfig,
+            OpenWQ_vars,
+            OpenWQ_wqconfig,
+            source,
+            ix_s, 
+            iy_s,
+            iz_s,
+            recipient,
+            ix_r,
+            iy_r,
+            iz_r,
+            wflux_s2r,
+            wmass_source);
+
     }else if ((OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_NO_ADVDISP") == 0)
     {
         
