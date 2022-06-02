@@ -147,14 +147,18 @@ void OpenWQ_chem::setBGCexpressions(
                 }
 
                 // In expression (replace chemical species name by index)
+                // while loop to replace all occurances
                 index_i = expression_string_modif.find(chemname);
-                if (index_i!=-1 && !expression_string_modif.empty()){
-                    index_transf.push_back(chemi); // index
-                    expression_string_modif.replace(
-                        index_i,    // start position
-                        chemname.size(),    // length
-                        "openWQ_BGCnative_chemass_InTransfEq["+std::to_string(index_new_chemass_InTransfEq)+"]"); // string to replace by
-                    index_new_chemass_InTransfEq ++;    
+                while(index_i!=-1){
+                    if (index_i!=-1 && !expression_string_modif.empty()){
+                        index_transf.push_back(chemi); // index
+                        expression_string_modif.replace(
+                            index_i,    // start position
+                            chemname.size(),    // length
+                            "openWQ_BGCnative_chemass_InTransfEq["+std::to_string(index_new_chemass_InTransfEq)+"]"); // string to replace by
+                        index_new_chemass_InTransfEq ++;    
+                    }
+                    index_i = expression_string_modif.find(chemname);
                 }
             }
 
@@ -398,7 +402,6 @@ void OpenWQ_chem::BGC_Transform(
                                     transf_mass);
 
                             // New mass of consumed chemical
-                            
                             (*OpenWQ_vars.d_chemass_dt_chem)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
 
                             // New mass of produced chemical
