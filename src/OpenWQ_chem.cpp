@@ -135,14 +135,12 @@ void OpenWQ_chem::setBGCexpressions(
                 chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi];
 
                 // Consumedchemass_consumed, chemass_produced;ty()) 
-                index_i = consumed_spec.find(chemname);
-                if (index_i!=-1 && !consumed_spec.empty()){
+                if(consumed_spec.compare(chemname) == 0 && !consumed_spec.empty()){
                     index_cons = chemi; // index
                 }
 
                 // Produced
-                index_i = produced_spec.find(chemname);
-                if (index_i!=-1 && !produced_spec.empty()){
+                if(produced_spec.compare(chemname) == 0 && !produced_spec.empty()){
                     index_prod = chemi; // index
                 }
 
