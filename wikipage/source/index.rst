@@ -13,7 +13,7 @@ It aims to be flexible, fast, free, and extendable.
 
 .. toctree::
    :maxdepth: 4
-   
+
    1_0_Home
    2_0_Documentation
    3_0_Installation
@@ -21,6 +21,3 @@ It aims to be flexible, fast, free, and extendable.
    5_3_base_Hydro_models
    5_0_Developer
    6_0_Contact
-   
-
-

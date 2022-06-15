@@ -173,6 +173,7 @@ int OpenWQ_output::writeResults(
             // MAIN: label file and call main function
             // print: OpenWQ_vars.chemas
             output_file_label.assign("main");
+            
             OpenWQ_output::writeHDF5(
                 OpenWQ_json,
                 OpenWQ_hostModelconfig,
@@ -365,7 +366,7 @@ int OpenWQ_output::writeCSV(
             }
 
             // Get chemical name
-            chem_name = OpenWQ_wqconfig.chem_species_list[
+            chem_name = OpenWQ_wqconfig.BGC_general_chem_species_list[
                 OpenWQ_wqconfig.chem2print[ichem]];           // index of chemical to print
                 
             // Add chemical name to file header (add column)
@@ -474,7 +475,7 @@ int OpenWQ_output::writeHDF5(
         for (unsigned int ichem=0;ichem<num_chem2print;ichem++){
 
             // Get chemical name (convert to char for use in .save())
-            chem_name = OpenWQ_wqconfig.chem_species_list[
+            chem_name = OpenWQ_wqconfig.BGC_general_chem_species_list[
             OpenWQ_wqconfig.chem2print[ichem]].c_str();           // index of chemical to print
 
             // Reset file name for each compartment
@@ -538,7 +539,7 @@ int OpenWQ_output::writeHDF5(
         arma::mat data2print(num_cells2print,1);
 
         // Get chemical name (convert to char for use in .save())
-        chem_name = OpenWQ_wqconfig.chem_species_list[
+        chem_name = OpenWQ_wqconfig.BGC_general_chem_species_list[
             OpenWQ_wqconfig.chem2print[ichem]].c_str();           // index of chemical to print
 
         // Reset file name for each compartment
@@ -716,7 +717,7 @@ int OpenWQ_output::writeVTU(
 
         // Set name of array (chem variable name)
         // Get chemical species name
-        chemname = (OpenWQ_wqconfig.chem_species_list)[ichem];
+        chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[ichem];
         // Add discription of output units
         chemname.append("#");
         chemname.append(std::get<0>(OpenWQ_wqconfig.output_units));

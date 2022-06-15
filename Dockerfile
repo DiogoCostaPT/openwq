@@ -1,54 +1,45 @@
-FROM ubuntu
 
+FROM ubuntu:20.04
+#FROM amd64/ubuntu:20.04
 WORKDIR /code
+# Update ubuntu's apt list
+RUN apt-get -y update && apt-get install -y
+# Install g++
+RUN apt-get -y install g++
+# Install dbg
+RUN apt-get -y install gdb gdbserver
+# Install cmake
+RUN apt-get -y install cmake
+######################################
+# Armadillo
+#####################################
+# Install armadillo and its dependencies
+RUN apt-get -y install liblapack-dev
+RUN apt-get -y install libblas-dev
+RUN apt-get -y install libopenblas-dev
+RUN apt-get -y install libboost-all-dev
+RUN apt-get -y install hdf5-tools
+# Get Armadillo (get 10.8.2 version, but this can be changed)
+# RUN apt-get -y install libarmadillo-dev # very old version in aptitude (not suitable)
+RUN apt-get install wget
+RUN wget http://sourceforge.net/projects/arma/files/armadillo-10.3.0.tar.xz
+RUN apt install xz-utils
+RUN tar -xf armadillo-10.3.0.tar.xz
+WORKDIR /code/armadillo-10.3.0
+RUN cmake . -D DETECT_HDF5=true -DCMAKE_C_FLAGS="-DH5_USE_110_API"
+RUN make install
 
+######################################
+# Copy local folders to image
+#####################################
+# Copy the OpenWQ files to the container
+WORKDIR /code
+COPY . /code
 
-# Summa Dependencies
+## Install Dependencies for SUMMA
 RUN apt-get update && \
     DEBIAN_FRONTEND="noninteractive" apt-get install -y software-properties-common \
     libnetcdf-dev \
     libnetcdff-dev \
-    liblapack-dev
-
-# OpenWQ Dependencies
-RUN apt-get update && \
-    DEBIAN_FRONTEND="noninteractive" apt install -y \
-        libopenblas-dev \
-        libarpack2-dev \
-        libsuperlu-dev \
-        libglvnd-core-dev
-
-
-RUN apt update -y \
-    && apt upgrade -y \
-    && DEBIAN_FRONTEND="noninteractive" apt install -y \
-         cmake \
-         g++ \
-         git \
-         libssl-dev \
-         make \
-         gfortran \
-         gdb \
-    && apt-get autoclean
-
-RUN apt update -y \
-    && DEBIAN_FRONTEND="noninteractive" apt install -y \
-    build-essential \
-    mesa-common-dev \
-    mesa-utils \
-    freeglut3-dev \
-    ninja-build 
-
-ADD . /code
-
-ENV VTK_DIR=/code/lib/vtk/build/
-
-RUN cp /code/lib/armadillo/armadillo-10.7.3/libarmadillo.so /usr/lib/
-
-WORKDIR /code/lib/armadillo/armadillo-10.7.3/
-
-RUN make install
-
-WORKDIR /code
-
-
+    liblapack-dev \
+    gfortran

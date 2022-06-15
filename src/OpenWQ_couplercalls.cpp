@@ -35,6 +35,9 @@ void OpenWQ_couplercalls::InitialConfig(
     OpenWQ_output& OpenWQ_output){
 
 
+    // Local variables
+    std::string msg_string; // error message
+    
     // ################################
     // Read JSON file
     // ################################
@@ -49,7 +52,6 @@ void OpenWQ_couplercalls::InitialConfig(
     // ################################
     // Allocate memory: set variable sizes
     // ################################
-        
     OpenWQ_initiate.initmemory(
         OpenWQ_json,
         OpenWQ_vars,
@@ -57,16 +59,6 @@ void OpenWQ_couplercalls::InitialConfig(
         OpenWQ_wqconfig,
         OpenWQ_output);
         
-    /* #################################################
-    // Parse biogeochemical expressions (and save in global)
-    ################################################# */
-    OpenWQ_chem.setBGCexpressions(
-        OpenWQ_json,
-        OpenWQ_hostModelconfig,
-        OpenWQ_wqconfig,
-        OpenWQ_vars,
-        OpenWQ_output);
-
     /* #################################################
     // Parse sink and source inputs and store them in tuple and arma::mat for rapid access
     ################################################# */
@@ -77,6 +69,45 @@ void OpenWQ_couplercalls::InitialConfig(
         OpenWQ_wqconfig,
         OpenWQ_units,
         OpenWQ_output);  
+
+
+    /* #################################################
+    // MODULES
+    ################################################# */
+   
+    // #################################################
+    // BIOGEOCHEMISTRY
+    
+    // NATIVE Bigoeochemical model
+        // Parse biogeochemical expressions (and save in global)
+    if ((OpenWQ_wqconfig.BGC_module).compare("OPENWQ_NATIVE_BGC") == 0)
+    {
+        
+        OpenWQ_chem.setBGCexpressions(
+            OpenWQ_json,
+            OpenWQ_hostModelconfig,
+            OpenWQ_wqconfig,
+            OpenWQ_vars,
+            OpenWQ_output);
+
+    }else{
+
+        // Create Message
+        msg_string = 
+            "<OpenWQ> ERROR: No BGC_module found or unkown";
+
+        // Print it (Console and/or Log file)
+        OpenWQ_output.ConsoleLog(
+            OpenWQ_wqconfig,    // for Log file name
+            msg_string,         // message
+            true,               // print in console
+            true);              // print in log file
+        
+        // Abort (Fatal error)
+        exit(EXIT_FAILURE);
+
+
+    }
 
 }
 
@@ -100,6 +131,9 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     time_t simtime){                     // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
 
 
+    // Local variables
+    std::string msg_string; // error/warning message
+    
     // ########################################
     // Reset Derivatives 
     // Needed before start of new time iteraction
@@ -163,17 +197,252 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
         min_sim_now); // minutes are not available in CRHM (it seems)
 
 
+    /* #################################################
+    // MODULES
+
     /* ########################################
     Biogeochemistry (doesn't need space loop => it's inside the function)
     ######################################## */ 
     
-    OpenWQ_chem.Run(
-        OpenWQ_json,
-        OpenWQ_vars,
-        OpenWQ_wqconfig,
-        OpenWQ_hostModelconfig,
-        OpenWQ_output);
+    // NATIVE Bioogeochemical model
+    if ((OpenWQ_wqconfig.BGC_module).compare("OPENWQ_NATIVE_BGC") == 0)
+    {
+        OpenWQ_chem.Run(
+            OpenWQ_json,
+            OpenWQ_vars,
+            OpenWQ_wqconfig,
+            OpenWQ_hostModelconfig,
+            OpenWQ_output);
+    }else{
+
+        // Create Message
+        msg_string = 
+            "<OpenWQ> ERROR: No BGC_module found or unkown";
+
+        // Print it (Console and/or Log file)
+        OpenWQ_output.ConsoleLog(
+            OpenWQ_wqconfig,    // for Log file name
+            msg_string,         // message
+            true,               // print in console
+            true);              // print in log file
+        
+        // Abort (Fatal error)
+        exit(EXIT_FAILURE);
+
+    }
  }
+
+
+// #######################
+// Calls inside space loop
+// Called for each grid cell
+// #######################
+void OpenWQ_couplercalls::RunSpaceStep(
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object
+    OpenWQ_wqconfig& OpenWQ_wqconfig,            // create OpenWQ_wqconfig object
+    OpenWQ_units& OpenWQ_units,                  // functions for unit conversion
+    OpenWQ_readjson& OpenWQ_readjson,            // read json files
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
+    OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
+    OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
+    OpenWQ_sinksource& OpenWQ_sinksource,        // sink and source modules)
+    OpenWQ_solver& OpenWQ_solver,
+    OpenWQ_output& OpenWQ_output,
+    time_t simtime,                            // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
+    const int source,
+    const int ix_s, 
+    const int iy_s,
+    const int iz_s,
+    const int recipient,
+    const int ix_r,
+    const int iy_r,
+    const int iz_r,
+    const double wflux_s2r,
+    const double wmass_source){
+
+    
+    // Local variables
+    std::string msg_string;
+
+    // Return if flux or source_volume is zero
+    if (wflux_s2r == 0.0f || wmass_source <= 0.0f)
+        return;
+
+    /* #################################################
+    // MODULES
+
+    /* #################################################
+    // TE module
+    // Mass transport with water (mobile material only)
+    ################################################# */
+
+    // NATIVE TE model
+    if ((OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_ADVDISP") == 0)
+    {
+
+        // Advection and dispersion
+        OpenWQ_watertransp.AdvDisp(
+            OpenWQ_vars,
+            OpenWQ_wqconfig,
+            source,
+            ix_s, 
+            iy_s,
+            iz_s,
+            recipient,
+            ix_r,
+            iy_r,
+            iz_r,
+            wflux_s2r,
+            wmass_source);
+
+
+        // Internal mobilization of immobile pools
+        // Erosion and weathering
+        OpenWQ_watertransp.IntMob(
+            OpenWQ_vars,
+            OpenWQ_wqconfig,
+            source,
+            ix_s, 
+            iy_s,
+            iz_s,
+            recipient,
+            ix_r,
+            iy_r,
+            iz_r,
+            wflux_s2r,
+            wmass_source);
+   
+
+        // Boundary Mixing due to velocity gradients
+        // due to turbulence and cross-boarder eddies
+        // only apply if fluxe between cells in same compartment          
+        OpenWQ_watertransp.BoundMix(
+            OpenWQ_hostModelconfig,
+            OpenWQ_vars,
+            OpenWQ_wqconfig,
+            source,
+            ix_s, 
+            iy_s,
+            iz_s,
+            recipient,
+            ix_r,
+            iy_r,
+            iz_r,
+            wflux_s2r,
+            wmass_source);
+    
+    }else if ((OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_ADVP") == 0)
+    {
+
+        // Advection and dispersion
+        OpenWQ_watertransp.Adv(
+            OpenWQ_vars,
+            OpenWQ_wqconfig,
+            source,
+            ix_s, 
+            iy_s,
+            iz_s,
+            recipient,
+            ix_r,
+            iy_r,
+            iz_r,
+            wflux_s2r,
+            wmass_source);
+
+
+        // Internal mobilization of immobile pools
+        // Erosion and weathering
+        OpenWQ_watertransp.IntMob(
+            OpenWQ_vars,
+            OpenWQ_wqconfig,
+            source,
+            ix_s, 
+            iy_s,
+            iz_s,
+            recipient,
+            ix_r,
+            iy_r,
+            iz_r,
+            wflux_s2r,
+            wmass_source);
+   
+
+        // Boundary Mixing due to velocity gradients
+        // due to turbulence and cross-boarder eddies
+        // only apply if fluxe between cells in same compartment          
+        OpenWQ_watertransp.BoundMix(
+            OpenWQ_hostModelconfig,
+            OpenWQ_vars,
+            OpenWQ_wqconfig,
+            source,
+            ix_s, 
+            iy_s,
+            iz_s,
+            recipient,
+            ix_r,
+            iy_r,
+            iz_r,
+            wflux_s2r,
+            wmass_source);
+
+    }else if ((OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_NO_ADVDISP") == 0)
+    {
+        
+        // Internal mobilization of immobile pools
+        // Erosion and weathering
+        OpenWQ_watertransp.IntMob(
+            OpenWQ_vars,
+            OpenWQ_wqconfig,
+            source,
+            ix_s, 
+            iy_s,
+            iz_s,
+            recipient,
+            ix_r,
+            iy_r,
+            iz_r,
+            wflux_s2r,
+            wmass_source);
+   
+
+        // Boundary Mixing due to velocity gradients
+        // due to turbulence and cross-boarder eddies
+        OpenWQ_watertransp.BoundMix(
+            OpenWQ_hostModelconfig,
+            OpenWQ_vars,
+            OpenWQ_wqconfig,
+            source,
+            ix_s, 
+            iy_s,
+            iz_s,
+            recipient,
+            ix_r,
+            iy_r,
+            iz_r,
+            wflux_s2r,
+            wmass_source);
+
+    }else{
+
+        // Create Message
+        msg_string = 
+            "<OpenWQ> ERROR: No TE_module found or unkown";
+
+        // Print it (Console and/or Log file)
+        OpenWQ_output.ConsoleLog(
+            OpenWQ_wqconfig,    // for Log file name
+            msg_string,         // message
+            true,               // print in console
+            true);              // print in log file
+        
+        // Abort (Fatal error)
+        exit(EXIT_FAILURE);
+
+    }
+
+}
 
 
 // #######################

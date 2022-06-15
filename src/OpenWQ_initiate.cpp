@@ -40,7 +40,7 @@ void OpenWQ_initiate::initmemory(
     std::string msg_string;             // error/warning message string
 
     // Create arma for chemical species
-    unsigned int numspec = OpenWQ_json.BGCcycling["CHEMICAL_SPECIES"]["LIST"].size(); // number of chemical species in BGCcycling
+    unsigned int numspec = OpenWQ_json.BGC_module["CHEMICAL_SPECIES"]["LIST"].size(); // number of chemical species in BGC_module
     typedef arma::field<arma::Cube<double>> arma_fieldcube; // typedef data structure: used for domain_field
 
     /* ########################################
@@ -254,12 +254,13 @@ void OpenWQ_initiate::setIC(
     double i_volume){    // volume (water or soil)
 
     // Local variables
-    std::string chemname; // chemical name
-    std::tuple<double,std::string> ic_info_i; // IC information in config file
-    double ic_value; // IC value of chemical i
-    std::string ic_units; // // IC value units of chemical (e.g, kg/m3, mg/l))
-    std::vector<double> unit_multiplers;    // multiplers (numerator and denominator)
-    std::string msg_string;             // error/warning message string
+    std::string chemname;                       // chemical name
+    std::tuple<double,std::string> ic_info_i;   // IC information in config file
+    double ic_value;                            // IC value of chemical i
+    std::string ic_units;                       // IC value units of chemical (e.g, kg/m3, mg/l))
+    std::vector<std::string> units;             // units (numerator and denominator)
+    std::vector<double> unit_multiplers;        // multiplers (numerator and denominator)
+    std::string msg_string;                     // error/warning message string
 
     // Find compartment icmp name from code (host hydrological model)
     std::string CompName_icmp = std::get<1>(
@@ -269,9 +270,9 @@ void OpenWQ_initiate::setIC(
     // Loop over chemical species
     ######################################## */
 
-    for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.num_chem);chemi++){
+    for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){
 
-        chemname = (OpenWQ_wqconfig.chem_species_list)[chemi]; // chemical name in BGC-json list
+        chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi]; // chemical name in BGC-json list
 
         // Get tuple with IC information for compartment CompName_icmp and chemical chemname
         // If not found in compartment icmp, it's because IC were not defined - set to zero.
@@ -294,6 +295,7 @@ void OpenWQ_initiate::setIC(
                 OpenWQ_output,
                 unit_multiplers,    // multiplers (numerator and denominator)
                 ic_units,           // input units
+                units,
                 true);              // direction of the conversion: 
                                     // to native (true) or 
                                     // from native to desired output units (false)
@@ -308,11 +310,18 @@ void OpenWQ_initiate::setIC(
             // Already done in OpenWQ_initiate::Transform_Units)
             ######################################## */
 
+            // If no demoninator, then it means that units are in mass and not concentration
+            // so, multiplication by volume does not apply (so, set to 1)
+            if (units[1].compare("EMPTY") == 0){
+                i_volume = 1;}
+            
+            // Calculate state variable mass
             (*OpenWQ_vars.d_chemass_ic)(icmp)(chemi)(ix,iy,iz) =// units: g (basic units of MASS in openWQ)
                 ic_value // converted to mg/l (or g/m3) in OpenWQ_initiate::Transform_Units
                 * i_volume; // passed in m3 (can be volume of water of volume of soil)
 
         }
+
         /* ########################################
         // IC conditions NOT provided set to ZERO
         ######################################## */

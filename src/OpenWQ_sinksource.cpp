@@ -60,8 +60,9 @@ void OpenWQ_sinksource::SetSinkSource(
     std::string ss_units_json;              // units of row data
     std::vector<double> unit_multiplers;    // multiplers (numerator and denominator)
    
-    arma::vec row_data_col;         // new row data (initially as col data)
-    arma::Mat<double> row_data_row; // for conversion of row_data_col to row data
+    arma::vec row_data_col;                 // new row data (initially as col data)
+    arma::Mat<double> row_data_row;         // for conversion of row_data_col to row data
+
     
     // Get model comparment names list
     unsigned int num_cmp = OpenWQ_hostModelconfig.HydroComp.size();
@@ -72,10 +73,10 @@ void OpenWQ_sinksource::SetSinkSource(
     }
 
     // Get model chemical names list
-    unsigned int num_chem = OpenWQ_wqconfig.num_chem;
-    for (unsigned int chemi=0;chemi<num_chem;chemi++){
+    unsigned int BGC_general_num_chem = OpenWQ_wqconfig.BGC_general_num_chem;
+    for (unsigned int chemi=0;chemi<BGC_general_num_chem;chemi++){
         chem_list.push_back(
-            (OpenWQ_wqconfig.chem_species_list)[chemi]);
+            (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi]);
     }
 
     // Get number of sub-structures of SinkSource
@@ -243,14 +244,17 @@ void OpenWQ_sinksource::SetSinkSource(
                 // Convert SS units
                 // Source/sink units (g -> default model mass units)
                 // 1) Calculate unit multiplers
+                std::vector<std::string> units;          // units (numerator and denominator)
                 OpenWQ_units.Calc_Unit_Multipliers(
                     OpenWQ_wqconfig,
                     OpenWQ_output,
                     unit_multiplers,    // multiplers (numerator and denominator)
                     ss_units_json,      // input units
+                    units,
                     true);              // direction of the conversion: 
                                         // to native (true) or 
                                         // from native to desired output units (false)
+
                 // 2) Calculate value with new units
                 OpenWQ_units.Convert_Units(
                     ss_data_json,       // ic_value passed by reference so that it can be changed
@@ -426,7 +430,7 @@ void OpenWQ_sinksource::Apply_Source(
             "<OpenWQ> WARNING: Sink/Source load out of boundaries."
             "Requested load ignored: Compartment=" 
             + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(cmpi))
-            + ", Chemical=" + OpenWQ_wqconfig.chem_species_list[chemi]
+            + ", Chemical=" + OpenWQ_wqconfig.BGC_general_chem_species_list[chemi]
             + ", ix=" + std::to_string(ix)
             + ", iy=" + std::to_string(iy)
             + ", iz=" + std::to_string(iz)
@@ -479,7 +483,7 @@ void OpenWQ_sinksource::Apply_Sink(
             "<OpenWQ> WARNING: Sink/Source load out of boundaries."
             "Requested load ignored: Compartment=" 
             + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(cmpi))
-            + ", Chemical=" + OpenWQ_wqconfig.chem_species_list[chemi]
+            + ", Chemical=" + OpenWQ_wqconfig.BGC_general_chem_species_list[chemi]
             + ", ix=" + std::to_string(ix)
             + ", iy=" + std::to_string(iy)
             + ", iz=" + std::to_string(iz);
