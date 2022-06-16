@@ -48,6 +48,7 @@ USE globalData,only:gru_struc                               ! gru-hru mapping st
 ! OpenWQ coupling 
 USE globalData,only:openWQ_obj
 USE summa_openWQ,only:run_time_start
+USE summa_openWQ,only:run_time_end
 USE openWQ
 USE, intrinsic :: iso_c_binding
 implicit none
@@ -102,17 +103,16 @@ err=openwq_obj%decl()
 ! *****************************************************************************
 
 ! loop through time
-do modelTimeStep=1,5
+do modelTimeStep=1,2
 
  ! read model forcing data
  call summa_readForcing(modelTimeStep, summa1_struc(n), err, message)
  call handle_err(err, message)
 
-
+ ! *** OPENWQ Run_Time_Start ***
  call run_time_start(openwq_obj, summa1_struc(n))
   ! we need to pass the volumes for each timestep
 
- print*, "Fortran/summa_driver.f90: Done openWQ_obj%run(1)"
  
  ! run the summa physics for one time step
  call summa_runPhysics(modelTimeStep, summa1_struc(n), err, message)
@@ -123,6 +123,11 @@ do modelTimeStep=1,5
  ! write the model output
  call summa_writeOutputFiles(modelTimeStep, summa1_struc(n), err, message)
  call handle_err(err, message)
+
+ ! *** OPENWQ Run_Time_End ***
+ call run_time_end(openwq_obj, summa1_struc(n))
+
+
 
 end do  ! looping through time
 

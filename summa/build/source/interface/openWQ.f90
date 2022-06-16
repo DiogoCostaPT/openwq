@@ -15,7 +15,8 @@ module openwq
    !  procedure :: get_num => openWQ_get_num
     procedure :: decl => openWQ_init
     procedure :: run_time_start => openWQ_run_time_start
-    procedure :: run => openWQ_run
+    procedure :: run_space => openWQ_run_space
+    procedure :: run_time_end => openWQ_run_time_end
 
  end type
 
@@ -60,15 +61,33 @@ module openwq
          soilMoisture, soilTemp, airTemp, swe_vol, canopyWat_vol, matricHead_vol, aquiferStorage_vol)
    end function
 
-   integer function openWQ_run(this, func)
+   integer function openWQ_run_space(this,source,ix_s,iy_s,iz_s, &
+         recipient,ix_r,iy_r,iz_r,wflux_s2r,wmass_source)
       implicit none
-      class(ClassWQ_OpenWQ) :: this
-      integer, intent(in)   :: func
-      openWQ_run = openwq_run_c(this%ptr, func)
+      class(ClassWQ_OpenWQ)      :: this
+      integer(i4b), intent(in)   :: source
+      integer(i4b), intent(in)   :: ix_s
+      integer(i4b), intent(in)   :: iy_s
+      integer(i4b), intent(in)   :: iz_s
+      integer(i4b), intent(in)   :: recipient
+      integer(i4b), intent(in)   :: ix_r
+      integer(i4b), intent(in)   :: iy_r
+      integer(i4b), intent(in)   :: iz_r
+      real(rkind),  intent(in)   :: wflux_s2r
+      real(rkind),  intent(in)   :: wmass_source
+      openWQ_run_space = openwq_run_space_c(this%ptr,source,ix_s,iy_s,iz_s,recipient,ix_r,iy_r,iz_r,wflux_s2r,wmass_source)
    end function
 
 
-   
-
+   integer function openWQ_run_time_end(this,year, month, day, hour, minute)
+      implicit none
+      class(ClassWQ_OpenWQ)      :: this
+      integer(i4b), intent(in)   :: year
+      integer(i4b), intent(in)   :: month
+      integer(i4b), intent(in)   :: day
+      integer(i4b), intent(in)   :: hour
+      integer(i4b), intent(in)   :: minute
+      openWQ_run_time_end = openWQ_run_time_end_c(this%ptr,year, month, day, hour, minute)
+   end function
 
 end module openwq

@@ -35,12 +35,32 @@ interface
         real(c_double), intent(in)           :: aquiferStorage_vol(numHRU)
     end function
 
-    function openwq_run_c(openWQ, func) bind(C, name="openwq_run")
+    function openwq_run_space_c(openWQ,source,ix_s,iy_s,iz_s,recipient,ix_r,iy_r,iz_r,wflux_s2r,wmass_source) bind(C, name="openwq_run_space")
         use iso_c_binding
         implicit none
-        integer(c_int) :: openwq_run_c ! returns 0 (success) or -1 (failure)
-        type(c_ptr), intent(in), value      :: openWQ
-        integer(c_int), intent(in), value   :: func
+        integer(c_int) :: openwq_run_space_c ! returns 0 (success) or -1 (failure)
+        type(c_ptr),    intent(in), value      :: openWQ
+        integer(c_int), intent(in), value      :: source
+        integer(c_int), intent(in), value      :: ix_s
+        integer(c_int), intent(in), value      :: iy_s 
+        integer(c_int), intent(in), value      :: iz_s
+        integer(c_int), intent(in), value      :: recipient
+        integer(c_int), intent(in), value      :: ix_r
+        integer(c_int), intent(in), value      :: iy_r
+        integer(c_int), intent(in), value      :: iz_r
+        real(c_double), intent(in), value      :: wflux_s2r
+        real(c_double), intent(in), value      :: wmass_source
     end function
 
+    function openwq_run_time_end_c(openWQ,year, month, day, hour, minute) bind(C, name="openwq_run_time_end")
+        USE iso_c_binding
+        implicit none
+        integer(c_int) :: openwq_run_time_end_c ! returns 0 (success) or -1 (failure)
+        type(c_ptr),    intent(in), value   :: openWQ
+        integer(c_int), intent(in), value    :: year
+        integer(c_int), intent(in), value    :: month
+        integer(c_int), intent(in), value    :: hour
+        integer(c_int), intent(in), value    :: day
+        integer(c_int), intent(in), value    :: minute
+    end function
 end interface

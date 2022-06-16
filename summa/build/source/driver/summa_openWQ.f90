@@ -4,7 +4,7 @@ module summa_openWQ
   implicit none
   private
   public :: run_time_start
-
+  public :: run_time_end
   contains
 
   ! Subroutine that SUMMA calls to pass varialbes that need to go to
@@ -86,5 +86,37 @@ subroutine run_time_start(openWQ_obj, summa1_struc)
 
   end associate summaVars
 end subroutine
+
+subroutine run_time_end(openWQ_obj, summa1_struc)
+  USE nrtype
+  USE openWQ, only:ClassWQ_OpenWQ
+  USE summa_type, only:summa1_type_dec            ! master summa data type
+  
+  USE var_lookup, only: iLookTIME  ! named variables for time data structure
+
+  implicit none
+
+  ! Dummy Varialbes
+  class(ClassWQ_OpenWQ), intent(in)  :: openWQ_obj
+  type(summa1_type_dec), intent(in)  :: summa1_struc
+
+  ! Local Variables
+  integer(i4b)                       :: err ! error control
+
+  summaVars: associate(&
+      timeStruct     => summa1_struc%timeStruct       &       
+  )
+
+  err=openwq_obj%run_time_end(&
+    timeStruct%var(iLookTIME%iyyy),         & ! Year
+    timeStruct%var(iLookTIME%im),           & ! month
+    timeStruct%var(iLookTIME%id),           & ! hour
+    timeStruct%var(iLookTIME%ih),           & ! day
+    timeStruct%var(iLookTIME%imin))           ! minute
+
+  end associate summaVars
+end subroutine
+
+
 
 end module summa_openWQ

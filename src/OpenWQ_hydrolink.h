@@ -1,5 +1,3 @@
-
-
 // This program, openWQ, is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -67,17 +65,23 @@ class ClassWQ_OpenWQ
         double soilMoisture[], double soilTemp[], double airTemp[],
         double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]);
 
-    int run_space();
+    int run_space(int source, int ix_s, int iy_s, int iz_s,
+        int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source);
 
-    int run_time_end();
-
-    int get_hru_area();
+    int run_time_end(int year, int month, int day, int hour, int minute);
 
     time_t convert_time(int year, int month, int day, int hour, int minute);
 
 };
 
 
+
+/**
+ * This is the C interface for SUMMA, these are the functions that are called 
+ * by SUMMA and the iso bindings. 
+ * These are only their definition and their actual implementation is in
+ * OpenWQ_hydrolink.cpp 
+ */
 #ifdef __cplusplus
 extern "C" { 
     class ClassWQ_OpenWQ;
@@ -99,7 +103,13 @@ extern "C" {
         double soilMoisture[], double soilTemp[], double airTemp[], double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]);
 
     // OpenWQ run functions, this function decides which C++ code to call
-    int openwq_run(CLASSWQ_OPENWQ *openWQ, int func);
+    int openwq_run_space(CLASSWQ_OPENWQ *openWQ, int source, int ix_s, int iy_s, int iz_s,
+        int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source);
+
+
+    int openwq_run_time_end(CLASSWQ_OPENWQ *openWQ, int year, int month, int day, int hour, int minute);
+
+
 
     #ifdef __cplusplus
 }

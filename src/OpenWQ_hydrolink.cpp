@@ -80,7 +80,7 @@ int ClassWQ_OpenWQ::decl() {
     return 0;
 }
 
-
+// SoilMoisture does not have a value - it is passed as 0
 int ClassWQ_OpenWQ::run_time_start(int numHRU, int year, int month, int day, int hour, int minute,
         double soilMoisture[], double soilTemp[], double airTemp[],
         double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]) {
@@ -116,18 +116,18 @@ int ClassWQ_OpenWQ::run_time_start(int numHRU, int year, int month, int day, int
     return 0;
 }
 
-int ClassWQ_OpenWQ::run_space() {
+int ClassWQ_OpenWQ::run_space(int source, int ix_s, int iy_s, int iz_s,
+        int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source) {
     std::cout << "C++ run_space" << std::endl;
+    std::cout << source << ", " << ix_s << ", " << iy_s << ", " << iz_s << ", " << recipient << ", " << ix_r 
+        << ", " << iy_r << ", " << iz_r << ", " << wflux_s2r << ", " << wmass_source << std::endl;
+
     return 0;
 }
 
-
-// TODO: We need SimTime for this function as well
-int ClassWQ_OpenWQ::run_time_end() {
-    std::cout << "C++ run_time_end" << std::endl;
+int ClassWQ_OpenWQ::run_time_end(int year, int month, int day, int hour, int minute) {
     
-
-    time_t simtime = 0; // needs to be passed in
+    time_t simtime = convert_time(year, month, day, hour, minute);
 
     OpenWQ_couplercalls_ref->RunTimeLoopEnd(
         *OpenWQ_hostModelconfig_ref,
@@ -143,14 +143,18 @@ int ClassWQ_OpenWQ::run_time_end() {
         *OpenWQ_solver_ref,
         *OpenWQ_output_ref,
         simtime);
-
     return 0;
 }
 
 
 
 
-
+/**
+ * Below is the implementation of the C interface for SUMMA. When Summa calls a function 
+ * the functions below are the ones that are invoked first. 
+ * The openWQ object is then passed from Fortran to these functions so that the OpenWQ object
+ * can be called. The openWQ object methods are defined above.
+ */
 // Interface functions to create Object
 CLASSWQ_OPENWQ* create_openwq(int num) {
     std::cout << "C API, create_openwq" << std::endl;
@@ -177,23 +181,15 @@ int openwq_run_time_start(ClassWQ_OpenWQ *openWQ, int numHRU, int year, int mont
 }
 
 
-int openwq_run(ClassWQ_OpenWQ *openWQ, int func) {
-    if (func == 1) { // run_time_start()
-        std::cout << "C API func = 1" << std::endl;
+int openwq_run_space(ClassWQ_OpenWQ *openWQ, int source, int ix_s, int iy_s, int iz_s,
+        int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source) {
 
-    
-    } else if (func == 2) { // run_space()
-        std::cout << "C API func = 2" << std::endl;
-        return openWQ->run_space();
+    return openWQ->run_space(source, ix_s, iy_s, iz_s,
+        recipient, ix_r, iy_r, iz_r, wflux_s2r, wmass_source);
+}
 
-    } else if (func == 3) { // run_time_end()
-        std::cout << "C API func = 3" << std::endl;
-        return openWQ->run_time_end();
-    
-    } 
-    
-    std::cout << "C API func = ERROR" << std::endl;
-    return -1;
-   
+int openwq_run_time_end(ClassWQ_OpenWQ *openWQ, int year, int month, int day, int hour, int minute) {
+
+    return openWQ->run_time_end(year, month, day, hour, minute);
 }
 
