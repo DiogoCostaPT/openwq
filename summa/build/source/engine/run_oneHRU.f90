@@ -114,7 +114,7 @@ contains
  
  ! model control
  integer(8)        , intent(in)    :: hruId               ! hruId
- real(rkind)          , intent(inout) :: dt_init             ! used to initialize the length of the sub-step for each HRU
+ real(rkind)       , intent(inout) :: dt_init             ! used to initialize the length of the sub-step for each HRU
  logical(lgt)      , intent(inout) :: computeVegFlux      ! flag to indicate if we are computing fluxes over vegetation (false=no, true=yes)
  integer(i4b)      , intent(inout) :: nSnow,nSoil,nLayers ! number of snow and soil layers
  ! data structures (input)
@@ -228,6 +228,13 @@ contains
  nSnow   = indxData%var(iLookINDEX%nSnow)%dat(1)     ! number of snow layers
  nSoil   = indxData%var(iLookINDEX%nSoil)%dat(1)     ! number of soil layers
  nLayers = indxData%var(iLookINDEX%nLayers)%dat(1)   ! total number of layers
+
+
+ ! OpenWQ updates
+
+
+
+ 
 
  end subroutine run_oneHRU
 

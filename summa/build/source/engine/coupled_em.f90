@@ -239,7 +239,7 @@ contains
  err=0; message="coupled_em/"
 
  ! This is the start of a data step for a local HRU
- print*, "SWE", prog_data%var(iLookPROG%scalarSWE)%dat(1)
+!  print*, "SWE", prog_data%var(iLookPROG%scalarSWE)%dat(1)
 
  ! check that the decision is supported
  if(model_decisions(iLookDECISIONS%groundwatr)%iDecision==bigBucket .and. &
@@ -543,7 +543,7 @@ contains
  ! ****************************************************************************************************
  ! *** MAIN SOLVER ************************************************************************************
  ! ****************************************************************************************************
- print*, "SWE before main solver", prog_data%var(iLookPROG%scalarSWE)%dat(1)
+!  print*, "SWE before main solver", prog_data%var(iLookPROG%scalarSWE)%dat(1)
  
  ! initialize the length of the sub-step
  dt_solv = 0._rkind   ! length of time step that has been completed (s)
@@ -1188,6 +1188,7 @@ contains
   message=trim(message)//'soil hydrology does not balance'
   err=20; return
  end if
+
 
  ! end association of local variables with information in the data structures
  end associate
