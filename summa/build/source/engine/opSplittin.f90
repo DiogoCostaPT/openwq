@@ -443,6 +443,13 @@ contains
  do iVar=1,size(flux_meta)  ! loop through fluxes
   if(flux2state_orig(iVar)%state1==integerMissing .and. flux2state_orig(iVar)%state2==integerMissing) cycle ! flux does not depend on state (e.g., input)
   if(flux2state_orig(iVar)%state1==iname_watCanopy .and. .not.computeVegFlux) cycle ! use input fluxes in cases where there is no canopy
+!   print*, ""
+!   print*, "------------------------------------------------------------------------------"
+!   print*, "iVAR = ",iVar
+!   print*, "Var Name = ", flux2state_liq(iVar)%varName
+!   print*, "state 1 = ", flux2state_liq(iVar)%state1
+!   print*, "state 2 = ", flux2state_liq(iVar)%state2
+!   print*, "------------------------------------------------------------------------------"
   flux_data%var(iVar)%dat(:) = 0._rkind
  end do
 
@@ -603,9 +610,16 @@ contains
                               ixControlVolume     => indx_data%var(iLookINDEX%ixControlVolume)%dat    ,& ! intent(in): [i4b(:)] index of control volume for different domains (veg, snow, soil)
                               ixLayerActive       => indx_data%var(iLookINDEX%ixLayerActive)%dat      ,& ! intent(in): [i4b(:)] list of indices for all active layers (inactive=integerM
                               ixDomainType        => indx_data%var(iLookINDEX%ixDomainType)%dat       )  ! intent(in): [i4b(:)] indices defining the type of the domain (iname_veg, iname_snow, iname_soil)
-
+        
        ! loop through flux variables
        do iVar=1,size(flux_meta)
+        ! print*, "AFTER"
+        ! print*, "------------------------------------------------------------------------------"
+        ! print*, "iVAR = ",iVar
+        ! print*, "Var Name = ", flux2state_liq(iVar)%varName
+        ! print*, "state 1 = ", flux2state_liq(iVar)%state1
+        ! print*, "state 2 = ", flux2state_liq(iVar)%state2
+        ! print*, "------------------------------------------------------------------------------"
 
         ! * identify flux mask for the fully coupled solution
         if(ixCoupling==fullyCoupled)then
