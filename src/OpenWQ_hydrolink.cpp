@@ -42,7 +42,7 @@ int ClassWQ_OpenWQ::decl() {
     OpenWQ_hostModelconfig_ref = new OpenWQ_hostModelconfig(); // Initalize hostModelconfig
     OpenWQ_couplercalls_ref = new OpenWQ_couplercalls();
     OpenWQ_json_ref = new OpenWQ_json();
-    OpenWQ_wqconfig_ref = new OpenWQ_wqconfig(11); // This is 11 because the OpenWQ_global.h says it should be in the class definition
+    OpenWQ_wqconfig_ref = new OpenWQ_wqconfig(13); // This is 11 because the OpenWQ_global.h says it should be in the class definition
     OpenWQ_units_ref = new OpenWQ_units();
     OpenWQ_readjson_ref = new OpenWQ_readjson();
     OpenWQ_initiate_ref = new OpenWQ_initiate();
