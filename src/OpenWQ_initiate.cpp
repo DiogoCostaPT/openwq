@@ -279,7 +279,10 @@ void OpenWQ_initiate::setIC(
         /* ########################################
         // IC conditions provided
         ######################################## */
-        try{ 
+
+        if (OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"].contains(CompName_icmp)){
+
+       // try{ 
             ic_info_i = 
                 OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
                 ["INITIAL_CONDITIONS"][chemname];
@@ -325,8 +328,8 @@ void OpenWQ_initiate::setIC(
         /* ########################################
         // IC conditions NOT provided set to ZERO
         ######################################## */
-        catch(json::exception& e){ 
-
+        //catch(json::exception& e){ 
+        else{
             // Create Message
             msg_string = 
                 "<OpenWQ> IC conditions not defined: set to zero (compartment: " 
