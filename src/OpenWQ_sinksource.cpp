@@ -335,23 +335,23 @@ void OpenWQ_sinksource::CheckApply(
 
         // Year
         YYYY_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,3);
-        if (YYYY != YYYY_json) continue;
+        if (YYYY < YYYY_json) continue;
         
         // Month
         MM_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,4);  
-        if (MM != MM_json) continue;
+        if (MM < MM_json) continue;
 
         // Day
         DD_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,5);  
-        if (DD != DD_json) continue;
+        if (DD < DD_json) continue;
 
         // Hour
         HH_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,6);  
-        if (HH != HH_json) continue;
+        if (HH < HH_json) continue;
 
         // Minute
         MIN_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,7);  
-        if (MIN != MIN_json) continue;
+        if (MIN < MIN_json) continue;
 
 
         // ########################################
