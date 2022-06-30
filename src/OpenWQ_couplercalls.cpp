@@ -180,6 +180,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
 
     // Get Year, Month, Day, Hour and Min of simulation time
     int year_sim_now = tm_simtime->tm_year;
+    year_sim_now += 1900; // Because localtime() returns: The number of years since 1900
     int month_sim_now = tm_simtime->tm_mon;
     int day_sim_now = tm_simtime->tm_mday;
     int hour_sim_now = tm_simtime->tm_hour;
