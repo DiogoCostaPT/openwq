@@ -6,6 +6,4 @@ services:
     container_name: openWQ
     volumes:
       - ./:/code:Z
-      - /gladwell/kck540/SummaActorsSettings/./:/SUMMA:Z
-      - /gladwell/kck540/SUMMA_Forcing_Data/North_America/./:/forcing_data:Z
-      - /gladwell/kck540/output/OpenWQ/./:/output/
+

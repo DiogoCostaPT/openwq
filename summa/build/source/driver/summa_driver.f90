@@ -103,7 +103,7 @@ err=openwq_obj%decl()
 ! *****************************************************************************
 
 ! loop through time
-do modelTimeStep=1,1
+do modelTimeStep=1,numtim
 
  ! read model forcing data
  call summa_readForcing(modelTimeStep, summa1_struc(n), err, message)
