@@ -26,7 +26,7 @@
 		"BIOGEOCHEMISTRY":{
 			"MODULE_NAME": "OPENWQ_NATIVE_BGC",
 			"MODULE_CONFIG_FILE": "/code/bin/SWAT_Soil_BGC.json",
-			"MODULE_CONFIG_FILEPATH": "/code/bin/openWQ_MODULE_BGC_cycling.json"
+			"MODULE_CONFIG_FILEPATH": "/code/bin/openWQ_BGC_cycling.json"
 		},
 		"TRANSPORT_EROSION":{
 			"MODULE_NAME": "OPENWQ_NATIVE_TE_NO_ADVDISP",

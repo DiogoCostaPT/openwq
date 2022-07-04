@@ -104,8 +104,13 @@ function plot_OpenWQ_outputs(...
             ylabel(tsnames_i,...
                 'Interpreter', 'none')
 
-            xlim([minTime, maxTime])
-            datetick('x','keeplimits')
+            try
+                xlim([minTime, maxTime])
+            catch
+                
+            end
+            
+            datetick('x','keeplimits','keepticks')
 
             % Prepare legend
             legend(legend_labels,...

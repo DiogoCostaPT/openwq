@@ -42,7 +42,7 @@ int ClassWQ_OpenWQ::decl() {
     OpenWQ_hostModelconfig_ref = new OpenWQ_hostModelconfig(); // Initalize hostModelconfig
     OpenWQ_couplercalls_ref = new OpenWQ_couplercalls();
     OpenWQ_json_ref = new OpenWQ_json();
-    OpenWQ_wqconfig_ref = new OpenWQ_wqconfig(11); // This is 11 because the OpenWQ_global.h says it should be in the class definition
+    OpenWQ_wqconfig_ref = new OpenWQ_wqconfig(13); // This is 11 because the OpenWQ_global.h says it should be in the class definition
     OpenWQ_units_ref = new OpenWQ_units();
     OpenWQ_readjson_ref = new OpenWQ_readjson();
     OpenWQ_initiate_ref = new OpenWQ_initiate();
@@ -52,11 +52,11 @@ int ClassWQ_OpenWQ::decl() {
     OpenWQ_output_ref = new OpenWQ_output();
 
     if (OpenWQ_hostModelconfig_ref->HydroComp.size()==0) {
-
+        // Make sure to use capital letters for compartment names
         OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(0,"SWE",numHRU,1,1));
-        OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(1,"ScalarCanopyWat",numHRU,1,1));
-        OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(2,"mLayerMatricHead",numHRU,1,1));
-        OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(3,"scalarAquifer",numHRU,1,1));
+        OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(1,"SCALARCANOPYWAT",numHRU,1,1));
+        // OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(2,"MLAYERMATRICHEAD",numHRU,1,1));
+        OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(2,"SCALARAQUIFER",numHRU,1,1));
 
         OpenWQ_vars_ref = new OpenWQ_vars(OpenWQ_hostModelconfig_ref->HydroComp.size());
         
@@ -121,7 +121,6 @@ int ClassWQ_OpenWQ::run_space(int source, int ix_s, int iy_s, int iz_s,
     std::cout << "C++ run_space" << std::endl;
     std::cout << source << ", " << ix_s << ", " << iy_s << ", " << iz_s << ", " << recipient << ", " << ix_r 
         << ", " << iy_r << ", " << iz_r << ", " << wflux_s2r << ", " << wmass_source << std::endl;
-    
 
     return 0;
 }

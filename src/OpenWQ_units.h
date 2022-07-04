@@ -41,11 +41,12 @@ class OpenWQ_units{
     bool Calc_Unit_Multipliers(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_output& OpenWQ_output,
-        std::vector<double>& unit_multiplers, // multiplers (numerator and denominator)
-        std::string input_unit,     // input units
-        bool direction_2native);    // direction of the conversion: 
-                                    // to native (true) or 
-                                    // from native to desired output units (false)
+        std::vector<double>& unit_multiplers,   // multiplers (numerator and denominator)
+        std::string input_unit,                 // input units
+        std::vector<std::string>& units,        // units (numerator and denominator)
+        bool direction_2native);                // direction of the conversion: 
+                                                // to native (true) or 
+                                                // from native to desired output units (false)
 
     bool Check_Mass_Units(
         std::string unit_i,         // unit of numerator or denominator

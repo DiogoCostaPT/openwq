@@ -545,9 +545,12 @@ contains
 
  ! update volumetric water content in the snow (ensure change in state is consistent with the fluxes)
  ! NOTE: for soil water balance is constrained within the iteration loop
+ print*, "snow = ", nSnowSoilHyd
  if(nSnowSoilHyd>0)then
+  print*, "nSnow = ", nSnow
   do concurrent (iLayer=1:nSnow,ixSnowSoilHyd(iLayer)/=integerMissing)   ! (loop through non-missing water state variables in the snow domain)
    iState = ixSnowSoilHyd(iLayer)
+   print*, iState
    stateVecTrial(iState) = stateVecInit(iState) + (fluxVecNew(iState)*dt + resSinkNew(iState))
   end do  ! looping through non-missing water state variables in the soil domain
  endif

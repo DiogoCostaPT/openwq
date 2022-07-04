@@ -1,0 +1,20 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/local/kck540/SUMMA-Projects/openwq'
+/usr/bin/cmake -S/code -B/code --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/cmake -E cmake_progress_start /code/CMakeFiles /code/CMakeFiles/progress.marks
+make -f CMakeFiles/Makefile2 all
+ 
+make[1]: Entering directory '/home/local/kck540/SUMMA-Projects/openwq'
+ 
+make[1]: CMakeFiles/Makefile2: No such file or directory
+
+make[1]: *** No rule to make target 'CMakeFiles/Makefile2'.
+make[1]: Failed to remake makefile 'CMakeFiles/Makefile2'.
+
+make[1]: *** No rule to make target 'all'.
+
+make[1]: Leaving directory '/home/local/kck540/SUMMA-Projects/openwq'
+make: Leaving directory '/home/local/kck540/SUMMA-Projects/openwq'
+ 
+make: *** [Makefile:84: all] Error 2
+

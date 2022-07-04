@@ -136,6 +136,11 @@ function output_tscollect = Read_h5_save_tscollection(...
         % cells requested
         xyz_elements_requested = extractElm_info_valid{i,2};
         
+        % if "all", then need to change the request to actual elem,ents
+        if strcmp(xyz_elements_requested,"all") 
+            xyz_elements_requested = xyz_elements_source 
+        end
+        
         % Look for cells to print
         icell_request_all = [];
         xyz_elements_requested_validated = [];

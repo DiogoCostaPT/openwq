@@ -42,14 +42,15 @@ void OpenWQ_units::Convert_Units(
 bool OpenWQ_units::Calc_Unit_Multipliers(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_output& OpenWQ_output,
-    std::vector<double>& unit_multiplers, // multiplers (numerator and denominator)
-    std::string input_unit,     // input units
-    bool direction_2native){    // direction of the conversion: 
-                                // to native (true) or 
-                                // from native to desired output units (false)
+    std::vector<double>& unit_multiplers,   // multiplers (numerator and denominator)
+    std::string input_unit,                 // input units
+    std::vector<std::string>& units,        // units (numerator and denominator)
+    bool direction_2native){                // direction of the conversion: 
+                                            // to native (true) or 
+                                            // from native to desired output units (false)
 
     // Local Variales
-    std::vector<std::string> units;         // units (numerator and denominator)
+    //std::vector<std::string> units;         // units (numerator and denominator)
     std::size_t loc_divider = 0;            // location of the "/" symbol in input units
     unsigned int m;                         // interactor
     bool mass_unit_flag;                    // flag to note if unit of mass

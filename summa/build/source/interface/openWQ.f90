@@ -89,9 +89,5 @@ module openwq
       integer(i4b), intent(in)   :: minute
       openWQ_run_time_end = openWQ_run_time_end_c(this%ptr,year, month, day, hour, minute)
    end function
-      
-
-   
-
 
 end module openwq
