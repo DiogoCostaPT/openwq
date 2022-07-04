@@ -330,7 +330,8 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                 message(STATUS "PARENT DIR = ${PARENT_DIR}")
                 set(SUMMA_DIR ${PARENT_DIR}/summa)
                 message(STATUS "SUMMA_DIR = ${SUMMA_DIR}")
-                set(OPENWQ_DIR ${PARENT_DIR})
+                set(OPENWQ_DIR ${PARENT_DIR}/openwq)
+                message(STATUS "OPENWQ DIR = ${OPENWQ_DIR}")
 
                 ############################################################################
                 ## File definitions for subcomponents - For OpenWQ
