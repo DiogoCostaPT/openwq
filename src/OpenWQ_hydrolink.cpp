@@ -93,8 +93,8 @@ int ClassWQ_OpenWQ::run_time_start(int numHRU, int year, int month, int day, int
         (*OpenWQ_hostModelconfig_ref->Tsoil)(i,0,0) = soilTemp[i];
         (*OpenWQ_hostModelconfig_ref->waterVol_hydromodel)[0](i,0,0) = SWE_vol[i];
         (*OpenWQ_hostModelconfig_ref->waterVol_hydromodel)[1](i,0,0) = canopyWat[i];
-        (*OpenWQ_hostModelconfig_ref->waterVol_hydromodel)[2](i,0,0) = matricHead_vol[i];
-        (*OpenWQ_hostModelconfig_ref->waterVol_hydromodel)[3](i,0,0) = aquiferStorage[i];
+        // (*OpenWQ_hostModelconfig_ref->waterVol_hydromodel)[2](i,0,0) = matricHead_vol[i];
+        (*OpenWQ_hostModelconfig_ref->waterVol_hydromodel)[2](i,0,0) = aquiferStorage[i];
     }
 
     // *OpenWQ_hostModelconfig_ref.time_step = 5;
