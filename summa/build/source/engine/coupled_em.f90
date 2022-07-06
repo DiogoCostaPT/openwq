@@ -239,7 +239,6 @@ contains
  err=0; message="coupled_em/"
 
  ! This is the start of a data step for a local HRU
-!  print*, "SWE", prog_data%var(iLookPROG%scalarSWE)%dat(1)
 
  ! check that the decision is supported
  if(model_decisions(iLookDECISIONS%groundwatr)%iDecision==bigBucket .and. &

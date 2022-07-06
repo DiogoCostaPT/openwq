@@ -548,7 +548,6 @@ contains
  if(nSnowSoilHyd>0)then
   do concurrent (iLayer=1:nSnow,ixSnowSoilHyd(iLayer)/=integerMissing)   ! (loop through non-missing water state variables in the snow domain)
    iState = ixSnowSoilHyd(iLayer)
-   print*, iState
    stateVecTrial(iState) = stateVecInit(iState) + (fluxVecNew(iState)*dt + resSinkNew(iState))
   end do  ! looping through non-missing water state variables in the soil domain
  endif

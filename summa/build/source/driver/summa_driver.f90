@@ -102,6 +102,10 @@ err=openwq_obj%decl()
 ! * model simulation
 ! *****************************************************************************
 
+print*, "nSnow Layers = ", gru_struc(1)%hruinfo(1)%nSnow
+print*, "nSoil Layers = ", gru_struc(1)%hruinfo(1)%nSoil
+
+
 ! loop through time
 do modelTimeStep=1,numtim
 
@@ -113,7 +117,6 @@ do modelTimeStep=1,numtim
  call run_time_start(openwq_obj, summa1_struc(n))
   ! we need to pass the volumes for each timestep
 
- 
  ! run the summa physics for one time step
  call summa_runPhysics(modelTimeStep, summa1_struc(n), err, message)
  call handle_err(err, message)
@@ -126,8 +129,6 @@ do modelTimeStep=1,numtim
 
  ! *** OPENWQ Run_Time_End ***
  call run_time_end(openwq_obj, summa1_struc(n))
-
-
 
 end do  ! looping through time
 

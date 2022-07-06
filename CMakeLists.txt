@@ -547,7 +547,7 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                 add_library(SUMMA_COMM OBJECT
                         ${COMM_ALL})
                         target_compile_options(SUMMA_COMM PRIVATE
-                        -ffree-line-length-none -fmax-errors=0 -lstdc++)
+                        ${CMAKE_FORTRAN_FLAGS})
                         target_include_directories(SUMMA_COMM PRIVATE
                                 "/usr/include/"
                                 "/code/build/"
