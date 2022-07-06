@@ -175,12 +175,13 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     /* ########################################
     Sources and Sinks (doesn't need space loop => it's inside the function)
     ######################################## */            
-
     struct tm *tm_simtime = localtime(&simtime);
 
     // Get Year, Month, Day, Hour and Min of simulation time
     int year_sim_now = tm_simtime->tm_year;
-    int month_sim_now = tm_simtime->tm_mon;
+    year_sim_now += 1900; // Because localtime() returns: The number of years since 1900
+    int month_sim_now = tm_simtime->tm_mon; // Because localtime() returns: months since January - [0, 11]
+    month_sim_now -= 1;
     int day_sim_now = tm_simtime->tm_mday;
     int hour_sim_now = tm_simtime->tm_hour;
     int min_sim_now = tm_simtime->tm_min;

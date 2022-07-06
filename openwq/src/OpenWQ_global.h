@@ -259,7 +259,7 @@ class OpenWQ_wqconfig
         >> openWQ_BGCnative_BGCexpressions_info;
     
     std::vector<
-        exprtk::expression<double>     // Expression (exprtk) parsed
+        exprtk::expression<double>                      // Expression (exprtk) parsed
         >openWQ_BGCnative_BGCexpressions_eq;            // BGC kinetic formulas for all biogeochemical cycles
     
     std::vector<double> openWQ_BGCnative_chemass_InTransfEq; // chemical mass involved in transformation (needs to be here for loop reset)
