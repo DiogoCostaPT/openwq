@@ -767,7 +767,7 @@ contains
        ! * solve variable subset for one time step...
        ! --------------------------------------------
 
-       print*, trim(message)//'before varSubstep: nSubset = ', nSubset
+      !  print*, trim(message)//'before varSubstep: nSubset = ', nSubset
 
        ! keep track of the number of scalar solutions
        if(ixSolution==scalar) numberScalarSolutions = numberScalarSolutions + 1
