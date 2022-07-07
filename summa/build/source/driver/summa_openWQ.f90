@@ -1,12 +1,18 @@
 module summa_openWQ
   USE nrtype
   USE openWQ, only:ClassWQ_OpenWQ
-
+  USE data_types, only:gru_hru_doubleVec
   implicit none
   private
+  ! Subroutines
   public :: run_time_start
   public :: run_space
   public :: run_time_end
+
+  ! Global Data for prognostic Variables of HRUs
+  type(gru_hru_doubleVec),save,public   :: progStruct_timestep_start ! copy of progStruct at the start of timestep for passing fluxes
+
+
   contains
 
   ! Subroutine that SUMMA calls to pass varialbes that need to go to

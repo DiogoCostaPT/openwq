@@ -49,7 +49,10 @@ USE globalData,only:gru_struc                               ! gru-hru mapping st
 USE globalData,only:openWQ_obj
 USE summa_openWQ,only:run_time_start
 USE summa_openWQ,only:run_time_end
+USE summa_openWQ,only:progStruct_timestep_start
 USE openWQ
+USE allocspace_module,only:allocGlobal                      ! module to allocate space for global data structures
+USE globalData,only:prog_meta
 USE, intrinsic :: iso_c_binding
 implicit none
 
@@ -62,8 +65,6 @@ type(summa1_type_dec), allocatable :: summa1_struc(:)
 integer(i4b), parameter            :: n=1                        ! number of instantiations
 ! define timing information
 integer(i4b)                       :: modelTimeStep              ! index of model time step
-integer(i4b)                       :: random
-integer(i4b)                       :: random2
 ! error control
 integer(i4b)                       :: err=0                      ! error code
 character(len=1024)                :: message=''                 ! error message
@@ -97,6 +98,11 @@ call handle_err(err, message)
 hruCount = sum( gru_struc(:)%hruCount )
 openwq_obj = ClassWQ_OpenWQ(hruCount)
 err=openwq_obj%decl()
+
+call allocGlobal(prog_meta, progStruct_timestep_start, err, message)
+if(err/=0) call stop_program(1, 'problem allocating openWQ progStruct for saving state information')
+
+
 
 ! *****************************************************************************
 ! * model simulation
