@@ -94,27 +94,19 @@ call handle_err(err, message)
 call summa_readRestart(summa1_struc(n), err, message)
 call handle_err(err, message)
 
- ! Initalize openWQ and call decl
+! ---------------------OPENWQ------------------------------------
 hruCount = sum( gru_struc(:)%hruCount )
-openwq_obj = ClassWQ_OpenWQ(hruCount)
-err=openwq_obj%decl()
-
-call allocGlobal(prog_meta, progStruct_timestep_start, err, message)
+openwq_obj = ClassWQ_OpenWQ(hruCount) ! initalize openWQ object
+err=openwq_obj%decl()  ! intialize openWQ
+call allocGlobal(prog_meta, progStruct_timestep_start, err, message) ! initalize structure to hold state information
 if(err/=0) call stop_program(1, 'problem allocating openWQ progStruct for saving state information')
-
-
+! ---------------------OPENWQ------------------------------------
 
 ! *****************************************************************************
 ! * model simulation
 ! *****************************************************************************
-
-print*, "nSnow Layers = ", gru_struc(1)%hruinfo(1)%nSnow
-print*, "nSoil Layers = ", gru_struc(1)%hruinfo(1)%nSoil
-
-
-
 ! loop through time
-do modelTimeStep=1,numtim
+do modelTimeStep=1,3
 
  ! read model forcing data
  call summa_readForcing(modelTimeStep, summa1_struc(n), err, message)
