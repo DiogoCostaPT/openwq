@@ -61,7 +61,7 @@ class ClassWQ_OpenWQ
 
     int decl();
 
-    int run_time_start(int numHRU, int year, int month, int day, int hour, int minute, 
+    int run_time_start(int numHRU, int simtime_summa[], 
         double soilMoisture[], double soilTemp[], double airTemp[],
         double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]);
 
@@ -99,7 +99,7 @@ extern "C" {
     // OpenWQ initalization method
     int openwq_decl(CLASSWQ_OPENWQ *openWQ);
 
-    int openwq_run_time_start(CLASSWQ_OPENWQ *openWQ, int numHRU, int year, int month, int day, int hour, int minute,
+    int openwq_run_time_start(CLASSWQ_OPENWQ *openWQ, int numHRU, int simtime_summa[],
         double soilMoisture[], double soilTemp[], double airTemp[], double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]);
 
     // OpenWQ run functions, this function decides which C++ code to call

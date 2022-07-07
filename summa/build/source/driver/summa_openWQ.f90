@@ -28,6 +28,7 @@ subroutine run_time_start(openWQ_obj, summa1_struc)
   integer(i4b)                       :: iGRU
   integer(i4b)                       :: iHRU
   integer(i4b)                       :: openWQArrayIndex
+  integer(i4b)                       :: simtime(5) ! 5 time values yy-mm-dd-hh-min
   real(rkind)                        :: soilMoisture(sum(gru_struc(:)%hruCount))
   real(rkind)                        :: soilTemp(sum(gru_struc(:)%hruCount))
   real(rkind)                        :: airTemp(sum(gru_struc(:)%hruCount))
@@ -67,14 +68,16 @@ subroutine run_time_start(openWQ_obj, summa1_struc)
       end do
   end do
 
+  ! add the time values to the array
+  simtime(1) = timeStruct%var(iLookTIME%iyyy)  ! Year
+  simtime(2) = timeStruct%var(iLookTIME%im)    ! month
+  simtime(3) = timeStruct%var(iLookTIME%id)    ! hour
+  simtime(4) = timeStruct%var(iLookTIME%ih)    ! day
+  simtime(5) = timeStruct%var(iLookTIME%imin)  ! minute
 
   err=openWQ_obj%run_time_start(&
         sum(gru_struc(:)%hruCount),             & ! total HRUs
-        timeStruct%var(iLookTIME%iyyy),         & ! Year
-        timeStruct%var(iLookTIME%im),           & ! month
-        timeStruct%var(iLookTIME%id),           & ! hour
-        timeStruct%var(iLookTIME%ih),           & ! day
-        timeStruct%var(iLookTIME%imin),         & ! minute
+        simtime,                                &
         soilMoisture,                           &                    
         soilTemp,                               &
         airTemp,                                &

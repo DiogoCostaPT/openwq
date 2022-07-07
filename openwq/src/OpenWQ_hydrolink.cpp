@@ -81,11 +81,11 @@ int ClassWQ_OpenWQ::decl() {
 }
 
 // SoilMoisture does not have a value - it is passed as 0
-int ClassWQ_OpenWQ::run_time_start(int numHRU, int year, int month, int day, int hour, int minute,
+int ClassWQ_OpenWQ::run_time_start(int numHRU, int simtime_summa[],
         double soilMoisture[], double soilTemp[], double airTemp[],
         double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]) {
-    
-    time_t simtime = convert_time(year, month, day, hour, minute); // needs to be passed in
+
+    time_t simtime = convert_time(simtime_summa[0], simtime_summa[1], simtime_summa[2], simtime_summa[3], simtime_summa[4]); // needs to be passed in
 
     for (int i = 0; i < numHRU; i++) {
         (*OpenWQ_hostModelconfig_ref->SM)   (i,0,0) = soilMoisture[i]; 
@@ -197,11 +197,10 @@ int openwq_decl(ClassWQ_OpenWQ *openWQ) {
 }
 
 
-int openwq_run_time_start(ClassWQ_OpenWQ *openWQ, int numHRU, int year, int month, 
-    int day, int hour, int minute, double soilMoisture[], double soilTemp[], double airTemp[],
+int openwq_run_time_start(ClassWQ_OpenWQ *openWQ, int numHRU, int simtime_summa[], double soilMoisture[], double soilTemp[], double airTemp[],
     double SWE_vol[], double canopyWat_vol[], double matricHead_vol[], double aquiferStorage_vol[]) {
     
-    return openWQ->run_time_start(numHRU, year, month, day, hour, minute,
+    return openWQ->run_time_start(numHRU, simtime_summa,
         soilMoisture, soilTemp, airTemp, SWE_vol, canopyWat_vol, matricHead_vol, aquiferStorage_vol);
 }
 

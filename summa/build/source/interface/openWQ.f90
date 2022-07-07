@@ -40,16 +40,12 @@ module openwq
     end function
 !  ! Globaly accessible variable
 
-   integer function openWQ_run_time_start(this, numHRU, year, month, day, hour, minute, &
+   integer function openWQ_run_time_start(this, numHRU, simtime, &
       soilMoisture, soilTemp, airTemp, swe_vol, canopyWat_vol, matricHead_vol, aquiferStorage_vol)
       implicit none
       class(ClassWQ_OpenWQ)      :: this
       integer(i4b), intent(in)   :: numHRU
-      integer(i4b), intent(in)   :: year
-      integer(i4b), intent(in)   :: month
-      integer(i4b), intent(in)   :: day
-      integer(i4b), intent(in)   :: hour
-      integer(i4b), intent(in)   :: minute
+      integer(i4b), intent(in)   :: simtime(5) ! 5 is the number of timevars
       real(rkind),  intent(in)   :: soilMoisture(numHRU)
       real(rkind),  intent(in)   :: soilTemp(numHRU)
       real(rkind),  intent(in)   :: airTemp(numHRU)
@@ -57,7 +53,7 @@ module openwq
       real(rkind),  intent(in)   :: canopyWat_vol(numHRU)
       real(rkind),  intent(in)   :: matricHead_vol(numHRU)
       real(rkind),  intent(in)   :: aquiferStorage_vol(numHRU)
-      openWQ_run_time_start = openwq_run_time_start_c(this%ptr, numHRU, year, month, day, hour, minute, &
+      openWQ_run_time_start = openwq_run_time_start_c(this%ptr, numHRU, simtime, &
          soilMoisture, soilTemp, airTemp, swe_vol, canopyWat_vol, matricHead_vol, aquiferStorage_vol)
    end function
 

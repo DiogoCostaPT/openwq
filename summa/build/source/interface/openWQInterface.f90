@@ -13,7 +13,7 @@ interface
         type(c_ptr), intent(in), value :: openWQ
     end function
 
-    function openwq_run_time_start_c(openWQ, numHRU, year, month, hour, day, minute, &
+    function openwq_run_time_start_c(openWQ, numHRU, simtime, &
         soilMoisture, soilTemp, airTemp, swe_vol, canopyWat_vol, &
         matricHead_vol, aquiferStorage_vol) bind(C, name="openwq_run_time_start")
         use iso_c_binding
@@ -21,11 +21,7 @@ interface
         integer(c_int)                       :: openwq_run_time_start_c ! returns 0 (success) or -1 (failure)
         type(c_ptr),    intent(in), value    :: openWQ
         integer(c_int), intent(in), value    :: numHRU
-        integer(c_int), intent(in), value    :: year
-        integer(c_int), intent(in), value    :: month
-        integer(c_int), intent(in), value    :: hour
-        integer(c_int), intent(in), value    :: day
-        integer(c_int), intent(in), value    :: minute
+        integer(c_int), intent(in)           :: simtime(5)
         real(c_double), intent(in)           :: soilMoisture(numHRU)
         real(c_double), intent(in)           :: soilTemp(numHRU)
         real(c_double), intent(in)           :: airTemp(numHRU)
