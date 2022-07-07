@@ -106,6 +106,7 @@ print*, "nSnow Layers = ", gru_struc(1)%hruinfo(1)%nSnow
 print*, "nSoil Layers = ", gru_struc(1)%hruinfo(1)%nSoil
 
 
+
 ! loop through time
 do modelTimeStep=1,numtim
 
