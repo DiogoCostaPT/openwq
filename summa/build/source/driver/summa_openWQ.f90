@@ -1,21 +1,19 @@
 module summa_openWQ
-  
-  
+  USE nrtype
+  USE openWQ, only:ClassWQ_OpenWQ
+
   implicit none
   private
   public :: run_time_start
+  public :: run_space
   public :: run_time_end
   contains
 
   ! Subroutine that SUMMA calls to pass varialbes that need to go to
   ! openWQ
 subroutine run_time_start(openWQ_obj, summa1_struc)
-  USE nrtype                                      ! variable types, etc.
   USE summa_type, only:summa1_type_dec            ! master summa data type
   USE globalData, only:gru_struc
-  USE openWQ, only:ClassWQ_OpenWQ
-
-
   USE var_lookup, only: iLookPROG  ! named variables for state variables
   USE var_lookup, only: iLookTIME  ! named variables for time data structure
 
@@ -90,9 +88,27 @@ subroutine run_time_start(openWQ_obj, summa1_struc)
   end associate summaVars
 end subroutine
 
+
+subroutine run_space(openwq_obj,ihru, timeVec, progData, fluxData)
+  USE var_lookup, only: iLookPROG  ! named variables for state variables
+  USE var_lookup, only: iLookTIME  ! named variables for time data structure
+  USE var_lookup, only: iLookFLUX  ! named varaibles for flux data
+  USE data_types, only: var_dlength
+  implicit none
+  class(ClassWQ_OpenWQ), intent(in)    :: openWQ_obj
+  integer(i4b),          intent(in)    :: ihru
+  integer(i4b),          intent(in)    :: timeVec(:)          ! int vector   -- model time data
+  type(var_dlength),     intent(in)    :: progData            ! x%var(:)%dat -- model prognostic (state) variables
+  type(var_dlength),     intent(in)    :: fluxData            ! x%var(:)%dat -- model fluxes
+
+
+  print*, "In RunSpace"
+
+end subroutine run_space
+
+
+
 subroutine run_time_end(openWQ_obj, summa1_struc)
-  USE nrtype
-  USE openWQ, only:ClassWQ_OpenWQ
   USE summa_type, only:summa1_type_dec            ! master summa data type
   
   USE var_lookup, only: iLookTIME  ! named variables for time data structure

@@ -71,9 +71,6 @@ USE noahmp_globals,only:RSMIN              ! minimum stomatal resistance (vegTyp
 ! urban vegetation category (could be local)
 USE globalData,only:urbanVegCategory       ! vegetation category for urban areas
 
-! import the openWQ object
-USE globalData,only:openWQ_obj
-
 
 implicit none
 private
@@ -237,13 +234,6 @@ contains
  nSnow   = indxData%var(iLookINDEX%nSnow)%dat(1)     ! number of snow layers
  nSoil   = indxData%var(iLookINDEX%nSoil)%dat(1)     ! number of soil layers
  nLayers = indxData%var(iLookINDEX%nLayers)%dat(1)   ! total number of layers
-
-
- ! OpenWQ updates
-
-
-
- 
 
  end subroutine run_oneHRU
 

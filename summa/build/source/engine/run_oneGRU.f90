@@ -58,6 +58,10 @@ USE mDecisions_module,only:&           ! look-up values for the choice of method
  singleBasin, &                        ! single groundwater store over the entire basin
  bigBucket                             ! a big bucket (lumped aquifer model)
 
+! OpenWQ Coupling
+USE globalData,only:openWQ_obj
+USE summa_openWQ,only:run_space
+
 ! -----------------------------------------------------------------------------------------------------------------------------------
 ! -----------------------------------------------------------------------------------------------------------------------------------
 ! -----------------------------------------------------------------------------------------------------------------------------------
@@ -104,7 +108,7 @@ contains
 
  ! model control
  type(gru2hru_map)   , intent(inout) :: gruInfo              ! HRU information for given GRU (# HRUs, #snow+soil layers)
- real(rkind)            , intent(inout) :: dt_init(:)           ! used to initialize the length of the sub-step for each HRU
+ real(rkind)         , intent(inout) :: dt_init(:)           ! used to initialize the length of the sub-step for each HRU
  integer(i4b)        , intent(inout) :: ixComputeVegFlux(:)  ! flag to indicate if we are computing fluxes over vegetation (false=no, true=yes)
  ! data structures (input)
  integer(i4b)        , intent(in)    :: timeVec(:)           ! integer vector      -- model time data
@@ -197,6 +201,12 @@ contains
                   ! error control
                   err,cmessage)                      ! intent(out):   error control
   if(err/=0)then; err=20; message=trim(message)//trim(cmessage); return; endif
+
+  ! ------------------------------OPENWQ---------------------------------
+  call run_space(openwq_obj,iHRU,timeVec,progHRU%hru(iHRU),fluxHRU%hru(iHRU))
+  ! ------------------------------OPENWQ---------------------------------
+
+
 
   ! update layer numbers that could be changed in run_oneHRU -- needed for model output
   gruInfo%hruInfo(iHRU)%nSnow = nSnow
