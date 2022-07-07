@@ -85,7 +85,7 @@ int ClassWQ_OpenWQ::run_time_start(int numHRU, int simtime_summa[],
         double soilMoisture[], double soilTemp[], double airTemp[],
         double SWE_vol[], double canopyWat[], double matricHead_vol[], double aquiferStorage[]) {
 
-    time_t simtime = convert_time(simtime_summa[0], simtime_summa[1], simtime_summa[2], simtime_summa[3], simtime_summa[4]); // needs to be passed in
+    time_t simtime = convert_time(simtime_summa[0], simtime_summa[1], simtime_summa[2], simtime_summa[3], simtime_summa[4]);
 
     for (int i = 0; i < numHRU; i++) {
         (*OpenWQ_hostModelconfig_ref->SM)   (i,0,0) = soilMoisture[i]; 
@@ -116,36 +116,39 @@ int ClassWQ_OpenWQ::run_time_start(int numHRU, int simtime_summa[],
     return 0;
 }
 
-int ClassWQ_OpenWQ::run_space(int source, int ix_s, int iy_s, int iz_s,
+int ClassWQ_OpenWQ::run_space(int simtime_summa[], int source, int ix_s, int iy_s, int iz_s,
         int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source) {
     std::cout << "C++ run_space" << std::endl;
     std::cout << source << ", " << ix_s << ", " << iy_s << ", " << iz_s << ", " << recipient << ", " << ix_r 
         << ", " << iy_r << ", " << iz_r << ", " << wflux_s2r << ", " << wmass_source << std::endl;
 
-    // OpenWQ_couplercalls_ref->RunSpaceStep(
-    //     *OpenWQ_hostModelconfig_ref,
-    //     *OpenWQ_json_ref,
-    //     *OpenWQ_wqconfig_ref,            // create OpenWQ_wqconfig object
-    //     *OpenWQ_units_ref,                  // functions for unit conversion
-    //     *OpenWQ_readjson_ref,            // read json files
-    //     *OpenWQ_vars_ref,
-    //     *OpenWQ_initiate_ref,            // initiate modules
-    //     *OpenWQ_watertransp_ref,      // transport modules
-    //     *OpenWQ_chem_ref,                   // biochemistry modules
-    //     *OpenWQ_sinksource_ref,        // sink and source modules)
-    //     *OpenWQ_solver_ref,
-    //     *OpenWQ_output_ref,
-    //     simtime,
-    //     source,
-    //     ix_s,
-    //     ix_y,
-    //     iz_s,
-    //     recipient,
-    //     ix_r,
-    //     iy_r,
-    //     iz_r,
-    //     wflux_s2r.
-    //     wmass_source);
+    time_t simtime = convert_time(simtime_summa[0], simtime_summa[1], simtime_summa[2], simtime_summa[3], simtime_summa[4]);
+    
+
+    OpenWQ_couplercalls_ref->RunSpaceStep(
+        *OpenWQ_hostModelconfig_ref,
+        *OpenWQ_json_ref,
+        *OpenWQ_wqconfig_ref,            // create OpenWQ_wqconfig object
+        *OpenWQ_units_ref,                  // functions for unit conversion
+        *OpenWQ_readjson_ref,            // read json files
+        *OpenWQ_vars_ref,
+        *OpenWQ_initiate_ref,            // initiate modules
+        *OpenWQ_watertransp_ref,      // transport modules
+        *OpenWQ_chem_ref,                   // biochemistry modules
+        *OpenWQ_sinksource_ref,        // sink and source modules)
+        *OpenWQ_solver_ref,
+        *OpenWQ_output_ref,
+        simtime,
+        source,
+        ix_s,
+        iy_s,
+        iz_s,
+        recipient,
+        ix_r,
+        iy_r,
+        iz_r,
+        wflux_s2r,
+        wmass_source);
 
     return 0;
 }
@@ -205,10 +208,10 @@ int openwq_run_time_start(ClassWQ_OpenWQ *openWQ, int numHRU, int simtime_summa[
 }
 
 
-int openwq_run_space(ClassWQ_OpenWQ *openWQ, int source, int ix_s, int iy_s, int iz_s,
+int openwq_run_space(ClassWQ_OpenWQ *openWQ, int simtime_summa[], int source, int ix_s, int iy_s, int iz_s,
         int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source) {
 
-    return openWQ->run_space(source, ix_s, iy_s, iz_s,
+    return openWQ->run_space(simtime_summa, source, ix_s, iy_s, iz_s,
         recipient, ix_r, iy_r, iz_r, wflux_s2r, wmass_source);
 }
 

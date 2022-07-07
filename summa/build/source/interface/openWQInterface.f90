@@ -31,11 +31,12 @@ interface
         real(c_double), intent(in)           :: aquiferStorage_vol(numHRU)
     end function
 
-    function openwq_run_space_c(openWQ,source,ix_s,iy_s,iz_s,recipient,ix_r,iy_r,iz_r,wflux_s2r,wmass_source) bind(C, name="openwq_run_space")
+    function openwq_run_space_c(openWQ,simtime,source,ix_s,iy_s,iz_s,recipient,ix_r,iy_r,iz_r,wflux_s2r,wmass_source) bind(C, name="openwq_run_space")
         use iso_c_binding
         implicit none
         integer(c_int) :: openwq_run_space_c ! returns 0 (success) or -1 (failure)
         type(c_ptr),    intent(in), value      :: openWQ
+        integer(c_int), intent(in)             :: simtime(5)
         integer(c_int), intent(in), value      :: source
         integer(c_int), intent(in), value      :: ix_s
         integer(c_int), intent(in), value      :: iy_s 
