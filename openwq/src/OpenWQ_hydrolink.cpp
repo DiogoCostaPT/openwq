@@ -153,9 +153,10 @@ int ClassWQ_OpenWQ::run_space(int simtime_summa[], int source, int ix_s, int iy_
     return 0;
 }
 
-int ClassWQ_OpenWQ::run_time_end(int year, int month, int day, int hour, int minute) {
+int ClassWQ_OpenWQ::run_time_end(int simtime_summa[]) {
     
-    time_t simtime = convert_time(year, month, day, hour, minute);
+    time_t simtime = convert_time(simtime_summa[0], simtime_summa[1], simtime_summa[2], simtime_summa[3], simtime_summa[4]);
+
 
     OpenWQ_couplercalls_ref->RunTimeLoopEnd(
         *OpenWQ_hostModelconfig_ref,
@@ -215,8 +216,8 @@ int openwq_run_space(ClassWQ_OpenWQ *openWQ, int simtime_summa[], int source, in
         recipient, ix_r, iy_r, iz_r, wflux_s2r, wmass_source);
 }
 
-int openwq_run_time_end(ClassWQ_OpenWQ *openWQ, int year, int month, int day, int hour, int minute) {
+    int openwq_run_time_end(ClassWQ_OpenWQ *openWQ, int simtime_summa[]) {
 
-    return openWQ->run_time_end(year, month, day, hour, minute);
+    return openWQ->run_time_end(simtime_summa);
 }
 

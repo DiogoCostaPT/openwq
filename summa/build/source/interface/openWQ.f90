@@ -76,15 +76,11 @@ module openwq
    end function
 
 
-   integer function openWQ_run_time_end(this,year, month, day, hour, minute)
+   integer function openWQ_run_time_end(this, simtime)
       implicit none
       class(ClassWQ_OpenWQ)      :: this
-      integer(i4b), intent(in)   :: year
-      integer(i4b), intent(in)   :: month
-      integer(i4b), intent(in)   :: day
-      integer(i4b), intent(in)   :: hour
-      integer(i4b), intent(in)   :: minute
-      openWQ_run_time_end = openWQ_run_time_end_c(this%ptr,year, month, day, hour, minute)
+      integer(i4b), intent(in)   :: simtime(5) ! 5 is the number of timevars
+      openWQ_run_time_end = openWQ_run_time_end_c(this%ptr,simtime)
    end function
 
 end module openwq

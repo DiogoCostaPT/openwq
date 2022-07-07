@@ -68,7 +68,7 @@ class ClassWQ_OpenWQ
     int run_space(int simtime_summa[], int source, int ix_s, int iy_s, int iz_s,
         int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source);
 
-    int run_time_end(int year, int month, int day, int hour, int minute);
+    int run_time_end(int simtime_summa[]);
 
     time_t convert_time(int year, int month, int day, int hour, int minute);
 
@@ -107,7 +107,7 @@ extern "C" {
         int recipient, int ix_r, int iy_r, int iz_r, double wflux_s2r, double wmass_source);
 
 
-    int openwq_run_time_end(CLASSWQ_OPENWQ *openWQ, int year, int month, int day, int hour, int minute);
+    int openwq_run_time_end(CLASSWQ_OPENWQ *openWQ, int simtime_summa[]);
 
 
 

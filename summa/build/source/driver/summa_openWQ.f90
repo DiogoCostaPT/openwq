@@ -104,18 +104,20 @@ subroutine run_time_end(openWQ_obj, summa1_struc)
   type(summa1_type_dec), intent(in)  :: summa1_struc
 
   ! Local Variables
+  integer(i4b)                       :: simtime(5) ! 5 time values yy-mm-dd-hh-min
   integer(i4b)                       :: err ! error control
 
   summaVars: associate(&
       timeStruct     => summa1_struc%timeStruct       &       
   )
 
-  err=openwq_obj%run_time_end(&
-    timeStruct%var(iLookTIME%iyyy),         & ! Year
-    timeStruct%var(iLookTIME%im),           & ! month
-    timeStruct%var(iLookTIME%id),           & ! hour
-    timeStruct%var(iLookTIME%ih),           & ! day
-    timeStruct%var(iLookTIME%imin))           ! minute
+  simtime(1) = timeStruct%var(iLookTIME%iyyy)  ! Year
+  simtime(2) = timeStruct%var(iLookTIME%im)    ! month
+  simtime(3) = timeStruct%var(iLookTIME%id)    ! hour
+  simtime(4) = timeStruct%var(iLookTIME%ih)    ! day
+  simtime(5) = timeStruct%var(iLookTIME%imin)  ! minute
+
+  err=openwq_obj%run_time_end(simtime)           ! minute
 
   end associate summaVars
 end subroutine
