@@ -122,6 +122,31 @@ int ClassWQ_OpenWQ::run_space(int source, int ix_s, int iy_s, int iz_s,
     std::cout << source << ", " << ix_s << ", " << iy_s << ", " << iz_s << ", " << recipient << ", " << ix_r 
         << ", " << iy_r << ", " << iz_r << ", " << wflux_s2r << ", " << wmass_source << std::endl;
 
+    // OpenWQ_couplercalls_ref->RunSpaceStep(
+    //     *OpenWQ_hostModelconfig_ref,
+    //     *OpenWQ_json_ref,
+    //     *OpenWQ_wqconfig_ref,            // create OpenWQ_wqconfig object
+    //     *OpenWQ_units_ref,                  // functions for unit conversion
+    //     *OpenWQ_readjson_ref,            // read json files
+    //     *OpenWQ_vars_ref,
+    //     *OpenWQ_initiate_ref,            // initiate modules
+    //     *OpenWQ_watertransp_ref,      // transport modules
+    //     *OpenWQ_chem_ref,                   // biochemistry modules
+    //     *OpenWQ_sinksource_ref,        // sink and source modules)
+    //     *OpenWQ_solver_ref,
+    //     *OpenWQ_output_ref,
+    //     simtime,
+    //     source,
+    //     ix_s,
+    //     ix_y,
+    //     iz_s,
+    //     recipient,
+    //     ix_r,
+    //     iy_r,
+    //     iz_r,
+    //     wflux_s2r.
+    //     wmass_source);
+
     return 0;
 }
 
