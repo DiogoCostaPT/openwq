@@ -8,7 +8,7 @@
 # 5) Open a shell inside that container: docker exec -it <container id> /bin/bash
 # 6) Armadillo now disables default hdf5 support for save/load, so inside the container you need to go to “/usr/include/armadillo_bits/config.hpp” and uncomment #define ARMA_USE_HDF5
 # 7) Inside the contained, go to the openwq folder
-# 8) Compile with: rm CMakeCache.txt; rm -r CMakeFiles; cmake . ; make -B
+# 8) Compile with: rm CMakeCache.txt; rm -r CMakeFiles; cmake . ; make -B; rm *.mod
 
 # That's all !!!
 #################################################
@@ -23,7 +23,7 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # 2) crhm_openwq -> compile with crhm using hydrolink
 # 3) summa_openwq -> compile with summa using hydrolink
 # 4) mesh_openwq -> compile with mesh using hydrolink
-set(COMPILE_MODE crhm_openwq)
+set(COMPILE_MODE summa_openwq)
 
 # Choose where to create the executable
 set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
@@ -537,10 +537,7 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                         -ffree-line-length-none -fmax-errors=0 -lstdc++)
                         target_include_directories(SUMMA_COMM PRIVATE
                                 "/usr/include/"
-                                "/code/build/"
-                                "/opt/local/"
-                                "/opt/homebrew/Cellar/"
-                                "/opt/homebrew/include/")
+                                "/code/summa/summa/build/")
                         target_link_libraries(SUMMA_COMM PUBLIC
                                 "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
                                 SUMMA_NOAHMP)
@@ -555,10 +552,7 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                                 ${LAPACK_INCLUDES}
                                 ${netCDF_INCLUDES}
                                 "/usr/include/"
-                                "/code/build/"
-                                "/opt/local/"
-                                "/opt/homebrew/Cellar/"
-                                "/opt/homebrew/include/")
+                                "/code/summa/summa/build/")
                         target_link_libraries(
                                 ${exec_name} PUBLIC
                                 "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
