@@ -653,7 +653,7 @@ void OpenWQ_readjson::SetConfigInfo(
     
         // Get info for BoundMix function
         // Get number of entries
-        int num_entries = OpenWQ_json.TE_module["BOUNDMIX_CONFIGURATION"].size();
+        unsigned int num_entries = OpenWQ_json.TE_module["BOUNDMIX_CONFIGURATION"].size();
 
 
         for (unsigned int entry_i = 0; entry_i < num_entries; entry_i++){
