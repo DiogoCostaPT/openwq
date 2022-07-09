@@ -297,7 +297,6 @@ int OpenWQ_output::writeCSV(
 
     // Local Variables
     unsigned int ix, iy, iz;                // iteractive indexes for each domain elements
-    unsigned int num_chem2print;            // number of chemical species to print
     unsigned int num_cells2print;           // iteractive number of cells to print for each compartment
     std::string CompName_icmp;              // compartment name (iteractive)
     std::string chem_name;                  // chemical name (iteractive)

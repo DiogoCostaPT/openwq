@@ -145,7 +145,6 @@ void OpenWQ_watertransp::IntMob(
 
     // Internal Variables
     double chemass_flux;
-    unsigned int ichem_mob;
 
     // Loop for immobile chemical species
     for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_num_chem;chemi++){
