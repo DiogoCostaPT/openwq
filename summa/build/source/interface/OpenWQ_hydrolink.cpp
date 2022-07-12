@@ -13,8 +13,6 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
 #include "OpenWQ_hydrolink.h"
 
 
@@ -53,15 +51,15 @@ int ClassWQ_OpenWQ::decl() {
 
     if (OpenWQ_hostModelconfig_ref->HydroComp.size()==0) {
         // Make sure to use capital letters for compartment names
-        OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(0,"SWE",numHRU,1,1));
+        // OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(0,"SOIL_RECHR",numHRU,1,1));
         OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(1,"SCALARCANOPYWAT",numHRU,1,1));
-        // OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(2,"MLAYERMATRICHEAD",numHRU,1,1));
+        OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(2,"MLAYERMATRICHEAD",numHRU,1,1));
         OpenWQ_hostModelconfig_ref->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(2,"SCALARAQUIFER",numHRU,1,1));
 
         OpenWQ_vars_ref = new OpenWQ_vars(OpenWQ_hostModelconfig_ref->HydroComp.size());
         
         // Master Json
-        OpenWQ_wqconfig_ref->OpenWQ_masterjson = "/code/openwq/bin/openWQ_master.json";
+        OpenWQ_wqconfig_ref->OpenWQ_masterjson = "/code/openwq-summa/synthetic_tests/9_batch_singleSp_1storder/summa/openWQ_master.json";
 
 
         OpenWQ_couplercalls_ref->InitialConfig(

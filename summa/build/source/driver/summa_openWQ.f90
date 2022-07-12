@@ -77,56 +77,6 @@ subroutine run_time_start(openWQ_obj, summa1_struc)
           end do
         end do
 
-        print*, "STRUCTURE FROM SUMMA VARS - TimeStep Start"
-        print*, "--------------------------"
-        print*, "scalarCanopyIce = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarCanopyIce)%dat(:)
-        print*, "scalarCanopyLiq = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarCanopyLiq)%dat(:)
-        print*, "scalarCanopyWat = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarCanopyWat)%dat(:)
-        print*, "scalarCanairTemp = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarCanairTemp)%dat(:)
-        print*, "scalarCanopyTemp = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarCanopyTemp)%dat(:)
-        print*, "spectralSnowAlbedoDiffuse = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%spectralSnowAlbedoDiffuse)%dat(:)
-        print*, "scalarSnowAlbedo = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarSnowAlbedo)%dat(:)
-        print*, "scalarSnowDepth = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarSnowDepth)%dat(:)
-        print*, "scalarSWE = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarSWE)%dat(:)
-        print*, "scalarSfcMeltPond = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarSfcMeltPond)%dat(:)
-        print*, "mLayerTemp = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerTemp)%dat(1)
-        print*, "mLayerVolFracIce = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerVolFracIce)%dat(1)
-        print*, "mLayerVolFracLiq = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerVolFracLiq)%dat(1)
-        print*, "mLayerVolFracWat = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerVolFracWat)%dat(1)
-        print*, "mLayerMatricHead = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerMatricHead)%dat(1)
-        print*, "scalarAquiferStorage = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarAquiferStorage)%dat(:)
-        print*, "scalarSurfaceTemp = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarSurfaceTemp)%dat(:)
-        print*, "mLayerDepth = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerDepth)%dat(1)
-        print*, "mLayerHeight = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerHeight)%dat(1)
-        print*, "iLayerHeight = ", progStruct%gru(iGRU)%hru(iHRU)%var(iLookPROG%iLayerHeight)%dat(1)
-        print*, "--------------------------"
-        print*, ""
-
-        print*, "STRUCTURE For OPENWQ VARS - TimeStep Start"
-        print*, "--------------------------"
-        print*, "scalarCanopyIce = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarCanopyIce)%dat(:)
-        print*, "scalarCanopyLiq = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarCanopyLiq)%dat(:)
-        print*, "scalarCanopyWat = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarCanopyWat)%dat(:)
-        print*, "scalarCanairTemp = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarCanairTemp)%dat(:)
-        print*, "scalarCanopyTemp = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarCanopyTemp)%dat(:)
-        print*, "spectralSnowAlbedoDiffuse = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%spectralSnowAlbedoDiffuse)%dat(:)
-        print*, "scalarSnowAlbedo = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarSnowAlbedo)%dat(:)
-        print*, "scalarSnowDepth = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarSnowDepth)%dat(:)
-        print*, "scalarSWE = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarSWE)%dat(:)
-        print*, "scalarSfcMeltPond = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarSfcMeltPond)%dat(:)
-        print*, "mLayerTemp = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerTemp)%dat(1)
-        print*, "mLayerVolFracIce = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerVolFracIce)%dat(1)
-        print*, "mLayerVolFracLiq = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerVolFracLiq)%dat(1)
-        print*, "mLayerVolFracWat = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerVolFracWat)%dat(1)
-        print*, "mLayerMatricHead = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerMatricHead)%dat(1)
-        print*, "scalarAquiferStorage = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarAquiferStorage)%dat(:)
-        print*, "scalarSurfaceTemp = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%scalarSurfaceTemp)%dat(:)
-        print*, "mLayerDepth = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerDepth)%dat(1)
-        print*, "mLayerHeight = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%mLayerHeight)%dat(1)
-        print*, "iLayerHeight = ", progStruct_timestep_start%gru(iGRU)%hru(iHRU)%var(iLookPROG%iLayerHeight)%dat(1)
-        print*, "--------------------------"
-        print*, ""
-
         openWQArrayIndex = openWQArrayIndex + 1
       end do
   end do
@@ -167,57 +117,6 @@ subroutine run_space(openwq_obj,ihru, timeVec, progStruct, fluxData)
   integer(i4b),          intent(in)    :: timeVec(:)          ! int vector   -- model time data
   type(var_dlength),     intent(in)    :: progStruct            ! x%var(:)%dat -- model prognostic (state) variables
   type(var_dlength),     intent(in)    :: fluxData            ! x%var(:)%dat -- model fluxes
-
-  print*, "STRUCTURE FROM SUMMA VARS - Run_Space"
-  print*, "--------------------------"
-  print*, "scalarCanopyIce = ", progStruct%var(iLookPROG%scalarCanopyIce)%dat(:)
-  print*, "scalarCanopyLiq = ", progStruct%var(iLookPROG%scalarCanopyLiq)%dat(:)
-  print*, "scalarCanopyWat = ", progStruct%var(iLookPROG%scalarCanopyWat)%dat(:)
-  print*, "scalarCanairTemp = ", progStruct%var(iLookPROG%scalarCanairTemp)%dat(:)
-  print*, "scalarCanopyTemp = ", progStruct%var(iLookPROG%scalarCanopyTemp)%dat(:)
-  print*, "spectralSnowAlbedoDiffuse = ", progStruct%var(iLookPROG%spectralSnowAlbedoDiffuse)%dat(:)
-  print*, "scalarSnowAlbedo = ", progStruct%var(iLookPROG%scalarSnowAlbedo)%dat(:)
-  print*, "scalarSnowDepth = ", progStruct%var(iLookPROG%scalarSnowDepth)%dat(:)
-  print*, "scalarSWE = ", progStruct%var(iLookPROG%scalarSWE)%dat(:)
-  print*, "scalarSfcMeltPond = ", progStruct%var(iLookPROG%scalarSfcMeltPond)%dat(:)
-  print*, "mLayerTemp = ", progStruct%var(iLookPROG%mLayerTemp)%dat(1)
-  print*, "mLayerVolFracIce = ", progStruct%var(iLookPROG%mLayerVolFracIce)%dat(1)
-  print*, "mLayerVolFracLiq = ", progStruct%var(iLookPROG%mLayerVolFracLiq)%dat(1)
-  print*, "mLayerVolFracWat = ", progStruct%var(iLookPROG%mLayerVolFracWat)%dat(1)
-  print*, "mLayerMatricHead = ", progStruct%var(iLookPROG%mLayerMatricHead)%dat(1)
-  print*, "scalarAquiferStorage = ", progStruct%var(iLookPROG%scalarAquiferStorage)%dat(:)
-  print*, "scalarSurfaceTemp = ", progStruct%var(iLookPROG%scalarSurfaceTemp)%dat(:)
-  print*, "mLayerDepth = ", progStruct%var(iLookPROG%mLayerDepth)%dat(1)
-  print*, "mLayerHeight = ", progStruct%var(iLookPROG%mLayerHeight)%dat(1)
-  print*, "iLayerHeight = ", progStruct%var(iLookPROG%iLayerHeight)%dat(1)
-  print*, "--------------------------"
-  print*, ""
-
-  print*, "STRUCTURE For OPENWQ VARS - Run_Space"
-  print*, "--------------------------"
-  print*, "scalarCanopyIce = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%scalarCanopyIce)%dat(:)
-  print*, "scalarCanopyLiq = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%scalarCanopyLiq)%dat(:)
-  print*, "scalarCanopyWat = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%scalarCanopyWat)%dat(:)
-  print*, "scalarCanairTemp = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%scalarCanairTemp)%dat(:)
-  print*, "scalarCanopyTemp = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%scalarCanopyTemp)%dat(:)
-  print*, "spectralSnowAlbedoDiffuse = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%spectralSnowAlbedoDiffuse)%dat(:)
-  print*, "scalarSnowAlbedo = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%scalarSnowAlbedo)%dat(:)
-  print*, "scalarSnowDepth = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%scalarSnowDepth)%dat(:)
-  print*, "scalarSWE = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%scalarSWE)%dat(:)
-  print*, "scalarSfcMeltPond = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%scalarSfcMeltPond)%dat(:)
-  print*, "mLayerTemp = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%mLayerTemp)%dat(1)
-  print*, "mLayerVolFracIce = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%mLayerVolFracIce)%dat(1)
-  print*, "mLayerVolFracLiq = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%mLayerVolFracLiq)%dat(1)
-  print*, "mLayerVolFracWat = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%mLayerVolFracWat)%dat(1)
-  print*, "mLayerMatricHead = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%mLayerMatricHead)%dat(1)
-  print*, "scalarAquiferStorage = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%scalarAquiferStorage)%dat(:)
-  print*, "scalarSurfaceTemp = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%scalarSurfaceTemp)%dat(:)
-  print*, "mLayerDepth = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%mLayerDepth)%dat(1)
-  print*, "mLayerHeight = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%mLayerHeight)%dat(1)
-  print*, "iLayerHeight = ", progStruct_timestep_start%gru(1)%hru(1)%var(iLookPROG%iLayerHeight)%dat(1)
-  print*, "--------------------------"
-  print*, ""
-
 
 end subroutine run_space
 
