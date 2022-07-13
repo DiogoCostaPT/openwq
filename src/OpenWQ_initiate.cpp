@@ -254,12 +254,13 @@ void OpenWQ_initiate::setIC(
     double i_volume){    // volume (water or soil)
 
     // Local variables
-    std::string chemname; // chemical name
-    std::tuple<double,std::string> ic_info_i; // IC information in config file
-    double ic_value; // IC value of chemical i
-    std::string ic_units; // // IC value units of chemical (e.g, kg/m3, mg/l))
-    std::vector<double> unit_multiplers;    // multiplers (numerator and denominator)
-    std::string msg_string;             // error/warning message string
+    std::string chemname;                       // chemical name
+    std::tuple<double,std::string> ic_info_i;   // IC information in config file
+    double ic_value;                            // IC value of chemical i
+    std::string ic_units;                       // IC value units of chemical (e.g, kg/m3, mg/l))
+    std::vector<std::string> units;             // units (numerator and denominator)
+    std::vector<double> unit_multiplers;        // multiplers (numerator and denominator)
+    std::string msg_string;                     // error/warning message string
 
     // Find compartment icmp name from code (host hydrological model)
     std::string CompName_icmp = std::get<1>(
@@ -278,7 +279,10 @@ void OpenWQ_initiate::setIC(
         /* ########################################
         // IC conditions provided
         ######################################## */
-        try{ 
+
+        if (OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"].contains(CompName_icmp)){
+
+       // try{ 
             ic_info_i = 
                 OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
                 ["INITIAL_CONDITIONS"][chemname];
@@ -294,6 +298,7 @@ void OpenWQ_initiate::setIC(
                 OpenWQ_output,
                 unit_multiplers,    // multiplers (numerator and denominator)
                 ic_units,           // input units
+                units,
                 true);              // direction of the conversion: 
                                     // to native (true) or 
                                     // from native to desired output units (false)
@@ -308,16 +313,23 @@ void OpenWQ_initiate::setIC(
             // Already done in OpenWQ_initiate::Transform_Units)
             ######################################## */
 
+            // If no demoninator, then it means that units are in mass and not concentration
+            // so, multiplication by volume does not apply (so, set to 1)
+            if (units[1].compare("EMPTY") == 0){
+                i_volume = 1;}
+            
+            // Calculate state variable mass
             (*OpenWQ_vars.d_chemass_ic)(icmp)(chemi)(ix,iy,iz) =// units: g (basic units of MASS in openWQ)
                 ic_value // converted to mg/l (or g/m3) in OpenWQ_initiate::Transform_Units
                 * i_volume; // passed in m3 (can be volume of water of volume of soil)
 
         }
+
         /* ########################################
         // IC conditions NOT provided set to ZERO
         ######################################## */
-        catch(json::exception& e){ 
-
+        //catch(json::exception& e){ 
+        else{
             // Create Message
             msg_string = 
                 "<OpenWQ> IC conditions not defined: set to zero (compartment: " 

@@ -66,8 +66,8 @@ function output_openwq_tscollect_all = read_OpenWQ_outputs(...
    end
    
    % Add path to HDF5 and CSV directories
-    addpath([openwq_readfuncs_dir,'hdf5/']);
-    addpath([openwq_readfuncs_dir,'csv/']);
+    addpath(strcat(openwq_readfuncs_dir,'hdf5/'));
+    addpath(strcat(openwq_readfuncs_dir,'csv/'));
    
     % Initiate the cell to save all results
     output_openwq_tscollect_all = cell(load_files_num,2);

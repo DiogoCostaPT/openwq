@@ -21,6 +21,57 @@
 
 /* #################################################
 // Mass transport
+// Only Advection
+################################################# */
+void OpenWQ_watertransp::Adv(
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    const int source,
+    const int ix_s, 
+    const int iy_s,
+    const int iz_s,
+    const int recipient,
+    const int ix_r,
+    const int iy_r,
+    const int iz_r,
+    double wflux_s2r,
+    double wmass_source){
+
+    double chemass_flux_adv;
+    unsigned int ichem_mob;
+
+    // CHANGE THE LINE BELOW: see my notes -> there should be no icmp because all compartments should have the same number of mobile species
+    unsigned int numspec = OpenWQ_wqconfig.BGC_general_mobile_species.size();
+
+    // Loop for mobile chemical species
+    for (unsigned int chemi=0;chemi<numspec;chemi++){
+
+        // mobile chemical species index
+        ichem_mob = OpenWQ_wqconfig.BGC_general_mobile_species[chemi];
+
+        // Chemical mass flux between source and recipient (Advection)
+        chemass_flux_adv = 
+            wflux_s2r
+            * (*OpenWQ_vars.chemass)(source)(ichem_mob)(ix_s,iy_s,iz_s) // concentration calculation
+             / wmass_source;
+        
+        //##########################################
+        // Set derivative for source and recipient 
+        
+        // Remove Chemical mass flux from SOURCE 
+        (*OpenWQ_vars.d_chemass_dt_transp)(source)(ichem_mob)(ix_s,iy_s,iz_s) 
+            -= chemass_flux_adv;
+
+        // Add Chemical mass flux to RECIPIENT 
+        (*OpenWQ_vars.d_chemass_dt_transp)(recipient)(ichem_mob)(ix_r,iy_r,iz_r) 
+            += chemass_flux_adv;
+    }
+                
+}
+
+/* #################################################
+// Mass transport
+// Advection & Dispersion
 ################################################# */
 void OpenWQ_watertransp::AdvDisp(
     OpenWQ_vars& OpenWQ_vars,
@@ -36,7 +87,7 @@ void OpenWQ_watertransp::AdvDisp(
     double wflux_s2r,
     double wmass_source){
 
-    double chemass_flux;
+    double chemass_flux_adv;
     unsigned int ichem_mob;
 
     // CHANGE THE LINE BELOW: see my notes -> there should be no icmp because all compartments should have the same number of mobile species
@@ -48,23 +99,27 @@ void OpenWQ_watertransp::AdvDisp(
         // mobile chemical species index
         ichem_mob = OpenWQ_wqconfig.BGC_general_mobile_species[chemi];
 
-        // Chemical mass flux between source and recipient 
-        chemass_flux = 
+        // Chemical mass flux between source and recipient (Advection)
+        chemass_flux_adv = 
             wflux_s2r
             * (*OpenWQ_vars.chemass)(source)(ichem_mob)(ix_s,iy_s,iz_s) // concentration calculation
              / wmass_source;
         
-        
+        // dcdy(xi,yi,t)=(c(xi,yi,t-1)-c(xi,yi-1,t-1))/delty;
+        // dc2dy2(xi,yi,t)=((c(xi,yi+1,t-1)-c(xi,yi,t-1))/delty-(c(xi,yi,t-1)-c(xi,yi-1,t-1))/delty)/(delty);         
+        // dc2dx2(xi,yi,t)=((c(xi+1,yi,t-1)-c(xi,yi,t-1))/deltx-(c(xi,yi,t-1)-c(xi-1,yi,t-1))/deltx)/(deltx);
+        // dcdt(xi,yi,t)=-U*dcdy(xi,yi,t)+Di(xi,yi,t)*(dc2dx2(xi,yi,t)+dc2dy2(xi,yi,t));
+
         //##########################################
         // Set derivative for source and recipient 
         
         // Remove Chemical mass flux from SOURCE 
         (*OpenWQ_vars.d_chemass_dt_transp)(source)(ichem_mob)(ix_s,iy_s,iz_s) 
-            -= chemass_flux;
+            -= chemass_flux_adv;
 
         // Add Chemical mass flux to RECIPIENT 
         (*OpenWQ_vars.d_chemass_dt_transp)(recipient)(ichem_mob)(ix_r,iy_r,iz_r) 
-            += chemass_flux;
+            += chemass_flux_adv;
     }
                 
 }
@@ -90,7 +145,6 @@ void OpenWQ_watertransp::IntMob(
 
     // Internal Variables
     double chemass_flux;
-    unsigned int ichem_mob;
 
     // Loop for immobile chemical species
     for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_num_chem;chemi++){
@@ -127,7 +181,6 @@ void OpenWQ_watertransp::IntMob(
             += chemass_flux;
     }
 
-
 }
 
 
@@ -139,14 +192,14 @@ void OpenWQ_watertransp::BoundMix(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    const int source,
-    const int ix_s, 
-    const int iy_s,
-    const int iz_s,
-    const int recipient,
-    const int ix_r,
-    const int iy_r,
-    const int iz_r,
+    const unsigned int source,
+    const unsigned int ix_s, 
+    const unsigned int iy_s,
+    const unsigned int iz_s,
+    const unsigned int recipient,
+    const unsigned int ix_r,
+    const unsigned int iy_r,
+    const unsigned int iz_r,
     double wflux_s2r,
     double wmass_source){
     

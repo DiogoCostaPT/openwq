@@ -40,10 +40,11 @@ int OpenWQ_output::writeResults(
     std::string outputfile_type;            // interactive name for output file
 
     // Create time string to print
-    struct tm * timeinfo;
+    struct tm *tm_simtime = localtime(&simtime);
+
+    // Converting to string
     char timechar [30];
-    timeinfo = gmtime (&simtime);
-    strftime (timechar,30,"%Y%b%d-%H:%M:%S",timeinfo);
+    strftime(timechar,30,"%Y%b%d-%H:%M:%S",tm_simtime);
     std::string timestr = std::string(timechar);
 
 
@@ -173,6 +174,7 @@ int OpenWQ_output::writeResults(
             // MAIN: label file and call main function
             // print: OpenWQ_vars.chemas
             output_file_label.assign("main");
+            
             OpenWQ_output::writeHDF5(
                 OpenWQ_json,
                 OpenWQ_hostModelconfig,
@@ -295,7 +297,6 @@ int OpenWQ_output::writeCSV(
 
     // Local Variables
     unsigned int ix, iy, iz;                // iteractive indexes for each domain elements
-    unsigned int num_chem2print;            // number of chemical species to print
     unsigned int num_cells2print;           // iteractive number of cells to print for each compartment
     std::string CompName_icmp;              // compartment name (iteractive)
     std::string chem_name;                  // chemical name (iteractive)

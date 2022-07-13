@@ -135,26 +135,28 @@ void OpenWQ_chem::setBGCexpressions(
                 chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi];
 
                 // Consumedchemass_consumed, chemass_produced;ty()) 
-                index_i = consumed_spec.find(chemname);
-                if (index_i!=-1 && !consumed_spec.empty()){
+                if(consumed_spec.compare(chemname) == 0 && !consumed_spec.empty()){
                     index_cons = chemi; // index
                 }
 
                 // Produced
-                index_i = produced_spec.find(chemname);
-                if (index_i!=-1 && !produced_spec.empty()){
+                if(produced_spec.compare(chemname) == 0 && !produced_spec.empty()){
                     index_prod = chemi; // index
                 }
 
                 // In expression (replace chemical species name by index)
+                // while loop to replace all occurances
                 index_i = expression_string_modif.find(chemname);
-                if (index_i!=-1 && !expression_string_modif.empty()){
-                    index_transf.push_back(chemi); // index
-                    expression_string_modif.replace(
-                        index_i,    // start position
-                        chemname.size(),    // length
-                        "openWQ_BGCnative_chemass_InTransfEq["+std::to_string(index_new_chemass_InTransfEq)+"]"); // string to replace by
-                    index_new_chemass_InTransfEq ++;    
+                while(index_i!=-1){
+                    if (index_i!=-1 && !expression_string_modif.empty()){
+                        index_transf.push_back(chemi); // index
+                        expression_string_modif.replace(
+                            index_i,    // start position
+                            chemname.size(),    // length
+                            "openWQ_BGCnative_chemass_InTransfEq["+std::to_string(index_new_chemass_InTransfEq)+"]"); // string to replace by
+                        index_new_chemass_InTransfEq ++;    
+                    }
+                    index_i = expression_string_modif.find(chemname);
                 }
             }
 
@@ -393,12 +395,18 @@ void OpenWQ_chem::BGC_Transform(
                             transf_mass /= (24 * 60 * 60);
 
                             // Guarantee that removed mass is not larger than existing mass
-                            transf_mass = std::fmin(
-                                    (*OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz),
-                                    transf_mass);
-
+                            if (OpenWQ_hostModelconfig.time_step != 0){
+                                transf_mass = std::fmin(
+                                        (*OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz),
+                                        transf_mass * OpenWQ_hostModelconfig.time_step) / 
+                                        OpenWQ_hostModelconfig.time_step;    // need to multiply by the time step
+                                                                                            // because that's the total mass that is 
+                                                                                            // going to be added/substracted in the 
+                                                                                            // solver
+                            }else{
+                                transf_mass = 0.0f;
+                            }
                             // New mass of consumed chemical
-                            
                             (*OpenWQ_vars.d_chemass_dt_chem)(icmp)(index_cons)(ix,iy,iz) -= transf_mass;
 
                             // New mass of produced chemical
