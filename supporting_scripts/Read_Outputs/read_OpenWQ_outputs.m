@@ -47,6 +47,8 @@ function output_openwq_tscollect_all = read_OpenWQ_outputs(...
     % Disable Latex interpreter
     set(0, 'DefaultTextInterpreter', 'none')
     
+    addpath(openwq_readfuncs_dir)
+    
     % Get fullpath to outputs
     fullpath_outputs = [folderpath,OpenWQ_output_format,'/'];
     
