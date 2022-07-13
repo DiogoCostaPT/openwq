@@ -47,6 +47,9 @@ int OpenWQ_output::writeResults(
     strftime(timechar,30,"%Y%b%d-%H:%M:%S",tm_simtime);
     std::string timestr = std::string(timechar);
 
+    // Get outputfile_type name
+    if (OpenWQ_wqconfig.output_type == 0){outputfile_type = "CSV";}
+    else if (OpenWQ_wqconfig.output_type == 1){outputfile_type = "HDF5";}
 
     /* ########################################
     // Loop over comparments
@@ -72,7 +75,7 @@ int OpenWQ_output::writeResults(
         // CSV
         if (OpenWQ_wqconfig.output_type == 0){
 
-            outputfile_type = "CSV";
+            //outputfile_type = "CSV";
 
             // ###########
             // MAIN: label file and call main function
@@ -166,9 +169,9 @@ int OpenWQ_output::writeResults(
 
         // ################################################
         // HDF5
-        else if (OpenWQ_wqconfig.output_type == 2){
+        else if (OpenWQ_wqconfig.output_type == 1){
 
-            outputfile_type = "HDF5";
+            //outputfile_type = "HDF5";
 
             // ###########
             // MAIN: label file and call main function

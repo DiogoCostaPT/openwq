@@ -855,19 +855,19 @@ void OpenWQ_readjson::SetConfigInfo(
             OpenWQ_wqconfig.output_dir);
 
     // VTK format
-    }else if (output_format.compare("VTU") == 0){
-
-        OpenWQ_wqconfig.output_type = 1;
-
+    //}else if (output_format.compare("VTU") == 0){
+    //
+    //    OpenWQ_wqconfig.output_type = 1;
+    //
         // create dir if needed
-        OpenWQ_wqconfig.output_dir.append("/VTU");
-        OpenWQ_readjson::check_mkdir_openWQ(
-            OpenWQ_wqconfig.output_dir);
+    //    OpenWQ_wqconfig.output_dir.append("/VTU");
+    //    OpenWQ_readjson::check_mkdir_openWQ(
+    //        OpenWQ_wqconfig.output_dir);
 
     // HDF5 format
     }else if (output_format.compare("HDF5") == 0){
 
-        OpenWQ_wqconfig.output_type = 2;
+        OpenWQ_wqconfig.output_type = 1;
 
         // create dir if needed
         OpenWQ_wqconfig.output_dir.append("/HDF5");
