@@ -5,4 +5,4 @@ services:
     tty: true
     container_name: openwq
     volumes:
-      - ../../../../:/code:Z
+      - ../../../../../:/code:Z
