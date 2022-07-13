@@ -539,7 +539,7 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                         -ffree-line-length-none -fmax-errors=0 -lstdc++)
                         target_include_directories(SUMMA_COMM PRIVATE
                                 "/usr/include/"
-                                "/code/build/")
+                                "/code/")
                         target_link_libraries(SUMMA_COMM PUBLIC
                                 #"/usr/lib/x86_64-linux-gnu/libnetcdff.a"
                                 "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
@@ -555,7 +555,7 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                                 ${LAPACK_INCLUDES}
                                 ${netCDF_INCLUDES}
                                 "/usr/include/"
-                                "/code/build/")
+                                "/code/")
                         target_link_libraries(
                                 ${exec_name} PUBLIC
                                 #"/usr/lib/x86_64-linux-gnu/libnetcdff.a"
