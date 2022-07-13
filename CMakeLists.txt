@@ -2,12 +2,12 @@
 #################################################
 # How to use this CMakeLists
 # 1) Change the compilation mode below: set(COMPILE_MODE XXXX)
-# 2) Open terminal and go to the folder openwq folder that contains CMakeLists.txt, Dockerfile, and docker-compose.yml
+# 2) Open terminal and go to the openwq folder that contains CMakeLists.txt, Dockerfile, and docker-compose.yml
 # 3) Create a docker container: docker compose up -d
 # 4) check the container id: docker ps
 # 5) Open a shell inside that container: docker exec -it <container id> /bin/bash
 # 6) Armadillo now disables default hdf5 support for save/load, so inside the container you need to go to “/usr/include/armadillo_bits/config.hpp” and uncomment #define ARMA_USE_HDF5
-# 7) Inside the contained, go to the openwq folder
+# 7) Inside the contained, go to the openwq folder that contains CMakeLists.txt, Dockerfile, and docker-compose.yml
 # 8) Compile with: rm CMakeCache.txt; rm -r CMakeFiles; cmake . ; make -B; rm *.mod
 
 # That's all !!!
@@ -27,7 +27,7 @@ set(COMPILE_MODE summa_openwq)
 
 # Choose where to create the executable
 set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-set(EXEC_DIR ${PARENT_DIR}/apply)
+set(EXEC_DIR ${PARENT_DIR}/../../../bin)
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Don't change beyond this point
@@ -91,7 +91,7 @@ if("${COMPILE_MODE}" STREQUAL "openwq")
 
                 #        REQUIRED)
 
-                find_package(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
+                find_package(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo (line 121)
                 find_package(HDF5 REQUIRED)
                 find_package(OpenMP REQUIRED)
 
@@ -318,7 +318,7 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
 
                 # Get paths to source code
                 set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-                set(SUMMA_DIR ${PARENT_DIR}/summa)
+                set(SUMMA_DIR ${PARENT_DIR}../../../../../../)
                 set(OPENWQ_DIR ${PARENT_DIR}/openwq)
 
                 ############################################################################
@@ -337,7 +337,7 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                 set(DSHARE_DIR ${SUMMA_DIR}/build/source/dshare)
                 set(NOAHMP_DIR ${SUMMA_DIR}/build/source/noah-mp)
                 set(ENGINE_DIR ${SUMMA_DIR}/build/source/engine)
-                set(INTERFACE_DIR ${SUMMA_DIR}/build/source/interface)
+                set(OPENWQ_INTERFACE_DIR ${SUMMA_DIR}/build/source/openwq)
 
                 #  utilities
                 set(NRUTIL
@@ -358,7 +358,7 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
 
                 # Data modules
                 set(DATAMS
-                ${INTERFACE_DIR}/openWQ.f90 # needs to be compiled before globalData
+                ${OPENWQ_INTERFACE_DIR}/openWQ.f90 # needs to be compiled before globalData
                 ${DSHARE_DIR}/multiconst.f90
                 ${DSHARE_DIR}/var_lookup.f90
                 ${DSHARE_DIR}/data_types.f90
@@ -468,6 +468,7 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                 ${DRIVER_DIR}/summa_forcing.f90
                 ${DRIVER_DIR}/summa_modelRun.f90
                 ${DRIVER_DIR}/summa_writeOutput.f90
+                ${DRIVER_DIR}/summa_openWQ.f90
                 ${DRIVER_DIR}/summa_driver.f90)
 
                 set(CMAKE_CXX_STANDARD 17)
@@ -512,7 +513,8 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                         ${ARMADILLO_INCLUDE_DIR}
                         #${VTK_INCLUDE_DIR}
                         ${HDF5_INCLUDE_DIRS}
-                        ${OpenMP_INCLUDE_DIR})
+                        ${OpenMP_INCLUDE_DIR}
+                        ${OPENWQ_DIR}/src/)
                 target_link_libraries(openWQ PUBLIC
                         ${ARMADILLO_LIBRARIES}
                         ${HDF5_C_LIBRARY_hdf5}
@@ -537,8 +539,9 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                         -ffree-line-length-none -fmax-errors=0 -lstdc++)
                         target_include_directories(SUMMA_COMM PRIVATE
                                 "/usr/include/"
-                                "/code/summa/summa/build/")
+                                "/code/build/")
                         target_link_libraries(SUMMA_COMM PUBLIC
+                                #"/usr/lib/x86_64-linux-gnu/libnetcdff.a"
                                 "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
                                 SUMMA_NOAHMP)
 
@@ -552,9 +555,10 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                                 ${LAPACK_INCLUDES}
                                 ${netCDF_INCLUDES}
                                 "/usr/include/"
-                                "/code/summa/summa/build/")
+                                "/code/build/")
                         target_link_libraries(
                                 ${exec_name} PUBLIC
+                                #"/usr/lib/x86_64-linux-gnu/libnetcdff.a"
                                 "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
                                 ${LAPACK_LIBRARIES}
                                 ${netCDF_LIBRARIES}

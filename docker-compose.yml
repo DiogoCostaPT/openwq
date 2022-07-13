@@ -5,6 +5,4 @@ services:
     tty: true
     container_name: openwq
     volumes:
-      - ../../:/code:Z
-      #- /u1/kck540/SummaActorsSettings/./:/SUMMA:Z # Can be removed
-      #- /u1/kck540/forcingData/./:/forcing_data:Z  # Can be removed
+      - ../../../../:/code:Z
