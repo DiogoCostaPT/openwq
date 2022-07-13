@@ -23,11 +23,7 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # 2) crhm_openwq -> compile with crhm using hydrolink
 # 3) summa_openwq -> compile with summa using hydrolink
 # 4) mesh_openwq -> compile with mesh using hydrolink
-set(COMPILE_MODE summa_openwq)
-
-# Choose where to create the executable
-set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-set(EXEC_DIR ${PARENT_DIR}/../../../bin)
+set(COMPILE_MODE crhm_openwq)
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Don't change beyond this point
@@ -37,6 +33,10 @@ set(EXEC_DIR ${PARENT_DIR}/../../../bin)
 #################################################
 if("${COMPILE_MODE}" STREQUAL "openwq")
         
+        # Choose where to create the executable
+        set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+        set(EXEC_DIR ${PARENT_DIR}/../../../bin)
+
         project("${COMPILE_MODE}")
 
         set(exec_name openwq)
@@ -173,6 +173,10 @@ elseif("${COMPILE_MODE}" STREQUAL "crhm_openwq")
 
         project("${COMPILE_MODE}")
 
+        # Choose where to create the executable
+        set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+        set(EXEC_DIR ${PARENT_DIR}/bin)
+
         set(exec_name crhm_openwq)
 
         set(CRHM_DIR ${PARENT_DIR}/crhm)
@@ -299,6 +303,10 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
         #FLAGS_NOAH = -p -g -ffree-form -ffree-line-length-none -fmax-errors=0 -fbacktrace -Wno-unused -Wno-unused-dummy-argument
         #FLAGS_COMM = -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds
         #FLAGS_SUMMA = -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds
+        
+        # Choose where to create the executable
+        set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+        set(EXEC_DIR ${PARENT_DIR}/../../../bin)
 
         set(exec_name summa_openwq)
 
