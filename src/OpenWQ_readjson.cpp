@@ -811,6 +811,11 @@ void OpenWQ_readjson::SetConfigInfo(
         ["OPENWQ_OUTPUT"]
         ["UNITS"];  // Units as provided  by user
 
+    // Flag for no water
+    OpenWQ_wqconfig.noWaterConc = OpenWQ_json.Master
+        ["OPENWQ_OUTPUT"]
+        ["NO_WATER_CONC_FLAG"];
+
     // Run model: check if DEBUG model has been requested
     // The model will print all the derivatives
     OpenWQ_wqconfig.debug_mode = OpenWQ_json.Master["COMPUTATIONAL_SETTINGS"]["RUN_MODE_DEBUG"];

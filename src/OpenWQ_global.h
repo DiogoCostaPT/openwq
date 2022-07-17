@@ -196,6 +196,9 @@ class OpenWQ_wqconfig
     // Output folder
     std::string output_dir;
 
+    // No water concentration (as a marker/flag)
+    int noWaterConc = -9999; // setting a default value
+
     // Flag for printing coordinates once
     bool print_oneStep = true;
 

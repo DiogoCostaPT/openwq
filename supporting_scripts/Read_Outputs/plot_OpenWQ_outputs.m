@@ -20,7 +20,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function plot_OpenWQ_outputs(...
-    plot_OpenWQ_outputs_all)
+    plot_OpenWQ_outputs_all,...
+    openwq_noWaterConcFlag)
 
     
     % Number of variables to plot (only valid entries)
@@ -90,8 +91,8 @@ function plot_OpenWQ_outputs(...
 
             end
 
-            % Replace -9999 values by NaN for ommission
-            ts.data_save_final(ts.data_save_final == -9999.0) = NaN;
+            % Replace openwq_noWaterConcFlag values by NaN for ommission
+            ts.data_save_final(ts.data_save_final == openwq_noWaterConcFlag) = NaN;
 
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % Print results

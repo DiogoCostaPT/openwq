@@ -395,7 +395,7 @@ int OpenWQ_output::writeCSV(
 
                 // Set as NaN because the concentration is not really zero,
                 // it simply does not exist when there is no water
-                filedata(ixyz,ichem + 3) = -9999.0f;
+                filedata(ixyz,ichem + 3) = OpenWQ_wqconfig.noWaterConc;
 
             }
         }
@@ -593,7 +593,7 @@ int OpenWQ_output::writeHDF5(
 
                 // Set as NaN because the concentration is not really zero,
                 // it simply does not exist when there is no water
-                data2print(celli,0) = -9999.0f;
+                data2print(celli,0) = OpenWQ_wqconfig.noWaterConc;
 
             }
 
