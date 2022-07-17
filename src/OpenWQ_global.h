@@ -180,7 +180,7 @@ class OpenWQ_wqconfig
     double nexttime_out = 0.0f;     // iteractive next printing time (in seconds)
     // output format
     unsigned long output_type;      // 1) CSV, 2) VTK, 3) HDF5
-    bool debug_mode = false;                // set to true if debug mode is requested
+    bool debug_mode = false;        // set to true if debug mode is requested
     std::tuple<
         std::string,            // output units as provided by the user
         double,                 // numerator multiplier (determined by Convert_Units)
