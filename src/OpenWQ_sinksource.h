@@ -48,10 +48,10 @@ class OpenWQ_sinksource{
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_output& OpenWQ_output,
-        const unsigned int YYYY,                       // current model step: Year
-        const unsigned int MM,                         // current model step: month
-        const unsigned int DD,                         // current model step: day
-        const unsigned int HH,                         // current model step: hour
+        const unsigned int YYYY,                        // current model step: Year
+        const unsigned int MM,                          // current model step: month
+        const unsigned int DD,                          // current model step: day
+        const unsigned int HH,                          // current model step: hour
         const unsigned int MIN);                        // current model step: min
 
     // Apply Sink or Source
@@ -60,9 +60,9 @@ class OpenWQ_sinksource{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        const unsigned int ssf,     // source-sink file
-        const unsigned int ssi,     // load section                 
-        const unsigned int di);     // data row
+        const unsigned int ssf,                         // source-sink file
+        const unsigned int ssi,                         // load section                 
+        const unsigned int di);                         // data row
 
     // Apply Source
     void Apply_Source(
@@ -70,12 +70,12 @@ class OpenWQ_sinksource{
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_output& OpenWQ_output,
-        const unsigned int cmpi,               // compartment model index
-        const unsigned int chemi,              // chemical model index    
-        const unsigned int ix_json,            // compartment model ix
-        const unsigned int iy_json,            // compartment model iy
-        const unsigned int iz_json,            // compartment model iz
-        const double ss_data_json);            // source load
+        const unsigned int cmpi,                        // compartment model index
+        const unsigned int chemi,                       // chemical model index    
+        const unsigned int ix_json,                     // compartment model ix
+        const unsigned int iy_json,                     // compartment model iy
+        const unsigned int iz_json,                     // compartment model iz
+        const double ss_data_json);                     // source load
 
     // Apply Sink
     void Apply_Sink(
@@ -83,12 +83,12 @@ class OpenWQ_sinksource{
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_output& OpenWQ_output,
-        const unsigned int cmpi,                // compartment model index
-        const unsigned int chemi,               // chemical model index    
-        const unsigned int ix_json,             // compartment model ix
-        const unsigned int iy_json,             // compartment model iy
-        const unsigned int iz_json,             // compartment model iz
-        const double ss_data_json);             // source load
+        const unsigned int cmpi,                        // compartment model index
+        const unsigned int chemi,                       // chemical model index    
+        const unsigned int ix_json,                     // compartment model ix
+        const unsigned int iy_json,                     // compartment model iy
+        const unsigned int iz_json,                     // compartment model iz
+        const double ss_data_json);                     // source load
 
     void Convert_Mass_Units(
         double &ss_value,     // SS value

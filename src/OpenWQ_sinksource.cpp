@@ -33,20 +33,20 @@ void OpenWQ_sinksource::SetSinkSource(
     std::vector<std::string> cmp_list;      // model compartment list
     std::vector<std::string> chem_list;     // model chemical list
     std::string err_text;                   // iteractive string for text to pass to error messages
-    unsigned long cmpi_ssi;          // model index for compartment Compartment_name_name
-    unsigned long chem_ssi;          // model index for compartment Compartment_name_name
-    unsigned long sinksource_ssi;    // = 0 (source), = 1 (sink)
+    unsigned long cmpi_ssi;                 // model index for compartment Compartment_name_name
+    unsigned long chem_ssi;                 // model index for compartment Compartment_name_name
+    unsigned long sinksource_ssi;           // = 0 (source), = 1 (sink)
 
-    unsigned int num_ssfiles;       // number of sink-source files 
-                                    // (saved as sub-structure of SinkSource)
-    unsigned int num_sschem;        // number of chemical loads per file
-    unsigned int num_rowdata;       // number of rows of data in JSON (YYYY, MM, DD, HH,...)
-    int int_n_elem;                 // iterative counting of number of elements in arma:mat
+    unsigned int num_ssfiles;               // number of sink-source files 
+                                            // (saved as sub-structure of SinkSource)
+    unsigned int num_sschem;                // number of chemical loads per file
+    unsigned int num_rowdata;               // number of rows of data in JSON (YYYY, MM, DD, HH,...)
+    int int_n_elem;                         // iterative counting of number of elements in arma:mat
     
-    std::string Chemical_name;      // from JSON file
-    std::string Compartment_name;    // from JSON file
-    std::string Type;               // from JSON file
-    std::string Units;              // from JSON file
+    std::string Chemical_name;              // from JSON file
+    std::string Compartment_name;           // from JSON file
+    std::string Type;                       // from JSON file
+    std::string Units;                      // from JSON file
 
     unsigned int YYYY_json;                 // Year in JSON-sink_source (interactive)
     unsigned int MM_json;                   // Month in JSON-sink_source (interactive)
