@@ -33,7 +33,7 @@ class OpenWQ_sinksource{
 
     public:
 
-    // Save Sink and Source data to tuple (more efficient then allways calling jnlohmann)
+    // Save Sink and Source data to tuple (more efficient than allways calling jnlohmann)
     void SetSinkSource(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,

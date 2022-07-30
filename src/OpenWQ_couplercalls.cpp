@@ -60,7 +60,7 @@ void OpenWQ_couplercalls::InitialConfig(
         OpenWQ_output);
         
     /* #################################################
-    // Parse sink and source inputs and store them in tuple and arma::mat for rapid access
+    // Parse sink and source inputs and store them in tuple and arma::mat for quick access
     ################################################# */
     OpenWQ_sinksource.SetSinkSource(
         OpenWQ_json,
