@@ -99,6 +99,10 @@ void OpenWQ_sinksource::SetSinkSource(
 
         for (unsigned int ssi=0;ssi<num_sschem;ssi++){
             
+            /* ########
+            // Get chemical name, compartment name and SS_type (source or sink)
+            ###########*/
+
             // needs this here because there can be entries that are not relevant e.g. COMMENTS
             try{
                 Chemical_name =  OpenWQ_json.SinkSource // chemical name
@@ -119,18 +123,13 @@ void OpenWQ_sinksource::SetSinkSource(
                 [std::to_string(ssf+1)]
                 [std::to_string(ssi+1)]
                 ["TYPE"];
-
-            Units = OpenWQ_json.SinkSource // units
-                [std::to_string(ssf+1)]
-                [std::to_string(ssi+1)]
-                ["UNITS"];
-
-            // Get number of rows of data in JSON (YYYY, MM, DD, HH,...)
-            num_rowdata = OpenWQ_json.SinkSource
-                [std::to_string(ssf+1)]
-                [std::to_string(ssi+1)]
-                ["DATA"].size();
             
+
+            /* ########
+            // Check if the requests are valid
+            // chemical name, compartment name and SS_type (source or sink)
+            ###########*/
+
             // Get chemical index
             err_text.assign("Chemical name");
             foundflag = getModIndex(
@@ -164,6 +163,21 @@ void OpenWQ_sinksource::SetSinkSource(
                 continue; // skip if Type is unknown
             }
             
+
+            /* ########
+            // Get units and actual input data
+            ###########*/
+
+            Units = OpenWQ_json.SinkSource // units
+                [std::to_string(ssf+1)]
+                [std::to_string(ssi+1)]
+                ["UNITS"];
+
+            // Get number of rows of data in JSON (YYYY, MM, DD, HH,...)
+            num_rowdata = OpenWQ_json.SinkSource
+                [std::to_string(ssf+1)]
+                [std::to_string(ssi+1)]
+                ["DATA"].size();
 
             /* ########################################
              // Loop over row data in sink-source file
