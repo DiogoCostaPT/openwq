@@ -441,14 +441,6 @@ int OpenWQ_output::writeHDF5(
     // Compartment info
     CompName_icmp = std::get<1>(
         OpenWQ_hostModelconfig.HydroComp.at(icmp));  // name
-    /*
-    nx = std::get<2>(
-        OpenWQ_hostModelconfig.HydroComp.at(icmp));  // get domain dimensions                     
-    ny = std::get<3>(
-        OpenWQ_hostModelconfig.HydroComp.at(icmp));
-    nz = std::get<4>(
-        OpenWQ_hostModelconfig.HydroComp.at(icmp));
-    */
 
     // num of chemicals to print
     num_chem2print = OpenWQ_wqconfig.chem2print.size();
@@ -494,36 +486,13 @@ int OpenWQ_output::writeHDF5(
             filename.append(output_file_label); // info about output (debug model) 
             filename.append(".h5");
 
-            //arma::mat xelements_cube(nx*ny*nz,1);
-            //OpenWQ_wqconfig.cells2print_vec
-    
-            //OpenWQ_wqconfig.cells2print_vec.at(icmp).size();
-
             // x,y,z elements
-            internal_database_name = "xyz_elements";             // name for internal HDF5 database name
+            internal_database_name = "xyz_elements";            // name for internal HDF5 database name
             
             cells2print_oneStep
                 .save(arma::hdf5_name(
                     filename,
                     internal_database_name));                  // no append (to clean old file if existant)
-            
-            /*
-            // y elements
-            internal_database_name = "y_elements";             // name for internal HDF5 database name
-            arma::linspace(1,ny,ny)
-                .save(arma::hdf5_name(
-                    filename,
-                    internal_database_name,
-                    arma::hdf5_opts::append));
-
-            // z elements
-            internal_database_name = "z_elements";             // name for internal HDF5 database name
-            arma::linspace(1,nz,nz)
-                .save(arma::hdf5_name(
-                    filename,
-                    internal_database_name,
-                    arma::hdf5_opts::append));
-            */
 
         }
     }
