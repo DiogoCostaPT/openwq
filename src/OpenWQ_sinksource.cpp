@@ -763,17 +763,37 @@ void OpenWQ_sinksource::Apply_Source(
     OpenWQ_output& OpenWQ_output,
     const unsigned int cmpi,             // compartment model index
     const unsigned int chemi,            // chemical model index    
-    const unsigned int ix,          // compartment model ix
-    const unsigned int iy,          // compartment model iy
-    const unsigned int iz,          // compartment model iz
+    int ix,          // compartment model ix
+    int iy,          // compartment model iy
+    int iz,          // compartment model iz
     const double ss_data_json){          // source load g
 
     // Local Variables
     std::string msg_string;             // error/warning message string
+    unsigned int spX_min, spX_max, spY_min, spY_max, spZ_min, spZ_max;
+    unsigned int nx = std::get<2>(OpenWQ_hostModelconfig.HydroComp[cmpi]);
+    unsigned int ny = std::get<3>(OpenWQ_hostModelconfig.HydroComp[cmpi]);
+    unsigned int nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp[cmpi]);
+
+    // #####################
+    // Determine domain region (or simple grid cells) to add load
+    // ix
+    if(ix != -1){spX_min = ix; spX_max = ix;}
+    else{spX_min = 0; spX_max = nx - 1;}
+    // iy
+    if(iy != -1){spY_min = iy; spY_max = iy;}
+    else{spY_min = 0; spY_max = ny - 1;}
+    // iz
+    if(iz != -1){spZ_min = iz; spZ_max = iz;}
+    else{spZ_min = 0; spZ_max = nz - 1;}
 
     try{
         // Add mass load (already converted to g units)
-        (*OpenWQ_vars.d_chemass_ss)(cmpi)(chemi)(ix,iy,iz) += ss_data_json;
+        // (*OpenWQ_vars.d_chemass_ss)(cmpi)(chemi)(ix,iy,iz) += ss_data_json;
+        (*OpenWQ_vars.d_chemass_ss)(cmpi)(chemi)(
+            arma::span(spX_min, spX_max), 
+            arma::span(spY_min, spY_max),
+            arma::span(spZ_min, spZ_max)) += ss_data_json;
 
     }catch (...){
         
@@ -808,25 +828,44 @@ void OpenWQ_sinksource::Apply_Sink(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_output& OpenWQ_output,
-    const unsigned int cmpi,             // compartment model index
-    const unsigned int chemi,            // chemical model index    
-    const unsigned int ix,          // compartment model ix
-    const unsigned int iy,          // compartment model iy
-    const unsigned int iz,          // compartment model iz
-    const double ss_data_json){          // source load g
+    const unsigned int cmpi,            // compartment model index
+    const unsigned int chemi,           // chemical model index    
+    int ix,                             // compartment model ix
+    int iy,                             // compartment model iy
+    int iz,                             // compartment model iz
+    const double ss_data_json){         // source load g
 
     // Local Variables
     double mass_sink;
     std::string msg_string;             // error/warning message string
+    unsigned int spX_min, spX_max, spY_min, spY_max, spZ_min, spZ_max;
+    unsigned int nx = std::get<2>(OpenWQ_hostModelconfig.HydroComp[cmpi]);
+    unsigned int ny = std::get<3>(OpenWQ_hostModelconfig.HydroComp[cmpi]);
+    unsigned int nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp[cmpi]);
+
+    // #####################
+    // Determine domain region (or simple grid cells) to add load
+    // ix
+    if(ix != -1){spX_min = ix; spX_max = ix;}
+    else{spX_min = 0; spX_max = nx - 1;}
+    // iy
+    if(iy != -1){spY_min = iy; spY_max = iy;}
+    else{spY_min = 0; spY_max = ny - 1;}
+    // iz
+    if(iz != -1){spZ_min = iz; spZ_max = iz;}
+    else{spZ_min = 0; spZ_max = nz - 1;}
 
     try{
-        // Limit the mass removed to the available mass
-        mass_sink = std::fmin(
-            ss_data_json,
-            (*OpenWQ_vars.chemass)(cmpi)(chemi)(ix,iy,iz));
 
-        // Add mass load (already converted to g units)
-        (*OpenWQ_vars.d_chemass_ss)(cmpi)(chemi)(ix,iy,iz) -= mass_sink;
+        // Remove mass load (already converted to g units)
+        (*OpenWQ_vars.d_chemass_ss)(cmpi)(chemi)(
+            arma::span(spX_min, spX_max), 
+            arma::span(spY_min, spY_max),
+            arma::span(spZ_min, spZ_max)) -= ss_data_json;
+
+        // Replace all negative values by zero
+        // Needed because ss_data_json can be larger than available mass
+        (*OpenWQ_vars.d_chemass_ss)(cmpi)(chemi).transform( [](double val) { return (val < 0.0) ? 0.0 : val; });
 
     }catch (...){
 

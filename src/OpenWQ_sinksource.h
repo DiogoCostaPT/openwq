@@ -74,9 +74,9 @@ class OpenWQ_sinksource{
         OpenWQ_output& OpenWQ_output,
         const unsigned int cmpi,                        // compartment model index
         const unsigned int chemi,                       // chemical model index    
-        const unsigned int ix_json,                     // compartment model ix
-        const unsigned int iy_json,                     // compartment model iy
-        const unsigned int iz_json,                     // compartment model iz
+        int ix_json,                                    // compartment model ix
+        int iy_json,                                    // compartment model iy
+        int iz_json,                                    // compartment model iz
         const double ss_data_json);                     // source load
 
     // Apply Sink
@@ -87,9 +87,9 @@ class OpenWQ_sinksource{
         OpenWQ_output& OpenWQ_output,
         const unsigned int cmpi,                        // compartment model index
         const unsigned int chemi,                       // chemical model index    
-        const unsigned int ix_json,                     // compartment model ix
-        const unsigned int iy_json,                     // compartment model iy
-        const unsigned int iz_json,                     // compartment model iz
+        int ix_json,                                    // compartment model ix
+        int iy_json,                                    // compartment model iy
+        int iz_json,                                    // compartment model iz
         const double ss_data_json);                     // source load
 
     void Convert_Mass_Units(
