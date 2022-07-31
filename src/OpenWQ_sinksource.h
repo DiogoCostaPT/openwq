@@ -22,6 +22,7 @@
 #include <tuple>
 #include <string>
 #include <algorithm>
+#include <time.h>
 #include "jnlohmann/json.hpp"
 using json = nlohmann::json;
 
@@ -47,11 +48,12 @@ class OpenWQ_sinksource{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output,
-        const unsigned int YYYY,                        // current model step: Year
-        const unsigned int MM,                          // current model step: month
-        const unsigned int DD,                          // current model step: day
-        const unsigned int HH,                          // current model step: hour
+        const unsigned int YYYY,         // current model step: Year
+        const unsigned int MM,           // current model step: month
+        const unsigned int DD,           // current model step: day
+        const unsigned int HH,           // current model step: hour
         const unsigned int MIN);                        // current model step: min
 
     // Apply Sink or Source
@@ -102,6 +104,33 @@ class OpenWQ_sinksource{
         std::string &obj_text,
         unsigned long &vec_obj_index);
 
+    bool getSSVectEntry( // elemEntry as string "all"
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
+        std::string elemName,
+        std::__cxx11::basic_string<char> elemEntry,
+        int& elemVal,
+        unsigned int& file_i,
+        unsigned int& struc_i,
+        unsigned int& row_i);
+
+    void RemoveLoadBeforeSimStart(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units,
+        const unsigned int YYYY,         // current model step: Year
+        const unsigned int MM,           // current model step: month
+        const unsigned int DD,           // current model step: day
+        const unsigned int HH,           // current model step: hour
+        const unsigned int MIN);        // current model step: min
+
+    void UpdateAllElemTimeIncremts(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units,
+        const unsigned int YYYY,         // current model step: Year
+        const unsigned int MM,           // current model step: month
+        const unsigned int DD,           // current model step: day
+        const unsigned int HH,           // current model step: hour
+        const unsigned int MIN);        // current model step: min
 };
 
 #endif

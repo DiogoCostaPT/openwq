@@ -296,7 +296,7 @@ int OpenWQ_output::writeCSV(
     std::unique_ptr<arma::field<arma::field<arma::cube>>>& OpenWQ_var2print,
     std::string& output_file_label,
     std::string timestr,            // time step (in seconds)
-    int icmp){                  // compartment index
+    int icmp){                      // compartment index
 
     // Local Variables
     unsigned int ix, iy, iz;                // iteractive indexes for each domain elements
@@ -571,9 +571,9 @@ int OpenWQ_output::writeHDF5(
         // Save
         data2print
             .save(arma::hdf5_name(
-                filename,                               // file name
-                timestr,   // database name: chem name + time
-                arma::hdf5_opts::append));              // options
+                filename,                           // file name
+                timestr,                            // database name: chem name + time
+                arma::hdf5_opts::append));          // options
     }
 
     return EXIT_SUCCESS;

@@ -423,3 +423,26 @@ bool OpenWQ_units::Check_Time_Units(
     return time_unit_flag;
 
 }
+
+/* #################################################
+// Convert discreted date info into time_t
+################################################# */
+time_t OpenWQ_units::convert_time(
+    int year, 
+    int month, 
+    int day, 
+    int hour, 
+    int minute) {
+
+    std::time_t sim_time;
+    std::tm tm{};
+    
+    tm.tm_year = year - 1900; // -1900 is needed to get the conversion to produce the correct output
+    tm.tm_mon = month - 1;
+    tm.tm_hour = hour;
+    tm.tm_mday = day;
+    tm.tm_min = minute;
+    sim_time = timegm(&tm);
+
+    return sim_time;
+}

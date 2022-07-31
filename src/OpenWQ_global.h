@@ -117,11 +117,7 @@ class OpenWQ_wqconfig
     public:
     OpenWQ_wqconfig(){
 
-  
-    }
-    OpenWQ_wqconfig(size_t num_coldata){
-
-        this -> num_coldata = num_coldata;
+        this -> num_coldata = 17;
 
         // #################################################
         // Since and source forcing
@@ -134,13 +130,16 @@ class OpenWQ_wqconfig
         // 4 - MM
         // 5 - DD
         // 6 - HH
-        // 7 - ix
-        // 8 - iy
-        // 9 - iz
-        // 10 - value (already converted to mg/l (concentration) or g(mass))
-        // 11 - flag to tell if already used (1) or not (0) because models can run 
-                // timesteps smaller than the specified load and that would cause the 
-                // load to be added multiple times
+        // 7 - MIN
+        // 8 - ix
+        // 9 - iy
+        // 10 - iz
+        // 11 - value (already converted to mg/l (concentration) or g(mass))
+        // 12, 13, 14 ,15, 16 - flag to deal with "ALL" entries in YYYY, MM, DD, HH, MIN
+            // if there are no "all"s, then it's to use one time only and 
+            // and it is set to -1, which after use becomes -2 for not use again
+            // otherwise, it gets updated everytime the load is added
+            // and it provides the time increment for the next load
  
         SinkSource_FORC = 
             std::unique_ptr<
@@ -170,7 +169,8 @@ class OpenWQ_wqconfig
     std::unique_ptr<
         arma::Mat<double>
         > SinkSource_FORC;
-
+    int allSS_flag = -1;        // number to replace in SinkSource_FORC to denote "all"
+    bool tstep1_flag = true;    // flag to note that it's the first time step, so need to exclude loads prior to that
     // #################################################
     // Output 
     
@@ -179,14 +179,14 @@ class OpenWQ_wqconfig
     std::string timestep_out_unit;  // time step unit
     double nexttime_out = 0.0f;     // iteractive next printing time (in seconds)
     // output format
-    unsigned long output_type;      // 1) CSV, 2) VTK, 3) HDF5
+    unsigned long output_type;      // 1) CSV, 2) HDF5
     bool debug_mode = false;        // set to true if debug mode is requested
     std::tuple<
-        std::string,            // output units as provided by the user
-        double,                 // numerator multiplier (determined by Convert_Units)
-        double,                 // denominator multiplier (determined by Convert_Units)
-        bool                    // flad if requested concentration (needs to be divided by water volume)
-        > output_units;         // Tuple with info about output units
+        std::string,                // output units as provided by the user
+        double,                     // numerator multiplier (determined by Convert_Units)
+        double,                     // denominator multiplier (determined by Convert_Units)
+        bool                        // flad if requested concentration (needs to be divided by water volume)
+        > output_units;             // Tuple with info about output units
     // chemicals, compartments and cells/elements to export
     std::vector<int> chem2print;
     std::vector<int> compt2print;
