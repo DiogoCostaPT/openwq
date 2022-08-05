@@ -319,7 +319,7 @@ void OpenWQ_sinksource::SetSinkSource(
                 }        
                 
                 // ###################
-                // Min
+                // Minute
                 // ###################
                 elemName = "Min";
                 try{
@@ -349,7 +349,7 @@ void OpenWQ_sinksource::SetSinkSource(
                     if (!validEntryFlag){continue;}
                 }
 
-                // chemname_ssi -> already obtained above // chemcial namea
+                // chemname_ssi -> already obtained above // chemical name
 
                 // ###################
                 // ix
