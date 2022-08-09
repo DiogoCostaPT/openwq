@@ -607,6 +607,7 @@ void OpenWQ_sinksource::CheckApply(
     int DD_json;                    // Day in JSON-sink_source (interactive)
     int HH_json;                    // Hour in JSON-sink_source (interactive)
     int MIN_json;                   // Hour in JSON-sink_source (interactive)
+    int DD_max;                     // max number of days for a given month and year
 
     long sinksource_flag;           // source (=0) or sink (=1)
     time_t jsonTime;                // to get time as time_t for easier comparison with simTime
@@ -704,6 +705,9 @@ void OpenWQ_sinksource::CheckApply(
         // addedIncrem_flag makes sure increment is added only in YYYY_json or MM_json or ...
         // limit incremenets to max number of MIN, HH, DD, MM and YYYY
         // Also reset time elements to 1 when they reach their max value
+
+        DD_max = OpenWQ_sinksource::getNumberOfDays(YYYY_json, MM_json);
+
         if (MINall_flag && addedIncrem_flag && MIN_json<60){
             (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16)++;
             addedIncrem_flag = false;
@@ -711,7 +715,7 @@ void OpenWQ_sinksource::CheckApply(
             (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15)++;
             if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
             addedIncrem_flag = false;
-        }else if (DDall_flag && addedIncrem_flag && DD_json<30){
+        }else if (DDall_flag && addedIncrem_flag && DD_json<DD_max){
             (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14)++;
             if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
             if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = 1;
@@ -720,13 +724,13 @@ void OpenWQ_sinksource::CheckApply(
             (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13)++;
             if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
             if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = 1;
-            if (DDall_flag && DD_json==30) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = 1;
+            if (DDall_flag && DD_json==DD_max) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = 2;
             addedIncrem_flag = false;
         }else if (YYYYall_flag && addedIncrem_flag){
             (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12)++;
             if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
             if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = 1;
-            if (DDall_flag && DD_json==30) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = 1;
+            if (DDall_flag && DD_json==DD_max) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = 2;
             if (MMall_flag && MM_json==12) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13) = 1;
             addedIncrem_flag = false;
         }
@@ -755,12 +759,13 @@ void OpenWQ_sinksource::CheckApply(
                 (*OpenWQ_wqconfig.SinkSource_FORC)(ri,0),       // chemical model index    
                 (*OpenWQ_wqconfig.SinkSource_FORC)(ri,8),       // compartment model ix
                 (*OpenWQ_wqconfig.SinkSource_FORC)(ri,9),       // compartment model iy
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,10),       // compartment model iz
+                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,10),      // compartment model iz
                 (*OpenWQ_wqconfig.SinkSource_FORC)(ri,11));     // source load
 
         }
         // if SINK
         else if (sinksource_flag == 1){
+
             OpenWQ_sinksource::Apply_Sink(
                 OpenWQ_vars,
                 OpenWQ_wqconfig,
@@ -1125,6 +1130,7 @@ void OpenWQ_sinksource::UpdateAllElemTimeIncremts(
     unsigned int increm1, increm2, increm3, increm4, increm5;   // for interactive trial-error to get mininum increment
     std::vector<int> rows2Remove;                               // List of rows indexes to remove
     unsigned int numFreeElem;                                   // number of free elements
+    int DD_max;                                                 // max number of days for a given month and year
     
     // Convert sim time to time_t
     simTime = OpenWQ_units.convert_time(YYYY, MM, DD, HH, MIN);
@@ -1234,8 +1240,9 @@ void OpenWQ_sinksource::UpdateAllElemTimeIncremts(
             
             // Try changing 
             // at DD scale (if it is an "all" element)
+            DD_max = OpenWQ_sinksource::getNumberOfDays(YYYY_json, MM_json);
             if (all_DD_flag){
-                while(jsonTime < simTime && (DD_json + increm3) < 30){
+                while(jsonTime < simTime && (DD_json + increm3) < DD_max){
                     increm3++;
                     jsonTime = OpenWQ_units.convert_time(
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
@@ -1288,3 +1295,24 @@ void OpenWQ_sinksource::UpdateAllElemTimeIncremts(
 
 }
 
+// Function to return total number of days in a given year and month
+int  OpenWQ_sinksource::getNumberOfDays(
+        const unsigned int YYYY_check,          // json: Year 
+        const unsigned int MM_check)            // json: Month
+{
+	//leap year condition, if month is 2
+	if(MM_check == 2)
+	{
+		if((YYYY_check%400==0) || (YYYY_check%4==0 && YYYY_check%100!=0))	
+			return 29;
+		else	
+			return 28;
+	}
+	//months which has 31 days
+	else if(MM_check == 1 || MM_check == 3 || MM_check == 5 || MM_check == 7 || MM_check == 8
+	||MM_check == 10 || MM_check==12)	
+		return 31;
+	else 		
+		return 30;
+
+} 
