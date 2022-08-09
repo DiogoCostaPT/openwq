@@ -117,25 +117,25 @@ class OpenWQ_sinksource{
     void RemoveLoadBeforeSimStart(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units,
-        const unsigned int YYYY,            // current model step: Year
-        const unsigned int MM,              // current model step: month
-        const unsigned int DD,              // current model step: day
-        const unsigned int HH,              // current model step: hour
-        const unsigned int MIN);            // current model step: min
+        const int YYYY,            // current model step: Year
+        const int MM,              // current model step: month
+        const int DD,              // current model step: day
+        const int HH,              // current model step: hour
+        const int MIN);            // current model step: min
 
     void UpdateAllElemTimeIncremts(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units,
-        const unsigned int YYYY,            // current model step: Year
-        const unsigned int MM,              // current model step: month
-        const unsigned int DD,              // current model step: day
-        const unsigned int HH,              // current model step: hour
-        const unsigned int MIN);            // current model step: min
+        const int YYYY,            // current model step: Year
+        const int MM,              // current model step: month
+        const int DD,              // current model step: day
+        const int HH,              // current model step: hour
+        const int MIN);            // current model step: min
 
     int getNumberOfDays(
         const unsigned int YYYY_check,          // json: Year 
         const unsigned int MM_check);           // json: Month
-        
+
 };
 
 #endif
