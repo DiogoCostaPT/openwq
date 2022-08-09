@@ -614,7 +614,8 @@ void OpenWQ_sinksource::CheckApply(
 
     bool anyAll_flag;               // Flag to indicate when at least one "all" is present in row elements
     bool YYYYall_flag, MMall_flag, DDall_flag, \
-         HHall_flag, MINall_flag; // Flags "all" flags for specific date units
+         HHall_flag, MINall_flag;   // Flags "all" flags for specific date units
+    bool addedIncrem_flag=true;    // flag to guarantee increment is added only in one time field (YYYY_json or MM_json or ...) 
 
     /* ########################################
     // Data update/clean-up at 1st timestep
@@ -658,6 +659,9 @@ void OpenWQ_sinksource::CheckApply(
 
     for (unsigned int ri=0;ri<num_rowdata;ri++){
 
+        // Reset the addedIncrem_flag 
+        addedIncrem_flag = true;
+
         // First check if row has already been used
         // only applicable to rows without "all" in any datetime row element
         // YYYY, MM, DD, HH, MIN
@@ -697,13 +701,40 @@ void OpenWQ_sinksource::CheckApply(
 
         // Update increment if "row" has all
         // Needed for setting the time for the next load
-        if (YYYYall_flag){(*OpenWQ_wqconfig.SinkSource_FORC)(ri,12)++;};    // YYYY
-        if (MMall_flag){(*OpenWQ_wqconfig.SinkSource_FORC)(ri,13)++;};      // MM
-        if (DDall_flag){(*OpenWQ_wqconfig.SinkSource_FORC)(ri,14)++;};      // DD
-        if (HHall_flag){(*OpenWQ_wqconfig.SinkSource_FORC)(ri,15)++;};      // HH
-        if (MINall_flag){(*OpenWQ_wqconfig.SinkSource_FORC)(ri,16)++;};     // HH
+        // addedIncrem_flag makes sure increment is added only in YYYY_json or MM_json or ...
+        // limit incremenets to max number of MIN, HH, DD, MM and YYYY
+        // Also reset time elements to 1 when they reach their max value
+        if (MINall_flag && addedIncrem_flag && MIN_json<60){
+            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16)++;
+            addedIncrem_flag = false;
+        }else if (HHall_flag && addedIncrem_flag && HH_json<24){
+            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15)++;
+            if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
+            addedIncrem_flag = false;
+        }else if (DDall_flag && addedIncrem_flag && DD_json<30){
+            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14)++;
+            if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
+            if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = 1;
+            addedIncrem_flag = false;
+        }else if (MMall_flag && addedIncrem_flag && MM_json<12){
+            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13)++;
+            if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
+            if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = 1;
+            if (DDall_flag && DD_json==30) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = 1;
+            addedIncrem_flag = false;
+        }else if (YYYYall_flag && addedIncrem_flag){
+            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12)++;
+            if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
+            if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = 1;
+            if (DDall_flag && DD_json==30) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = 1;
+            if (MMall_flag && MM_json==12) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13) = 1;
+            addedIncrem_flag = false;
+        }
 
-        // Flag for load without "all" (only use one time)
+        // Set it as "used" (not for use anymore) if:
+        // 1) exceeded possible increments in "all" elements
+        // 2) when load is without "all" (only use one time)
+        if (addedIncrem_flag) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12) = -2;
         if (!anyAll_flag) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12) = -2;
 
         // ########################################
