@@ -689,12 +689,7 @@ void OpenWQ_sinksource::CheckApply(
         jsonTime = OpenWQ_units.convert_time(YYYY_json, MM_json, DD_json, HH_json, MIN_json);
 
         // Skip if not time to load yet
-        if (YYYY < YYYY_json) continue;
-        if (MM < MM_json) continue;
-        if (DD < DD_json) continue;
-        if (HH < HH_json) continue;
-        if (MIN < MIN_json) continue;
-
+        if (simTime < jsonTime) continue;
 
         // ########################################
         // If reached here, then it's time to apply load
@@ -789,7 +784,6 @@ void OpenWQ_sinksource::Apply_Source(
 
     try{
         // Add mass load (already converted to g units)
-        // (*OpenWQ_vars.d_chemass_ss)(cmpi)(chemi)(ix,iy,iz) += ss_data_json;
         (*OpenWQ_vars.d_chemass_ss)(cmpi)(chemi)(
             arma::span(spX_min, spX_max), 
             arma::span(spY_min, spY_max),
@@ -1094,6 +1088,7 @@ void OpenWQ_sinksource::UpdateAllElemTimeIncremts(
     unsigned num_rowdata;                                       // number of SS row data
     bool all_YYYY_flag = false, all_MM_flag = false, all_DD_flag = false, \
          all_HH_flag = false, all_MIN_flag = false;
+    bool initSet_increm_flag;
     int YYYY_json, MM_json, DD_json, HH_json, MIN_json;
     time_t jsonTime, simTime;
     unsigned int increm1, increm2, increm3, increm4, increm5;   // for interactive trial-error to get mininum increment
@@ -1115,6 +1110,7 @@ void OpenWQ_sinksource::UpdateAllElemTimeIncremts(
         // Reset all entry exists flag
         all_YYYY_flag = false; all_MM_flag = false; all_DD_flag = false;
         all_HH_flag = false; all_MIN_flag = false;
+        initSet_increm_flag = false;
         increm1=0, increm2=0, increm3=0, increm4=0, increm5=0;
 
         // Get requested JSON datetime
@@ -1140,12 +1136,24 @@ void OpenWQ_sinksource::UpdateAllElemTimeIncremts(
         }
 
         // First interation to get closer to current timestep based on simtime
-        // and degrees of freedom from "all" elements
-        if (all_YYYY_flag){increm1 = YYYY - YYYY_json;}
-        if (all_MM_flag){increm2 = MM - MM_json;}
-        if (all_DD_flag){increm3 = DD - DD_json;}
-        if (all_HH_flag){increm4 = HH - HH_json;}
-        if (all_MIN_flag){increm5 = MIN - MIN_json;}
+        // and degrees of freedom from "all" elements. Only changes the min step possible
+        if (!all_YYYY_flag & YYYY_json > YYYY){
+            // if YYYY_json is not "all" and is higher than the current sim YYYY,
+            // then we just need to set the values of MM, DD, HH, MIN have to the min values
+            // that means, Jan-1 00:00 of that yeat
+            // for that, we need to add 2 because the "all" flag is -1, so we need to add 2 to get to 1
+            if (all_MIN_flag){increm5 = 2;}
+            if (all_HH_flag){increm4 = 2;}
+            if (all_DD_flag){increm3 = 2;}
+            if (all_MM_flag){increm2 = 2;}
+        }else if (YYYY_json == YYYY){
+            // if YYYY_json is in same year as YYYY, then we need to look for the closest month, day, hour and mib
+            if (all_MIN_flag && !initSet_increm_flag){increm5 = MIN - MIN_json; initSet_increm_flag=true;}
+            if (all_HH_flag && !initSet_increm_flag){increm4 = HH - HH_json; initSet_increm_flag=true;}
+            if (all_DD_flag && !initSet_increm_flag){increm3 = DD - DD_json; initSet_increm_flag=true;}
+            if (all_MM_flag && !initSet_increm_flag){increm2 = MM - MM_json; initSet_increm_flag=true;}
+            if (all_YYYY_flag && !initSet_increm_flag){increm1 = YYYY - YYYY_json; initSet_increm_flag=true;}
+        }
 
         // Determine new jsonTime if using the first guess for the increment
         jsonTime = OpenWQ_units.convert_time(
