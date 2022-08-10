@@ -39,7 +39,7 @@ void OpenWQ_couplercalls::InitialConfig(
     std::string msg_string; // error message
     
     // ################################
-    // Read JSON file
+    // Read JSON files
     // ################################
         
     OpenWQ_readjson.read_all(
