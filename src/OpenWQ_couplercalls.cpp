@@ -172,7 +172,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
 
 
     // ########################################
-    Sources and Sinks (doesn't need space loop => it's inside the function)
+    // Sources and Sinks (doesn't need space loop => it's inside the function)
     // ########################################         
     struct tm *tm_simtime = localtime(&simtime);
 
@@ -202,7 +202,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     // MODULES
 
     // ########################################
-    Biogeochemistry (doesn't need space loop => it's inside the function)
+    // Biogeochemistry (doesn't need space loop => it's inside the function)
     // ########################################
     
     // NATIVE Bioogeochemical model
