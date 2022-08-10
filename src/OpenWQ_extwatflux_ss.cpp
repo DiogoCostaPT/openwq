@@ -15,12 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "OpenWQ_sinksource.h"
+#include "OpenWQ_extwatflux_ss.h"
 
 /* #################################################
  // Check Sources and Sinks and Apply
  ################################################# */
-void OpenWQ_sinksource::SetSinkSource(
+void OpenWQ_extwatflux_ss::SetSinkSource(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -588,7 +588,7 @@ void OpenWQ_sinksource::SetSinkSource(
 /* #################################################
  // Check Sources and Sinks and Apply
  ################################################# */
-void OpenWQ_sinksource::CheckApply(
+void OpenWQ_extwatflux_ss::CheckApply(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
@@ -624,7 +624,7 @@ void OpenWQ_sinksource::CheckApply(
     if (OpenWQ_wqconfig.tstep1_flag){
 
         // Remove requested loads that are prior to the simulation start datetime
-        OpenWQ_sinksource::RemoveLoadBeforeSimStart(
+        OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
             OpenWQ_wqconfig,
             OpenWQ_units,
             YYYY,         // current model step: Year
@@ -636,7 +636,7 @@ void OpenWQ_sinksource::CheckApply(
 
         // Update time increments for rows with "all" elements
         // Remove requested loads that are prior to the simulation start datetime
-        OpenWQ_sinksource::UpdateAllElemTimeIncremts(
+        OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             OpenWQ_wqconfig,
             OpenWQ_units,
             YYYY,         // current model step: Year
@@ -706,7 +706,7 @@ void OpenWQ_sinksource::CheckApply(
         // limit incremenets to max number of MIN, HH, DD, MM and YYYY
         // Also reset time elements to 1 when they reach their max value
 
-        DD_max = OpenWQ_sinksource::getNumberOfDays(YYYY_json, MM_json);
+        DD_max = OpenWQ_extwatflux_ss::getNumberOfDays(YYYY_json, MM_json);
 
         if (MINall_flag && addedIncrem_flag && MIN_json<60){
             (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16)++;
@@ -750,7 +750,7 @@ void OpenWQ_sinksource::CheckApply(
         // if SOURCE
         if (sinksource_flag == 0){
 
-            OpenWQ_sinksource::Apply_Source(
+            OpenWQ_extwatflux_ss::Apply_Source(
                 OpenWQ_vars,
                 OpenWQ_wqconfig,
                 OpenWQ_hostModelconfig,
@@ -766,7 +766,7 @@ void OpenWQ_sinksource::CheckApply(
         // if SINK
         else if (sinksource_flag == 1){
 
-            OpenWQ_sinksource::Apply_Sink(
+            OpenWQ_extwatflux_ss::Apply_Sink(
                 OpenWQ_vars,
                 OpenWQ_wqconfig,
                 OpenWQ_hostModelconfig,
@@ -787,7 +787,7 @@ void OpenWQ_sinksource::CheckApply(
 /* #################################################
  // Apply Source
  ################################################# */
-void OpenWQ_sinksource::Apply_Source(
+void OpenWQ_extwatflux_ss::Apply_Source(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -853,7 +853,7 @@ void OpenWQ_sinksource::Apply_Source(
 /* #################################################
  // Apply Sink
  ################################################# */
-void OpenWQ_sinksource::Apply_Sink(
+void OpenWQ_extwatflux_ss::Apply_Sink(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -923,7 +923,7 @@ void OpenWQ_sinksource::Apply_Sink(
 /* #################################################
  // Get model structure indexes for compartments and chemicals
  ################################################# */
-bool OpenWQ_sinksource::getModIndex(
+bool OpenWQ_extwatflux_ss::getModIndex(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_output& OpenWQ_output,
     std::vector<std::string> &vec_list,
@@ -974,7 +974,7 @@ bool OpenWQ_sinksource::getModIndex(
  // Get SS vector element
  // CASE IF: elemEntry as string "all"
  ################################################# */
- bool OpenWQ_sinksource::getSSVectEntry(
+ bool OpenWQ_extwatflux_ss::getSSVectEntry(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_output& OpenWQ_output,
     std::string elemName,
@@ -1022,7 +1022,7 @@ bool OpenWQ_sinksource::getModIndex(
 // remove requested loads that are prior to the simulation start datetime
 // only do this for rows that don't have any "all" elements
 #################################################*/
-void OpenWQ_sinksource::RemoveLoadBeforeSimStart(
+void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_units& OpenWQ_units,
     const int YYYY,         // current model step: Year
@@ -1110,7 +1110,7 @@ void OpenWQ_sinksource::RemoveLoadBeforeSimStart(
 // At timestep 1, 
 // adjust time increments for YYYY, MM, DD, HH, MIN
 #################################################*/
-void OpenWQ_sinksource::UpdateAllElemTimeIncremts(
+void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_units& OpenWQ_units,
     const int YYYY,         // current model step: Year
@@ -1237,7 +1237,7 @@ void OpenWQ_sinksource::UpdateAllElemTimeIncremts(
             
             // Try changing 
             // at DD scale (if it is an "all" element)
-            DD_max = OpenWQ_sinksource::getNumberOfDays(YYYY_json, MM_json);
+            DD_max = OpenWQ_extwatflux_ss::getNumberOfDays(YYYY_json, MM_json);
             if (all_DD_flag){
                 while(jsonTime < simTime && (DD_json + increm3) < DD_max){
                     increm3++;
@@ -1293,7 +1293,7 @@ void OpenWQ_sinksource::UpdateAllElemTimeIncremts(
 }
 
 // Function to return total number of days in a given year and month
-int  OpenWQ_sinksource::getNumberOfDays(
+int  OpenWQ_extwatflux_ss::getNumberOfDays(
         const unsigned int YYYY_check,          // json: Year 
         const unsigned int MM_check)            // json: Month
 {

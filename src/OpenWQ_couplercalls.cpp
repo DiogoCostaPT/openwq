@@ -31,7 +31,7 @@ void OpenWQ_couplercalls::InitialConfig(
     OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
     OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
     OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
-    OpenWQ_sinksource& OpenWQ_sinksource,        // sink and source modules)
+    OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,        // sink and source modules)
     OpenWQ_output& OpenWQ_output){
 
 
@@ -62,7 +62,7 @@ void OpenWQ_couplercalls::InitialConfig(
     // ##################################
     // Parse sink and source inputs and store them in tuple and arma::mat for quick access
     // ##################################
-    OpenWQ_sinksource.SetSinkSource(
+    OpenWQ_extwatflux_ss.SetSinkSource(
         OpenWQ_json,
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
@@ -124,7 +124,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
     OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
     OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
-    OpenWQ_sinksource& OpenWQ_sinksource,        // sink and source modules)
+    OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,        // sink and source modules)
     OpenWQ_solver& OpenWQ_solver,
     OpenWQ_output& OpenWQ_output,
     time_t simtime){                     // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
@@ -185,7 +185,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     int hour_sim_now = tm_simtime->tm_hour;
     int min_sim_now = tm_simtime->tm_min;
 
-    OpenWQ_sinksource.CheckApply(
+    OpenWQ_extwatflux_ss.CheckApply(
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
@@ -248,7 +248,7 @@ void OpenWQ_couplercalls::RunSpaceStep(
     OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
     OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
     OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
-    OpenWQ_sinksource& OpenWQ_sinksource,        // sink and source modules)
+    OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,        // sink and source modules)
     OpenWQ_solver& OpenWQ_solver,
     OpenWQ_output& OpenWQ_output,
     time_t simtime,                            // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
@@ -460,7 +460,7 @@ void OpenWQ_couplercalls::RunTimeLoopEnd(
     OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
     OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
     OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
-    OpenWQ_sinksource& OpenWQ_sinksource,        // sink and source modules)
+    OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,        // sink and source modules)
     OpenWQ_solver& OpenWQ_solver,
     OpenWQ_output& OpenWQ_output,
     time_t simtime){

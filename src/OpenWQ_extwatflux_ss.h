@@ -30,7 +30,7 @@ using json = nlohmann::json;
 #include "OpenWQ_units.h"
 #include "OpenWQ_output.h"
 
-class OpenWQ_sinksource{
+class OpenWQ_extwatflux_ss{
 
     public:
 

@@ -24,7 +24,7 @@
 #include "OpenWQ_initiate.h"
 #include "OpenWQ_chem.h"
 #include "OpenWQ_watertransp.h"
-#include "OpenWQ_sinksource.h"
+#include "OpenWQ_extwatflux_ss.h"
 #include "OpenWQ_units.h"
 #include "OpenWQ_solver.h"
 #include "OpenWQ_output.h"
@@ -46,8 +46,8 @@ class OpenWQ_couplercalls{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
         OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
-        OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
-        OpenWQ_sinksource& OpenWQ_sinksource,        // sink and source modules)
+        OpenWQ_chem& OpenWQ_chem,                    // biochemistry modules
+        OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,  // sink and source modules)
         OpenWQ_output& OpenWQ_output);
 
     // #######################
@@ -64,7 +64,7 @@ class OpenWQ_couplercalls{
         OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
         OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
         OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
-        OpenWQ_sinksource& OpenWQ_sinksource,        // sink and source modules)
+        OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,        // sink and source modules)
         OpenWQ_solver& OpenWQ_solver,
         OpenWQ_output& OpenWQ_output,
         time_t simtime);                            // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
@@ -84,7 +84,7 @@ class OpenWQ_couplercalls{
         OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
         OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
         OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
-        OpenWQ_sinksource& OpenWQ_sinksource,        // sink and source modules)
+        OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,        // sink and source modules)
         OpenWQ_solver& OpenWQ_solver,
         OpenWQ_output& OpenWQ_output,
         time_t simtime,                            // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
@@ -113,7 +113,7 @@ class OpenWQ_couplercalls{
         OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
         OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
         OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
-        OpenWQ_sinksource& OpenWQ_sinksource,        // sink and source modules)
+        OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,        // sink and source modules)
         OpenWQ_solver& OpenWQ_solver,
         OpenWQ_output& OpenWQ_output,
         time_t simtime);                            // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
