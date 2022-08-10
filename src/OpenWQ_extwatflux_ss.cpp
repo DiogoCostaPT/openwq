@@ -588,7 +588,7 @@ void OpenWQ_extwatflux_ss::SetSinkSource(
 /* #################################################
  // Check Sources and Sinks and Apply
  ################################################# */
-void OpenWQ_extwatflux_ss::CheckApply(
+void OpenWQ_extwatflux_ss::CheckApply_SS(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,

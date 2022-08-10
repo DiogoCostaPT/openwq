@@ -44,7 +44,7 @@ class OpenWQ_extwatflux_ss{
         OpenWQ_output& OpenWQ_output);
 
     // Check if sink or sources needs to be applied
-    void CheckApply(
+    void CheckApply_SS(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,

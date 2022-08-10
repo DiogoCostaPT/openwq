@@ -185,7 +185,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     int hour_sim_now = tm_simtime->tm_hour;
     int min_sim_now = tm_simtime->tm_min;
 
-    OpenWQ_extwatflux_ss.CheckApply(
+    OpenWQ_extwatflux_ss.CheckApply_SS(
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
