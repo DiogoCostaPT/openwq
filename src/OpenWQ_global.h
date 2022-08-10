@@ -100,12 +100,12 @@ class OpenWQ_hostModelconfig
     const double watervol_minlim = 0.01;
 
     // Add dependencies for BGC calculations
-    std::unique_ptr<arma::Cube<double>> SM;    // Saves all SM data from hostmodel
-    std::unique_ptr<arma::Cube<double>> Tair;  // Saves all Tair data from hostmodel
+    std::unique_ptr<arma::Cube<double>> SM;     // Saves all SM data from hostmodel
+    std::unique_ptr<arma::Cube<double>> Tair;   // Saves all Tair data from hostmodel
     std::unique_ptr<arma::Cube<double>> Tsoil;  // Saves all Tsoil data from hostmodel
-    double SM_txyz;                                                  // Used as iteractive variable to use with exprtk
-    double Tair_txyz;                                                // Used as iteractive variable to use with exprtk
-    double Tsoil_txyz;                                                // Used as iteractive variable to use with exprtk
+    double SM_txyz;                             // Used as iteractive variable to use with exprtk
+    double Tair_txyz;                           // Used as iteractive variable to use with exprtk
+    double Tsoil_txyz;                          // Used as iteractive variable to use with exprtk
     
 };
 
@@ -171,6 +171,7 @@ class OpenWQ_wqconfig
         > SinkSource_FORC;
     int allSS_flag = -1;        // number to replace in SinkSource_FORC to denote "all"
     bool tstep1_flag = true;    // flag to note that it's the first time step, so need to exclude loads prior to that
+    
     // #################################################
     // Output 
     
