@@ -20,7 +20,7 @@
 /* #################################################
  // Check Sources and Sinks and Apply
  ################################################# */
-void OpenWQ_extwatflux_ss::SetSinkSource(
+void OpenWQ_extwatflux_ss::Set_EWFandSS(
     OpenWQ_json& OpenWQ_json,
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,

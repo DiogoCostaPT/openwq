@@ -62,7 +62,7 @@ void OpenWQ_couplercalls::InitialConfig(
     // ##################################
     // Parse sink and source inputs and store them in tuple and arma::mat for quick access
     // ##################################
-    OpenWQ_extwatflux_ss.SetSinkSource(
+    OpenWQ_extwatflux_ss.Set_EWFandSS(
         OpenWQ_json,
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
