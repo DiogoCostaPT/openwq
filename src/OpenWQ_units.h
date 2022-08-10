@@ -20,6 +20,7 @@
 
 #include <tuple>
 #include <vector>
+#include <time.h>
 #include "jnlohmann/json.hpp"
 using json = nlohmann::json;
 
@@ -60,6 +61,12 @@ class OpenWQ_units{
         std::string unit_i,         // unit of numerator or denominator
         double& unit_multipler_i);  // multiplier of numerator or denominator
 
+    time_t convert_time(
+        int year, 
+        int month, 
+        int day, 
+        int hour, 
+        int minute);
 };
 
 #endif

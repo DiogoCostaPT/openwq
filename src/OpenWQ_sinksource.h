@@ -22,6 +22,7 @@
 #include <tuple>
 #include <string>
 #include <algorithm>
+#include <time.h>
 #include "jnlohmann/json.hpp"
 using json = nlohmann::json;
 
@@ -33,7 +34,7 @@ class OpenWQ_sinksource{
 
     public:
 
-    // Save Sink and Source data to tuple (more efficient then allways calling jnlohmann)
+    // Save Sink and Source data to tuple (more efficient than allways calling jnlohmann)
     void SetSinkSource(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
@@ -47,11 +48,12 @@ class OpenWQ_sinksource{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output,
-        const unsigned int YYYY,                        // current model step: Year
-        const unsigned int MM,                          // current model step: month
-        const unsigned int DD,                          // current model step: day
-        const unsigned int HH,                          // current model step: hour
+        const unsigned int YYYY,         // current model step: Year
+        const unsigned int MM,           // current model step: month
+        const unsigned int DD,           // current model step: day
+        const unsigned int HH,           // current model step: hour
         const unsigned int MIN);                        // current model step: min
 
     // Apply Sink or Source
@@ -72,9 +74,9 @@ class OpenWQ_sinksource{
         OpenWQ_output& OpenWQ_output,
         const unsigned int cmpi,                        // compartment model index
         const unsigned int chemi,                       // chemical model index    
-        const unsigned int ix_json,                     // compartment model ix
-        const unsigned int iy_json,                     // compartment model iy
-        const unsigned int iz_json,                     // compartment model iz
+        int ix_json,                                    // compartment model ix
+        int iy_json,                                    // compartment model iy
+        int iz_json,                                    // compartment model iz
         const double ss_data_json);                     // source load
 
     // Apply Sink
@@ -85,9 +87,9 @@ class OpenWQ_sinksource{
         OpenWQ_output& OpenWQ_output,
         const unsigned int cmpi,                        // compartment model index
         const unsigned int chemi,                       // chemical model index    
-        const unsigned int ix_json,                     // compartment model ix
-        const unsigned int iy_json,                     // compartment model iy
-        const unsigned int iz_json,                     // compartment model iz
+        int ix_json,                                    // compartment model ix
+        int iy_json,                                    // compartment model iy
+        int iz_json,                                    // compartment model iz
         const double ss_data_json);                     // source load
 
     void Convert_Mass_Units(
@@ -101,6 +103,38 @@ class OpenWQ_sinksource{
         std::string &obj_name,
         std::string &obj_text,
         unsigned long &vec_obj_index);
+
+    bool getSSVectEntry( // elemEntry as string "all"
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
+        std::string elemName,
+        std::__cxx11::basic_string<char> elemEntry,
+        int& elemVal,
+        unsigned int& file_i,
+        unsigned int& struc_i,
+        unsigned int& row_i);
+
+    void RemoveLoadBeforeSimStart(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units,
+        const int YYYY,            // current model step: Year
+        const int MM,              // current model step: month
+        const int DD,              // current model step: day
+        const int HH,              // current model step: hour
+        const int MIN);            // current model step: min
+
+    void UpdateAllElemTimeIncremts(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units,
+        const int YYYY,            // current model step: Year
+        const int MM,              // current model step: month
+        const int DD,              // current model step: day
+        const int HH,              // current model step: hour
+        const int MIN);            // current model step: min
+
+    int getNumberOfDays(
+        const unsigned int YYYY_check,          // json: Year 
+        const unsigned int MM_check);           // json: Month
 
 };
 

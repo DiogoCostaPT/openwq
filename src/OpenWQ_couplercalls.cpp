@@ -17,9 +17,9 @@
 
 #include "OpenWQ_couplercalls.h"
 
-// ################################
+// ################################################################
 // Initial Configuration of OpenWQ
-// ################################
+// ################################################################
 
 void OpenWQ_couplercalls::InitialConfig(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -59,9 +59,9 @@ void OpenWQ_couplercalls::InitialConfig(
         OpenWQ_wqconfig,
         OpenWQ_output);
         
-    /* #################################################
-    // Parse sink and source inputs and store them in tuple and arma::mat for rapid access
-    ################################################# */
+    // ##################################
+    // Parse sink and source inputs and store them in tuple and arma::mat for quick access
+    // ##################################
     OpenWQ_sinksource.SetSinkSource(
         OpenWQ_json,
         OpenWQ_vars,
@@ -71,15 +71,15 @@ void OpenWQ_couplercalls::InitialConfig(
         OpenWQ_output);  
 
 
-    /* #################################################
+    // ##################################
     // MODULES
-    ################################################# */
+    // ##################################
    
-    // #################################################
+    // ##################################
     // BIOGEOCHEMISTRY
     
     // NATIVE Bigoeochemical model
-        // Parse biogeochemical expressions (and save in global)
+    // Parse biogeochemical expressions (and save in global)
     if ((OpenWQ_wqconfig.BGC_module).compare("OPENWQ_NATIVE_BGC") == 0)
     {
         
@@ -106,15 +106,14 @@ void OpenWQ_couplercalls::InitialConfig(
         // Abort (Fatal error)
         exit(EXIT_FAILURE);
 
-
     }
 
 }
 
-// #######################
+// ################################################################
 // Calls all functions required inside time loop
 // But before space loop is initiated
-// #######################
+// ################################################################
 void OpenWQ_couplercalls::RunTimeLoopStart(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object
@@ -172,16 +171,16 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     }
 
 
-    /* ########################################
+    // ########################################
     Sources and Sinks (doesn't need space loop => it's inside the function)
-    ######################################## */            
+    // ########################################         
     struct tm *tm_simtime = localtime(&simtime);
 
     // Get Year, Month, Day, Hour and Min of simulation time
     int year_sim_now = tm_simtime->tm_year;
     year_sim_now += 1900; // Because localtime() returns: The number of years since 1900
-    int month_sim_now = tm_simtime->tm_mon; // Because localtime() returns: months since January - [0, 11]
-    month_sim_now -= 1;
+    int month_sim_now = tm_simtime->tm_mon; 
+    month_sim_now++; // Because localtime() returns: months since January - [0, 11]
     int day_sim_now = tm_simtime->tm_mday;
     int hour_sim_now = tm_simtime->tm_hour;
     int min_sim_now = tm_simtime->tm_min;
@@ -190,6 +189,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
+        OpenWQ_units,
         OpenWQ_output,
         year_sim_now,
         month_sim_now,
@@ -201,9 +201,9 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     // #################################################
     // MODULES
 
-    /* ########################################
+    // ########################################
     Biogeochemistry (doesn't need space loop => it's inside the function)
-    ######################################## */ 
+    // ########################################
     
     // NATIVE Bioogeochemical model
     if ((OpenWQ_wqconfig.BGC_module).compare("OPENWQ_NATIVE_BGC") == 0)
@@ -234,10 +234,10 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
  }
 
 
-// #######################
+// ################################################################
 // Calls inside space loop
 // Called for each grid cell
-// #######################
+// ################################################################
 void OpenWQ_couplercalls::RunSpaceStep(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object
@@ -274,10 +274,10 @@ void OpenWQ_couplercalls::RunSpaceStep(
     // #################################################
     // MODULES
 
-    /* #################################################
+    // #################################################
     // TE module
     // Mass transport with water (mobile material only)
-    ################################################# */
+    // #################################################
 
     // NATIVE TE model
     if ((OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_ADVDISP") == 0)
@@ -446,10 +446,10 @@ void OpenWQ_couplercalls::RunSpaceStep(
 }
 
 
-// #######################
-    // Calls all functions required inside time loop
-    // But AFTER space loop has been finalized
-    // #######################
+// ################################################################
+// Calls all functions required inside time loop
+// But AFTER space loop has been finalized
+// ################################################################
 void OpenWQ_couplercalls::RunTimeLoopEnd(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object
@@ -477,9 +477,9 @@ void OpenWQ_couplercalls::RunTimeLoopEnd(
         OpenWQ_wqconfig,
         OpenWQ_vars);
 
-    /* ########################################
-        Output Results
-    ######################################## */
+    // ########################################
+    // Output Results
+    // ###########################################
 
     // Only print if time to print -> Needs to be adapted to host model time conventions
     // Note that OpenWQ_wqconfig.timetep_out converted to seconds in OpenWQ_readjson    

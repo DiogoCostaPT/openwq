@@ -1127,7 +1127,7 @@ void OpenWQ_readjson::SetConfigInfo(
 
                 }else{
                     
-                      // Create Message (Error - locate problematic cell)
+                    // Create Message (Error - locate problematic cell)
                     msg_string = 
                         "<OpenWQ> ERROR: Cell entry provided out of domain"
                         " in OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > "
