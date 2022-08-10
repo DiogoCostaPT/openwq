@@ -31,9 +31,11 @@ void OpenWQ_readjson::read_all(
 
     /* ################################################
     // Read JSON files
+    // Master, Config, ExtWatFlux, and SinkSource
     ################################################ */
 
-    // read
+    // ########################
+    // Maste file (read)
     OpenWQ_readjson::read_JSON_2class(
         OpenWQ_wqconfig,
         OpenWQ_output,
@@ -53,6 +55,7 @@ void OpenWQ_readjson::read_all(
         OpenWQ_json.Master["OPENWQ_INPUT"]["CONFIG_FILEPATH"]);
 
     // ########################
+    // ########################
     // SinkSource json (read)
     unsigned int num_ssf = OpenWQ_json.Master["OPENWQ_INPUT"]["SINK_SOURCE"].size();
     for (unsigned int ssf = 0; ssf < num_ssf; ssf++)
@@ -67,6 +70,7 @@ void OpenWQ_readjson::read_all(
     }
 
     /* ########################
+    // Read JSON files
     // MODULES
     ########################### */
 
@@ -92,8 +96,8 @@ void OpenWQ_readjson::read_all(
         OpenWQ_json.Master["MODULES"]["TRANSPORT_EROSION"]["MODULE_CONFIG_FILEPATH"]);
 
     
-    
     /* ################################################
+    // Data Preparation
     // Process some of the openWQ config info
     ################################################ */
     OpenWQ_readjson::SetConfigInfo(
