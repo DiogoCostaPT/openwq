@@ -53,8 +53,8 @@ void OpenWQ_readjson::read_all(
         OpenWQ_json.Master["OPENWQ_INPUT"]["CONFIG_FILEPATH"]);
 
     // ########################
-    unsigned int num_ssf = OpenWQ_json.Master["OPENWQ_INPUT"]["SINKSOURCE_FILEPATHS"].size();
     // SinkSource json (read)
+    unsigned int num_ssf = OpenWQ_json.Master["OPENWQ_INPUT"]["SINK_SOURCE"].size();
     for (unsigned int ssf = 0; ssf < num_ssf; ssf++)
     {
         OpenWQ_readjson::read_JSON_2class(
@@ -63,7 +63,7 @@ void OpenWQ_readjson::read_all(
             OpenWQ_json.SinkSource,
             true,
             std::to_string(ssf + 1),
-            OpenWQ_json.Master["OPENWQ_INPUT"]["SINKSOURCE_FILEPATHS"][std::to_string(ssf + 1)]["FILEPATH"]);
+            OpenWQ_json.Master["OPENWQ_INPUT"]["SINK_SOURCE"][std::to_string(ssf + 1)]["FILEPATH"]);
     }
 
     /* ########################
