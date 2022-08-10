@@ -208,7 +208,7 @@ void OpenWQ_extwatflux_ss::SetSinkSource(
 
                 }catch(...){
 
-                    validEntryFlag = getSSVectEntry(
+                    validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
@@ -239,7 +239,7 @@ void OpenWQ_extwatflux_ss::SetSinkSource(
 
                 }catch(...){
 
-                    validEntryFlag = getSSVectEntry(
+                    validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
@@ -270,7 +270,7 @@ void OpenWQ_extwatflux_ss::SetSinkSource(
 
                 }catch(...){
 
-                    validEntryFlag = getSSVectEntry(
+                    validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
@@ -301,7 +301,7 @@ void OpenWQ_extwatflux_ss::SetSinkSource(
 
                 }catch(...){
 
-                    validEntryFlag = getSSVectEntry(
+                    validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
@@ -332,7 +332,7 @@ void OpenWQ_extwatflux_ss::SetSinkSource(
 
                 }catch(...){
 
-                    validEntryFlag = getSSVectEntry(
+                    validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
@@ -390,7 +390,7 @@ void OpenWQ_extwatflux_ss::SetSinkSource(
 
                 }catch(...){
 
-                    validEntryFlag = getSSVectEntry(
+                    validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
@@ -446,7 +446,7 @@ void OpenWQ_extwatflux_ss::SetSinkSource(
 
                 }catch(...){
 
-                    validEntryFlag = getSSVectEntry(
+                    validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
@@ -502,7 +502,7 @@ void OpenWQ_extwatflux_ss::SetSinkSource(
 
                 }catch(...){
 
-                    validEntryFlag = getSSVectEntry(
+                    validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
@@ -974,7 +974,7 @@ bool OpenWQ_extwatflux_ss::getModIndex(
  // Get SS vector element
  // CASE IF: elemEntry as string "all"
  ################################################# */
- bool OpenWQ_extwatflux_ss::getSSVectEntry(
+ bool OpenWQ_extwatflux_ss::getArrayElem(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_output& OpenWQ_output,
     std::string elemName,
