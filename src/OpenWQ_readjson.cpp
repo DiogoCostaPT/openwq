@@ -55,6 +55,19 @@ void OpenWQ_readjson::read_all(
         OpenWQ_json.Master["OPENWQ_INPUT"]["CONFIG_FILEPATH"]);
 
     // ########################
+    // External fluxes json (read)
+    unsigned int num_eff = OpenWQ_json.Master["OPENWQ_INPUT"]["EXTERNAL_WATER_FLUXES"].size();
+    for (unsigned int eff = 0; eff < num_eff; eff++)
+    {
+        OpenWQ_readjson::read_JSON_2class(
+            OpenWQ_wqconfig,
+            OpenWQ_output,
+            OpenWQ_json.ExtWatFlux,
+            true,
+            std::to_string(eff + 1),
+            OpenWQ_json.Master["OPENWQ_INPUT"]["EXTERNAL_WATER_FLUXES"][std::to_string(eff + 1)]["FILEPATH"]);
+    }
+
     // ########################
     // SinkSource json (read)
     unsigned int num_ssf = OpenWQ_json.Master["OPENWQ_INPUT"]["SINK_SOURCE"].size();

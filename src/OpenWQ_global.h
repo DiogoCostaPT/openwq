@@ -38,6 +38,7 @@ class OpenWQ_json
 
     json Master;
     json Config;
+    json ExtWatFlux;
     json SinkSource;
     json TE_module;     // Transport and Erosion
     json BGC_module;    // Biogeochemistry
