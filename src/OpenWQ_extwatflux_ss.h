@@ -56,16 +56,6 @@ class OpenWQ_extwatflux_ss{
         const unsigned int HH,           // current model step: hour
         const unsigned int MIN);                        // current model step: min
 
-    // Apply Sink or Source
-    void Apply(
-        OpenWQ_json& OpenWQ_json,
-        OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
-        const unsigned int ssf,                         // source-sink file
-        const unsigned int ssi,                         // load section                 
-        const unsigned int di);                         // data row
-
     // Apply Source
     void Apply_Source(
         OpenWQ_vars& OpenWQ_vars,
