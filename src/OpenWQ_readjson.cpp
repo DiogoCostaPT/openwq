@@ -53,8 +53,8 @@ void OpenWQ_readjson::read_all(
         OpenWQ_json.Master["OPENWQ_INPUT"]["CONFIG_FILEPATH"]);
 
     // ########################
-    // SinkSource json (read)openWQ_OUTPUT
     unsigned int num_ssf = OpenWQ_json.Master["OPENWQ_INPUT"]["SINKSOURCE_FILEPATHS"].size();
+    // SinkSource json (read)
     for (unsigned int ssf = 0; ssf < num_ssf; ssf++)
     {
         OpenWQ_readjson::read_JSON_2class(
