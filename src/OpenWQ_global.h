@@ -52,14 +52,24 @@ class OpenWQ_hostModelconfig
 {
     public:
     
-    // Host model characterization via tuple
-    typedef std::tuple<int,std::string,int, int, int> hydroTuple;
+    // ########################
+    // Host model COMPARTMENT characterization via tuple
+    typedef std::tuple<int,std::string,int, int, int> hydroCompTuple;
     // Add host_hydrological_model compartment:
     // (1) int => index in openWQ 
     // (2) std::string => reference name in JSON file
     // (3) int => number of cells in x-direction
     // (4) int => number of cells in y-direction
     // (5) int => number of cells in z-direction
+    // ########################
+
+    // ########################
+    // Host model EXTERNAL FLUX characterization via tuple
+    typedef std::tuple<int,std::string> hydroExtFluxTuple;
+    // Add host_hydrological_model external fluxes:
+    // (1) int => index in openWQ
+    // (2) std::string => reference name in JSON file
+    // ########################
 
     OpenWQ_hostModelconfig(){
 
@@ -82,7 +92,10 @@ class OpenWQ_hostModelconfig
 
     }
 
-    std::vector<hydroTuple> HydroComp;
+    // Vectors with characterization of the different 
+    // model compartments and external fluxes
+    std::vector<hydroCompTuple> HydroComp;
+    std::vector<hydroExtFluxTuple> HydroExtFlux;
 
     // Host model iteraction step (dynamic value)
     long interaction_step = 0;
