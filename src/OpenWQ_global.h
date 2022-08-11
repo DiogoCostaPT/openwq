@@ -64,21 +64,22 @@ class OpenWQ_hostModelconfig
     OpenWQ_hostModelconfig(){
 
         waterVol_hydromodel = std::unique_ptr<
-            std::vector<
-            arma::Cube<
+            std::vector<                            // compartments
+            arma::Cube<                             // ix, iy, iz
             double>>>(new std::vector<arma::cube>); 
 
         SM = std::unique_ptr<
-            arma::Cube<
+            arma::Cube<                             // ix, iy, iz
             double>>(new arma::cube); 
 
         Tair = std::unique_ptr<
-            arma::Cube<
+            arma::Cube<                             // ix, iy, iz
             double>>(new arma::cube); 
 
         Tsoil = std::unique_ptr<
-            arma::Cube<
+            arma::Cube<                             // ix, iy, iz
             double>>(new arma::cube); 
+
     }
 
     std::vector<hydroTuple> HydroComp;
