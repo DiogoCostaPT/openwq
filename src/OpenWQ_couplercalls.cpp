@@ -65,7 +65,7 @@ void OpenWQ_couplercalls::InitialConfig(
     // ##################################
     // SS
     OpenWQ_extwatflux_ss.Set_EWFandSS(
-        OpenWQ_json.SinkSource,
+        OpenWQ_json.SinkSource, // SS json
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
@@ -74,14 +74,14 @@ void OpenWQ_couplercalls::InitialConfig(
         (std::string) "ss");    // flag for SS
     // EWF
     OpenWQ_extwatflux_ss.Set_EWFandSS(
-        OpenWQ_json.ExtWatFlux,
+        OpenWQ_json.ExtWatFlux, // EWF json
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
         OpenWQ_units,
         OpenWQ_output,
         (std::string) "ewf");  // flag for EWF
-        
+
 
     // ##################################
     // MODULES

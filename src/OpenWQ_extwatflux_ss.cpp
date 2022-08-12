@@ -21,13 +21,13 @@
  // Check Sources and Sinks and Apply
  ################################################# */
 void OpenWQ_extwatflux_ss::Set_EWFandSS(
-    json &EWF_SS_json,
+    json &EWF_SS_json,                                  // SS or EWF json    
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_units& OpenWQ_units,
     OpenWQ_output& OpenWQ_output,
-    std::string inputType){     // flag for SS or EWF
+    std::string inputType){                             // flag for SS or EWF
     
     // Local variables
     bool foundflag = false;                 // iteractive boolean to identify if comp or chem was found
@@ -38,7 +38,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
     unsigned long chem_ssi;                 // model index for compartment Compartment_name_name
     unsigned long sinksource_ssi;           // = 0 (source), = 1 (sink)
 
-    unsigned int num_srcfiles;               // number of sink-source files 
+    unsigned int num_srcfiles;              // number of sink-source files 
                                             // (saved as sub-structure of SinkSource)
     unsigned int num_srchem;                // number of chemical loads per file
     unsigned int num_rowdata;               // number of rows of data in JSON (YYYY, MM, DD, HH,...)
