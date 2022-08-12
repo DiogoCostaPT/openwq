@@ -60,16 +60,28 @@ void OpenWQ_couplercalls::InitialConfig(
         OpenWQ_output);
         
     // ##################################
-    // Parse sink and source inputs and store them in tuple and arma::mat for quick access
+    // Parse Sink and Source Inputs AND External Water Fluxes
+    // and store them in tuple and arma::mat for quick access
     // ##################################
+    // SS
     OpenWQ_extwatflux_ss.Set_EWFandSS(
-        OpenWQ_json,
+        OpenWQ_json.SinkSource,
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
         OpenWQ_units,
-        OpenWQ_output);  
-
+        OpenWQ_output,
+        (std::string) "ss");    // flag for SS
+    // EWF
+    OpenWQ_extwatflux_ss.Set_EWFandSS(
+        OpenWQ_json.ExtWatFlux,
+        OpenWQ_vars,
+        OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig,
+        OpenWQ_units,
+        OpenWQ_output,
+        (std::string) "ewf");  // flag for EWF
+        
 
     // ##################################
     // MODULES

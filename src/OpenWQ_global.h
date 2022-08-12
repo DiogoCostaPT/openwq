@@ -135,11 +135,14 @@ class OpenWQ_wqconfig
         this -> num_coldata = 17;
 
         // #################################################
-        // Since and source forcing
-        
+        // Compiling and re-structuring of input data for quicker access during runtime
+        // Source and source forcing (SinkSource_FORC)
+        // AND
+        // External fluxes (ExtFlux_FORC)
+
         // num_coldata is, the moment, equal to 11
         // 0 - chemical
-        // 1 - compartment
+        // 1 - compartment id (from HydroComp) / external flux id (from HydroExtFlux)
         // 2 - source(=0) or sink(=1)
         // 3 - YYYY
         // 4 - MM
@@ -155,8 +158,15 @@ class OpenWQ_wqconfig
             // and it is set to -1, which after use becomes -2 for not use again
             // otherwise, it gets updated everytime the load is added
             // and it provides the time increment for the next load
- 
+
+        // Sink and source forcing
         SinkSource_FORC = 
+            std::unique_ptr<
+                arma::Mat<double>>
+            ( new  arma::mat(0,num_coldata));
+
+        // External fluxes forcing
+        ExtFlux_FORC = 
             std::unique_ptr<
                 arma::Mat<double>>
             ( new  arma::mat(0,num_coldata));
@@ -180,10 +190,13 @@ class OpenWQ_wqconfig
     int num_threads_requested;    // number of threads requested by user
 
     // #################################################
-    // Sink anhd Source
-    std::unique_ptr<
+    // Sink and Source AND External fluxes
+    std::unique_ptr<            
         arma::Mat<double>
-        > SinkSource_FORC;
+        > SinkSource_FORC;      // SS
+    std::unique_ptr<            
+        arma::Mat<double>
+        > ExtFlux_FORC;         // External fluxes
     int allSS_flag = -1;        // number to replace in SinkSource_FORC to denote "all"
     bool tstep1_flag = true;    // flag to note that it's the first time step, so need to exclude loads prior to that
     

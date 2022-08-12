@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef OPENWQ_SINKSOURCEH_INCLUDED
-#define OPENWQ_SINKSOURCEH_INCLUDED
+#ifndef OPENWQ_EXTWATFLUX_SSH_INCLUDED
+#define OPENWQ_EXTWATFLUX_SSH_INCLUDED
 
 
 #include <tuple>
@@ -36,12 +36,13 @@ class OpenWQ_extwatflux_ss{
 
     // Save Sink and Source data to tuple (more efficient than allways calling jnlohmann)
     void Set_EWFandSS(
-        OpenWQ_json& OpenWQ_json,
+        json &EWF_SS_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units,
-        OpenWQ_output& OpenWQ_output);
+        OpenWQ_output& OpenWQ_output,
+        std::string inputType);
 
     // Check if sink or sources needs to be applied
     void CheckApply_SS(

@@ -21,34 +21,36 @@
  // Check Sources and Sinks and Apply
  ################################################# */
 void OpenWQ_extwatflux_ss::Set_EWFandSS(
-    OpenWQ_json& OpenWQ_json,
+    json &EWF_SS_json,
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_units& OpenWQ_units,
-    OpenWQ_output& OpenWQ_output){ 
+    OpenWQ_output& OpenWQ_output,
+    std::string inputType){     // flag for SS or EWF
     
     // Local variables
     bool foundflag = false;                 // iteractive boolean to identify if comp or chem was found
-    std::vector<std::string> cmp_list;      // model compartment list
+    std::vector<std::string> elm_list;      // model compartment list
     std::vector<std::string> chem_list;     // model chemical list
     std::string err_text;                   // iteractive string for text to pass to error messages
     unsigned long cmpi_ssi;                 // model index for compartment Compartment_name_name
     unsigned long chem_ssi;                 // model index for compartment Compartment_name_name
     unsigned long sinksource_ssi;           // = 0 (source), = 1 (sink)
 
-    unsigned int num_ssfiles;               // number of sink-source files 
+    unsigned int num_srcfiles;               // number of sink-source files 
                                             // (saved as sub-structure of SinkSource)
-    unsigned int num_sschem;                // number of chemical loads per file
+    unsigned int num_srchem;                // number of chemical loads per file
     unsigned int num_rowdata;               // number of rows of data in JSON (YYYY, MM, DD, HH,...)
     int int_n_elem;                         // iterative counting of number of elements in arma:mat
     
     std::string Chemical_name;              // from JSON file
-    std::string Compartment_name;           // from JSON file
-    std::string Type;                       // from JSON file
+    std::string Element_name;               // from JSON file (compartment name or external-flux name)
+    std::string Type;                       // from JSON filec (only used in SS)
     std::string Units;                      // from JSON file
 
     std::string elemName;                   // temporary element name
+    std::string keyName;                    // interactive json-key name
     int YYYY_json;                          // Year in JSON-sink_source (interactive)
     int MM_json;                            // Month in JSON-sink_source (interactive)
     int DD_json;                            // Day in JSON-sink_source (interactive)
@@ -69,32 +71,33 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
     bool validEntryFlag;                    // valid entry flag to skip problematic row data
 
 
-    // Get model comparment names list
-    unsigned int num_cmp = OpenWQ_hostModelconfig.HydroComp.size();
-    for (unsigned int ci=0;ci<num_cmp;ci++){
-        cmp_list.push_back(
-            std::get<1>(
-                OpenWQ_hostModelconfig.HydroComp.at(ci))); // num of x elements 
+    // Get element list (compartment for SS, and External fluxes for EWF)
+    unsigned int num_elem;
+    if (inputType.compare("ss")==0)         num_elem = OpenWQ_hostModelconfig.HydroComp.size();      // SS
+    else if (inputType.compare("ewf")==0)   num_elem = OpenWQ_hostModelconfig.HydroExtFlux.size();   // EWF
+    
+    for (unsigned int el=0;el<num_elem;el++){
+        if (inputType.compare("ss")==0)     elm_list.push_back(std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(el)));
+        if (inputType.compare("ewf")==0)    elm_list.push_back(std::get<1>(OpenWQ_hostModelconfig.HydroExtFlux.at(el)));
     }
 
     // Get model chemical names list
     unsigned int BGC_general_num_chem = OpenWQ_wqconfig.BGC_general_num_chem;
     for (unsigned int chemi=0;chemi<BGC_general_num_chem;chemi++){
-        chem_list.push_back(
-            (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi]);
-    }
+        chem_list.push_back((OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi]);}
 
-    // Get number of sub-structures of SinkSource
-    num_ssfiles = OpenWQ_json.SinkSource.size(); 
+
+    // Get number of sub-structures of SS/EWF data
+    num_srcfiles = EWF_SS_json.size(); 
 
     /* ########################################
-    // Loop over file (saved as sub-structure of SinkSource)
+    // Loop over file (saved as sub-structure of SS/EWF data)
     ######################################## */
-    for (unsigned int ssf=0;ssf<num_ssfiles;ssf++){
+    for (unsigned int ssf=0;ssf<num_srcfiles;ssf++){
         
         // Get number of loads in each sub-structure 
-        // (corresponding to different sink_source json files)
-        num_sschem = OpenWQ_json.SinkSource[std::to_string(ssf+1)].size();
+        // (corresponding to different SinkSource/ExtWatFlux json files)
+        num_srchem = EWF_SS_json[std::to_string(ssf+1)].size();
         
         /* ########################################
         // Loop over loads per sub-structure
@@ -102,32 +105,41 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 
         foundflag = false;      // reset to false at every 
 
-        for (unsigned int ssi=0;ssi<num_sschem;ssi++){
+        for (unsigned int ssi=0;ssi<num_srchem;ssi++){
             
             /* ########
-            // Get chemical name, compartment name and SS_type (source or sink)
+            // Get chemical name and compartment/external-flux name 
+            // if SS, then get also SS_type (source or sink)
             ###########*/
 
             // needs this here because there can be entries that are not relevant e.g. COMMENTS
+            // Chemical
             try{
-                Chemical_name =  OpenWQ_json.SinkSource // chemical name
+                Chemical_name = EWF_SS_json // chemical name
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
                     ["CHEMICAL_NAME"];
 
-            }catch(json::type_error){   
+            }catch(...){   
                 continue;
             }
 
-            Compartment_name = OpenWQ_json.SinkSource // compartment name
+            // Element names: Compartment or External Flux
+            if (inputType.compare("ss")==0)         keyName = "COMPARTMENT_NAME";           // SS
+            else if (inputType.compare("ewf")==0)   keyName = "EXTERNAL_INPUTFLUX_NAME";    // EWF
+            
+            Element_name = EWF_SS_json
                 [std::to_string(ssf+1)]
                 [std::to_string(ssi+1)]
-                ["COMPARTMENT_NAME"];
+                [keyName];
 
-            Type = OpenWQ_json.SinkSource // type (sink or source)
+            // Type (sink or source) (only used in SS)
+            if (inputType.compare("ss")==0) {
+                Type = EWF_SS_json 
                 [std::to_string(ssf+1)]
                 [std::to_string(ssi+1)]
-                ["TYPE"];
+                ["TYPE"];}
+            else if (inputType.compare("ewf")==0) Type = "SOURCE";
             
 
             /* ########
@@ -145,41 +157,39 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 err_text,
                 chem_ssi);
 
-            if (foundflag == false) continue; // skip if comp not found
+            if (foundflag == false) continue; // skip if chem not found
 
-            // Get compartment index
-            err_text.assign("Compartment name");
+            // Get compartment/water flux index
+            if (inputType.compare("ss")==0) err_text.assign("Compartment name");
+            if (inputType.compare("ewf")==0) err_text.assign("External Water Flux name");
+
             foundflag = getModIndex(
                 OpenWQ_wqconfig,
                 OpenWQ_output,
-                cmp_list,
-                Compartment_name,
+                elm_list,
+                Element_name,
                 err_text,
                 cmpi_ssi);
 
-            if (foundflag == false) continue; // skip if comp not found
+            if (foundflag == false) continue; // skip if comp/ext-flux not found
 
-            // Set flag for sink or source
-            if (Type.compare("SOURCE") == 0){
-                sinksource_ssi = 0;
-            }else if (Type.compare("SINK") == 0){
-                sinksource_ssi = 1;
-            }else{
-                continue; // skip if Type is unknown
-            }
+            // Set type flag (sink or source)
+            // if EWF, then Type has been defined above as "SOURCE"
+            if (Type.compare("SOURCE") == 0){ sinksource_ssi = 0;
+            }else if (Type.compare("SINK") == 0){ sinksource_ssi = 1;
+            }else{continue;} // skip if Type is unknown
             
-
             /* ########
             // Get units and actual input data
             ###########*/
 
-            Units = OpenWQ_json.SinkSource // units
+            Units = EWF_SS_json // units
                 [std::to_string(ssf+1)]
                 [std::to_string(ssi+1)]
                 ["UNITS"];
 
             // Get number of rows of data in JSON (YYYY, MM, DD, HH,...)
-            num_rowdata = OpenWQ_json.SinkSource
+            num_rowdata = EWF_SS_json
                 [std::to_string(ssf+1)]
                 [std::to_string(ssi+1)]
                 ["DATA"].size();
@@ -200,7 +210,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "Year";
                 try{
 
-                    YYYY_json = OpenWQ_json.SinkSource
+                    YYYY_json = EWF_SS_json
                             [std::to_string(ssf+1)]
                             [std::to_string(ssi+1)]
                             ["DATA"]
@@ -212,7 +222,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) OpenWQ_json.SinkSource
+                        (std::string) EWF_SS_json
                             [std::to_string(ssf+1)]
                             [std::to_string(ssi+1)]
                             ["DATA"]
@@ -231,7 +241,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "Month";
                 try{
 
-                    MM_json = OpenWQ_json.SinkSource
+                    MM_json = EWF_SS_json
                             [std::to_string(ssf+1)]
                             [std::to_string(ssi+1)]
                             ["DATA"]
@@ -243,7 +253,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) OpenWQ_json.SinkSource
+                        (std::string) EWF_SS_json
                             [std::to_string(ssf+1)]
                             [std::to_string(ssi+1)]
                             ["DATA"]
@@ -262,7 +272,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "Day";
                 try{
 
-                    DD_json =OpenWQ_json.SinkSource
+                    DD_json = EWF_SS_json
                         [std::to_string(ssf+1)]
                         [std::to_string(ssi+1)]
                         ["DATA"]
@@ -274,7 +284,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) OpenWQ_json.SinkSource
+                        (std::string) EWF_SS_json
                             [std::to_string(ssf+1)]
                             [std::to_string(ssi+1)]
                             ["DATA"]
@@ -293,7 +303,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "Hour";
                 try{
 
-                    HH_json =OpenWQ_json.SinkSource
+                    HH_json = EWF_SS_json
                         [std::to_string(ssf+1)]
                         [std::to_string(ssi+1)]
                         ["DATA"]
@@ -305,7 +315,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) OpenWQ_json.SinkSource
+                        (std::string) EWF_SS_json
                             [std::to_string(ssf+1)]
                             [std::to_string(ssi+1)]
                             ["DATA"]
@@ -324,7 +334,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "Min";
                 try{
 
-                    MIN_json =OpenWQ_json.SinkSource
+                    MIN_json = EWF_SS_json
                         [std::to_string(ssf+1)]
                         [std::to_string(ssi+1)]
                         ["DATA"]
@@ -336,7 +346,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) OpenWQ_json.SinkSource
+                        (std::string) EWF_SS_json
                             [std::to_string(ssf+1)]
                             [std::to_string(ssi+1)]
                             ["DATA"]
@@ -357,7 +367,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "ix";
                 try{
 
-                    ix_json =OpenWQ_json.SinkSource
+                    ix_json = EWF_SS_json
                         [std::to_string(ssf+1)]
                         [std::to_string(ssi+1)]
                         ["DATA"]
@@ -394,7 +404,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) OpenWQ_json.SinkSource
+                        (std::string) EWF_SS_json
                             [std::to_string(ssf+1)]
                             [std::to_string(ssi+1)]
                             ["DATA"]
@@ -413,7 +423,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "iy";
                 try{
 
-                    iy_json =OpenWQ_json.SinkSource
+                    iy_json = EWF_SS_json
                         [std::to_string(ssf+1)]
                         [std::to_string(ssi+1)]
                         ["DATA"]
@@ -450,7 +460,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) OpenWQ_json.SinkSource
+                        (std::string) EWF_SS_json
                             [std::to_string(ssf+1)]
                             [std::to_string(ssi+1)]
                             ["DATA"]
@@ -469,7 +479,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "iz";
                 try{
 
-                    iz_json =OpenWQ_json.SinkSource
+                    iz_json = EWF_SS_json
                         [std::to_string(ssf+1)]
                         [std::to_string(ssi+1)]
                         ["DATA"]
@@ -506,7 +516,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) OpenWQ_json.SinkSource
+                        (std::string) EWF_SS_json
                             [std::to_string(ssf+1)]
                             [std::to_string(ssi+1)]
                             ["DATA"]
@@ -520,14 +530,14 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 }
 
                 // sink/source data
-                ss_data_json = OpenWQ_json.SinkSource 
+                ss_data_json = EWF_SS_json 
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
                     ["DATA"]
                     [std::to_string(di+1)].at(8);
 
                 // sink/source units
-                ss_units_json = OpenWQ_json.SinkSource 
+                ss_units_json = EWF_SS_json 
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
                     ["UNITS"]; 
@@ -574,11 +584,15 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 row_data_row = row_data_col.t();
 
                 // Add new row_data_row to SinkSource_FORC   
-                int_n_elem = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows;  
+                if (inputType.compare("ss")==0)     int_n_elem = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows;
+                if (inputType.compare("ewf")==0)    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC).n_rows;
                 
-                (*OpenWQ_wqconfig.SinkSource_FORC).insert_rows(
+                if (inputType.compare("ss")==0){ (*OpenWQ_wqconfig.SinkSource_FORC).insert_rows(
                     std::max(int_n_elem-1,0),
-                    row_data_row); 
+                    row_data_row);}
+                else if (inputType.compare("ewf")==0){ (*OpenWQ_wqconfig.ExtFlux_FORC).insert_rows(
+                    std::max(int_n_elem-1,0),
+                    row_data_row);}
 
             }
         }

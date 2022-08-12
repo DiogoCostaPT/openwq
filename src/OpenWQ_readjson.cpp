@@ -128,7 +128,7 @@ void OpenWQ_readjson::read_all(
 void OpenWQ_readjson::read_JSON_2class(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_output& OpenWQ_output,
-    json &jsondata,                         // JSON structure to save to
+    json& jsondata,                         // JSON structure to save to
     const bool substruc_flag,               // Save in subfield of JSON structure? only if multiple files (e.g., source and sinks)
     const std::string JsonSubStruct_name,   // if true, name of subfield
     const std::string jsonfile)             // Name of JSON file
