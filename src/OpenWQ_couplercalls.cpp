@@ -128,18 +128,19 @@ void OpenWQ_couplercalls::InitialConfig(
 // ################################################################
 void OpenWQ_couplercalls::RunTimeLoopStart(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-    OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object
-    OpenWQ_wqconfig& OpenWQ_wqconfig,            // create OpenWQ_wqconfig object
-    OpenWQ_units& OpenWQ_units,                  // functions for unit conversion
-    OpenWQ_readjson& OpenWQ_readjson,            // read json files
+    OpenWQ_json& OpenWQ_json,                       // create OpenWQ_json object
+    OpenWQ_wqconfig& OpenWQ_wqconfig,               // create OpenWQ_wqconfig object
+    OpenWQ_units& OpenWQ_units,                     // functions for unit conversion
+    OpenWQ_readjson& OpenWQ_readjson,               // read json files
     OpenWQ_vars& OpenWQ_vars,
-    OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
-    OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
-    OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
-    OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,        // sink and source modules)
+    OpenWQ_initiate& OpenWQ_initiate,               // initiate modules
+    OpenWQ_watertransp& OpenWQ_watertransp,         // transport modules
+    OpenWQ_chem& OpenWQ_chem,                       // biochemistry modules
+    OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,     // sink and source modules)
     OpenWQ_solver& OpenWQ_solver,
     OpenWQ_output& OpenWQ_output,
-    time_t simtime){                     // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
+    time_t simtime){                                // simulation time in seconds since seconds 
+                                                    // since 00:00 hours, Jan 1, 1970 UTC
 
 
     // Local variables
@@ -252,18 +253,18 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
 // ################################################################
 void OpenWQ_couplercalls::RunSpaceStep(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-    OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object
-    OpenWQ_wqconfig& OpenWQ_wqconfig,            // create OpenWQ_wqconfig object
-    OpenWQ_units& OpenWQ_units,                  // functions for unit conversion
-    OpenWQ_readjson& OpenWQ_readjson,            // read json files
+    OpenWQ_json& OpenWQ_json,                       // create OpenWQ_json object
+    OpenWQ_wqconfig& OpenWQ_wqconfig,               // create OpenWQ_wqconfig object
+    OpenWQ_units& OpenWQ_units,                     // functions for unit conversion
+    OpenWQ_readjson& OpenWQ_readjson,               // read json files
     OpenWQ_vars& OpenWQ_vars,
-    OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
-    OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
-    OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
-    OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,        // sink and source modules)
+    OpenWQ_initiate& OpenWQ_initiate,               // initiate modules
+    OpenWQ_watertransp& OpenWQ_watertransp,         // transport modules
+    OpenWQ_chem& OpenWQ_chem,                       // biochemistry modules
+    OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,     // sink and source modules)
     OpenWQ_solver& OpenWQ_solver,
     OpenWQ_output& OpenWQ_output,
-    time_t simtime,                            // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
+    time_t simtime,                                 // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
     const int source,
     const int ix_s, 
     const int iy_s,
