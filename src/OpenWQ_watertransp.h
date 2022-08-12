@@ -46,6 +46,7 @@ class OpenWQ_watertransp{
         double wmass_source);
 
     // Advection and Dispersion
+    // General case (flux exchanges within the model domain)
     void Adv(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
@@ -53,6 +54,14 @@ class OpenWQ_watertransp{
         const int recipient, const int ix_r, const int iy_r, const int iz_r,
         double wflux_s2r, 
         double wmass_source);
+    // Special case (in-fluxes from external water flux sources)
+    void Adv_IN(
+        OpenWQ_vars& OpenWQ_vars, 
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        const int recipient, const int ix_r, const int iy_r, const int iz_r,
+        double wflux_s2r,
+        int chemi,
+        double ewf_conc);
 
     // Internal mobilization of immobile pools
     // Erosion and weathering

@@ -22,6 +22,7 @@
 /* #################################################
 // Mass transport
 // Only Advection
+// General case (flux exchanges within the model domain)
 ################################################# */
 void OpenWQ_watertransp::Adv(
     OpenWQ_vars& OpenWQ_vars,
@@ -63,6 +64,36 @@ void OpenWQ_watertransp::Adv(
             += chemass_flux_adv;
     }
                 
+}
+
+/* #################################################
+// Mass transport
+// Only Advection
+// Special case (in-fluxes from external water flux sources)
+################################################# */
+void Adv_IN(
+    OpenWQ_vars& OpenWQ_vars, 
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    const int recipient, const int ix_r, const int iy_r, const int iz_r,
+    double wflux_s2r,   // water flux (m3/s)
+    int chemid,    // chemical id
+    double ewf_conc){    // concentration of chemical
+
+    // Local variables
+    double chemass_flux_adv;
+
+    // Chemical mass flux between source and recipient (Advection)
+    chemass_flux_adv = 
+        wflux_s2r
+        * ewf_conc;
+        
+    //##########################################
+    // Set derivative for source and recipient 
+    
+    // Add Chemical mass flux to RECIPIENT 
+    (*OpenWQ_vars.d_chemass_dt_transp)(recipient)(chemid)(ix_r,iy_r,iz_r) 
+        += chemass_flux_adv;
+
 }
 
 /* #################################################

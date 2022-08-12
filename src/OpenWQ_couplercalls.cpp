@@ -253,6 +253,9 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
 // ################################################################
 // Calls inside space loop
 // Called for each grid cell
+// Applicable to:
+// 1) Fluxes between compartments and compartment-domain elements (ix,iy,iz)
+// 2) Out-Fluxes (fluxes that exit the system - loss from control volume)
 // ################################################################
 void OpenWQ_couplercalls::RunSpaceStep(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -294,72 +297,59 @@ void OpenWQ_couplercalls::RunSpaceStep(
 
         // Advection and dispersion
         OpenWQ_watertransp.AdvDisp(
-            OpenWQ_vars,
-            OpenWQ_wqconfig,
+            OpenWQ_vars, OpenWQ_wqconfig,
             source, ix_s, iy_s, iz_s,
             recipient, ix_r, iy_r, iz_r,
-            wflux_s2r, 
-            wmass_source);
+            wflux_s2r, wmass_source);
 
 
         // Internal mobilization of immobile pools
         // Erosion and weathering
         OpenWQ_watertransp.IntMob(
-            OpenWQ_vars,
-            OpenWQ_wqconfig,
+            OpenWQ_vars, OpenWQ_wqconfig,
             source, ix_s, iy_s, iz_s,
             recipient, ix_r, iy_r, iz_r,
-            wflux_s2r,
-            wmass_source);
+            wflux_s2r, wmass_source);
    
 
         // Boundary Mixing due to velocity gradients
         // due to turbulence and cross-boarder eddies
         // only apply if fluxe between cells in same compartment          
         OpenWQ_watertransp.BoundMix(
-            OpenWQ_hostModelconfig,
-            OpenWQ_vars,
-            OpenWQ_wqconfig,
+            OpenWQ_hostModelconfig, OpenWQ_vars, OpenWQ_wqconfig,
             source, ix_s, iy_s, iz_s,
             recipient, ix_r, iy_r, iz_r,
-            wflux_s2r,
-            wmass_source);
+            wflux_s2r, wmass_source);
     
     }else if ((OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_ADVP") == 0)
     {
 
         // Advection and dispersion
         OpenWQ_watertransp.Adv(
-            OpenWQ_vars,
-            OpenWQ_wqconfig,
+            OpenWQ_vars, OpenWQ_wqconfig,
             source, ix_s, iy_s, iz_s,
             recipient, ix_r, iy_r, iz_r,
-            wflux_s2r,
-            wmass_source);
+            wflux_s2r, wmass_source);
 
 
         // Internal mobilization of immobile pools
         // Erosion and weathering
         OpenWQ_watertransp.IntMob(
-            OpenWQ_vars,
-            OpenWQ_wqconfig,
+            OpenWQ_vars, OpenWQ_wqconfig,
             source, ix_s, iy_s, iz_s,
             recipient, ix_r, iy_r, iz_r,
-            wflux_s2r,
-            wmass_source);
+            wflux_s2r, wmass_source);
    
 
         // Boundary Mixing due to velocity gradients
         // due to turbulence and cross-boarder eddies
         // only apply if fluxe between cells in same compartment          
         OpenWQ_watertransp.BoundMix(
-            OpenWQ_hostModelconfig,
-            OpenWQ_vars,
-            OpenWQ_wqconfig,
+            OpenWQ_hostModelconfig, OpenWQ_vars, OpenWQ_wqconfig,
             source, ix_s, iy_s, iz_s,
             recipient, ix_r, iy_r, iz_r,
-            wflux_s2r,
-            wmass_source);
+            wflux_s2r, wmass_source);
+
 
     }else if ((OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_NO_ADVDISP") == 0)
     {
@@ -367,24 +357,18 @@ void OpenWQ_couplercalls::RunSpaceStep(
         // Internal mobilization of immobile pools
         // Erosion and weathering
         OpenWQ_watertransp.IntMob(
-            OpenWQ_vars,
-            OpenWQ_wqconfig,
+            OpenWQ_vars, OpenWQ_wqconfig,
             source, ix_s, iy_s, iz_s,
             recipient, ix_r, iy_r, iz_r,
-            wflux_s2r,
-            wmass_source);
+            wflux_s2r, wmass_source);
    
-
         // Boundary Mixing due to velocity gradients
         // due to turbulence and cross-boarder eddies
         OpenWQ_watertransp.BoundMix(
-            OpenWQ_hostModelconfig,
-            OpenWQ_vars,
-            OpenWQ_wqconfig,
+            OpenWQ_hostModelconfig, OpenWQ_vars, OpenWQ_wqconfig,
             source, ix_s, iy_s, iz_s,
             recipient, ix_r, iy_r, iz_r,
-            wflux_s2r,
-            wmass_source);
+            wflux_s2r, wmass_source);
 
     }else{
 
@@ -406,6 +390,58 @@ void OpenWQ_couplercalls::RunSpaceStep(
 
 }
 
+// ################################################################
+// Calls inside space loop
+// Called for each grid cell
+// Applicable to:
+// 1) IN-fluxes (external water fluxes)
+// ################################################################
+void RunSpaceStep_IN(
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_json& OpenWQ_json,                       // create OpenWQ_json object
+    OpenWQ_wqconfig& OpenWQ_wqconfig,               // create OpenWQ_wqconfig object
+    OpenWQ_units& OpenWQ_units,                     // functions for unit conversion
+    OpenWQ_readjson& OpenWQ_readjson,               // read json files
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_initiate& OpenWQ_initiate,               // initiate modules
+    OpenWQ_watertransp& OpenWQ_watertransp,         // transport modules
+    OpenWQ_chem& OpenWQ_chem,                       // biochemistry modules
+    OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,     // sink and source modules)
+    OpenWQ_solver& OpenWQ_solver,
+    OpenWQ_output& OpenWQ_output,
+    time_t simtime, // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
+    std::string source_EWF_name,                    // name defined in hydroExtFluxTuple (in couplecalls)
+    const int recipient, const int ix_r, const int iy_r, const int iz_r,
+    const double wflux_s2r){
+
+    // Local variables
+    double ewf_conc;    // interactive concentration of the input flux
+
+    // Number of chemical species in BGQ file
+    unsigned int numspec = OpenWQ_wqconfig.BGC_general_mobile_species.size();
+
+    // Loop for mobile chemical species
+    for (int chemi=0;chemi<numspec;chemi++){
+
+        // NEW FUNCTION HERE 
+        // this function will go through OpenWQ_wqconfig.ExtFlux_FORC and searches for the appropriate concentration for the current time-comt-ix-iy-iz
+        // concentration is considered ZERO when it isn't available in the EWF_inputfile array
+        // needs to efficiently run through OpenWQ_wqconfig.ExtFlux_FORC and find if there is information for the current time step and domain-ix-iy-iz
+        // needs also to make sure to send a warning if data array has info that overlaps in terms of time-comt-ix-iy-iz
+        //  maybe just read the first and then send an warning if there are other inputs (but ignore them)
+        // TRY TO USE THE SAME FUNCTIONS PREPARED FOR SS (TO AVOID DUPLICATION OF CODE)  
+
+        // Advection and dispersion
+        OpenWQ_watertransp.Adv_IN(
+            OpenWQ_vars, OpenWQ_wqconfig,
+            recipient, ix_r, iy_r, iz_r,
+            wflux_s2r,                      // external water flux
+            chemi,                          // chemical id (from BGQ file and used in state-varibble data structures)
+            ewf_conc);                      // concentration taken from EWF json file
+
+    }
+
+}
 
 // ################################################################
 // Calls all functions required inside time loop
