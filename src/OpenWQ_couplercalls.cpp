@@ -418,7 +418,7 @@ void RunSpaceStep_IN(
     double ewf_conc;    // interactive concentration of the input flux
 
     // Number of chemical species in BGQ file
-    unsigned int numspec = OpenWQ_wqconfig.BGC_general_mobile_species.size();
+    int numspec = OpenWQ_wqconfig.BGC_general_mobile_species.size();
 
     // Loop for mobile chemical species
     for (int chemi=0;chemi<numspec;chemi++){
