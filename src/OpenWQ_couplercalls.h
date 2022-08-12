@@ -99,6 +99,25 @@ class OpenWQ_couplercalls{
         const int recipient, const int ix_r, const int iy_r, const int iz_r,
         const double wflux_s2r, const double wmass_source);
 
+    // 2) IN-fluxes (external water fluxes): RunSpaceStep_IN
+    void RunSpaceStep_IN(
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_json& OpenWQ_json,                       // create OpenWQ_json object
+        OpenWQ_wqconfig& OpenWQ_wqconfig,               // create OpenWQ_wqconfig object
+        OpenWQ_units& OpenWQ_units,                     // functions for unit conversion
+        OpenWQ_readjson& OpenWQ_readjson,               // read json files
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_initiate& OpenWQ_initiate,               // initiate modules
+        OpenWQ_watertransp& OpenWQ_watertransp,         // transport modules
+        OpenWQ_chem& OpenWQ_chem,                       // biochemistry modules
+        OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,     // sink and source modules)
+        OpenWQ_solver& OpenWQ_solver,
+        OpenWQ_output& OpenWQ_output,
+        time_t simtime, // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
+        std::string source_EWF_name,                    // name defined in hydroExtFluxTuple (in couplecalls)
+        const int recipient, const int ix_r, const int iy_r, const int iz_r,
+        const double wflux_s2r);
+
     // #######################
     // Calls all functions required inside time loop
     // But AFTER space loop has been finalized
