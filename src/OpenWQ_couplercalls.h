@@ -73,21 +73,28 @@ class OpenWQ_couplercalls{
     // #######################
     // Calls inside space loop
     // Called for each grid cell
+    // there are two variations:
+    // 1) Fluxes within the model domain: RunSpaceStep
+    //    in this case, if it is an OUT-flux (loss from system), then
+    //    set recipient = -1 (in this case ix_s, iy_s, iz_s values will be ignored) 
+    // 2) IN-fluxes: RunSpaceStep_IN
     // #######################
+
+    // 1) Fluxes within the model domain or Out-Fluxes (RunSpaceStep)
     void RunSpaceStep(
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object
-        OpenWQ_wqconfig& OpenWQ_wqconfig,            // create OpenWQ_wqconfig object
-        OpenWQ_units& OpenWQ_units,                  // functions for unit conversion
-        OpenWQ_readjson& OpenWQ_readjson,            // read json files
+        OpenWQ_json& OpenWQ_json,                       // create OpenWQ_json object
+        OpenWQ_wqconfig& OpenWQ_wqconfig,               // create OpenWQ_wqconfig object
+        OpenWQ_units& OpenWQ_units,                     // functions for unit conversion
+        OpenWQ_readjson& OpenWQ_readjson,               // read json files
         OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
-        OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
-        OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
-        OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,        // sink and source modules)
+        OpenWQ_initiate& OpenWQ_initiate,               // initiate modules
+        OpenWQ_watertransp& OpenWQ_watertransp,         // transport modules
+        OpenWQ_chem& OpenWQ_chem,                       // biochemistry modules
+        OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,     // sink and source modules)
         OpenWQ_solver& OpenWQ_solver,
         OpenWQ_output& OpenWQ_output,
-        time_t simtime,                            // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
+        time_t simtime, // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
         const int source, const int ix_s, const int iy_s, const int iz_s,
         const int recipient, const int ix_r, const int iy_r, const int iz_r,
         const double wflux_s2r, const double wmass_source);

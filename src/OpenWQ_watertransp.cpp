@@ -57,6 +57,8 @@ void OpenWQ_watertransp::Adv(
             -= chemass_flux_adv;
 
         // Add Chemical mass flux to RECIPIENT 
+        // if recipient == -1, then  it's an OUT-flux (loss from system)
+        if (recipient == -1) continue;
         (*OpenWQ_vars.d_chemass_dt_transp)(recipient)(ichem_mob)(ix_r,iy_r,iz_r) 
             += chemass_flux_adv;
     }
@@ -105,7 +107,9 @@ void OpenWQ_watertransp::AdvDisp(
         (*OpenWQ_vars.d_chemass_dt_transp)(source)(ichem_mob)(ix_s,iy_s,iz_s) 
             -= chemass_flux_adv;
 
-        // Add Chemical mass flux to RECIPIENT 
+        // Add Chemical mass flux to RECIPIENT
+        // if recipient == -1, then  it's an OUT-flux (loss from system)
+        if (recipient == -1) continue;
         (*OpenWQ_vars.d_chemass_dt_transp)(recipient)(ichem_mob)(ix_r,iy_r,iz_r) 
             += chemass_flux_adv;
     }
@@ -158,7 +162,9 @@ void OpenWQ_watertransp::IntMob(
         (*OpenWQ_vars.d_chemass_dt_transp)(source)(chemi)(ix_s,iy_s,iz_s) 
             -= chemass_flux;
 
-        // Add Chemical mass flux to RECIPIENT 
+        // Add Chemical mass flux to RECIPIENT
+        // if recipient == -1, then  it's an OUT-flux (loss from system)
+        if (recipient == -1) continue;
         (*OpenWQ_vars.d_chemass_dt_transp)(recipient)(chemi)(ix_r,iy_r,iz_r) 
             += chemass_flux;
     }
@@ -260,7 +266,9 @@ void OpenWQ_watertransp::BoundMix(
             (*OpenWQ_vars.d_chemass_dt_transp)(input_upper_compartment_index)(chemi_mob)(ix_s,iy_s,iz_s) 
                 += (chemass_exchange_lower_comprt - chemass_exchange_upper_comprt);
 
-            // Add Chemical mass flux to RECIPIENT 
+            // Add Chemical mass flux to RECIPIENT
+            // if recipient == -1, then  it's an OUT-flux (loss from system)
+            if (recipient == -1) continue;
             (*OpenWQ_vars.d_chemass_dt_transp)(input_lower_compartment_index)(chemi_mob)(ix_r,iy_r,iz_r) 
                 += (chemass_exchange_upper_comprt - chemass_exchange_lower_comprt);
 
