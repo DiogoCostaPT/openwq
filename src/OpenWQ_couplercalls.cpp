@@ -185,15 +185,17 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
 
 
     // ########################################
-    // Sources and Sinks (doesn't need space loop => it's inside the function)
+    // Sources and Sinks 
+    // (doesn't need to be inside the space loop 
+    // because space is dealt with inside the function)
     // ########################################         
     struct tm *tm_simtime = localtime(&simtime);
 
     // Get Year, Month, Day, Hour and Min of simulation time
     int year_sim_now = tm_simtime->tm_year;
-    year_sim_now += 1900; // Because localtime() returns: The number of years since 1900
+    year_sim_now += 1900;   // Because localtime() returns: The number of years since 1900
     int month_sim_now = tm_simtime->tm_mon; 
-    month_sim_now++; // Because localtime() returns: months since January - [0, 11]
+    month_sim_now++;        // Because localtime() returns: months since January - [0, 11]
     int day_sim_now = tm_simtime->tm_mday;
     int hour_sim_now = tm_simtime->tm_hour;
     int min_sim_now = tm_simtime->tm_min;
@@ -219,14 +221,15 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     // ########################################
     
     // NATIVE Bioogeochemical model
-    if ((OpenWQ_wqconfig.BGC_module).compare("OPENWQ_NATIVE_BGC") == 0)
-    {
+    if ((OpenWQ_wqconfig.BGC_module).compare("OPENWQ_NATIVE_BGC") == 0){
+
         OpenWQ_chem.Run(
             OpenWQ_json,
             OpenWQ_vars,
             OpenWQ_wqconfig,
             OpenWQ_hostModelconfig,
             OpenWQ_output);
+            
     }else{
 
         // Create Message
