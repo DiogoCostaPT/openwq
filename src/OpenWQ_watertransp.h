@@ -40,30 +40,18 @@ class OpenWQ_watertransp{
     void AdvDisp(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        const int source,
-        const int ix_s, 
-        const int iy_s,
-        const int iz_s,
-        const int recipient,
-        const int ix_r,
-        const int iy_r,
-        const int iz_r,
-        double wflux_s2r,
+        const int source, const int ix_s, const int iy_s, const int iz_s,
+        const int recipient, const int ix_r, const int iy_r, const int iz_r,
+        double wflux_s2r, 
         double wmass_source);
 
     // Advection and Dispersion
     void Adv(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        const int source,
-        const int ix_s, 
-        const int iy_s,
-        const int iz_s,
-        const int recipient,
-        const int ix_r,
-        const int iy_r,
-        const int iz_r,
-        double wflux_s2r,
+        const int source, const int ix_s, const int iy_s, const int iz_s,
+        const int recipient, const int ix_r, const int iy_r, const int iz_r,
+        double wflux_s2r, 
         double wmass_source);
 
     // Internal mobilization of immobile pools
@@ -71,15 +59,9 @@ class OpenWQ_watertransp{
     void IntMob(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        const int source,
-        const int ix_s, 
-        const int iy_s,
-        const int iz_s,
-        const int recipient,
-        const int ix_r,
-        const int iy_r,
-        const int iz_r,
-        double wflux_s2r,
+        const int source, const int ix_s, const int iy_s, const int iz_s,
+        const int recipient, const int ix_r, const int iy_r, const int iz_r,
+        double wflux_s2r, 
         double wmass_source);
 
     // Boundary Mixing due to velocity gradients
@@ -88,15 +70,9 @@ class OpenWQ_watertransp{
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        const unsigned int source,
-        const unsigned int ix_s, 
-        const unsigned int iy_s,
-        const unsigned int iz_s,
-        const unsigned int recipient,
-        const unsigned int ix_r,
-        const unsigned int iy_r,
-        const unsigned int iz_r,
-        double wflux_s2r,
+        const int source, const int ix_s, const int iy_s, const int iz_s,
+        const int recipient, const int ix_r, const int iy_r, const int iz_r,
+        double wflux_s2r, 
         double wmass_source);
 
 };

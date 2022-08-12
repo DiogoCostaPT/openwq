@@ -26,15 +26,9 @@
 void OpenWQ_watertransp::Adv(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    const int source,
-    const int ix_s, 
-    const int iy_s,
-    const int iz_s,
-    const int recipient,
-    const int ix_r,
-    const int iy_r,
-    const int iz_r,
-    double wflux_s2r,
+    const int source, const int ix_s, const int iy_s, const int iz_s,
+    const int recipient, const int ix_r, const int iy_r, const int iz_r,
+    double wflux_s2r, 
     double wmass_source){
 
     double chemass_flux_adv;
@@ -76,15 +70,9 @@ void OpenWQ_watertransp::Adv(
 void OpenWQ_watertransp::AdvDisp(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    const int source,
-    const int ix_s, 
-    const int iy_s,
-    const int iz_s,
-    const int recipient,
-    const int ix_r,
-    const int iy_r,
-    const int iz_r,
-    double wflux_s2r,
+    const int source, const int ix_s, const int iy_s, const int iz_s,
+    const int recipient, const int ix_r, const int iy_r, const int iz_r,
+    double wflux_s2r, 
     double wmass_source){
 
     double chemass_flux_adv;
@@ -132,15 +120,9 @@ void OpenWQ_watertransp::AdvDisp(
 void OpenWQ_watertransp::IntMob(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    const int source,
-    const int ix_s, 
-    const int iy_s,
-    const int iz_s,
-    const int recipient,
-    const int ix_r,
-    const int iy_r,
-    const int iz_r,
-    double wflux_s2r,       
+    const int source, const int ix_s, const int iy_s, const int iz_s,
+    const int recipient, const int ix_r, const int iy_r, const int iz_r,
+    double wflux_s2r, 
     double wmass_source){
 
     // Internal Variables
@@ -192,31 +174,25 @@ void OpenWQ_watertransp::BoundMix(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    const unsigned int source,
-    const unsigned int ix_s, 
-    const unsigned int iy_s,
-    const unsigned int iz_s,
-    const unsigned int recipient,
-    const unsigned int ix_r,
-    const unsigned int iy_r,
-    const unsigned int iz_r,
-    double wflux_s2r,
+    const int source, const int ix_s, const int iy_s, const int iz_s,
+    const int recipient, const int ix_r, const int iy_r, const int iz_r,
+    double wflux_s2r, 
     double wmass_source){
     
     
     // Local Variables
     double chemass_exchange_upper_comprt;
     double chemass_exchange_lower_comprt;
-    unsigned int chemi_mob;     // interactive index of mobile species
+    unsigned int chemi_mob;             // interactive index of mobile species
     std::vector<unsigned int> xyz_source;
     xyz_source.push_back(ix_s);
     xyz_source.push_back(iy_s);
-    xyz_source.push_back(iz_s); // get x,y,z from source comparment in vector
+    xyz_source.push_back(iz_s);         // get x,y,z from source comparment in vector
 
-    // Interactive variables
+    // Dummy/interactive variables
     unsigned int input_direction_index;
-    unsigned int input_upper_compartment_index;
-    unsigned int input_lower_compartment_index;
+    int input_upper_compartment_index;
+    int input_lower_compartment_index;
     double input_k_val;
     unsigned int index_lower_cell;     // index of lower cell for mass exchange
     std::vector<int> xyz_upper_compartment;
@@ -227,7 +203,7 @@ void OpenWQ_watertransp::BoundMix(
     if (source != recipient)
         return;
 
-    
+
     for (unsigned int entry_i = 0; entry_i < OpenWQ_wqconfig.OpenWQ_TE_native_BoundMix_info.size(); entry_i++){
 
         xyz_upper_compartment.clear();

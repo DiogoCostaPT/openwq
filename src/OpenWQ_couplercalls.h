@@ -88,16 +88,9 @@ class OpenWQ_couplercalls{
         OpenWQ_solver& OpenWQ_solver,
         OpenWQ_output& OpenWQ_output,
         time_t simtime,                            // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
-        const int source,
-        const int ix_s, 
-        const int iy_s,
-        const int iz_s,
-        const int recipient,
-        const int ix_r,
-        const int iy_r,
-        const int iz_r,
-        const double wflux_s2r,
-        const double wmass_source);
+        const int source, const int ix_s, const int iy_s, const int iz_s,
+        const int recipient, const int ix_r, const int iy_r, const int iz_r,
+        const double wflux_s2r, const double wmass_source);
 
     // #######################
     // Calls all functions required inside time loop

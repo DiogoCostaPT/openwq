@@ -229,7 +229,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
             OpenWQ_wqconfig,
             OpenWQ_hostModelconfig,
             OpenWQ_output);
-            
+
     }else{
 
         // Create Message
@@ -268,16 +268,9 @@ void OpenWQ_couplercalls::RunSpaceStep(
     OpenWQ_solver& OpenWQ_solver,
     OpenWQ_output& OpenWQ_output,
     time_t simtime,                                 // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
-    const int source,
-    const int ix_s, 
-    const int iy_s,
-    const int iz_s,
-    const int recipient,
-    const int ix_r,
-    const int iy_r,
-    const int iz_r,
-    const double wflux_s2r,
-    const double wmass_source){
+    const int source, const int ix_s, const int iy_s, const int iz_s,
+    const int recipient, const int ix_r, const int iy_r, const int iz_r,
+    const double wflux_s2r, const double wmass_source){
 
     
     // Local variables
@@ -303,15 +296,9 @@ void OpenWQ_couplercalls::RunSpaceStep(
         OpenWQ_watertransp.AdvDisp(
             OpenWQ_vars,
             OpenWQ_wqconfig,
-            source,
-            ix_s, 
-            iy_s,
-            iz_s,
-            recipient,
-            ix_r,
-            iy_r,
-            iz_r,
-            wflux_s2r,
+            source, ix_s, iy_s, iz_s,
+            recipient, ix_r, iy_r, iz_r,
+            wflux_s2r, 
             wmass_source);
 
 
@@ -320,14 +307,8 @@ void OpenWQ_couplercalls::RunSpaceStep(
         OpenWQ_watertransp.IntMob(
             OpenWQ_vars,
             OpenWQ_wqconfig,
-            source,
-            ix_s, 
-            iy_s,
-            iz_s,
-            recipient,
-            ix_r,
-            iy_r,
-            iz_r,
+            source, ix_s, iy_s, iz_s,
+            recipient, ix_r, iy_r, iz_r,
             wflux_s2r,
             wmass_source);
    
@@ -339,14 +320,8 @@ void OpenWQ_couplercalls::RunSpaceStep(
             OpenWQ_hostModelconfig,
             OpenWQ_vars,
             OpenWQ_wqconfig,
-            source,
-            ix_s, 
-            iy_s,
-            iz_s,
-            recipient,
-            ix_r,
-            iy_r,
-            iz_r,
+            source, ix_s, iy_s, iz_s,
+            recipient, ix_r, iy_r, iz_r,
             wflux_s2r,
             wmass_source);
     
@@ -357,14 +332,8 @@ void OpenWQ_couplercalls::RunSpaceStep(
         OpenWQ_watertransp.Adv(
             OpenWQ_vars,
             OpenWQ_wqconfig,
-            source,
-            ix_s, 
-            iy_s,
-            iz_s,
-            recipient,
-            ix_r,
-            iy_r,
-            iz_r,
+            source, ix_s, iy_s, iz_s,
+            recipient, ix_r, iy_r, iz_r,
             wflux_s2r,
             wmass_source);
 
@@ -374,14 +343,8 @@ void OpenWQ_couplercalls::RunSpaceStep(
         OpenWQ_watertransp.IntMob(
             OpenWQ_vars,
             OpenWQ_wqconfig,
-            source,
-            ix_s, 
-            iy_s,
-            iz_s,
-            recipient,
-            ix_r,
-            iy_r,
-            iz_r,
+            source, ix_s, iy_s, iz_s,
+            recipient, ix_r, iy_r, iz_r,
             wflux_s2r,
             wmass_source);
    
@@ -393,14 +356,8 @@ void OpenWQ_couplercalls::RunSpaceStep(
             OpenWQ_hostModelconfig,
             OpenWQ_vars,
             OpenWQ_wqconfig,
-            source,
-            ix_s, 
-            iy_s,
-            iz_s,
-            recipient,
-            ix_r,
-            iy_r,
-            iz_r,
+            source, ix_s, iy_s, iz_s,
+            recipient, ix_r, iy_r, iz_r,
             wflux_s2r,
             wmass_source);
 
@@ -412,14 +369,8 @@ void OpenWQ_couplercalls::RunSpaceStep(
         OpenWQ_watertransp.IntMob(
             OpenWQ_vars,
             OpenWQ_wqconfig,
-            source,
-            ix_s, 
-            iy_s,
-            iz_s,
-            recipient,
-            ix_r,
-            iy_r,
-            iz_r,
+            source, ix_s, iy_s, iz_s,
+            recipient, ix_r, iy_r, iz_r,
             wflux_s2r,
             wmass_source);
    
@@ -430,14 +381,8 @@ void OpenWQ_couplercalls::RunSpaceStep(
             OpenWQ_hostModelconfig,
             OpenWQ_vars,
             OpenWQ_wqconfig,
-            source,
-            ix_s, 
-            iy_s,
-            iz_s,
-            recipient,
-            ix_r,
-            iy_r,
-            iz_r,
+            source, ix_s, iy_s, iz_s,
+            recipient, ix_r, iy_r, iz_r,
             wflux_s2r,
             wmass_source);
 
