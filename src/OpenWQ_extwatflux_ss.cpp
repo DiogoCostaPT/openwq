@@ -660,6 +660,9 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
             MIN           // current model step: min
         );
 
+        // Flag to note that 1st time step has been completed
+        OpenWQ_wqconfig.tstep1_flag = false;
+
     }
 
     // Convert sim time to time_t
@@ -1114,9 +1117,6 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
 
     // Remove the identified past row data 
     (*OpenWQ_wqconfig.SinkSource_FORC).shed_rows(rows2Remove_uvec); 
-
-    // Flag to note that 1st time step has been completed
-    OpenWQ_wqconfig.tstep1_flag = false;
 
 }
 
