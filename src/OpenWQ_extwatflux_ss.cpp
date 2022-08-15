@@ -740,7 +740,8 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
         addedIncrem_flag = true;
 
         // First check if row has already been used
-        // only applicable to rows without "all" in any datetime row element
+        // Do not skip if continuous load scheme is selected
+        // Only applicable to rows without "all" in any datetime row element
         // YYYY, MM, DD, HH, MIN
         if ((*OpenWQ_wqconfig.SinkSource_FORC)(ri,13) == -2) continue;
 
@@ -788,21 +789,25 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
             (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17)++;
             addedIncrem_flag = false;
         }else if (HHall_flag && addedIncrem_flag && HH_json<24){
+            // next HH step
             (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16)++;
             if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17) = 1;
             addedIncrem_flag = false;
         }else if (DDall_flag && addedIncrem_flag && DD_json<DD_max){
+            // next DD step
             (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15)++;
             if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17) = 1;
             if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
             addedIncrem_flag = false;
         }else if (MMall_flag && addedIncrem_flag && MM_json<12){
+            // next MM step
             (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14)++;
             if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17) = 1;
             if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
             if (DDall_flag && DD_json==DD_max) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = 2;
             addedIncrem_flag = false;
         }else if (YYYYall_flag && addedIncrem_flag){
+            // next YYYY step
             (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13)++;
             if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17) = 1;
             if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
