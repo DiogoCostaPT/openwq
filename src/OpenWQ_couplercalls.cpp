@@ -429,7 +429,9 @@ void RunSpaceStep_IN(
         // needs to efficiently run through OpenWQ_wqconfig.ExtFlux_FORC and find if there is information for the current time step and domain-ix-iy-iz
         // needs also to make sure to send a warning if data array has info that overlaps in terms of time-comt-ix-iy-iz
         //  maybe just read the first and then send an warning if there are other inputs (but ignore them)
-        // TRY TO USE THE SAME FUNCTIONS PREPARED FOR SS (TO AVOID DUPLICATION OF CODE)  
+        // TRY TO USE THE SAME FUNCTIONS PREPARED FOR SS (TO AVOID DUPLICATION OF CODE) 
+
+        ewf_conc = 1.0;
 
         // Advection and dispersion
         OpenWQ_watertransp.Adv_IN(
