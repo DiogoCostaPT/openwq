@@ -70,6 +70,9 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
     std::string msg_string;                 // error/warning message string
     bool validEntryFlag;                    // valid entry flag to skip problematic row data
 
+    std::string loadScheme_str;             // Load scheme string: (1) discrete or (2) continuous
+    double loadScheme_id;                   // Load scheme id number: (1) discrete or (2) continuous
+
 
     // Get element list (compartment for SS, and External fluxes for EWF)
     unsigned int num_elem;
@@ -529,7 +532,9 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                     if (!validEntryFlag){continue;}
                 }
 
+                // ###################
                 // sink/source data
+                // ###################
                 ss_data_json = EWF_SS_json 
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
@@ -561,6 +566,60 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                     ss_data_json,       // ic_value passed by reference so that it can be changed
                     unit_multiplers);   // units
 
+
+                // ###################
+                // Load scheme (discrete, continuous)
+                // ###################
+
+                elemName = "Load Scheme";
+
+                // Create Warning Message
+                // only printed if entry is not valid
+                msg_string = 
+                        "<OpenWQ> WARNING: SS/EWF '" 
+                        + elemName 
+                        + "' is not valid. It can only be 'discrete' or 'continuous' (entry skipped): File=" 
+                        + std::to_string(ssf+1)
+                        + ", Sub_structure=" + std::to_string(ssi+1)
+                        + ", Data_row=" + std::to_string(di + 1); 
+
+                try{
+
+                    loadScheme_str = EWF_SS_json
+                        [std::to_string(ssf+1)]
+                        [std::to_string(ssi+1)]
+                        ["DATA"]
+                        [std::to_string(di+1)].at(9);
+
+                    // Set loadScheme_id
+                    // 1) discrete
+                    // 2) continuous
+                    if (loadScheme_str.compare("DISCRETE") == 0) loadScheme_id = 0;
+                    else if (loadScheme_str.compare("CONTINUOUS") == 0) loadScheme_id = 1;
+                    else{
+
+                        // Print it (Console and/or Log file)
+                        OpenWQ_output.ConsoleLog(
+                            OpenWQ_wqconfig,    // for Log file name
+                            msg_string,         // message
+                            true,               // print in console
+                            true);              // print in log file
+
+                        continue;
+                    }
+
+                }catch(...){  
+
+                    // Print it (Console and/or Log file)
+                    OpenWQ_output.ConsoleLog(
+                        OpenWQ_wqconfig,    // for Log file name
+                        msg_string,         // message
+                        true,               // print in console
+                        true);              // print in log file
+
+                    continue;
+                }
+
                 // Get the vector with the data
                 row_data_col = {
                     (double)chem_ssi,
@@ -575,6 +634,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                     (double)iy_json,
                     (double)iz_json,
                     ss_data_json,
+                    loadScheme_id,  // load scheme (1) discrete or (2) continuous
                     0,0,0,0,0       // field to specify the number of times it has been used aleady
                     };              // in the case of and "all" element (YYYY, MM, DD, HH, MIN)
                                     // it starts with 0 (zero), meaning that has not been used
@@ -649,7 +709,6 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
         );
 
         // Update time increments for rows with "all" elements
-        // Remove requested loads that are prior to the simulation start datetime
         OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             OpenWQ_wqconfig,
             OpenWQ_units,
@@ -683,7 +742,7 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
         // First check if row has already been used
         // only applicable to rows without "all" in any datetime row element
         // YYYY, MM, DD, HH, MIN
-        if ((*OpenWQ_wqconfig.SinkSource_FORC)(ri,12) == -2) continue;
+        if ((*OpenWQ_wqconfig.SinkSource_FORC)(ri,13) == -2) continue;
 
         // Reset anyAll_flag
         anyAll_flag = false, YYYYall_flag = false, MMall_flag = false, \
@@ -701,11 +760,11 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
 
         // Add the appropriate year step to row elements
         // with "all" flag (= -1)
-        if (YYYY_json == -1){YYYY_json  += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12); anyAll_flag = true; YYYYall_flag = true;}
-        if (MM_json == -1){MM_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13); anyAll_flag = true; MMall_flag = true;}
-        if (DD_json == -1){DD_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14); anyAll_flag = true; DDall_flag = true;}
-        if (HH_json == -1){HH_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15); anyAll_flag = true; HHall_flag = true;}
-        if (MIN_json == -1){MIN_json    += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16); anyAll_flag = true; MINall_flag = true;}
+        if (YYYY_json == -1){YYYY_json  += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13); anyAll_flag = true; YYYYall_flag = true;}
+        if (MM_json == -1){MM_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14); anyAll_flag = true; MMall_flag = true;}
+        if (DD_json == -1){DD_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15); anyAll_flag = true; DDall_flag = true;}
+        if (HH_json == -1){HH_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16); anyAll_flag = true; HHall_flag = true;}
+        if (MIN_json == -1){MIN_json    += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17); anyAll_flag = true; MINall_flag = true;}
 
         // jsonTime in time_t
         jsonTime = OpenWQ_units.convert_time(YYYY_json, MM_json, DD_json, HH_json, MIN_json);
@@ -726,37 +785,37 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
         DD_max = OpenWQ_extwatflux_ss::getNumberOfDays(YYYY_json, MM_json);
 
         if (MINall_flag && addedIncrem_flag && MIN_json<60){
-            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16)++;
+            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17)++;
             addedIncrem_flag = false;
         }else if (HHall_flag && addedIncrem_flag && HH_json<24){
-            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15)++;
-            if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
+            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16)++;
+            if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17) = 1;
             addedIncrem_flag = false;
         }else if (DDall_flag && addedIncrem_flag && DD_json<DD_max){
-            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14)++;
-            if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
-            if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = 1;
+            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15)++;
+            if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17) = 1;
+            if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
             addedIncrem_flag = false;
         }else if (MMall_flag && addedIncrem_flag && MM_json<12){
-            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13)++;
-            if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
-            if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = 1;
-            if (DDall_flag && DD_json==DD_max) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = 2;
+            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14)++;
+            if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17) = 1;
+            if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
+            if (DDall_flag && DD_json==DD_max) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = 2;
             addedIncrem_flag = false;
         }else if (YYYYall_flag && addedIncrem_flag){
-            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12)++;
-            if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
-            if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = 1;
-            if (DDall_flag && DD_json==DD_max) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = 2;
-            if (MMall_flag && MM_json==12) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13) = 1;
+            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13)++;
+            if (MINall_flag && MIN_json==60) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17) = 1;
+            if (HHall_flag && HH_json==24) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = 1;
+            if (DDall_flag && DD_json==DD_max) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = 2;
+            if (MMall_flag && MM_json==12) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = 1;
             addedIncrem_flag = false;
         }
 
         // Set it as "used" (not for use anymore) if:
         // 1) exceeded possible increments in "all" elements
         // 2) when load is without "all" (only use one time)
-        if (addedIncrem_flag) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12) = -2;
-        if (!anyAll_flag) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12) = -2;
+        if (addedIncrem_flag) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13) = -2;
+        if (!anyAll_flag) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13) = -2;
 
         // ########################################
         // Apply source or sink
@@ -1178,7 +1237,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
         // and go to the next row
         if (!all_YYYY_flag && !all_MM_flag && 
             !all_DD_flag && !all_HH_flag && !all_MIN_flag){
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12) = -1;
+                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13) = -1;
                 continue;
         }
 
@@ -1296,11 +1355,11 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
         }
 
         // Update increments in SinkSource_FORC
-        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12) = increm1;
-        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13) = increm2;
-        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = increm3;
-        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = increm4;
-        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = increm5;
+        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13) = increm1;
+        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = increm2;
+        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = increm3;
+        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = increm4;
+        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17) = increm5;
 
     }
 
