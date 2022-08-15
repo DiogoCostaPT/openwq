@@ -697,7 +697,7 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
         MIN_json =  (*OpenWQ_wqconfig.SinkSource_FORC)(ri,7);
 
         // Add the appropriate year step to row elements
-        // with "all" flad (= -1)
+        // with "all" flag (= -1)
         if (YYYY_json == -1){YYYY_json  += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12); anyAll_flag = true; YYYYall_flag = true;}
         if (MM_json == -1){MM_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13); anyAll_flag = true; MMall_flag = true;}
         if (DD_json == -1){DD_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14); anyAll_flag = true; DDall_flag = true;}

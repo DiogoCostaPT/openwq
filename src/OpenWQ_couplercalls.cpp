@@ -210,8 +210,8 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
         month_sim_now,
         day_sim_now,
         hour_sim_now,
-        min_sim_now); // minutes are not available in CRHM (it seems)
-
+        min_sim_now); 
+        
 
     // #################################################
     // MODULES
