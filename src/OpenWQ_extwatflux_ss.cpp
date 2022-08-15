@@ -630,7 +630,7 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
     bool anyAll_flag;               // Flag to indicate when at least one "all" is present in row elements
     bool YYYYall_flag, MMall_flag, DDall_flag, \
          HHall_flag, MINall_flag;   // Flags "all" flags for specific date units
-    bool addedIncrem_flag=true;    // flag to guarantee increment is added only in one time field (YYYY_json or MM_json or ...) 
+    bool addedIncrem_flag=true;     // flag to guarantee increment is added only in one time field (YYYY_json or MM_json or ...) 
 
     /* ########################################
     // Data update/clean-up at 1st timestep
@@ -669,7 +669,7 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
     num_rowdata = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows; 
 
     /* ########################################
-        // Loop over row data in sink-source file
+    // Loop over row data in sink-source file
     ######################################## */
 
     for (unsigned int ri=0;ri<num_rowdata;ri++){
@@ -691,18 +691,18 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
 
         // Get requested JSON datetime
         YYYY_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,3);
-        MM_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,4);  
-        DD_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,5);  
-        HH_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,6);  
-        MIN_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,7);
+        MM_json =   (*OpenWQ_wqconfig.SinkSource_FORC)(ri,4);  
+        DD_json =   (*OpenWQ_wqconfig.SinkSource_FORC)(ri,5);  
+        HH_json =   (*OpenWQ_wqconfig.SinkSource_FORC)(ri,6);  
+        MIN_json =  (*OpenWQ_wqconfig.SinkSource_FORC)(ri,7);
 
         // Add the appropriate year step to row elements
         // with "all" flad (= -1)
-        if (YYYY_json == -1){YYYY_json += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12); anyAll_flag = true; YYYYall_flag = true;}
-        if (MM_json == -1){MM_json += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13); anyAll_flag = true; MMall_flag = true;}
-        if (DD_json == -1){DD_json += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14); anyAll_flag = true; DDall_flag = true;}
-        if (HH_json == -1){HH_json += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15); anyAll_flag = true; HHall_flag = true;}
-        if (MIN_json == -1){MIN_json += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16); anyAll_flag = true; MINall_flag = true;}
+        if (YYYY_json == -1){YYYY_json  += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12); anyAll_flag = true; YYYYall_flag = true;}
+        if (MM_json == -1){MM_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,13); anyAll_flag = true; MMall_flag = true;}
+        if (DD_json == -1){DD_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14); anyAll_flag = true; DDall_flag = true;}
+        if (HH_json == -1){HH_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15); anyAll_flag = true; HHall_flag = true;}
+        if (MIN_json == -1){MIN_json    += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16); anyAll_flag = true; MINall_flag = true;}
 
         // jsonTime in time_t
         jsonTime = OpenWQ_units.convert_time(YYYY_json, MM_json, DD_json, HH_json, MIN_json);
