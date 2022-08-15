@@ -582,7 +582,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                         + std::to_string(ssf+1)
                         + ", Sub_structure=" + std::to_string(ssi+1)
                         + ", Data_row=" + std::to_string(di + 1); 
-
                 try{
 
                     loadScheme_str = EWF_SS_json
@@ -595,8 +594,29 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                     // 1) discrete
                     // 2) continuous
                     if (loadScheme_str.compare("DISCRETE") == 0) loadScheme_id = 0;
-                    else if (loadScheme_str.compare("CONTINUOUS") == 0) loadScheme_id = 1;
-                    else{
+                    else if (loadScheme_str.compare("CONTINUOUS") == 0 && MM_json == -1) loadScheme_id = 1;
+                    else if (loadScheme_str.compare("CONTINUOUS") == 0 && MM_json != -1){ // continuous option needs
+                                                                                          // MIN = 'all' 
+                        loadScheme_id = 0;
+
+                        // Create Warning Message
+                        // only printed if entry is not valid
+                        msg_string = 
+                                "<OpenWQ> WARNING: SS/EWF '" 
+                                + elemName 
+                                + "' was default to 'discrete'. The 'continuous' option is only valid with MIN set as 'all' for a minimum continuous period: File=" 
+                                + std::to_string(ssf+1)
+                                + ", Sub_structure=" + std::to_string(ssi+1)
+                                + ", Data_row=" + std::to_string(di + 1); 
+                        
+                        // Print it (Console and/or Log file)
+                        OpenWQ_output.ConsoleLog(
+                            OpenWQ_wqconfig,    // for Log file name
+                            msg_string,         // message
+                            true,               // print in console
+                            true);              // print in log file
+
+                    }else{
 
                         // Print it (Console and/or Log file)
                         OpenWQ_output.ConsoleLog(
@@ -672,7 +692,8 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
     const unsigned int MM,           // current model step: month
     const unsigned int DD,           // current model step: day
     const unsigned int HH,           // current model step: hour
-    const unsigned int MIN){         // current model step: min
+    const unsigned int MIN,          // current model step: min
+    const unsigned int SEC){         // current model step: sec
     
     // Local variables
     unsigned int num_rowdata;       // number of rows of data in JSON (YYYY, MM, DD, HH,...)
@@ -691,6 +712,7 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
     bool YYYYall_flag, MMall_flag, DDall_flag, \
          HHall_flag, MINall_flag;   // Flags "all" flags for specific date units
     bool addedIncrem_flag=true;     // flag to guarantee increment is added only in one time field (YYYY_json or MM_json or ...) 
+    bool loadSchemeCont=false;      // flag for "continuous" load scheme option
 
     /* ########################################
     // Data update/clean-up at 1st timestep
@@ -739,6 +761,10 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
         // Reset the addedIncrem_flag 
         addedIncrem_flag = true;
 
+        // Set loadSchemeCont (discrete or continuous)
+        if ((*OpenWQ_wqconfig.SinkSource_FORC)(ri,12) == 0) loadSchemeCont=false;
+        else if ((*OpenWQ_wqconfig.SinkSource_FORC)(ri,12) == 1) loadSchemeCont=true;
+
         // First check if row has already been used
         // Do not skip if continuous load scheme is selected
         // Only applicable to rows without "all" in any datetime row element
@@ -783,10 +809,15 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
         // limit incremenets to max number of MIN, HH, DD, MM and YYYY
         // Also reset time elements to 1 when they reach their max value
 
-        DD_max = OpenWQ_extwatflux_ss::getNumberOfDays(YYYY_json, MM_json);
+        DD_max = getNumberOfDays(YYYY_json, MM_json);
 
         if (MINall_flag && addedIncrem_flag && MIN_json<60){
-            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17)++;
+            // next MIN step
+            // if continuous load, then only step when MIN_json-MIN so that 
+            // the load is continuous
+            if(!loadSchemeCont                          // case: discrete load
+               || (loadSchemeCont && (MIN-MIN_json)>1)  // case: continuous load
+            ) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17)++;
             addedIncrem_flag = false;
         }else if (HHall_flag && addedIncrem_flag && HH_json<24){
             // next HH step

@@ -55,7 +55,8 @@ class OpenWQ_extwatflux_ss{
         const unsigned int MM,           // current model step: month
         const unsigned int DD,           // current model step: day
         const unsigned int HH,           // current model step: hour
-        const unsigned int MIN);                        // current model step: min
+        const unsigned int MIN,          // current model step: min
+        const unsigned int SEC);         // current model step: sec
 
     // Apply Source
     void Apply_Source(

@@ -199,6 +199,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     int day_sim_now = tm_simtime->tm_mday;
     int hour_sim_now = tm_simtime->tm_hour;
     int min_sim_now = tm_simtime->tm_min;
+    int sec_sim_now = tm_simtime->tm_sec;
 
     OpenWQ_extwatflux_ss.CheckApply_SS(
         OpenWQ_vars,
@@ -210,8 +211,9 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
         month_sim_now,
         day_sim_now,
         hour_sim_now,
-        min_sim_now); 
-        
+        min_sim_now,
+        sec_sim_now); 
+
 
     // #################################################
     // MODULES
