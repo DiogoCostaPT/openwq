@@ -937,7 +937,7 @@ void OpenWQ_readjson::SetConfigInfo(
     
     // 2) Calculate value with new units
     OpenWQ_units.Convert_Units(
-        OpenWQ_wqconfig.timetep_out,    // ic_value passed by reference so that it can be changed
+        OpenWQ_wqconfig.timetep_out,    // value passed by reference so that it can be changed
         unit_multiplers);               // units
 
     // ########################################

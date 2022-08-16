@@ -304,7 +304,7 @@ void OpenWQ_initiate::setIC(
                                     // from native to desired output units (false)
             // 2) Calculate value with new units
             OpenWQ_units.Convert_Units(
-                ic_value,           // ic_value passed by reference so that it can be changed
+                ic_value,           // value passed by reference so that it can be changed
                 unit_multiplers);   // units
 
 

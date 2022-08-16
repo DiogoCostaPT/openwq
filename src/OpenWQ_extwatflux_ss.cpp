@@ -72,6 +72,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 
     std::string loadScheme_str;             // Load scheme string: (1) discrete or (2) continuous
     double loadScheme_id;                   // Load scheme id number: (1) discrete or (2) continuous
+    std::string contDt_str;                 // time units of continuous load
 
 
     // Get element list (compartment for SS, and External fluxes for EWF)
@@ -546,32 +547,12 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
                     ["UNITS"]; 
-                
-                // Convert SS units
-                // Source/sink units (g -> default model mass units)
-                // 1) Calculate unit multiplers
-                std::vector<std::string> units;          // units (numerator and denominator)
-                OpenWQ_units.Calc_Unit_Multipliers(
-                    OpenWQ_wqconfig,
-                    OpenWQ_output,
-                    unit_multiplers,    // multiplers (numerator and denominator)
-                    ss_units_json,      // input units
-                    units,
-                    true);              // direction of the conversion: 
-                                        // to native (true) or 
-                                        // from native to desired output units (false)
-
-                // 2) Calculate value with new units
-                OpenWQ_units.Convert_Units(
-                    ss_data_json,       // ic_value passed by reference so that it can be changed
-                    unit_multiplers);   // units
-
 
                 // ###################
                 // Load scheme (discrete, continuous)
                 // ###################
 
-                elemName = "Load Scheme";
+                elemName = "Load/Sink Scheme";
 
                 // Create Warning Message
                 // only printed if entry is not valid
@@ -592,23 +573,19 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 
                     // Set loadScheme_id
                     // 1) discrete
-                    // 2) continuous
+                    // 2) continuous (needs time units)
                     if (loadScheme_str.compare("DISCRETE") == 0) loadScheme_id = 0;
-                    else if (loadScheme_str.compare("CONTINUOUS") == 0 && MM_json == -1) loadScheme_id = 1;
-                    else if (loadScheme_str.compare("CONTINUOUS") == 0 && MM_json != -1){ // continuous option needs
-                                                                                          // MIN = 'all' 
+                    else if (loadScheme_str.compare("CONTINUOUS") == 0 && MM_json != -1){ 
+                        // continuous option needs MIN = 'all' to allow a minimum continuous period
                         loadScheme_id = 0;
-
                         // Create Warning Message
-                        // only printed if entry is not valid
                         msg_string = 
                                 "<OpenWQ> WARNING: SS/EWF '" 
                                 + elemName 
                                 + "' was default to 'discrete'. The 'continuous' option is only valid with MIN set as 'all' for a minimum continuous period: File=" 
                                 + std::to_string(ssf+1)
                                 + ", Sub_structure=" + std::to_string(ssi+1)
-                                + ", Data_row=" + std::to_string(di + 1); 
-                        
+                                + ", Data_row=" + std::to_string(di + 1);  
                         // Print it (Console and/or Log file)
                         OpenWQ_output.ConsoleLog(
                             OpenWQ_wqconfig,    // for Log file name
@@ -616,6 +593,36 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                             true,               // print in console
                             true);              // print in log file
 
+                    }else if (loadScheme_str.compare("CONTINUOUS") == 0 && MM_json == -1){
+                        // continuous option needs MIN = 'all' (otherwise it's discrete input)
+                        loadScheme_id = 1;
+                        // get time units
+                        try{
+                            contDt_str = EWF_SS_json
+                                [std::to_string(ssf+1)]
+                                [std::to_string(ssi+1)]
+                                ["DATA"]
+                                [std::to_string(di+1)].at(10);
+                            // Concatenate the time units to the load
+                            ss_units_json += "/";
+                            ss_units_json += contDt_str;
+                        }catch(...){ 
+                            // Create Warning Message
+                            msg_string = 
+                                "<OpenWQ> WARNING: SS/EWF '" 
+                                + elemName 
+                                + "'continuous' requires an additional array element with the load/sink time units (entry skipped): File=" 
+                                + std::to_string(ssf+1)
+                                + ", Sub_structure=" + std::to_string(ssi+1)
+                                + ", Data_row=" + std::to_string(di + 1); 
+                            // Print it (Console and/or Log file)
+                            OpenWQ_output.ConsoleLog(
+                                OpenWQ_wqconfig,    // for Log file name
+                                msg_string,         // message
+                                true,               // print in console
+                                true);              // print in log file
+                            continue; // skip entry
+                        }
                     }else{
 
                         // Print it (Console and/or Log file)
@@ -639,6 +646,25 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 
                     continue;
                 }
+
+                // Convert SS units
+                // Source/sink units (g -> default model mass units)
+                // 1) Calculate unit multiplers
+                std::vector<std::string> units;          // units (numerator and denominator)
+                OpenWQ_units.Calc_Unit_Multipliers(
+                    OpenWQ_wqconfig,
+                    OpenWQ_output,
+                    unit_multiplers,    // multiplers (numerator and denominator)
+                    ss_units_json,      // input units
+                    units,
+                    true);              // direction of the conversion: 
+                                        // to native (true) or 
+                                        // from native to desired output units (false)
+
+                // 2) Calculate value with new units
+                OpenWQ_units.Convert_Units(
+                    ss_data_json,       // value passed by reference so that it can be changed
+                    unit_multiplers);   // units
 
                 // Get the vector with the data
                 row_data_col = {
