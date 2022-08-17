@@ -109,20 +109,22 @@ class OpenWQ_extwatflux_ss{
     void RemoveLoadBeforeSimStart(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units,
-        const int YYYY,            // current model step: Year
-        const int MM,              // current model step: month
-        const int DD,              // current model step: day
-        const int HH,              // current model step: hour
-        const int MIN);            // current model step: min
+        const int YYYY,             // current model step: Year
+        const int MM,               // current model step: month
+        const int DD,               // current model step: day
+        const int HH,               // current model step: hour
+        const int MIN,              // current model step: min
+        const int SEC);             // current model step: sec
 
     void UpdateAllElemTimeIncremts(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units,
-        const int YYYY,            // current model step: Year
-        const int MM,              // current model step: month
-        const int DD,              // current model step: day
-        const int HH,              // current model step: hour
-        const int MIN);            // current model step: min
+        const int YYYY,             // current model step: Year
+        const int MM,               // current model step: month
+        const int DD,               // current model step: day
+        const int HH,               // current model step: hour
+        const int MIN,              // current model step: min
+        const int SEC);             // current model step: sec
 
     int getNumberOfDays(
         const unsigned int YYYY_check,          // json: Year 

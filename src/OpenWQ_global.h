@@ -132,7 +132,7 @@ class OpenWQ_wqconfig
     public:
     OpenWQ_wqconfig(){
 
-        this -> num_coldata = 18;
+        this -> num_coldata = 20;
 
         // #################################################
         // Compiling and re-structuring of input data for quicker access during runtime
@@ -149,12 +149,13 @@ class OpenWQ_wqconfig
         // 5 - DD
         // 6 - HH
         // 7 - MIN
-        // 8 - ix
-        // 9 - iy
-        // 10 - iz
-        // 11 - value (already converted to mg/l (concentration) or g(mass))
-        // 12 - Load scheme: "discrete" or "continuous"
-        // 13, 14, 15 ,16, 17 - flag to deal with "ALL" entries in YYYY, MM, DD, HH, MIN
+        // 8 - SEC
+        // 9 - ix
+        // 10 - iy
+        // 11 - iz
+        // 12 - value (already converted to mg/l (concentration) or g(mass))
+        // 13 - Load scheme: "discrete" or "continuous"
+        // 14, 15 ,16, 17, 18, 19 - flag to deal with "ALL" entries in YYYY, MM, DD, HH, MIN, SEC
             // if there are no "all"s, then it's to use one time only and 
             // and it is set to -1, which after use becomes -2 for not use again
             // otherwise, it gets updated everytime the load is added
