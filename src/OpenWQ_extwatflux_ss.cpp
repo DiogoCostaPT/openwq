@@ -931,7 +931,7 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
         // Get max no of days in a given month
         DD_max = getNumberOfDays(YYYY_json, MM_json);   
 
-        while (simTime > jsonTime){
+        while (simTime >= jsonTime){
 
             // Reset the addAnyIncrem_flag to enable time increment
             addAnyIncrem_flag = true;
@@ -1401,10 +1401,12 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             // if YYYY_json is not "all" and is higher than the current sim YYYY,
             // then we just need to set the values of MM, DD, HH, MIN have to the min values
             // that means, Jan-1 00:00 of that yeat
-            // for that, we need to add 2 because the "all" flag is -1, so we need to add 2 to get to 1
-            if (all_SEC_flag){increm6 = 2;}
-            if (all_MIN_flag){increm5 = 2;}
-            if (all_HH_flag){increm4 = 2;}
+            // for that, we need to add 1 or or 2 because the "all" flag is -1, 
+            // add 1 for SEC, MIN and HH because they should start at 0
+            // add 2 for DD and MM because they should start at 1
+            if (all_SEC_flag){increm6 = 1;}
+            if (all_MIN_flag){increm5 = 1;}
+            if (all_HH_flag){increm4 = 1;}
             if (all_DD_flag){increm3 = 2;}
             if (all_MM_flag){increm2 = 2;}
         //}else if (YYYY_json == YYYY){
@@ -1494,7 +1496,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
                 // If MIN increment not sufficient, then set it to 1
                 // so that it gets MIN_json=0, and then try the next 
                 // datetime level
-                if (jsonTime < simTime){increm3 = 1;}
+                if (jsonTime < simTime){increm3 = 2;}
             }else{
                 increm3 = 1;}
 
@@ -1510,7 +1512,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
                 // If MIN increment not sufficient, then set it to 1
                 // so that it gets MIN_json=0, and then try the next 
                 // datetime level
-                if (jsonTime < simTime){increm2 = 1;}
+                if (jsonTime < simTime){increm2 = 2;}
             }else{
                 increm2 = 1;}
 
