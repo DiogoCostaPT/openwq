@@ -700,18 +700,18 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 
                 // Get the vector with the data
                 row_data_col = {
-                    (double)chem_ssi,
-                    (double)cmpi_ssi,
-                    (double)sinksource_ssi,
-                    (double)YYYY_json,
-                    (double)MM_json,
-                    (double)DD_json,
-                    (double)HH_json,
-                    (double)MIN_json,
-                    (double)SEC_json,
-                    (double)ix_json,
-                    (double)iy_json,
-                    (double)iz_json,
+                    (double) chem_ssi,
+                    (double) cmpi_ssi,
+                    (double) sinksource_ssi,
+                    (double) YYYY_json,
+                    (double) MM_json,
+                    (double) DD_json,
+                    (double) HH_json,
+                    (double) MIN_json,
+                    (double) SEC_json,
+                    (double) ix_json,
+                    (double) iy_json,
+                    (double) iz_json,
                     ss_data_json,
                     loadScheme_id,  // load scheme (1) discrete or (2) continuous
                     0,0,0,0,0,0     // field to specify the number of times it has been used aleady
