@@ -994,12 +994,12 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
             // Otherwise, update the increment
             // needs +1 because the "all" fields use -1 as numeric value (and as flag)
             // so, adding 1 will set it to start from zero to get to the correct time
-            if (YYYYall_flag){(*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = YYYY_json + 1;}
-            if (MMall_flag){(*OpenWQ_wqconfig.SinkSource_FORC)(ri,15)   = MM_json + 1;}
-            if (DDall_flag){(*OpenWQ_wqconfig.SinkSource_FORC)(ri,16)   = DD_json + 1;}
-            if (HHall_flag){(*OpenWQ_wqconfig.SinkSource_FORC)(ri,17)   = HH_json + 1;}
-            if (MINall_flag){(*OpenWQ_wqconfig.SinkSource_FORC)(ri,18)  = MIN_json + 1;}
-            if (SECall_flag){(*OpenWQ_wqconfig.SinkSource_FORC)(ri,19)  = SEC_json + 1;}
+            if (YYYYall_flag){  (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = YYYY_json + 1;}
+            if (MMall_flag){    (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = MM_json   + 1;}
+            if (DDall_flag){    (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = DD_json   + 1;}
+            if (HHall_flag){    (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17) = HH_json   + 1;}
+            if (MINall_flag){   (*OpenWQ_wqconfig.SinkSource_FORC)(ri,18) = MIN_json  + 1;}
+            if (SECall_flag){   (*OpenWQ_wqconfig.SinkSource_FORC)(ri,19) = SEC_json  + 1;}
         }
 
     }
