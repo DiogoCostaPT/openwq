@@ -62,11 +62,13 @@ class OpenWQ_units{
         double& unit_multipler_i);  // multiplier of numerator or denominator
 
     time_t convert_time(
-        int year, 
-        int month, 
-        int day, 
-        int hour, 
-        int minute);
+        int YYYY, 
+        int MM, 
+        int DD, 
+        int HH, 
+        int MIN,
+        int SEC);
+        
 };
 
 #endif
