@@ -1385,7 +1385,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
         if (DD_json == -1){all_DD_flag=true;}
         if (HH_json == -1){all_HH_flag=true;}
         if (MIN_json == -1){all_MIN_flag=true;}
-        if (SEC_json == -1){all_MIN_flag=true;}
+        if (SEC_json == -1){all_SEC_flag=true;}
 
         // If there aren't any "all" elements, then set it to zero
         // and go to the next row
