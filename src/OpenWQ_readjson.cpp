@@ -646,9 +646,21 @@ void OpenWQ_readjson::SetConfigInfo(
     // HOST MODEL
     // ########################################
 
-    // Number of hydrological compartments in host model
+    // Number of hydrological compartments and EWF in host model
     OpenWQ_hostModelconfig.num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); 
+    OpenWQ_hostModelconfig.num_EWF = OpenWQ_hostModelconfig.HydroExtFlux.size(); 
 
+    // Compartment and External water fluxes names
+    // Compartments
+    for (unsigned int cmpti=0;cmpti<OpenWQ_hostModelconfig.num_HydroComp;cmpti++){
+        OpenWQ_hostModelconfig.cmpt_names.push_back(
+            std::get<1>(
+                OpenWQ_hostModelconfig.HydroComp[cmpti]));}
+    // EWF
+    for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.num_EWF;ewfi++){
+        OpenWQ_hostModelconfig.ewf_names.push_back(
+            std::get<1>(
+                OpenWQ_hostModelconfig.HydroExtFlux[ewfi]));}
     
     // ###########################################
     // MODULES

@@ -412,28 +412,32 @@ void RunSpaceStep_IN(
     OpenWQ_solver& OpenWQ_solver,
     OpenWQ_output& OpenWQ_output,
     time_t simtime, // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
-    std::string source_EWF_name,                    // name defined in hydroExtFluxTuple (in couplecalls)
+    std::string source_EWF_name,                    // name defined in HydroExtFlux (in couplecalls)
     const int recipient, const int ix_r, const int iy_r, const int iz_r,
     const double wflux_s2r){
 
-    // Local variables
-    double ewf_conc;    // interactive concentration of the input flux
+    // Dummy variable
+    double ewf_conc_chemi;  // concentraton of chemical at EWF at current time step
+    int iewf;               // index of EWF
 
-    // Number of chemical species in BGQ file
-    int numspec = OpenWQ_wqconfig.BGC_general_mobile_species.size();
+    // Find EWF index in hydrotuple
+    // interactor
+    std::vector<std::string>::iterator iewf_it = std::find(
+        OpenWQ_hostModelconfig.ewf_names.begin(), 
+        OpenWQ_hostModelconfig.ewf_names.end(), 
+        source_EWF_name);
+    // determine index
+    iewf = distance(OpenWQ_hostModelconfig.ewf_names.begin(), iewf_it);
 
-    // Loop for mobile chemical species
-    for (int chemi=0;chemi<numspec;chemi++){
+    // Loop for all chemical species listed in the BGQ file
+    // both mobile and immobile because these are external inputs
+    for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_num_chem;chemi++){
 
-        // NEW FUNCTION HERE 
-        // this function will go through OpenWQ_wqconfig.ExtFlux_FORC and searches for the appropriate concentration for the current time-comt-ix-iy-iz
-        // concentration is considered ZERO when it isn't available in the EWF_inputfile array
-        // needs to efficiently run through OpenWQ_wqconfig.ExtFlux_FORC and find if there is information for the current time step and domain-ix-iy-iz
-        // needs also to make sure to send a warning if data array has info that overlaps in terms of time-comt-ix-iy-iz
-        //  maybe just read the first and then send an warning if there are other inputs (but ignore them)
-        // TRY TO USE THE SAME FUNCTIONS PREPARED FOR SS (TO AVOID DUPLICATION OF CODE) 
-
-        ewf_conc = 1.0;
+        // Get appropriate chemi concentraton for this ewf and domain ix, iy, iz
+        ewf_conc_chemi = (*OpenWQ_vars.ewf_conc)
+            (iewf)
+            (chemi)
+            (ix_r,iy_r,iz_r);
 
         // Advection and dispersion
         OpenWQ_watertransp.Adv_IN(
@@ -441,7 +445,7 @@ void RunSpaceStep_IN(
             recipient, ix_r, iy_r, iz_r,
             wflux_s2r,                      // external water flux
             chemi,                          // chemical id (from BGQ file and used in state-varibble data structures)
-            ewf_conc);                      // concentration taken from EWF json file
+            ewf_conc_chemi);                // concentration taken from EWF json file
 
     }
 

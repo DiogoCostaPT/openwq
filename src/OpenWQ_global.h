@@ -53,22 +53,14 @@ class OpenWQ_hostModelconfig
     public:
     
     // ########################
-    // Host model COMPARTMENT characterization via tuple
-    typedef std::tuple<int,std::string,int, int, int> hydroCompTuple;
+    // Host model COMPARTMENT or EXTERNAL FLUX characterization via tuple
+    typedef std::tuple<int,std::string,int, int, int> hydroTuple;
     // Add host_hydrological_model compartment:
     // (1) int => index in openWQ 
     // (2) std::string => reference name in JSON file
     // (3) int => number of cells in x-direction
     // (4) int => number of cells in y-direction
     // (5) int => number of cells in z-direction
-    // ########################
-
-    // ########################
-    // Host model EXTERNAL FLUX characterization via tuple
-    typedef std::tuple<int,std::string> hydroExtFluxTuple;
-    // Add host_hydrological_model external fluxes:
-    // (1) int => index in openWQ
-    // (2) std::string => reference name in JSON file
     // ########################
 
     OpenWQ_hostModelconfig(){
@@ -94,17 +86,23 @@ class OpenWQ_hostModelconfig
 
     // Vectors with characterization of the different 
     // model compartments and external fluxes
-    std::vector<hydroCompTuple> HydroComp;
-    std::vector<hydroExtFluxTuple> HydroExtFlux;
+    std::vector<hydroTuple> HydroComp;
+    std::vector<hydroTuple> HydroExtFlux;
+
+    // Compartment and external water fluxes names
+    std::vector<std::string> cmpt_names;  // names of external water fluxes
+    std::vector<std::string> ewf_names;   // names of external water fluxes
+
+    // Number of hydrological compartments and EWF
+    // (that can store and transport water)
+    unsigned int num_HydroComp;
+    unsigned int num_EWF;
 
     // Host model iteraction step (dynamic value)
     long interaction_step = 0;
 
     // Host model time step (in seconds)
     long time_step;
-
-    // Number of hydrological compartments (that can store and transport water)
-    unsigned int num_HydroComp;
 
     // Stores water fluxes when concentration are requested for outputs
     std::unique_ptr<std::vector<arma::Cube<double>>> waterVol_hydromodel;
@@ -195,13 +193,14 @@ class OpenWQ_wqconfig
     // Sink and Source AND External fluxes
     std::unique_ptr<            
         arma::Mat<double>
-        > SinkSource_FORC;      // SS
+        > SinkSource_FORC;              // SS
     std::unique_ptr<            
         arma::Mat<double>
-        > ExtFlux_FORC;         // External fluxes
-    int allSS_flag = -1;        // number to replace in SinkSource_FORC to denote "all"
-    bool tstep1_flag = true;    // flag to note that it's the first time step, so need to exclude loads prior to that
-    
+        > ExtFlux_FORC;                 // External fluxes
+
+    int allSS_flag = -1;                // number to replace in SinkSource_FORC to denote "all"
+    bool tstep1_flag = true;            // flag to note that it's the first time step, so need to exclude loads prior to that
+
     // #################################################
     // Output 
     
@@ -273,7 +272,7 @@ class OpenWQ_wqconfig
     std::vector
         <std::string> BGC_general_chem_species_list;    // Chemical species list
     std::vector
-        <unsigned int> BGC_general_mobile_species;    // index of mobile chem species
+        <unsigned int> BGC_general_mobile_species;      // index of mobile chem species
 
     // ##########################
     // OpenWQ native module: OPENWQ_NATIVE_BGC
@@ -323,11 +322,9 @@ class OpenWQ_vars
                 arma::Cube<  // Dimensions: nx, ny, nz
                 double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
             
-            
             // ############################################
             // Mass changes (for solver separation and DEBUG mode activation)
             // ############################################
-
 
             // ############################################
             // Derivatives
@@ -345,7 +342,6 @@ class OpenWQ_vars
                 arma::field< // Chemical Species
                 arma::Cube<  // Dimensions: nx, ny, nz
                 double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
-
 
             // ############################################
             // Single time, constant or isolated changes 
@@ -365,13 +361,11 @@ class OpenWQ_vars
                 arma::Cube<  // Dimensions: nx, ny, nz
                 double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
 
-
-             // ############################################
+            // ############################################
             // Cumulative Mass changes 
             // Cumulating mass changes until next output is printed
             // Needed for Debug mode
             // ############################################
-
 
             // ############################################
             // Derivatives
@@ -390,7 +384,6 @@ class OpenWQ_vars
                 arma::Cube<  // Dimensions: nx, ny, nz
                 double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
 
-
             // ############################################
             // Single time, constant or isolated changes 
             // to state-variable
@@ -402,6 +395,14 @@ class OpenWQ_vars
                 arma::Cube<  // Dimensions: nx, ny, nz
                 double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
             
+            // ############################################
+            // External IN-fluxes
+            // ############################################
+            ewf_conc = std::unique_ptr<
+                arma::field< // Compartments
+                arma::field< // Chemical Species
+                arma::Cube<  // Dimensions: nx, ny, nz
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
 
         }catch(const std::exception& e){
 
@@ -424,7 +425,8 @@ class OpenWQ_vars
         d_chemass_ic,               // derivative (at start) IC
         d_chemass_dt_chem_out,      // cumulative derivative for output in ddebug model
         d_chemass_dt_transp_out,    // cumulative derivative for output in ddebug model
-        d_chemass_ss_out;           // cumulative derivative for output in ddebug model
+        d_chemass_ss_out,           // cumulative derivative for output in ddebug model
+        ewf_conc;                   // concentration of external water fluxes
 
 };
 

@@ -32,7 +32,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
     // Local variables
     bool foundflag = false;                 // iteractive boolean to identify if comp or chem was found
     std::vector<std::string> elm_list;      // model compartment list
-    std::vector<std::string> chem_list;     // model chemical list
     std::string err_text;                   // iteractive string for text to pass to error messages
     unsigned long cmpi_ssi;                 // model index for compartment Compartment_name_name
     unsigned long chem_ssi;                 // model index for compartment Compartment_name_name
@@ -77,20 +76,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 
 
     // Get element list (compartment for SS, and External fluxes for EWF)
-    unsigned int num_elem;
-    if (inputType.compare("ss")==0)         num_elem = OpenWQ_hostModelconfig.HydroComp.size();      // SS
-    else if (inputType.compare("ewf")==0)   num_elem = OpenWQ_hostModelconfig.HydroExtFlux.size();   // EWF
-    
-    for (unsigned int el=0;el<num_elem;el++){
-        if (inputType.compare("ss")==0)     elm_list.push_back(std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(el)));
-        if (inputType.compare("ewf")==0)    elm_list.push_back(std::get<1>(OpenWQ_hostModelconfig.HydroExtFlux.at(el)));
-    }
-
-    // Get model chemical names list
-    unsigned int BGC_general_num_chem = OpenWQ_wqconfig.BGC_general_num_chem;
-    for (unsigned int chemi=0;chemi<BGC_general_num_chem;chemi++){
-        chem_list.push_back((OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi]);}
-
+    if (inputType.compare("ss")==0)     elm_list = OpenWQ_hostModelconfig.cmpt_names;
+    if (inputType.compare("ewf")==0)    elm_list = OpenWQ_hostModelconfig.ewf_names;
 
     // Get number of sub-structures of SS/EWF data
     num_srcfiles = EWF_SS_json.size(); 

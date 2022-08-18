@@ -61,7 +61,7 @@ void OpenWQ_initiate::initmemory(
         domain_xyz.zeros();
 
         // Get number of species in compartment icmp
-        HydroCmpName = std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp));
+        HydroCmpName = OpenWQ_hostModelconfig.cmpt_names[icmp];
         
         // Create arma for chemical species
         // Needs to be reset because each compartment can have a different number of compartments
