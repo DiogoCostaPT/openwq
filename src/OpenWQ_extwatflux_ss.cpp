@@ -157,7 +157,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
             foundflag = getModIndex(
                 OpenWQ_wqconfig,
                 OpenWQ_output,
-                chem_list,
+                OpenWQ_wqconfig.BGC_general_chem_species_list,
                 Chemical_name,
                 err_text,
                 chem_ssi);
@@ -1054,8 +1054,8 @@ void OpenWQ_extwatflux_ss::Apply_Source(
         //Create message
         msg_string = 
             "<OpenWQ> WARNING: Sink/Source load out of boundaries."
-            "Requested load ignored: Compartment=" 
-            + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(cmpi))
+            "Requested load ignored: "
+            "Compartment=" + OpenWQ_hostModelconfig.cmpt_names[cmpi]
             + ", Chemical=" + OpenWQ_wqconfig.BGC_general_chem_species_list[chemi]
             + ", ix=" + std::to_string(ix)
             + ", iy=" + std::to_string(iy)
@@ -1125,8 +1125,8 @@ void OpenWQ_extwatflux_ss::Apply_Sink(
         // Create Message
         msg_string = 
             "<OpenWQ> WARNING: Sink/Source load out of boundaries."
-            "Requested load ignored: Compartment=" 
-            + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(cmpi))
+            "Requested load ignored: "
+            "Compartment=" + OpenWQ_hostModelconfig.cmpt_names[cmpi]
             + ", Chemical=" + OpenWQ_wqconfig.BGC_general_chem_species_list[chemi]
             + ", ix=" + std::to_string(ix)
             + ", iy=" + std::to_string(iy)
