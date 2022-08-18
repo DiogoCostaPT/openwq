@@ -45,7 +45,7 @@ class OpenWQ_extwatflux_ss{
         std::string inputType);
 
     // Check if sink or sources needs to be applied
-    void CheckApply_SS(
+    void CheckApply_EWFandSS(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,

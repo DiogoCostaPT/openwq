@@ -728,7 +728,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 /* #################################################
  // Check Sources and Sinks and Apply
  ################################################# */
-void OpenWQ_extwatflux_ss::CheckApply_SS(
+void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,

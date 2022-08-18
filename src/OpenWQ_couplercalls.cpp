@@ -201,7 +201,8 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     int min_sim_now = tm_simtime->tm_min;
     int sec_sim_now = tm_simtime->tm_sec;
 
-    OpenWQ_extwatflux_ss.CheckApply_SS(
+    // SS
+    OpenWQ_extwatflux_ss.CheckApply_EWFandSS(
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
