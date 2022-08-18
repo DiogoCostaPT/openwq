@@ -213,7 +213,9 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
         day_sim_now,
         hour_sim_now,
         min_sim_now,
-        sec_sim_now); 
+        sec_sim_now,
+        (std::string) "ss",
+        OpenWQ_wqconfig.SinkSource_FORC); 
 
 
     // #################################################

@@ -51,12 +51,14 @@ class OpenWQ_extwatflux_ss{
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output,
-        const unsigned int YYYY,         // current model step: Year
-        const unsigned int MM,           // current model step: month
-        const unsigned int DD,           // current model step: day
-        const unsigned int HH,           // current model step: hour
-        const unsigned int MIN,          // current model step: min
-        const unsigned int SEC);         // current model step: sec
+        const unsigned int YYYY,                            // current model step: Year
+        const unsigned int MM,                              // current model step: month
+        const unsigned int DD,                              // current model step: day
+        const unsigned int HH,                              // current model step: hour
+        const unsigned int MIN,                             // current model step: min
+        const unsigned int SEC,                             // current model step: sec
+        std::string inputType,                              // flag for SS or EWF
+        std::unique_ptr<arma::Mat<double>>& array_FORC);    // array FORC arma (SS or EWF)
 
     // Apply Source
     void Apply_Source(
