@@ -771,7 +771,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
 
         // Remove requested loads that are prior to the simulation start datetime
         OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
-            OpenWQ_wqconfig,
+            array_FORC,
             OpenWQ_units,
             YYYY,           // current model step: Year
             MM,             // current model step: month
@@ -783,7 +783,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
 
         // Update time increments for rows with "all" elements
         OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
-            OpenWQ_wqconfig,
+            array_FORC,
             OpenWQ_units,
             YYYY,         // current model step: Year
             MM,           // current model step: month
@@ -791,6 +791,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
             HH,           // current model step: hour
             MIN,          // current model step: min
             SEC           // current model step: sec
+            
         );
 
         // Flag to note that 1st time step has been completed
@@ -802,7 +803,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
     simTime = OpenWQ_units.convert_time(YYYY, MM, DD, HH, MIN, SEC);
 
     // Get number of rows in SinkSource_FORC
-    num_rowdata = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows; 
+    num_rowdata = (*array_FORC).n_rows; 
 
     /* ########################################
     // Loop over row data in sink-source file
@@ -814,7 +815,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         // Do not skip if continuous load scheme is selected
         // Only applicable to rows without "all" in any datetime row element
         // YYYY, MM, DD, HH, MIN
-        if ((*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) == -2) continue;
+        if ((*array_FORC)(ri,14) == -2) continue;
 
         // Reset anyAll_flag
         anyAll_flag = false, YYYYall_flag = false, MMall_flag = false, \
@@ -824,21 +825,21 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         // Check if time in SinkSource_FORC row ri matches the current model time
 
         // Get requested JSON datetime
-        YYYY_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,3);
-        MM_json =   (*OpenWQ_wqconfig.SinkSource_FORC)(ri,4);  
-        DD_json =   (*OpenWQ_wqconfig.SinkSource_FORC)(ri,5);  
-        HH_json =   (*OpenWQ_wqconfig.SinkSource_FORC)(ri,6);  
-        MIN_json =  (*OpenWQ_wqconfig.SinkSource_FORC)(ri,7);
-        SEC_json =  (*OpenWQ_wqconfig.SinkSource_FORC)(ri,8);
+        YYYY_json = (*array_FORC)(ri,3);
+        MM_json =   (*array_FORC)(ri,4);  
+        DD_json =   (*array_FORC)(ri,5);  
+        HH_json =   (*array_FORC)(ri,6);  
+        MIN_json =  (*array_FORC)(ri,7);
+        SEC_json =  (*array_FORC)(ri,8);
 
         // Add the appropriate year step to row elements
         // with "all" flag (= -1)
-        if (YYYY_json == -1){YYYY_json  += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14); anyAll_flag = true; YYYYall_flag = true;}
-        if (MM_json == -1){MM_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15); anyAll_flag = true; MMall_flag = true;}
-        if (DD_json == -1){DD_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16); anyAll_flag = true; DDall_flag = true;}
-        if (HH_json == -1){HH_json      += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17); anyAll_flag = true; HHall_flag = true;}
-        if (MIN_json == -1){MIN_json    += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,18); anyAll_flag = true; MINall_flag = true;}
-        if (SEC_json == -1){SEC_json    += (*OpenWQ_wqconfig.SinkSource_FORC)(ri,19); anyAll_flag = true; SECall_flag = true;}
+        if (YYYY_json == -1){YYYY_json  += (*array_FORC)(ri,14); anyAll_flag = true; YYYYall_flag = true;}
+        if (MM_json == -1){MM_json      += (*array_FORC)(ri,15); anyAll_flag = true; MMall_flag = true;}
+        if (DD_json == -1){DD_json      += (*array_FORC)(ri,16); anyAll_flag = true; DDall_flag = true;}
+        if (HH_json == -1){HH_json      += (*array_FORC)(ri,17); anyAll_flag = true; HHall_flag = true;}
+        if (MIN_json == -1){MIN_json    += (*array_FORC)(ri,18); anyAll_flag = true; MINall_flag = true;}
+        if (SEC_json == -1){SEC_json    += (*array_FORC)(ri,19); anyAll_flag = true; SECall_flag = true;}
 
         // jsonTime in time_t
         jsonTime = OpenWQ_units.convert_time(YYYY_json, MM_json, DD_json, HH_json, MIN_json, SEC_json);
@@ -848,7 +849,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
 
         // ########################################
         // If reached here, then it's time to 
-        // Apply source or sink
+        // Apply source or sink or EWF concentration defined
         // ########################################
 
         // Determine adjusted SSload based on time increment.
@@ -857,7 +858,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         // 1) discrete: multiple sub-time step loads
         // 2) continuous: because it's a continuous load that has M/T units
         // Multiplication is by number of seconds between simTime and jsonTime
-        SSload_adjust = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,12);
+        SSload_adjust = (*array_FORC)(ri,12);
         if(SECall_flag){
             // Time difference between jsonTime and simTime in seconds
             timeDiffSecs = difftime(simTime, jsonTime);
@@ -865,7 +866,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         }
 
         // Get SS type (source or sink)
-        sinksource_flag = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,2);
+        sinksource_flag = (*array_FORC)(ri,2);
 
         // if SOURCE
         if (sinksource_flag == 0){
@@ -875,11 +876,11 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
                 OpenWQ_wqconfig,
                 OpenWQ_hostModelconfig,
                 OpenWQ_output,
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,1),       // compartment model index
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,0),       // chemical model index    
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,9),       // compartment model ix
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,10),      // compartment model iy
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,11),      // compartment model iz
+                (*array_FORC)(ri,1),       // compartment model index
+                (*array_FORC)(ri,0),       // chemical model index    
+                (*array_FORC)(ri,9),       // compartment model ix
+                (*array_FORC)(ri,10),      // compartment model iy
+                (*array_FORC)(ri,11),      // compartment model iz
                 SSload_adjust);                                 // source load
 
         }
@@ -891,11 +892,11 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
                 OpenWQ_wqconfig,
                 OpenWQ_hostModelconfig,
                 OpenWQ_output,
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,1),       // compartment model index
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,0),       // chemical model index    
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,9),       // compartment model ix
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,10),       // compartment model iy
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,11),      // compartment model iz
+                (*array_FORC)(ri,1),       // compartment model index
+                (*array_FORC)(ri,0),       // chemical model index    
+                (*array_FORC)(ri,9),       // compartment model ix
+                (*array_FORC)(ri,10),       // compartment model iy
+                (*array_FORC)(ri,11),      // compartment model iz
                 SSload_adjust);                                 // source load
         }
 
@@ -907,7 +908,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         // Set it as "used" (not for use anymore) if this load
         // has no "all" (only use one time)
         if (!anyAll_flag) {
-            (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = -2;
+            (*array_FORC)(ri,14) = -2;
             continue;
         }
 
@@ -978,17 +979,17 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         // Update increment
         // Set it as "used" (not for use anymore) if addAnyIncrem_flag=true 
         // so, no time increment was possible exceeded possible increments in "all" elements
-        if (addAnyIncrem_flag) (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = -2;
+        if (addAnyIncrem_flag) (*array_FORC)(ri,14) = -2;
         else {
             // Otherwise, update the increment
             // needs +1 because the "all" fields use -1 as numeric value (and as flag)
             // so, adding 1 will set it to start from zero to get to the correct time
-            if (YYYYall_flag){  (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = YYYY_json + 1;}
-            if (MMall_flag){    (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = MM_json   + 1;}
-            if (DDall_flag){    (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = DD_json   + 1;}
-            if (HHall_flag){    (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17) = HH_json   + 1;}
-            if (MINall_flag){   (*OpenWQ_wqconfig.SinkSource_FORC)(ri,18) = MIN_json  + 1;}
-            if (SECall_flag){   (*OpenWQ_wqconfig.SinkSource_FORC)(ri,19) = SEC_json  + 1;}
+            if (YYYYall_flag){  (*array_FORC)(ri,14) = YYYY_json + 1;}
+            if (MMall_flag){    (*array_FORC)(ri,15) = MM_json   + 1;}
+            if (DDall_flag){    (*array_FORC)(ri,16) = DD_json   + 1;}
+            if (HHall_flag){    (*array_FORC)(ri,17) = HH_json   + 1;}
+            if (MINall_flag){   (*array_FORC)(ri,18) = MIN_json  + 1;}
+            if (SECall_flag){   (*array_FORC)(ri,19) = SEC_json  + 1;}
         }
 
     }
@@ -1235,7 +1236,7 @@ bool OpenWQ_extwatflux_ss::getModIndex(
 // only do this for rows that don't have any "all" elements
 #################################################*/
 void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
-    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    std::unique_ptr<arma::Mat<double>>& array_FORC,
     OpenWQ_units& OpenWQ_units,
     const int YYYY,         // current model step: Year
     const int MM,           // current model step: month
@@ -1255,7 +1256,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
     simTime = OpenWQ_units.convert_time(YYYY, MM, DD, HH, MIN, SEC);
 
     // Get number of rows in SinkSource_FORC
-    num_rowdata = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows; 
+    num_rowdata = (*array_FORC).n_rows; 
 
     /* ########################################
     // Loop over row data in sink-source file
@@ -1269,12 +1270,12 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
                                 // the YYYY. If that YYYY is lower than the simulation, then the row can also be removed
 
         // Get requested JSON datetime
-        YYYY_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,3);
-        MM_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,4);  
-        DD_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,5);  
-        HH_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,6);  
-        MIN_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,7);
-        SEC_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,8);
+        YYYY_json = (*array_FORC)(ri,3);
+        MM_json = (*array_FORC)(ri,4);  
+        DD_json = (*array_FORC)(ri,5);  
+        HH_json = (*array_FORC)(ri,6);  
+        MIN_json = (*array_FORC)(ri,7);
+        SEC_json = (*array_FORC)(ri,8);
 
         // Skip any entry = -1 ('all' flag, then replace by current sim time)
         if (YYYY_json == -1){YYYY_json = YYYY; all_flag=true; allinYYYY_flag=true;}
@@ -1315,7 +1316,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
     }
 
     // Remove the identified past row data 
-    (*OpenWQ_wqconfig.SinkSource_FORC).shed_rows(rows2Remove_uvec); 
+    (*array_FORC).shed_rows(rows2Remove_uvec); 
 
 }
 
@@ -1324,7 +1325,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
 // adjust time increments for YYYY, MM, DD, HH, MIN
 #################################################*/
 void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
-    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    std::unique_ptr<arma::Mat<double>>& array_FORC,
     OpenWQ_units& OpenWQ_units,
     const int YYYY,         // current model step: Year
     const int MM,           // current model step: month
@@ -1347,7 +1348,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
     simTime = OpenWQ_units.convert_time(YYYY, MM, DD, HH, MIN, SEC);
 
     // Get number of rows in SinkSource_FORC
-    num_rowdata = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows; 
+    num_rowdata = (*array_FORC).n_rows; 
 
     /* ########################################
         // Loop over row data in sink-source file
@@ -1361,12 +1362,12 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
         increm1=0, increm2=0, increm3=0, increm4=0, increm5=0, increm6=0;
 
         // Get requested JSON datetime
-        YYYY_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,3);
-        MM_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,4);  
-        DD_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,5);  
-        HH_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,6);  
-        MIN_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,7);
-        SEC_json = (*OpenWQ_wqconfig.SinkSource_FORC)(ri,8);
+        YYYY_json = (*array_FORC)(ri,3);
+        MM_json = (*array_FORC)(ri,4);  
+        DD_json = (*array_FORC)(ri,5);  
+        HH_json = (*array_FORC)(ri,6);  
+        MIN_json = (*array_FORC)(ri,7);
+        SEC_json = (*array_FORC)(ri,8);
 
         // Determine the "all" elements, which will be our degrees of freedom
         if (YYYY_json == -1){all_YYYY_flag=true;}
@@ -1380,7 +1381,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
         // and go to the next row
         if (!all_YYYY_flag && !all_MM_flag && !all_DD_flag 
             && !all_HH_flag && !all_MIN_flag && !all_SEC_flag){
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = -1;
+                (*array_FORC)(ri,14) = -1;
                 continue;
         }
 
@@ -1519,12 +1520,12 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
         }
 
         // Update increments in SinkSource_FORC
-        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,14) = increm1;
-        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,15) = increm2;
-        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,16) = increm3;
-        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,17) = increm4;
-        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,18) = increm5;
-        (*OpenWQ_wqconfig.SinkSource_FORC)(ri,19) = increm6;
+        (*array_FORC)(ri,14) = increm1;
+        (*array_FORC)(ri,15) = increm2;
+        (*array_FORC)(ri,16) = increm3;
+        (*array_FORC)(ri,17) = increm4;
+        (*array_FORC)(ri,18) = increm5;
+        (*array_FORC)(ri,19) = increm6;
 
     }
 

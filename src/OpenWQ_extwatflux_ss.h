@@ -109,7 +109,7 @@ class OpenWQ_extwatflux_ss{
         unsigned int& row_i);
 
     void RemoveLoadBeforeSimStart(
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        std::unique_ptr<arma::Mat<double>>& array_FORC,
         OpenWQ_units& OpenWQ_units,
         const int YYYY,             // current model step: Year
         const int MM,               // current model step: month
@@ -119,7 +119,7 @@ class OpenWQ_extwatflux_ss{
         const int SEC);             // current model step: sec
 
     void UpdateAllElemTimeIncremts(
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        std::unique_ptr<arma::Mat<double>>& array_FORC,
         OpenWQ_units& OpenWQ_units,
         const int YYYY,             // current model step: Year
         const int MM,               // current model step: month
