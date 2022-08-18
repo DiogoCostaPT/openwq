@@ -762,10 +762,11 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
     bool YYYYall_flag, MMall_flag, DDall_flag, \
          HHall_flag, MINall_flag, SECall_flag;   // Flags "all" flags for specific date units
     bool addAnyIncrem_flag=true;     // flag to guarantee increment is added only in one time field (YYYY_json or MM_json or ...) 
-    double SSload_adjust;            // adjusted load (needed when load is continuous or discrete with timestep > MIN)
+    double value_adjust;            // adjusted load (needed when load is continuous or discrete with timestep > MIN)
 
     /* ########################################
     // Data update/clean-up at 1st timestep
+    // Applicable to both SS and EWF
     ######################################## */
     if (OpenWQ_wqconfig.tstep1_flag){
 
@@ -791,7 +792,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
             HH,           // current model step: hour
             MIN,          // current model step: min
             SEC           // current model step: sec
-            
+
         );
 
         // Flag to note that 1st time step has been completed
@@ -822,7 +823,8 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         DDall_flag = false, HHall_flag = false, SECall_flag = false;
         
         // ########################################
-        // Check if time in SinkSource_FORC row ri matches the current model time
+        // Check if time in array_FORC row ri matches the current model time
+        // Applicable to both SS and EWF
 
         // Get requested JSON datetime
         YYYY_json = (*array_FORC)(ri,3);
@@ -849,7 +851,9 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
 
         // ########################################
         // If reached here, then it's time to 
-        // Apply source or sink or EWF concentration defined
+        // Apply source or sink 
+        // OR 
+        // Update EWF concentration: ewf_conc
         // ########################################
 
         // Determine adjusted SSload based on time increment.
@@ -858,18 +862,21 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         // 1) discrete: multiple sub-time step loads
         // 2) continuous: because it's a continuous load that has M/T units
         // Multiplication is by number of seconds between simTime and jsonTime
-        SSload_adjust = (*array_FORC)(ri,12);
-        if(SECall_flag){
+
+        value_adjust = (*array_FORC)(ri,12);
+
+        // Adjust load if SS and continuous/discrete-seconds
+        if(SECall_flag && inputType.compare("ss") == 0){
             // Time difference between jsonTime and simTime in seconds
             timeDiffSecs = difftime(simTime, jsonTime);
-            SSload_adjust *= timeDiffSecs;
+            value_adjust *= timeDiffSecs;
         }
 
         // Get SS type (source or sink)
         sinksource_flag = (*array_FORC)(ri,2);
 
-        // if SOURCE
-        if (sinksource_flag == 0){
+        // if SS and SOURCE
+        if (inputType.compare("ss") == 0 && sinksource_flag == 0){
 
             Apply_Source(
                 OpenWQ_vars,
@@ -881,11 +888,11 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
                 (*array_FORC)(ri,9),       // compartment model ix
                 (*array_FORC)(ri,10),      // compartment model iy
                 (*array_FORC)(ri,11),      // compartment model iz
-                SSload_adjust);                                 // source load
+                value_adjust);                                 // source load
 
         }
-        // if SINK
-        else if (sinksource_flag == 1){
+        // if SS and SINK
+        else if (inputType.compare("ss") == 0 && sinksource_flag == 1){
 
             Apply_Sink(
                 OpenWQ_vars,
@@ -895,14 +902,32 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
                 (*array_FORC)(ri,1),       // compartment model index
                 (*array_FORC)(ri,0),       // chemical model index    
                 (*array_FORC)(ri,9),       // compartment model ix
-                (*array_FORC)(ri,10),       // compartment model iy
+                (*array_FORC)(ri,10),      // compartment model iy
                 (*array_FORC)(ri,11),      // compartment model iz
-                SSload_adjust);                                 // source load
+                value_adjust);            // source load
+        }
+        // if EWF
+        else if (inputType.compare("ewf") == 0){
+
+            // Update ewf_conc
+            /*
+            Update_EWFconc(
+                OpenWQ_vars,
+                OpenWQ_output,
+                (*array_FORC)(ri,1),       // compartment model index
+                (*array_FORC)(ri,0),       // chemical model index    
+                (*array_FORC)(ri,9),       // compartment model ix
+                (*array_FORC)(ri,10),      // compartment model iy
+                (*array_FORC)(ri,11),      // compartment model iz
+                value_adjust);             // source load
+            */
+
         }
 
         // ########################################
         // Prepare the time increments for the next load
         // Critical step for both 1-time use of "all" fields
+        // Applicable to both SS and EWF
         // ########################################
 
         // Set it as "used" (not for use anymore) if this load

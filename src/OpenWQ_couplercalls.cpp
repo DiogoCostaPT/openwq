@@ -201,7 +201,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     int min_sim_now = tm_simtime->tm_min;
     int sec_sim_now = tm_simtime->tm_sec;
 
-    // SS
+    // SS (find and apply)
     OpenWQ_extwatflux_ss.CheckApply_EWFandSS(
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
@@ -215,7 +215,23 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
         min_sim_now,
         sec_sim_now,
         (std::string) "ss",
-        OpenWQ_wqconfig.SinkSource_FORC); 
+        OpenWQ_wqconfig.SinkSource_FORC);
+
+    // EWF (find and update ewf_conc for use with EWF)
+    OpenWQ_extwatflux_ss.CheckApply_EWFandSS(
+        OpenWQ_vars,
+        OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig,
+        OpenWQ_units,
+        OpenWQ_output,
+        year_sim_now,
+        month_sim_now,
+        day_sim_now,
+        hour_sim_now,
+        min_sim_now,
+        sec_sim_now,
+        (std::string) "ewf",
+        OpenWQ_wqconfig.ExtFlux_FORC); 
 
 
     // #################################################
