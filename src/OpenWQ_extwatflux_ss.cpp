@@ -889,7 +889,7 @@ void OpenWQ_extwatflux_ss::CheckApply_SS(
                 (*OpenWQ_wqconfig.SinkSource_FORC)(ri,1),       // compartment model index
                 (*OpenWQ_wqconfig.SinkSource_FORC)(ri,0),       // chemical model index    
                 (*OpenWQ_wqconfig.SinkSource_FORC)(ri,9),       // compartment model ix
-                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,10),       // compartment model iy
+                (*OpenWQ_wqconfig.SinkSource_FORC)(ri,10),      // compartment model iy
                 (*OpenWQ_wqconfig.SinkSource_FORC)(ri,11),      // compartment model iz
                 SSload_adjust);                                 // source load
 
