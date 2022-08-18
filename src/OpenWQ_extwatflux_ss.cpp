@@ -553,13 +553,34 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 }
 
                 // ###################
-                // sink/source data
+                // SS sink/source load or EWF conc
+                // cannot have negative values
                 // ###################
                 ss_data_json = EWF_SS_json 
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
                     ["DATA"]
                     [std::to_string(di+1)].at(9);
+
+                // skip if negative value in SS load/sink or EWF conc 
+                // throw warning msg
+                if(ss_data_json < 0.0f){
+                    // Create Warning Message
+                    msg_string = 
+                            "<OpenWQ> WARNING: SS/EWF '" 
+                            " load/sink/conc cannot be negative (entry skipped): File=" 
+                            + std::to_string(ssf+1)
+                            + ", Sub_structure=" + std::to_string(ssi+1)
+                            + ", Data_row=" + std::to_string(di + 1);  
+                    // Print it (Console and/or Log file)
+                    OpenWQ_output.ConsoleLog(
+                        OpenWQ_wqconfig,    // for Log file name
+                        msg_string,         // message
+                        true,               // print in console
+                        true);              // print in log file
+                    validEntryFlag = false;
+                    if (!validEntryFlag){continue;}
+                }
 
                 // sink/source units
                 ss_units_json = EWF_SS_json 
@@ -910,17 +931,17 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         else if (inputType.compare("ewf") == 0){
 
             // Update ewf_conc
-            /*
             Update_EWFconc(
                 OpenWQ_vars,
+                OpenWQ_wqconfig,
+                OpenWQ_hostModelconfig,
                 OpenWQ_output,
-                (*array_FORC)(ri,1),       // compartment model index
+                (*array_FORC)(ri,1),       // EWF model index
                 (*array_FORC)(ri,0),       // chemical model index    
                 (*array_FORC)(ri,9),       // compartment model ix
                 (*array_FORC)(ri,10),      // compartment model iy
                 (*array_FORC)(ri,11),      // compartment model iz
                 value_adjust);             // source load
-            */
 
         }
 
@@ -1155,7 +1176,81 @@ void OpenWQ_extwatflux_ss::Apply_Sink(
             true);              // print in log file
 
     }
+}
 
+/* #################################################
+ // Apply Sink
+ ################################################# */
+void OpenWQ_extwatflux_ss::Update_EWFconc(
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_output& OpenWQ_output,
+    const unsigned int ewfi,            // compartment model index
+    const unsigned int chemi,           // chemical model index    
+    int ix,                             // compartment model ix
+    int iy,                             // compartment model iy
+    int iz,                             // compartment model iz
+    const double new_concVal){          // new EWF conc value
+
+    // Local Variables
+    std::string msg_string;             // error/warning message string
+    unsigned int spX_min, spX_max, spY_min, spY_max, spZ_min, spZ_max;
+    unsigned int nx = std::get<2>(OpenWQ_hostModelconfig.HydroExtFlux[ewfi]);
+    unsigned int ny = std::get<3>(OpenWQ_hostModelconfig.HydroExtFlux[ewfi]);
+    unsigned int nz = std::get<4>(OpenWQ_hostModelconfig.HydroExtFlux[ewfi]);
+
+    // #####################
+    // Determine domain region (or simple grid cells) to add load
+    // ix
+    if(ix != -1){spX_min = ix; spX_max = ix;}
+    else{spX_min = 0; spX_max = nx - 1;}
+    // iy
+    if(iy != -1){spY_min = iy; spY_max = iy;}
+    else{spY_min = 0; spY_max = ny - 1;}
+    // iz
+    if(iz != -1){spZ_min = iz; spZ_max = iz;}
+    else{spZ_min = 0; spZ_max = nz - 1;}
+
+    try{
+
+        // First reset all values of ewf_conc to ZERO for new time step
+        #pragma omp parallel for collapse(2) num_threads(OpenWQ_wqconfig.num_threads_requested)
+        for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.num_HydroComp;ewfi++){ // 
+            for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){
+                (*OpenWQ_vars.ewf_conc)(ewfi)(chemi).zeros();}}
+        
+        // Now update the elements with information in the EWF file
+        (*OpenWQ_vars.ewf_conc)(ewfi)(chemi)(
+            arma::span(spX_min, spX_max), 
+            arma::span(spY_min, spY_max),
+            arma::span(spZ_min, spZ_max)) = new_concVal;
+
+        // Replace all negative values by zero
+        // Needed because can have negative values
+        (*OpenWQ_vars.ewf_conc)(ewfi)(chemi).transform( [](double val) { return (val < 0.0) ? 0.0 : val; });
+
+    }catch (...){
+
+        // Through a warning if request out of boundaries
+        // Create Message
+        msg_string = 
+            "<OpenWQ> WARNING: EWF conc out of boundaries."
+            "Requested EWF concentration update ignored and set to zero: "
+            "EWF=" + OpenWQ_hostModelconfig.cmpt_names[ewfi]
+            + ", Chemical=" + OpenWQ_wqconfig.BGC_general_chem_species_list[chemi]
+            + ", ix=" + std::to_string(ix)
+            + ", iy=" + std::to_string(iy)
+            + ", iz=" + std::to_string(iz);
+
+        // Print it (Console and/or Log file)
+        OpenWQ_output.ConsoleLog(
+            OpenWQ_wqconfig,    // for Log file name
+            msg_string,         // message
+            true,               // print in console
+            true);              // print in log file
+
+    }
 }
 
 /* #################################################
@@ -1327,6 +1422,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
                 && YYYY_json < YYYY){ // case without "all" in YYYY element where YYYY_json < YYYY)
             rows2Remove.push_back(ri);
         }
+
     }
 
     // arma .shed_row only accepts uvec

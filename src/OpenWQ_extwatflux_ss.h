@@ -60,7 +60,7 @@ class OpenWQ_extwatflux_ss{
         std::string inputType,                              // flag for SS or EWF
         std::unique_ptr<arma::Mat<double>>& array_FORC);    // array FORC arma (SS or EWF)
 
-    // Apply Source
+    // Apply SS Source
     void Apply_Source(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
@@ -73,7 +73,7 @@ class OpenWQ_extwatflux_ss{
         int iz_json,                                    // compartment model iz
         const double ss_data_json);                     // source load
 
-    // Apply Sink
+    // Apply SS Sink
     void Apply_Sink(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
@@ -85,6 +85,19 @@ class OpenWQ_extwatflux_ss{
         int iy_json,                                    // compartment model iy
         int iz_json,                                    // compartment model iz
         const double ss_data_json);                     // source load
+
+    // Update EWF concentrations
+    void Update_EWFconc(
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_output& OpenWQ_output,
+    const unsigned int ewfi,            // compartment model index
+    const unsigned int chemi,           // chemical model index    
+    int ix,                             // compartment model ix
+    int iy,                             // compartment model iy
+    int iz,                             // compartment model iz
+    const double new_concVal);          // new EWF conc value
 
     void Convert_Mass_Units(
         double &ss_value,     // SS value
