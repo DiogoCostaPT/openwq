@@ -29,7 +29,7 @@ void OpenWQ_initiate::initmemory(
     OpenWQ_output& OpenWQ_output){
 
     // Pointer to nx, ny, nx information (grids or HRU)
-    std::unique_ptr<unsigned int[]> n_xyz(new unsigned int[3]); // pointer to nx, ny, nx information
+    std::unique_ptr<unsigned int[]> n_xyz(new unsigned int[3]); // pointer to nx, ny, nz information
     n_xyz[0] = 0;
     n_xyz[1] = 0;
     n_xyz[2] = 0;
@@ -37,10 +37,9 @@ void OpenWQ_initiate::initmemory(
     // Local variables
     std::string HydroCmpName;   // Hydrological compartment names as specified in main.cpp and 
                                 // OpenWQ_json.openWQ_config.json (they need to match)
-    std::string msg_string;             // error/warning message string
+    std::string msg_string;     // error/warning message string
 
     // Create arma for chemical species
-    unsigned int numspec = OpenWQ_json.BGC_module["CHEMICAL_SPECIES"]["LIST"].size(); // number of chemical species in BGC_module
     typedef arma::field<arma::Cube<double>> arma_fieldcube; // typedef data structure: used for domain_field
 
     /* ########################################
@@ -65,14 +64,14 @@ void OpenWQ_initiate::initmemory(
         
         // Create arma for chemical species
         // Needs to be reset because each compartment can have a different number of compartments
-        arma_fieldcube domain_field(numspec); // all species are simulated for all compartments
+        arma_fieldcube domain_field(OpenWQ_wqconfig.BGC_general_num_chem); // all species are simulated for all compartments
 
         /* ########################################
         // Loop over dimensions of compartment icmp
         // Push 3D arma::cube into the arma::field of each chemical species
         ######################################## */
-        for (unsigned int s=0;s<numspec;s++){
-            domain_field(s) = domain_xyz;
+        for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_num_chem;chemi++){
+            domain_field(chemi) = domain_xyz;
         }
 
         /* ########################################

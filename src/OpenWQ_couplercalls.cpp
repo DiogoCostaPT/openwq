@@ -30,8 +30,8 @@ void OpenWQ_couplercalls::InitialConfig(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
     OpenWQ_watertransp& OpenWQ_watertransp,      // transport modules
-    OpenWQ_chem& OpenWQ_chem,                   // biochemistry modules
-    OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,        // sink and source modules)
+    OpenWQ_chem& OpenWQ_chem,                    // biochemistry modules
+    OpenWQ_extwatflux_ss& OpenWQ_extwatflux_ss,  // sink and source modules)
     OpenWQ_output& OpenWQ_output){
 
 
