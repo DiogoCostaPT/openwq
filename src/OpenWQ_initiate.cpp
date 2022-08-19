@@ -35,8 +35,6 @@ void OpenWQ_initiate::initmemory(
     n_xyz[2] = 0;
 
     // Local variables
-    std::string HydroCmpName;   // Hydrological compartment names as specified in main.cpp and 
-                                // OpenWQ_json.openWQ_config.json (they need to match)
     std::string msg_string;     // error/warning message string
 
     // Create arma for chemical species
@@ -58,9 +56,6 @@ void OpenWQ_initiate::initmemory(
 
         // Set to zero
         domain_xyz.zeros();
-
-        // Get number of species in compartment icmp
-        HydroCmpName = OpenWQ_hostModelconfig.cmpt_names[icmp];
         
         // Create arma for chemical species
         // Needs to be reset because each compartment can have a different number of compartments
@@ -108,6 +103,44 @@ void OpenWQ_initiate::initmemory(
 
     }
 
+    /* ########################################
+    // Loop over EWF
+    // Assign and  allocate memory to openWQ variables
+    ######################################## */
+    for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.num_EWF;ewfi++){
+            
+        // Dimensions for compartment ewfi
+        n_xyz[0] = std::get<2>(OpenWQ_hostModelconfig.HydroExtFlux.at(ewfi)); // num of x elements
+        n_xyz[1] = std::get<3>(OpenWQ_hostModelconfig.HydroExtFlux.at(ewfi)); // num of y elements
+        n_xyz[2] = std::get<4>(OpenWQ_hostModelconfig.HydroExtFlux.at(ewfi)); // num of z elements
+        
+        // Generate arma::cube of compartment ewfi size
+        arma::Cube<double> domain_xyz(n_xyz[0],n_xyz[1],n_xyz[2]);
+
+        // Set to zero
+        domain_xyz.zeros();
+        
+        // Create arma for chemical species
+        // Needs to be reset because each compartment can have a different number of compartments
+        arma_fieldcube domain_field(OpenWQ_wqconfig.BGC_general_num_chem); // all species are simulated for all compartments
+
+        /* ########################################
+        // Loop over dimensions of compartment ewfi
+        // Push 3D arma::cube into the arma::field of each chemical species
+        ######################################## */
+        for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_num_chem;chemi++){
+            domain_field(chemi) = domain_xyz;
+        }
+
+        /* ########################################
+        // Allocate Memory
+        ######################################## */
+        
+        // OpenWQ state variable
+        (*OpenWQ_vars.ewf_conc)(ewfi) = domain_field;
+
+    }
+    
      /* ########################################
     // Log file
     ######################################## */
