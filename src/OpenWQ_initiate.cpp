@@ -83,7 +83,6 @@ void OpenWQ_initiate::initmemory(
         (*OpenWQ_vars.d_chemass_ss)(icmp) = domain_field;
 
         // Cumulative Derivatives (for export in debug mode)
-
         (*OpenWQ_vars.d_chemass_dt_chem_out)(icmp) = domain_field;
         (*OpenWQ_vars.d_chemass_dt_transp_out)(icmp) = domain_field;
         (*OpenWQ_vars.d_chemass_ss_out)(icmp) = domain_field;
