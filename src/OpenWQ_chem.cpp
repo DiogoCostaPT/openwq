@@ -208,9 +208,14 @@ void OpenWQ_chem::setBGCexpressions(
             symbol_table.add_vector("openWQ_BGCnative_chemass_InTransfEq",OpenWQ_wqconfig.openWQ_BGCnative_chemass_InTransfEq);
 
             // Add variable dependencies to table of symbols (in case they are used)
-            symbol_table.add_variable("SM",OpenWQ_hostModelconfig.SM_txyz);
-            symbol_table.add_variable("Tair",OpenWQ_hostModelconfig.Tair_txyz);
-            symbol_table.add_variable("Tsoil",OpenWQ_hostModelconfig.Tsoil_txyz);
+            for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.num_Depend;depi++){
+
+                symbol_table.add_variable(
+                    OpenWQ_hostModelconfig.depend_names[depi],          // Dependency Var name
+                    (*OpenWQ_hostModelconfig.dependVar_scalar)[depi]    // Variable data
+                );
+
+            }
             
             // Create Object
             expression_t expression;
@@ -375,13 +380,12 @@ void OpenWQ_chem::BGC_Transform(
                                     (*OpenWQ_vars.chemass)
                                     (icmp)
                                     (index_chemtransf[chem])
-                                    (ix,iy,iz));
-                            }
+                                    (ix,iy,iz));}
 
-                            // Update dependency values if needed
-                            OpenWQ_hostModelconfig.SM_txyz = (*OpenWQ_hostModelconfig.SM)(ix,iy,iz);
-                            OpenWQ_hostModelconfig.Tair_txyz = (*OpenWQ_hostModelconfig.Tair)(ix,iy,iz);
-                            OpenWQ_hostModelconfig.Tsoil_txyz = (*OpenWQ_hostModelconfig.Tsoil)(ix,iy,iz);
+                            // Update current dependencies for current x, y and z
+                            // dependVar_scalar needed for exportk
+                            for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.num_Depend;depi++){
+                                (*OpenWQ_hostModelconfig.dependVar_scalar)[depi] = (*OpenWQ_hostModelconfig.dependVar)[depi](ix,iy,iz);}
 
                             // Mass transfered: Consumed -> Produced (using exprtk)
                             // Make sure that transf_mass is positive, otherwise ignore transformation

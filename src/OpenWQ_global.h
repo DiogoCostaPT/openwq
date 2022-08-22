@@ -65,22 +65,22 @@ class OpenWQ_hostModelconfig
 
     OpenWQ_hostModelconfig(){
 
+        // Water volumes from hostmodel
         waterVol_hydromodel = std::unique_ptr<
             std::vector<                            // compartments
             arma::Cube<                             // ix, iy, iz
             double>>>(new std::vector<arma::cube>); 
 
-        SM = std::unique_ptr<
+        // Dependencies from hostmodel 
+        // (to be available for BGC)
+        dependVar = std::unique_ptr<
+            std::vector<                            // dependency variable
             arma::Cube<                             // ix, iy, iz
-            double>>(new arma::cube); 
+            double>>>(new std::vector<arma::cube>);
 
-        Tair = std::unique_ptr<
-            arma::Cube<                             // ix, iy, iz
-            double>>(new arma::cube); 
-
-        Tsoil = std::unique_ptr<
-            arma::Cube<                             // ix, iy, iz
-            double>>(new arma::cube); 
+        dependVar_scalar = std::unique_ptr<
+            std::vector<
+            double>>(new std::vector<double>);
 
     }
 
@@ -88,15 +88,18 @@ class OpenWQ_hostModelconfig
     // model compartments and external fluxes
     std::vector<hydroTuple> HydroComp;
     std::vector<hydroTuple> HydroExtFlux;
+    std::vector<hydroTuple> HydroDepend;
 
     // Compartment and external water fluxes names
-    std::vector<std::string> cmpt_names;  // names of external water fluxes
-    std::vector<std::string> ewf_names;   // names of external water fluxes
+    std::vector<std::string> cmpt_names;    // names of comparments fluxes
+    std::vector<std::string> ewf_names;     // names of external water fluxes
+    std::vector<std::string> depend_names;  // names of external water fluxes
 
     // Number of hydrological compartments and EWF
     // (that can store and transport water)
     unsigned int num_HydroComp;
     unsigned int num_EWF;
+    unsigned int num_Depend;
 
     // Host model iteraction step (dynamic value)
     long interaction_step = 0;
@@ -106,20 +109,18 @@ class OpenWQ_hostModelconfig
 
     // Stores water fluxes when concentration are requested for outputs
     std::unique_ptr<std::vector<arma::Cube<double>>> waterVol_hydromodel;
+
+    // To store all dependency variables 
+    // to be available for BGC calculations and expressionss
+    std::unique_ptr<std::vector<arma::Cube<double>>> dependVar; // global data
+    std::unique_ptr<std::vector<double>> dependVar_scalar;      // data updated for use with exprtk
+
     
     // Water volume minimum limit (critical for concentration calculations)
     // to avoid concentration instabilities and numerical blowup
     // uses native units: m3
     const double watervol_minlim = 0.01;
 
-    // Add dependencies for BGC calculations
-    std::unique_ptr<arma::Cube<double>> SM;     // Saves all SM data from hostmodel
-    std::unique_ptr<arma::Cube<double>> Tair;   // Saves all Tair data from hostmodel
-    std::unique_ptr<arma::Cube<double>> Tsoil;  // Saves all Tsoil data from hostmodel
-    double SM_txyz;                             // Used as iteractive variable to use with exprtk
-    double Tair_txyz;                           // Used as iteractive variable to use with exprtk
-    double Tsoil_txyz;                          // Used as iteractive variable to use with exprtk
-    
 };
 
 /* #################################################

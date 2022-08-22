@@ -87,14 +87,6 @@ void OpenWQ_initiate::initmemory(
         (*OpenWQ_vars.d_chemass_dt_transp_out)(icmp) = domain_field;
         (*OpenWQ_vars.d_chemass_ss_out)(icmp) = domain_field;
 
-        // Hydro model variables used as BGC dependencies
-        // Just need to do this once (no need to repeat in this loop)
-        if (icmp == 0){
-            (*OpenWQ_hostModelconfig.SM) = domain_xyz;
-            (*OpenWQ_hostModelconfig.Tair) = domain_xyz;
-            (*OpenWQ_hostModelconfig.Tsoil) = domain_xyz;
-        }
-
         // Hydro model variables (water volumes for calc of concentrations)
         // Set them to ones in case concentrations are not requested
         // In such cases, the output will multiply by one (so it's fine)
@@ -139,6 +131,32 @@ void OpenWQ_initiate::initmemory(
         (*OpenWQ_vars.ewf_conc)(ewfi) = domain_field;
 
     }
+
+    // Hydro model variables used as BGC dependencies
+    // Just need to do this once (no need to repeat in this loop)
+    for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.num_Depend;depi++){
+            
+        // Dimensions for compartment depi
+        n_xyz[0] = std::get<2>(OpenWQ_hostModelconfig.HydroDepend.at(depi)); // num of x elements
+        n_xyz[1] = std::get<3>(OpenWQ_hostModelconfig.HydroDepend.at(depi)); // num of y elements
+        n_xyz[2] = std::get<4>(OpenWQ_hostModelconfig.HydroDepend.at(depi)); // num of z elements
+        
+        // Generate arma::cube of compartment depi size
+        arma::Cube<double> domain_xyz(n_xyz[0],n_xyz[1],n_xyz[2]);
+
+        // Set to zero
+        domain_xyz.zeros();
+        
+        /* ########################################
+        // Allocate Memory
+        ######################################## */
+        
+        // OpenWQ state variable
+        (*OpenWQ_hostModelconfig.dependVar).push_back(domain_xyz);
+        (*OpenWQ_hostModelconfig.dependVar_scalar).push_back(0.0f);
+
+    }
+
     
      /* ########################################
     // Log file
