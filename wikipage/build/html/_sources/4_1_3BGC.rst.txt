@@ -24,7 +24,8 @@ The biogeochemical cycling file is a JSON file that defines both the chemical sp
 +-------------------+---------------------+----------------------------------------------+
 |                   | PRODUCED            | Species produced, e.g., ``"NO3"``            |
 +-------------------+---------------------+----------------------------------------------+
-|                   | KINETICS_PER_DAY    |Kinetics equation for transformation          | 
+|                   | KINETICS            | Kinetics equation and time units             |
+|                   |                     | for transformation ``["NO3 * k", "1/day"]``  |
 +-------------------+---------------------+----------------------------------------------+
 |                   | PARAMETER_NAMES     | List of parameter names                      |
 |                   |                     | in transformation equation                   | 
@@ -35,6 +36,10 @@ The biogeochemical cycling file is a JSON file that defines both the chemical sp
 
 The JSON file supports C/C++ syntax for comments: single-line comment (``//``) or comment blocks (``/*`` and ``*/``). 
 
+The Kinetics Equation is supported by the C++ Mathematical Expression Toolkit Library
+`C++ Mathematical Expression Toolkit Library <http://www.partow.net/programming/exprtk/index.html>`_. The equations can be written with (1) multiple chemical species, (2) user-defined parameters (``PARAMETER_NAMES`` and ``PARAMETER_VALUES``), and (3) in-build hytdrological model dependencies (``Tair`` and ``Tsoil``).
+These model dependencies are tailored to each hydrological model.
+
 Example:
 
 .. code-block:: json
@@ -44,15 +49,8 @@ Example:
             "LIST": {
                 "1": "NO3",
                 "2": "NH4",
-                "3": "N2",
-                "4": "DON",
-                "5": "labile_orgN",
-                "6": "refractory_orgN",
-                "7": "SRP",
-                "8": "DOP",
-                "9": "partP",
-                "10": "labile_orgP",
-                "11": "refractory_orgP"
+                "3": "SRP",
+                "4": "partP",
             },
             "MOBILE_SPECIES": [1,2,4,7,8,9]
         },
@@ -65,17 +63,16 @@ Example:
                 "1":{
                     "CONSUMED": "NH4",
                     "PRODUCED": "NO3",
-                    "KINETICS_PER_DAY": "NH4 * k",
-                    "PARAMETER_NAMES": ["k","p"],
+                    "KINETICS": ["NH4 * k", "1/day"],
+                    "PARAMETER_NAMES": ["k"],
                     "PARAMETER_VALUES":{
-                        "k": 0.01,
-                        "p": 10
+                        "k": 0.01
                     }
                 },
                 "2":{
                     "CONSUMED": "NO3",
                     "PRODUCED": "N2",
-                    "KINETICS_PER_DAY": "NO3 * k",
+                    "KINETICS": ["NO3 * k / (p^2)", "1/day"],
                     "PARAMETER_NAMES": ["k","p"],
                     "PARAMETER_VALUES":{
                         "k": 0.01,
@@ -90,7 +87,7 @@ Example:
                 "1":{
                     "CONSUMED": "SRP",
                     "PRODUCED": "partP",
-                    "KINETICS_PER_DAY": "SRP *+ k",
+                    "KINETICS": ["SRP * k * Tsoil", "1/day"],
                     "PARAMETER_NAMES": ["k"],
                     "PARAMETER_VALUES":{
                         "k": 0.01
