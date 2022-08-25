@@ -33,6 +33,7 @@ using json = nlohmann::json;
 
 #include "OpenWQ_global.h"
 #include "OpenWQ_output.h"
+#include "OpenWQ_units.h"
 
 // Biogeochemistry
 
@@ -46,6 +47,7 @@ class OpenWQ_chem{
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output);
 
     // Run Chemistry (main call)

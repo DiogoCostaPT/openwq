@@ -104,6 +104,7 @@ void OpenWQ_couplercalls::InitialConfig(
             OpenWQ_hostModelconfig,
             OpenWQ_wqconfig,
             OpenWQ_vars,
+            OpenWQ_units,
             OpenWQ_output);
 
     }else{

@@ -133,10 +133,11 @@ bool OpenWQ_units::Calc_Unit_Multipliers(
                 continue;
 
             // ########################################
-            // If no EMPTY (applies to denominators)
+            // If EMPTY pr =1 (applies to denominators)
             // set to multipler to 1
             // this is redundant, but just to make sure this value doesn't get wild
-            if (units[m].compare("EMPTY") == 0){
+            if (units[m].compare("EMPTY") == 0 ||
+                units[m].compare("1") == 0 ){
                 empty_flag = true;
                 unit_multiplers[m] = 1.0f;
             }

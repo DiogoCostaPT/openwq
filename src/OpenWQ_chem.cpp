@@ -26,6 +26,7 @@ void OpenWQ_chem::setBGCexpressions(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_units& OpenWQ_units,
     OpenWQ_output& OpenWQ_output){
 
     // Local variables for expression evaluator: exprtk
@@ -34,6 +35,7 @@ void OpenWQ_chem::setBGCexpressions(
         consumed_spec,
         produced_spec,
         expression_string,          // expression string
+        kinetics_units,             // kinetics units
         expression_string_modif;    // expression string replaced by variable in code
     typedef exprtk::symbol_table<double> symbol_table_t;
     typedef exprtk::expression<double> expression_t;
@@ -48,6 +50,7 @@ void OpenWQ_chem::setBGCexpressions(
         unsigned int,                   // index of produced species
         std::vector<unsigned int>       // index of chemical in transformation equation (needs to be here for loop reset)
         > BGCTransfTuple_info;          // Tuple with info and expression for BGC cyling
+    std::vector<double> unit_multiplers;// multiplers (numerator and denominator)
     unsigned int num_BGCcycles, 
         num_transf,
         index_cons,index_prod,           // indexed for consumed and produced chemical
@@ -112,7 +115,12 @@ void OpenWQ_chem::setBGCexpressions(
                 ["CYCLING_FRAMEWORKS"]
                 [BGCcycles_name]
                 [std::to_string(transi+1)]
-                ["KINETICS_PER_DAY"];
+                ["KINETICS"].at(0);
+            kinetics_units = OpenWQ_json.BGC_module
+                ["CYCLING_FRAMEWORKS"]
+                [BGCcycles_name]
+                [std::to_string(transi+1)]
+                ["KINETICS"].at(1);
             std::vector<std::string> parameter_names = OpenWQ_json.BGC_module
                 ["CYCLING_FRAMEWORKS"]
                 [BGCcycles_name]
@@ -120,7 +128,29 @@ void OpenWQ_chem::setBGCexpressions(
                 ["PARAMETER_NAMES"];
 
             expression_string_modif = expression_string;
+
+            /* ########################################
+            // Adjust expression to change time units to sec
+            ######################################## */
             
+            // Calculate unit multiplers
+            std::vector<std::string> units;          // units (numerator and denominator)
+            OpenWQ_units.Calc_Unit_Multipliers(
+                OpenWQ_wqconfig,
+                OpenWQ_output,
+                unit_multiplers,    // multiplers (numerator and denominator)
+                kinetics_units,     // input units
+                units,
+                true);              // direction of the conversion: 
+                                    // to native (true) or 
+                                    // from native to desired output units (false)
+            
+            // Adjuct expression
+            expression_string_modif = 
+                "(" + expression_string_modif 
+                + ")*" + std::to_string(unit_multiplers[0])
+                + "/" + std::to_string(unit_multiplers[1]);
+
             /* ########################################
             // Find species indexes: consumed, produced and in the expression
             ######################################## */
@@ -392,11 +422,6 @@ void OpenWQ_chem::BGC_Transform(
                             transf_mass = std::fmax(
                                 OpenWQ_wqconfig.openWQ_BGCnative_BGCexpressions_eq[transf_index[transi]].value(),
                                 0.0f); // Needs to be positive (from consumed to produced)
-
-                            // Convert transfer_mass per day (as provided in the kinetics)
-                            // to mass transfer per second that is the native time unit
-                            // and the previous one
-                            transf_mass /= (24 * 60 * 60);
 
                             // Guarantee that removed mass is not larger than existing mass
                             if (OpenWQ_hostModelconfig.time_step != 0){
