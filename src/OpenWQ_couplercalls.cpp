@@ -26,6 +26,7 @@ void OpenWQ_couplercalls::InitialConfig(
     OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object
     OpenWQ_wqconfig& OpenWQ_wqconfig,            // create OpenWQ_wqconfig object
     OpenWQ_units& OpenWQ_units,                  // functions for unit conversion
+    OpenWQ_utils& OpenWQ_utils,                    // utility methods/functions
     OpenWQ_readjson& OpenWQ_readjson,            // read json files
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
@@ -47,6 +48,7 @@ void OpenWQ_couplercalls::InitialConfig(
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
         OpenWQ_units,
+        OpenWQ_utils,
         OpenWQ_output);
 
     // ################################
@@ -70,6 +72,7 @@ void OpenWQ_couplercalls::InitialConfig(
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
         OpenWQ_units,
+        OpenWQ_utils,
         OpenWQ_output,
         (std::string) "ss");    // flag for SS
     // EWF
@@ -79,6 +82,7 @@ void OpenWQ_couplercalls::InitialConfig(
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
         OpenWQ_units,
+        OpenWQ_utils,
         OpenWQ_output,
         (std::string) "ewf");  // flag for EWF
 
@@ -131,6 +135,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     OpenWQ_json& OpenWQ_json,                       // create OpenWQ_json object
     OpenWQ_wqconfig& OpenWQ_wqconfig,               // create OpenWQ_wqconfig object
     OpenWQ_units& OpenWQ_units,                     // functions for unit conversion
+    OpenWQ_utils& OpenWQ_utils,                       // utility methods/functions
     OpenWQ_readjson& OpenWQ_readjson,               // read json files
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_initiate& OpenWQ_initiate,               // initiate modules
@@ -283,6 +288,7 @@ void OpenWQ_couplercalls::RunSpaceStep(
     OpenWQ_json& OpenWQ_json,                       // create OpenWQ_json object
     OpenWQ_wqconfig& OpenWQ_wqconfig,               // create OpenWQ_wqconfig object
     OpenWQ_units& OpenWQ_units,                     // functions for unit conversion
+    OpenWQ_utils& OpenWQ_utils,                       // utility methods/functions
     OpenWQ_readjson& OpenWQ_readjson,               // read json files
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_initiate& OpenWQ_initiate,               // initiate modules
@@ -422,6 +428,7 @@ void RunSpaceStep_IN(
     OpenWQ_json& OpenWQ_json,                       // create OpenWQ_json object
     OpenWQ_wqconfig& OpenWQ_wqconfig,               // create OpenWQ_wqconfig object
     OpenWQ_units& OpenWQ_units,                     // functions for unit conversion
+    OpenWQ_utils& OpenWQ_utils,                       // utility methods/functions
     OpenWQ_readjson& OpenWQ_readjson,               // read json files
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_initiate& OpenWQ_initiate,               // initiate modules
@@ -437,16 +444,12 @@ void RunSpaceStep_IN(
 
     // Dummy variable
     double ewf_conc_chemi;  // concentraton of chemical at EWF at current time step
-    int iewf;               // index of EWF
+    unsigned int iewf;      // index of EWF
 
-    // Find EWF index in hydrotuple
-    // interactor
-    std::vector<std::string>::iterator iewf_it = std::find(
-        OpenWQ_hostModelconfig.ewf_names.begin(), 
-        OpenWQ_hostModelconfig.ewf_names.end(), 
+    // Find specific EWF index in EWF names
+    iewf = OpenWQ_utils.FindStrIndexInVectStr(
+        OpenWQ_hostModelconfig.ewf_names,
         source_EWF_name);
-    // determine index
-    iewf = distance(OpenWQ_hostModelconfig.ewf_names.begin(), iewf_it);
 
     // Loop for all chemical species listed in the BGQ file
     // both mobile and immobile because these are external inputs
@@ -479,6 +482,7 @@ void OpenWQ_couplercalls::RunTimeLoopEnd(
     OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object
     OpenWQ_wqconfig& OpenWQ_wqconfig,            // create OpenWQ_wqconfig object
     OpenWQ_units& OpenWQ_units,                  // functions for unit conversion
+    OpenWQ_utils& OpenWQ_utils,                    // utility methods/functions
     OpenWQ_readjson& OpenWQ_readjson,            // read json files
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_initiate& OpenWQ_initiate,            // initiate modules

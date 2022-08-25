@@ -22,13 +22,17 @@
 #include <tuple>
 #include <string>
 #include <algorithm>
+#include <iterator>
 #include <time.h>
+#include <iostream>
+#include <fstream>
 #include "jnlohmann/json.hpp"
 using json = nlohmann::json;
 
 #include "OpenWQ_global.h"
 #include "OpenWQ_units.h"
 #include "OpenWQ_output.h"
+#include "OpenWQ_utils.h"
 
 class OpenWQ_extwatflux_ss{
 
@@ -41,6 +45,7 @@ class OpenWQ_extwatflux_ss{
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units,
+        OpenWQ_utils& OpenWQ_utils,
         OpenWQ_output& OpenWQ_output,
         std::string inputType);
 

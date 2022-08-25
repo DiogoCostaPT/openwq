@@ -40,6 +40,7 @@ using json = nlohmann::json;
 #include "OpenWQ_global.h"
 #include "OpenWQ_units.h"
 #include "OpenWQ_output.h"
+#include "OpenWQ_utils.h"
 
 class OpenWQ_readjson{
 
@@ -50,29 +51,30 @@ class OpenWQ_readjson{
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units,
+        OpenWQ_utils & OpenWQ_utils,
         OpenWQ_output& OpenWQ_output);
 
     void read_JSON_2class(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_output& OpenWQ_output,
+        OpenWQ_utils& OpenWQ_utils,
         json& jsondata,                         // JSON structure to save to
         const bool substruc_flag,               // Save in subfield of JSON structure? only if multiple files (e.g., source and sinks)        
         const std::string JsonSubStruct_name,   // if true, name of subfield    
         const std::string jsonfile);            // Name of JSON file
 
     void ConvertJSONtext_2upperCase(
+        OpenWQ_utils &OpenWQ_utils,
         json &jsondata);
-    
-    void ConvertStringToUpperCase(
-        const std::string &old_jsonkey,
-        std::string &new_jsonkey);
 
     void change_JSON_key_to_upper_case(
+        OpenWQ_utils &OpenWQ_utils,
         json &object, 
         const std::string& old_key,
         std::string& new_key);
 
     void change_JSON_value_to_upper_case(
+        OpenWQ_utils &OpenWQ_utils,
         json &object,
         std::string new_jsonkey_layer_1);
 

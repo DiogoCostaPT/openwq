@@ -28,6 +28,7 @@
 #include "OpenWQ_units.h"
 #include "OpenWQ_solver.h"
 #include "OpenWQ_output.h"
+#include "OpenWQ_utils.h"
 
 
 class OpenWQ_couplercalls{
@@ -42,6 +43,7 @@ class OpenWQ_couplercalls{
         OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object
         OpenWQ_wqconfig& OpenWQ_wqconfig,            // create OpenWQ_wqconfig object
         OpenWQ_units& OpenWQ_units,                  // functions for unit conversion
+        OpenWQ_utils& OpenWQ_utils,                    // utility methods/functions
         OpenWQ_readjson& OpenWQ_readjson,            // read json files
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
@@ -59,6 +61,7 @@ class OpenWQ_couplercalls{
         OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object
         OpenWQ_wqconfig& OpenWQ_wqconfig,            // create OpenWQ_wqconfig object
         OpenWQ_units& OpenWQ_units,                  // functions for unit conversion
+        OpenWQ_utils& OpenWQ_utils,                    // utility methods/functions
         OpenWQ_readjson& OpenWQ_readjson,            // read json files
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_initiate& OpenWQ_initiate,            // initiate modules
@@ -86,6 +89,7 @@ class OpenWQ_couplercalls{
         OpenWQ_json& OpenWQ_json,                       // create OpenWQ_json object
         OpenWQ_wqconfig& OpenWQ_wqconfig,               // create OpenWQ_wqconfig object
         OpenWQ_units& OpenWQ_units,                     // functions for unit conversion
+        OpenWQ_utils& OpenWQ_utils,                    // utility methods/functions
         OpenWQ_readjson& OpenWQ_readjson,               // read json files
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_initiate& OpenWQ_initiate,               // initiate modules
@@ -105,6 +109,7 @@ class OpenWQ_couplercalls{
         OpenWQ_json& OpenWQ_json,                       // create OpenWQ_json object
         OpenWQ_wqconfig& OpenWQ_wqconfig,               // create OpenWQ_wqconfig object
         OpenWQ_units& OpenWQ_units,                     // functions for unit conversion
+        OpenWQ_utils& OpenWQ_utils,                    // utility methods/functions
         OpenWQ_readjson& OpenWQ_readjson,               // read json files
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_initiate& OpenWQ_initiate,               // initiate modules
@@ -127,6 +132,7 @@ class OpenWQ_couplercalls{
         OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object
         OpenWQ_wqconfig& OpenWQ_wqconfig,            // create OpenWQ_wqconfig object
         OpenWQ_units& OpenWQ_units,                  // functions for unit conversion
+        OpenWQ_utils& OpenWQ_utils,                    // utility methods/functions
         OpenWQ_readjson& OpenWQ_readjson,            // read json files
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_initiate& OpenWQ_initiate,            // initiate modules

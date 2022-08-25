@@ -26,53 +26,67 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_units& OpenWQ_units,
+    OpenWQ_utils& OpenWQ_utils,
     OpenWQ_output& OpenWQ_output,
     std::string inputType){                             // flag for SS or EWF
     
     // Local variables
-    bool foundflag = false;                 // iteractive boolean to identify if comp or chem was found
-    std::vector<std::string> elm_list;      // model compartment list
-    std::string err_text;                   // iteractive string for text to pass to error messages
-    unsigned long cmpi_ssi;                 // model index for compartment Compartment_name_name
-    unsigned long chem_ssi;                 // model index for compartment Compartment_name_name
-    unsigned long sinksource_ssi;           // = 0 (source), = 1 (sink)
+    bool foundflag = false;                     // iteractive boolean to identify if comp or chem was found
+    std::vector<std::string> elm_list;          // model compartment list
+    std::string err_text;                       // iteractive string for text to pass to error messages
+    unsigned long cmpi_ssi;                     // model index for compartment Compartment_name_name
+    unsigned long chem_ssi;                     // model index for compartment Compartment_name_name
+    unsigned long sinksource_ssi;               // = 0 (source), = 1 (sink)
 
-    unsigned int num_srcfiles;              // number of sink-source files 
-                                            // (saved as sub-structure of SinkSource)
-    unsigned int num_srchem;                // number of chemical loads per file
-    unsigned int num_rowdata;               // number of rows of data in JSON (YYYY, MM, DD, HH,...)
-    int int_n_elem;                         // iterative counting of number of elements in arma:mat
+    unsigned int num_srcfiles;                  // number of sink-source files 
+                                                // (saved as sub-structure of SinkSource)
+    unsigned int num_srchem;                    // number of chemical loads per file
+    unsigned int num_rowdata;                   // number of rows of data in JSON (YYYY, MM, DD, HH,...)
+    int int_n_elem;                             // iterative counting of number of elements in arma:mat
     
-    std::string Chemical_name;              // from JSON file
-    std::string Element_name;               // from JSON file (compartment name or external-flux name)
-    std::string Type;                       // from JSON filec (only used in SS)
-    std::string Units;                      // from JSON file
+    std::string Chemical_name;                  // from JSON file
+    std::string Element_name;                   // from JSON file (compartment name or external-flux name)
+    std::string Type;                           // from JSON filec (only used in SS)
+    std::string Units;                          // from JSON file
+    std::string DataFormat;                     // from JSON file (JSON or ASCII)
 
-    std::string elemName;                   // temporary element name
-    std::string keyName;                    // interactive json-key name
-    int YYYY_json;                          // Year in JSON-sink_source (interactive)
-    int MM_json;                            // Month in JSON-sink_source (interactive)
-    int DD_json;                            // Day in JSON-sink_source (interactive)
-    int HH_json;                            // Hour in JSON-sink_source (interactive)
-    int MIN_json;                           // Minutes in JSON-sink_source (interactive)
-    int SEC_json;                           // Seconds in JSON-sink_source (interactive)
-    int ix_json;                            // iteractive ix info for sink-source row data 
-    int iy_json;                            // iteractive iy info for sink-source row data 
-    int iz_json;                            // iteractive iz info for sink-source row data
+    std::string ascii_FilePath;                 // additional information for ASCII data input
+    std::string ascii_delimiter;                // additional information for ASCII data input
+    unsigned int ascii_numHeaderRows;           // additional information for ASCII data input
+    unsigned int ascii_headerKeyRow;            // additional information for ASCII data input
+    unsigned int lineCount;                     // row count for ASCII file
+    std::string rowEntryASCII;                  // row data
+    std::string headerRowASCII;                 // row with header data
+    std::vector<std::string> ASCIIRowdata;      // all row data
+    std::vector<std::string> ASCIIRowElemEntry; // vector with header keys
+    std::vector<std::string> headerKeys;        // vector with header keys
+    std::string headerWord;                     // interactive header words
 
-    double ss_data_json;                    // data (sink or source) from row data
-    std::string ss_units_json;              // units of row data
-    std::vector<double> unit_multiplers;    // multiplers (numerator and denominator)
+    std::string elemName;                       // temporary element name
+    std::string keyName;                        // interactive json-key name
+    int YYYY_json;                              // Year in JSON-sink_source (interactive)
+    int MM_json;                                // Month in JSON-sink_source (interactive)
+    int DD_json;                                // Day in JSON-sink_source (interactive)
+    int HH_json;                                // Hour in JSON-sink_source (interactive)
+    int MIN_json;                               // Minutes in JSON-sink_source (interactive)
+    int SEC_json;                               // Seconds in JSON-sink_source (interactive)
+    int ix_json;                                // iteractive ix info for sink-source row data 
+    int iy_json;                                // iteractive iy info for sink-source row data 
+    int iz_json;                                // iteractive iz info for sink-source row data
+
+    double ss_data_json;                        // data (sink or source) from row data
+    std::string ss_units_json;                  // units of row data
+    std::vector<double> unit_multiplers;        // multiplers (numerator and denominator)
    
-    arma::vec row_data_col;                 // new row data (initially as col data)
-    arma::Mat<double> row_data_row;         // for conversion of row_data_col to row data
+    arma::vec row_data_col;                     // new row data (initially as col data)
+    arma::Mat<double> row_data_row;             // for conversion of row_data_col to row data
 
-    std::string msg_string;                 // error/warning message string
-    bool validEntryFlag;                    // valid entry flag to skip problematic row data
+    std::string msg_string;                     // error/warning message string
+    bool validEntryFlag;                        // valid entry flag to skip problematic row data
 
-    std::string loadScheme_str;             // Load scheme string: (1) discrete or (2) continuous
-    double loadScheme_id;                   // Load scheme id number: (1) discrete or (2) continuous
-    std::string contDt_str;                 // time units of continuous load
+    std::string loadScheme_str;                 // Load scheme string: (1) discrete or (2) continuous
+    double loadScheme_id;                       // Load scheme id number: (1) discrete or (2) continuous
+    std::string contDt_str;                     // time units of continuous load
 
 
     // Get element list (compartment for SS, and External fluxes for EWF)
@@ -172,7 +186,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
             }else{continue;} // skip if Type is unknown
             
             /* ########
-            // Get units and actual input data
+            // Get units
             ###########*/
 
             Units = EWF_SS_json // units
@@ -180,11 +194,115 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 [std::to_string(ssi+1)]
                 ["UNITS"];
 
-            // Get number of rows of data in JSON (YYYY, MM, DD, HH,...)
-            num_rowdata = EWF_SS_json
+            /* ########
+            // Get actual data
+            ###########*/
+            DataFormat = EWF_SS_json // units
                 [std::to_string(ssf+1)]
                 [std::to_string(ssi+1)]
-                ["DATA"].size();
+                ["DATA_FORMAT"];
+
+            /* ########
+            // Check if DATA_FORMAT=ASCII
+            // if yes, then get file structure info
+            ###########*/
+
+            // Get additional info for ASCII
+            if (DataFormat.compare("ASCII")==0){
+
+                try{
+                    // file path
+                    ascii_FilePath = EWF_SS_json
+                        [std::to_string(ssf+1)]
+                        [std::to_string(ssi+1)]
+                        ["DATA"]["FILEPATH"];
+                    // delimiter
+                    ascii_delimiter = EWF_SS_json
+                        [std::to_string(ssf+1)]
+                        [std::to_string(ssi+1)]
+                        ["DATA"]["DELIMITER"];
+                    // number of header rows
+                    ascii_numHeaderRows = EWF_SS_json
+                        [std::to_string(ssf+1)]
+                        [std::to_string(ssi+1)]
+                        ["DATA"]["NUMBER_OF_HEADER_ROWS"];
+                    // position of key header
+                    ascii_headerKeyRow = EWF_SS_json
+                        [std::to_string(ssf+1)]
+                        [std::to_string(ssi+1)]
+                        ["DATA"]["HEADER_KEY_ROW"];
+
+                    // Get number of rows in ASCII file
+                    num_rowdata = OpenWQ_utils.getNumLinesfromASCIIFile(ascii_FilePath)
+                        - ascii_numHeaderRows;
+
+                    // Open ASCII file (read mode only)
+                    std::ifstream asciiFile (ascii_FilePath, std::ios::in);
+
+                    // Read skip header lines
+                    if (asciiFile.is_open()){
+                        lineCount = 1;
+                        while(std::getline(asciiFile, rowEntryASCII)){
+                            // get header row when found
+                            if(lineCount==ascii_headerKeyRow){
+                                headerRowASCII = rowEntryASCII;
+                                // Convert string to uppercase
+                                headerRowASCII = OpenWQ_utils.ConvertStringToUpperCase(headerRowASCII);
+                                // Parse the headerRowASCII to get a vector with the json entries
+                                // parsing based on the delimiter ascii_delimiter defined by the user
+                                headerKeys = OpenWQ_utils.StringSplit(
+                                    headerRowASCII,
+                                    ascii_delimiter);}
+                            // push new entry to if actual row data
+                            if(lineCount>ascii_numHeaderRows) ASCIIRowdata.push_back(rowEntryASCII);
+                            // update line count
+                            ++lineCount;
+                        }
+                        asciiFile.close();
+                    }else{
+                         // If there is an issue with the ASCII input data
+                        // through a warning message and skip entry
+                        msg_string = 
+                            "<OpenWQ> WARNING: SS/EWF '" 
+                            " load/sink/conc ASCII file cannot be found (entry skipped): File=" 
+                            + ascii_FilePath
+                            + " in JSON SS file "
+                            + std::to_string(ssf+1)
+                            + ", Sub_structure=" + std::to_string(ssi+1);
+                        // Print it (Console and/or Log file)
+                        OpenWQ_output.ConsoleLog(
+                            OpenWQ_wqconfig,    // for Log file name
+                            msg_string,         // message
+                            true,               // print in console
+                            true);              // print in log file
+                        continue;
+                    }
+            
+                }catch(...){
+                    // If there is an issue with the ASCII input data
+                    // through a warning message and skip entry
+                    msg_string = 
+                        "<OpenWQ> WARNING: SS/EWF '" 
+                        " load/sink/conc with ASCII format has an issue with json-keys or data structure (entry skipped): File=" 
+                        + std::to_string(ssf+1)
+                        + ", Sub_structure=" + std::to_string(ssi+1);
+                    // Print it (Console and/or Log file)
+                    OpenWQ_output.ConsoleLog(
+                        OpenWQ_wqconfig,    // for Log file name
+                        msg_string,         // message
+                        true,               // print in console
+                        true);              // print in log file
+                    continue;
+                }
+                
+            // If JSON
+            }else if (DataFormat.compare("JSON")==0){
+                // Get number of rows of data in JSON (YYYY, MM, DD, HH,...)
+                num_rowdata = EWF_SS_json
+                    [std::to_string(ssf+1)]
+                    [std::to_string(ssi+1)]
+                    ["DATA"].size();
+            }
 
             /* ########################################
              // Loop over row data in sink-source file
@@ -196,35 +314,59 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 row_data_col.reset(); 
                 row_data_row.reset();
 
+                // If DataFormat=ASCII, then get row data 
+                // and convert-to-upper-case and split it by element entry
+                if (DataFormat.compare("ASCII")==0){
+                    ASCIIRowElemEntry = 
+                        OpenWQ_utils.StringSplit(
+                            OpenWQ_utils.ConvertStringToUpperCase(ASCIIRowdata[di]),
+                            ascii_delimiter);}
+
                 // ###################
                 // Year
                 // ###################
                 elemName = "Year";
                 try{
 
-                    YYYY_json = EWF_SS_json
-                            [std::to_string(ssf+1)]
-                            [std::to_string(ssi+1)]
-                            ["DATA"]
-                            [std::to_string(di+1)].at(0);
+                    // try entry as int
+                    int entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(0);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = std::stoi(ASCIIRowElemEntry[ 
+                        OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"YYYY")]);}
+
+                    YYYY_json = entryVal;
 
                 }catch(...){
 
-                    validEntryFlag = getArrayElem(
-                        OpenWQ_wqconfig,
-                        OpenWQ_output,
-                        elemName,
-                        (std::string) EWF_SS_json
-                            [std::to_string(ssf+1)]
-                            [std::to_string(ssi+1)]
-                            ["DATA"]
-                            [std::to_string(di+1)].at(0),
-                        YYYY_json,
-                        ssf,    // SS file
-                        ssi,    // SS structure
-                        di);    // SS row
+                    // try as string for the cases where entry is "all"
+                    std::string entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(0);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        std::cout << OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"YYYY") << std::endl;
+                        entryVal = ASCIIRowElemEntry[ 
+                            OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"YYYY")];}
 
+                    // Check if "all" and return flag validEntryFlag
+                    validEntryFlag = getArrayElem(
+                        OpenWQ_wqconfig,OpenWQ_output,
+                        elemName,
+                        (std::string) entryVal,
+                        YYYY_json,
+                        ssf, ssi, di); // SS file, structure and row
+                            
                     if (!validEntryFlag){continue;}
+
                 }
                 
                 // ###################
@@ -233,23 +375,39 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "Month";
                 try{
 
-                    MM_json = EWF_SS_json
-                            [std::to_string(ssf+1)]
-                            [std::to_string(ssi+1)]
-                            ["DATA"]
-                            [std::to_string(di+1)].at(1);
+                    // try entry as int
+                    int entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(1);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = std::stoi(ASCIIRowElemEntry[ 
+                        OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"MM")]);}
+
+                    MM_json = entryVal;
 
                 }catch(...){
+
+                    // try as string for the cases where entry is "all"
+                    std::string entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(1);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = ASCIIRowElemEntry[ 
+                            OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"MM")];}
 
                     validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) EWF_SS_json
-                            [std::to_string(ssf+1)]
-                            [std::to_string(ssi+1)]
-                            ["DATA"]
-                            [std::to_string(di+1)].at(1),
+                        (std::string) entryVal,
                         MM_json,
                         ssf,    // SS file
                         ssi,    // SS structure
@@ -264,23 +422,39 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "Day";
                 try{
 
-                    DD_json = EWF_SS_json
-                        [std::to_string(ssf+1)]
-                        [std::to_string(ssi+1)]
-                        ["DATA"]
-                        [std::to_string(di+1)].at(2);
+                    // try entry as int
+                    int entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(2);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = std::stoi(ASCIIRowElemEntry[ 
+                        OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"DD")]);}
+
+                    DD_json = entryVal;
 
                 }catch(...){
+
+                    // try as string for the cases where entry is "all"
+                    std::string entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(2);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = ASCIIRowElemEntry[ 
+                            OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"DD")];}
 
                     validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) EWF_SS_json
-                            [std::to_string(ssf+1)]
-                            [std::to_string(ssi+1)]
-                            ["DATA"]
-                            [std::to_string(di+1)].at(2),
+                        (std::string) entryVal,
                         DD_json,
                         ssf,    // SS file
                         ssi,    // SS structure
@@ -295,23 +469,39 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "Hour";
                 try{
 
-                    HH_json = EWF_SS_json
-                        [std::to_string(ssf+1)]
-                        [std::to_string(ssi+1)]
-                        ["DATA"]
-                        [std::to_string(di+1)].at(3);
+                    // try entry as int
+                    int entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(3);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = std::stoi(ASCIIRowElemEntry[ 
+                        OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"HH")]);}
+
+                    HH_json = entryVal;
 
                 }catch(...){
+
+                    // try as string for the cases where entry is "all"
+                    std::string entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(3);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = ASCIIRowElemEntry[ 
+                            OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"HH")];}
 
                     validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) EWF_SS_json
-                            [std::to_string(ssf+1)]
-                            [std::to_string(ssi+1)]
-                            ["DATA"]
-                            [std::to_string(di+1)].at(3),
+                        (std::string) entryVal,
                         HH_json,
                         ssf,    // SS file
                         ssi,    // SS structure
@@ -326,23 +516,39 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "Minute";
                 try{
 
-                    MIN_json = EWF_SS_json
-                        [std::to_string(ssf+1)]
-                        [std::to_string(ssi+1)]
-                        ["DATA"]
-                        [std::to_string(di+1)].at(4);
+                    // try entry as int
+                    int entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(4);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = std::stoi(ASCIIRowElemEntry[ 
+                        OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"MIN")]);}
+
+                    MIN_json = entryVal;
 
                 }catch(...){
+
+                    // try as string for the cases where entry is "all"
+                    std::string entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(4);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = ASCIIRowElemEntry[ 
+                            OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"MIN")];}
 
                     validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) EWF_SS_json
-                            [std::to_string(ssf+1)]
-                            [std::to_string(ssi+1)]
-                            ["DATA"]
-                            [std::to_string(di+1)].at(4),
+                        (std::string) entryVal,
                         MIN_json,
                         ssf,    // SS file
                         ssi,    // SS structure
@@ -357,23 +563,39 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "Second";
                 try{
 
-                    SEC_json = EWF_SS_json
-                            [std::to_string(ssf+1)]
-                            [std::to_string(ssi+1)]
-                            ["DATA"]
-                            [std::to_string(di+1)].at(5);
+                    // try entry as int
+                    int entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(5);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = std::stoi(ASCIIRowElemEntry[ 
+                        OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"SEC")]);}
+
+                    SEC_json = entryVal;
 
                 }catch(...){
+
+                    // try as string for the cases where entry is "all"
+                    std::string entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(5);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = ASCIIRowElemEntry[ 
+                            OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"SEC")];}
 
                     validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) EWF_SS_json
-                            [std::to_string(ssf+1)]
-                            [std::to_string(ssi+1)]
-                            ["DATA"]
-                            [std::to_string(di+1)].at(5),
+                        (std::string) entryVal,
                         SEC_json,
                         ssf,    // SS file
                         ssi,    // SS structure
@@ -390,11 +612,19 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "ix";
                 try{
 
-                    ix_json = EWF_SS_json
-                        [std::to_string(ssf+1)]
-                        [std::to_string(ssi+1)]
-                        ["DATA"]
-                        [std::to_string(di+1)].at(6);
+                    // try entry as int
+                    int entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(6);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = std::stoi(ASCIIRowElemEntry[ 
+                        OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"IX")]);}
+
+                    ix_json = entryVal;
 
                     // Need to do "- 1" because C++ starts in zero
                     ix_json--;
@@ -423,15 +653,23 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 
                 }catch(...){
 
+                    // try as string for the cases where entry is "all"
+                    std::string entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(6);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = ASCIIRowElemEntry[ 
+                            OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"IX")];}
+
                     validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) EWF_SS_json
-                            [std::to_string(ssf+1)]
-                            [std::to_string(ssi+1)]
-                            ["DATA"]
-                            [std::to_string(di+1)].at(6),
+                        (std::string) entryVal,
                         ix_json,
                         ssf,    // SS file
                         ssi,    // SS structure
@@ -446,11 +684,19 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "iy";
                 try{
 
-                    iy_json = EWF_SS_json
-                        [std::to_string(ssf+1)]
-                        [std::to_string(ssi+1)]
-                        ["DATA"]
-                        [std::to_string(di+1)].at(7);
+                    // try entry as int
+                    int entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(7);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = std::stoi(ASCIIRowElemEntry[ 
+                        OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"IY")]);}
+
+                    iy_json = entryVal;
 
                     // Need to do "- 1" because C++ starts in zero
                     iy_json--;
@@ -479,15 +725,23 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 
                 }catch(...){
 
+                    // try as string for the cases where entry is "all"
+                    std::string entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(7);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = ASCIIRowElemEntry[ 
+                            OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"IY")];}
+
                     validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) EWF_SS_json
-                            [std::to_string(ssf+1)]
-                            [std::to_string(ssi+1)]
-                            ["DATA"]
-                            [std::to_string(di+1)].at(7),
+                        (std::string) entryVal,
                         iy_json,
                         ssf,    // SS file
                         ssi,    // SS structure
@@ -502,11 +756,19 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 elemName = "iz";
                 try{
 
-                    iz_json = EWF_SS_json
-                        [std::to_string(ssf+1)]
-                        [std::to_string(ssi+1)]
-                        ["DATA"]
-                        [std::to_string(di+1)].at(8);
+                    // try entry as int
+                    int entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(8);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = std::stoi(ASCIIRowElemEntry[ 
+                        OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"IZ")]);}
+
+                    iz_json = entryVal;
 
                     // Need to do "- 1" because C++ starts in zero
                     iz_json--;
@@ -535,15 +797,23 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 
                 }catch(...){
 
+                    // try as string for the cases where entry is "all"
+                    std::string entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(8);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = ASCIIRowElemEntry[ 
+                            OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"IZ")];}
+
                     validEntryFlag = getArrayElem(
                         OpenWQ_wqconfig,
                         OpenWQ_output,
                         elemName,
-                        (std::string) EWF_SS_json
-                            [std::to_string(ssf+1)]
-                            [std::to_string(ssi+1)]
-                            ["DATA"]
-                            [std::to_string(di+1)].at(8),
+                        (std::string) entryVal,
                         iz_json,
                         ssf,    // SS file
                         ssi,    // SS structure
@@ -556,11 +826,19 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 // SS sink/source load or EWF conc
                 // cannot have negative values
                 // ###################
-                ss_data_json = EWF_SS_json 
-                    [std::to_string(ssf+1)]
-                    [std::to_string(ssi+1)]
-                    ["DATA"]
-                    [std::to_string(di+1)].at(9);
+
+                double entryVal; // dummy variable
+                // if JSON
+                if (DataFormat.compare("JSON")==0){
+                    entryVal = EWF_SS_json 
+                    [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                    ["DATA"][std::to_string(di+1)].at(9);}
+                // if ASCII
+                else if (DataFormat.compare("ASCII")==0){
+                    entryVal = std::stod(ASCIIRowElemEntry[ 
+                    OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"LOAD")]);}
+
+                ss_data_json = entryVal;
 
                 // skip if negative value in SS load/sink or EWF conc 
                 // throw warning msg
@@ -605,11 +883,19 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                         + ", Data_row=" + std::to_string(di + 1); 
                 try{
 
-                    loadScheme_str = EWF_SS_json
-                        [std::to_string(ssf+1)]
-                        [std::to_string(ssi+1)]
-                        ["DATA"]
-                        [std::to_string(di+1)].at(10);
+                    // try as string for the cases where entry is "all"
+                    std::string entryVal; // dummy variable
+                    // if JSON
+                    if (DataFormat.compare("JSON")==0){
+                        entryVal = EWF_SS_json 
+                        [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                        ["DATA"][std::to_string(di+1)].at(10);}
+                    // if ASCII
+                    else if (DataFormat.compare("ASCII")==0){
+                        entryVal = ASCIIRowElemEntry[ 
+                            OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"LOAD_TYPE")];}
+
+                    loadScheme_str = entryVal;
 
                     // Set loadScheme_id
                     // 1) discrete
@@ -638,14 +924,24 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                         loadScheme_id = 1;
                         // get time units
                         try{
-                            contDt_str = EWF_SS_json
-                                [std::to_string(ssf+1)]
-                                [std::to_string(ssi+1)]
-                                ["DATA"]
-                                [std::to_string(di+1)].at(11);
+
+                            std::string entryVal; // dummy variable
+                            // if JSON
+                            if (DataFormat.compare("JSON")==0){
+                                entryVal = EWF_SS_json 
+                                [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                                ["DATA"][std::to_string(di+1)].at(11);}
+                            // if ASCII
+                            else if (DataFormat.compare("ASCII")==0){
+                                entryVal = ASCIIRowElemEntry[ 
+                                    OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"TIME_UNITS")];}
+
+                            contDt_str = entryVal;
+
                             // Concatenate the time units to the load
                             ss_units_json += "/";
                             ss_units_json += contDt_str;
+
                         }catch(...){ 
                             // Create Warning Message
                             msg_string = 
@@ -742,6 +1038,10 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                     row_data_row);}
 
             }
+
+            // If ASCII file, then close file at the end of reading
+            //if (DataFormat.compare("ASCII")) asciiFile.close();
+
         }
     }
 }

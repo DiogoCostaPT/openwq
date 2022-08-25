@@ -26,6 +26,7 @@ void OpenWQ_readjson::read_all(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig &OpenWQ_wqconfig,
     OpenWQ_units &OpenWQ_units,
+    OpenWQ_utils & OpenWQ_utils,
     OpenWQ_output& OpenWQ_output)
 {
 
@@ -39,6 +40,7 @@ void OpenWQ_readjson::read_all(
     OpenWQ_readjson::read_JSON_2class(
         OpenWQ_wqconfig,
         OpenWQ_output,
+        OpenWQ_utils,
         OpenWQ_json.Master,                 // JSON structure to save to
         false,                              // Save in subfield of JSON structure? only if multiple files (e.g., source and sinks)
         "",                                 // if above true, provide name of subfield
@@ -49,6 +51,7 @@ void OpenWQ_readjson::read_all(
     OpenWQ_readjson::read_JSON_2class(
         OpenWQ_wqconfig,
         OpenWQ_output,
+        OpenWQ_utils,
         OpenWQ_json.Config,
         false,
         "",
@@ -62,6 +65,7 @@ void OpenWQ_readjson::read_all(
         OpenWQ_readjson::read_JSON_2class(
             OpenWQ_wqconfig,
             OpenWQ_output,
+            OpenWQ_utils,
             OpenWQ_json.ExtWatFlux,
             true,
             std::to_string(eff + 1),
@@ -76,6 +80,7 @@ void OpenWQ_readjson::read_all(
         OpenWQ_readjson::read_JSON_2class(
             OpenWQ_wqconfig,
             OpenWQ_output,
+            OpenWQ_utils,
             OpenWQ_json.SinkSource,
             true,
             std::to_string(ssf + 1),
@@ -92,6 +97,7 @@ void OpenWQ_readjson::read_all(
     OpenWQ_readjson::read_JSON_2class(
         OpenWQ_wqconfig,
         OpenWQ_output,
+        OpenWQ_utils,
         OpenWQ_json.BGC_module,
         false,
         "",
@@ -103,6 +109,7 @@ void OpenWQ_readjson::read_all(
     OpenWQ_readjson::read_JSON_2class(
         OpenWQ_wqconfig,
         OpenWQ_output,
+        OpenWQ_utils,
         OpenWQ_json.TE_module,
         false,
         "",
@@ -128,6 +135,7 @@ void OpenWQ_readjson::read_all(
 void OpenWQ_readjson::read_JSON_2class(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_output& OpenWQ_output,
+    OpenWQ_utils& OpenWQ_utils,
     json& jsondata,                         // JSON structure to save to
     const bool substruc_flag,               // Save in subfield of JSON structure? only if multiple files (e.g., source and sinks)
     const std::string JsonSubStruct_name,   // if true, name of subfield
@@ -175,6 +183,7 @@ void OpenWQ_readjson::read_JSON_2class(
 
             // Convert all text in JSON to upper case
             OpenWQ_readjson::ConvertJSONtext_2upperCase(
+                OpenWQ_utils,
                 jsondata);
         }
         else
@@ -188,6 +197,7 @@ void OpenWQ_readjson::read_JSON_2class(
                     
             // Convert all text in JSON to upper case
             OpenWQ_readjson::ConvertJSONtext_2upperCase(
+                OpenWQ_utils,
                 jsondata[JsonSubStruct_name]);
         }
     }
@@ -227,6 +237,7 @@ void OpenWQ_readjson::read_JSON_2class(
 // Convert JSON text to Upper Case
 ######################################### */
 void OpenWQ_readjson::ConvertJSONtext_2upperCase(
+    OpenWQ_utils &OpenWQ_utils,
     json &jsondata){
 
     // Local Variables
@@ -255,6 +266,7 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
             // Save key to o if a key
             if (!old_jsonkey_layer_1.empty()){ // if not null
                 OpenWQ_readjson::change_JSON_key_to_upper_case(
+                    OpenWQ_utils,
                     jsondata, 
                     old_jsonkey_layer_1,
                     new_jsonkey_layer_1);
@@ -273,11 +285,13 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                         jsondata[new_jsonkey_layer_1].type() != json::value_t::array){ // and not array
                         
                         OpenWQ_readjson::change_JSON_key_to_upper_case(
+                            OpenWQ_utils,
                             jsondata[new_jsonkey_layer_1], 
                             old_jsonkey_layer_2,
                             new_jsonkey_layer_2);
                     }else{
                         OpenWQ_readjson::change_JSON_value_to_upper_case(
+                            OpenWQ_utils,
                             jsondata,
                             new_jsonkey_layer_1);
                         continue;
@@ -294,11 +308,13 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                 jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2].type() != json::value_t::array){ // and not array
                                 
                                 OpenWQ_readjson::change_JSON_key_to_upper_case(
+                                    OpenWQ_utils,
                                     jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2], 
                                     old_jsonkey_layer_3,
                                     new_jsonkey_layer_3);
                             }else{
                                 OpenWQ_readjson::change_JSON_value_to_upper_case(
+                                    OpenWQ_utils,
                                     jsondata[new_jsonkey_layer_1],
                                     new_jsonkey_layer_2);
                                 continue;
@@ -315,11 +331,13 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                         jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3].type() != json::value_t::array){ // and not array
                                         
                                         OpenWQ_readjson::change_JSON_key_to_upper_case(
+                                            OpenWQ_utils,
                                             jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3], 
                                             old_jsonkey_layer_4,
                                             new_jsonkey_layer_4);
                                     }else{
                                         OpenWQ_readjson::change_JSON_value_to_upper_case(
+                                        OpenWQ_utils,
                                         jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2],
                                         new_jsonkey_layer_3);
                                     continue;
@@ -336,11 +354,13 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                                 jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3][new_jsonkey_layer_4].type() != json::value_t::array){ // and not array
                                                 
                                                 OpenWQ_readjson::change_JSON_key_to_upper_case(
+                                                    OpenWQ_utils,
                                                     jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3][new_jsonkey_layer_4], 
                                                     old_jsonkey_layer_5,
                                                     new_jsonkey_layer_5);
                                             }else{
                                                 OpenWQ_readjson::change_JSON_value_to_upper_case(
+                                                OpenWQ_utils,
                                                 jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3],
                                                 new_jsonkey_layer_4);
                                                 continue;
@@ -369,15 +389,16 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
 // Change JSON key
 // ########################################
 void OpenWQ_readjson::change_JSON_key_to_upper_case(
+    OpenWQ_utils &OpenWQ_utils,
     json &object, 
     const std::string& old_key,
     std::string& new_key)
 {
 
     try{
-        OpenWQ_readjson::ConvertStringToUpperCase(
-            old_key,
-            new_key);
+
+        // Convert to upper case
+        new_key = OpenWQ_utils.ConvertStringToUpperCase(old_key);
 
         // get iterator to old key; TODO: error handling if key is not present
         json::iterator it = object.find(old_key);
@@ -393,6 +414,7 @@ void OpenWQ_readjson::change_JSON_key_to_upper_case(
 // Change JSON value
 // ########################################
 void OpenWQ_readjson::change_JSON_value_to_upper_case(
+    OpenWQ_utils &OpenWQ_utils,
     json &object,
     std::string new_jsonkey_layer_1){
     
@@ -436,9 +458,8 @@ void OpenWQ_readjson::change_JSON_value_to_upper_case(
         num_vals = 1;
         old_value = object[new_jsonkey_layer_1];
 
-        OpenWQ_readjson::ConvertStringToUpperCase(
-                old_value,
-                new_value);    
+        // Convert to upper case
+        new_value = OpenWQ_utils.ConvertStringToUpperCase(old_value);    
 
         // replace value
         object[new_jsonkey_layer_1].swap(new_value);         
@@ -466,9 +487,8 @@ void OpenWQ_readjson::change_JSON_value_to_upper_case(
                 std::string new_value_str;
 
                 // Convert to upper case
-                OpenWQ_readjson::ConvertStringToUpperCase(
-                    old_value,
-                    new_value_str);
+                // Convert to upper case
+                new_value_str = OpenWQ_utils.ConvertStringToUpperCase(old_value);
 
                 // add string to new_value_array
                 new_value_array.push_back(new_value_str);
@@ -488,26 +508,6 @@ void OpenWQ_readjson::change_JSON_value_to_upper_case(
 
     }
 
-}
-
-// ########################################
-// Converts string text to lower case
-// ########################################
-
-void OpenWQ_readjson::ConvertStringToUpperCase(
-    const std::string &old_jsonkey,
-    std::string &new_jsonkey)
-{
-    new_jsonkey = old_jsonkey;
-
-    // Try to transform to upper case if text
-    try{
-        std::transform(
-        new_jsonkey.begin(),
-        new_jsonkey.end(),
-        new_jsonkey.begin(), // Convert to lower case to avoid issues
-        [](unsigned char c) { return std::toupper(c); });
-    }catch (...){}
 }
 
 // ########################################
