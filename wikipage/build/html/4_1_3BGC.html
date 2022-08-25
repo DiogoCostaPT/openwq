@@ -239,7 +239,7 @@ format <code class="docutils literal notranslate"><span class="pre">&quot;name&q
 <p>The JSON file supports C/C++ syntax for comments: single-line comment (<code class="docutils literal notranslate"><span class="pre">//</span></code>) or comment blocks (<code class="docutils literal notranslate"><span class="pre">/*</span></code> and <code class="docutils literal notranslate"><span class="pre">*/</span></code>).</p>
 <p>The Kinetics Equation is supported by the C++ Mathematical Expression Toolkit Library
 <a class="reference external" href="http://www.partow.net/programming/exprtk/index.html">C++ Mathematical Expression Toolkit Library</a>. The equations can be written with (1) multiple chemical species, (2) user-defined parameters (<code class="docutils literal notranslate"><span class="pre">PARAMETER_NAMES</span></code> and <code class="docutils literal notranslate"><span class="pre">PARAMETER_VALUES</span></code>), and (3) in-build hytdrological model dependencies (<code class="docutils literal notranslate"><span class="pre">Tair</span></code> and <code class="docutils literal notranslate"><span class="pre">Tsoil</span></code>).
-These model dependencies are tailored to each hydrological model.</p>
+These model dependencies are tailored to each hydrological model. They can be soil moisture, air and/or soil temperature, etc.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="nt">&quot;CHEMICAL_SPECIES&quot;</span><span class="p">:</span> <span class="p">{</span>

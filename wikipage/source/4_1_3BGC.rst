@@ -38,7 +38,7 @@ The JSON file supports C/C++ syntax for comments: single-line comment (``//``) o
 
 The Kinetics Equation is supported by the C++ Mathematical Expression Toolkit Library
 `C++ Mathematical Expression Toolkit Library <http://www.partow.net/programming/exprtk/index.html>`_. The equations can be written with (1) multiple chemical species, (2) user-defined parameters (``PARAMETER_NAMES`` and ``PARAMETER_VALUES``), and (3) in-build hytdrological model dependencies (``Tair`` and ``Tsoil``).
-These model dependencies are tailored to each hydrological model.
+These model dependencies are tailored to each hydrological model. They can be soil moisture, air and/or soil temperature, etc.
 
 Example:
 
