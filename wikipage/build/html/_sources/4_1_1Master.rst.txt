@@ -73,6 +73,9 @@ The master configuration is a JSON file that provides OpenWQ with information an
 | ``OPENWQ_OUTPUT`` -> ``TIMESTEP``                                         | Temporal resolution of output file e.g., ``[1,"hour"]``                                                       |
 +---------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------+
 
+The JSON file supports C/C++ syntax for comments: single-line comment (``//``) or comment blocks (``/*`` and ``*/``).
+The symbol ``(#)`` refers to a integer number sequence.
+
 Example:
 
 .. code-block:: json

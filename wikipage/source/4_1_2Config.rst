@@ -3,34 +3,29 @@ Configuration
 
 The transportation and biogeochemical configuration file is a JSON file made up of the following components:
 
-+-------------------------------+-----------------------------------------------------------------+
-| Key                           | Description                                                     |
-+===============================+=================================================================+
-| TRANSPORT_CONFIGURATION       | Define transport mechanisms                                     |                 
-+-------------------------------+-----------------------------------------------------------------+
-| BIOGEOCHEMISTRY_CONFIGURATION | Define cycling framework and initial conditions                 | 
-|                               | for each model compartment                                      |
-+-------------------------------+-------------------+---------------------------------------------+
-|                               | Model compartment | Defined by host model                       |         
-+-------------------------------+-------------------+---------------------------------------------+
-|                               | CYCLING_FRAMEWORK | List cycling frameworks                     |
-+-------------------------------+-------------------+---------------------------------------------+
-|                               | INITIAL_CONDITIONS| Initial conditions in format                |
-|                               |                   | ``chemical:[value, units]``                 |
-+-------------------------------+-------------------+---------------------------------------------+
++-----------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| Key -> Sub-key(s)                                                                                                     | Description                                |
++===============================+====================================================================================================================================+
+| ``BIOGEOCHEMISTRY_CONFIGURATION``                                                                                                                                  |
++-----------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| ``BIOGEOCHEMISTRY_CONFIGURATION`` -> ``(Compt_Name)``                                                                                                              |
++-----------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| ``BIOGEOCHEMISTRY_CONFIGURATION`` -> ``(Compt_Name)`` -> ``CYCLING_FRAMEWORK`` -> [``(s#)``, ``(s#)``]                | List of cycling frameworks                 |
++-----------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| ``BIOGEOCHEMISTRY_CONFIGURATION`` -> ``(Compt_Name)`` -> ``INITIAL_CONDITIONS`` -> ``(Chem_Name)`` -> ``[(f#),(s#)]`` | Initial concentrations ``[value, units]``  |
++-----------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
 
-The JSON file supports C/C++ syntax for comments: single-line comment (``//``) or comment blocks (``/*`` and ``*/``). 
+The JSON file supports C/C++ syntax for comments: single-line comment (``//``) or comment blocks (``/*`` and ``*/``).
+The symbol ``(Compt_Name)`` refers to compartment names as defined by the host model. We can add as many of such compartment json-key blocks as desired. The compartment names should match those defined in the hostmodel.
+The symbol ``(Chem_Name)`` refers to chemical species names as defined in the `Biogeochemical cycling configuration file <https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#>`_.
+The symbol ``(f#)`` refers to a float input value. In this case, it refers to the concentration initial conditions.
+The symbol ``(s#)`` refers to a string input. In this case, it refers to the concentration units.
 
 Example:
 
 .. code-block:: json
 
   {
-      "TRANSPORT_CONFIGURATION": {
-          "disperson_x_m2/s": 0.3,
-          "disperson_y_m2/s": 0.3,
-          "disperson_z_m2/s": 0.3
-      },
       "BIOGEOCHEMISTRY_CONFIGURATION":{
           "RUNOFF":{
               "CYCLING_FRAMEWORK": ["N_inorg","P_inorg"],
