@@ -3,42 +3,57 @@ Biogeochemistry
 
 The biogeochemical cycling file is a JSON file that defines both the chemical species to include in the model configuration and the transformations that define each cycling framework. 
 
-+-------------------+--------------------------------------------------------------------+
-| Key               | Description                                                        |
-+===================+====================================================================+
-| CHEMICAL_SPECIES  | Define chemical species to model and indicate if mobile            |                  
-+-------------------+---------------------+----------------------------------------------+
-|                   | LIST                | Numbered list of chemical species,           |
-|                   |                     | e.g., ``"1":"NO3"``                          |
-+-------------------+---------------------+----------------------------------------------+
-|                   | MOBILE_SPECIES      | List of numbers of mobile species            |
-+-------------------+---------------------+----------------------------------------------+
-| CYCLING_FRAMEWORK | Define each cycling framework                                      |                  
-+-------------------+---------------------+----------------------------------------------+
-|                   | Name                | Name given to framework e.g., ``N_inorg``    |         
-+-------------------+---------------------+----------------------------------------------+
-|                   | LIST_TRANSFORMATIONS| Numbered list of transformations,            |
-|                   |                     | e.g., ``"1":"nitrification"``                |
-+-------------------+---------------------+----------------------------------------------+
-|                   | CONSUMED            | Species consumed. e.g, ``"NH4"``             |
-+-------------------+---------------------+----------------------------------------------+
-|                   | PRODUCED            | Species produced, e.g., ``"NO3"``            |
-+-------------------+---------------------+----------------------------------------------+
-|                   | KINETICS            | Kinetics equation and time units             |
-|                   |                     | for transformation ``["NO3 * k", "1/day"]``  |
-+-------------------+---------------------+----------------------------------------------+
-|                   | PARAMETER_NAMES     | List of parameter names                      |
-|                   |                     | in transformation equation                   | 
-+-------------------+---------------------+----------------------------------------------+
-|                   | PARAMETER_VALUES    | Define parameter values for equation in      |
-|                   |                     | format ``"name":value``                      |
-+-------------------+---------------------+----------------------------------------------+
+**Principal Key 1**: ``MODULE_NAME``
+
++--------------------+-------------------------------------------------------+
+| ``MODULE_NAME``    | Select the module name desired                        |
++--------------------+-------------------------------------------------------+
+
+**Principal Key 2**: ``CHEMICAL_SPECIES``
+
++-----------------------------------+-------------------------------------------------------+
+| ``LIST`` -> ``(i#)``              | - Numbered list of chemical species                   |
+|                                   | - Example: ``"1":"NO3"``                              |
++-----------------------------------+-------------------------------------------------------+
+| ``BGC_GENERAL_MOBILE_SPECIES``    | List of numbers of mobile species                     |
++-----------------------------------+-------------------------------------------------------+
+
+**Principal Key 3**: ``CYCLING_FRAMEWORK``
+
++---------------------------------------------------------------+---------------------------------------------------------+
+| ``<BGQ_cycle_name>``                                          | Define cycling framework names                          |
++---------------------------------------------------------------+---------------------------------------------------------+
+| ``<BGQ_cycle_name>`` -> ``LIST_TRANSFORMATIONS`` -> ``(i#)``  | - List transformation names for each cycling framework  |
+|                                                               | - Content: ``"index"``: ``"transformation_name"``       |
+|                                                               | - Format: ``(i#): (s#)``                                |
+|                                                               | - Example: ``"1": "mineralization"``                    |
++---------------------------------------------------------------+---------------------------------------------------------+
+| ``(i#)`` -> ``CONSUMED``                                      | Species consumed. e.g, ``"NH4"``                        |
++---------------------------------------------------------------+---------------------------------------------------------+
+| ``(i#)`` -> ``PRODUCED``                                      | Species produced, e.g., ``"NO3"``                       |
++---------------------------------------------------------------+---------------------------------------------------------+
+| ``(i#)`` -> ``KINETICS``                                      | - Kinetics equation and time units                      |
+|                                                               | - Content: [``equation``, ``units``]                    |
+|                                                               | - Format: ``[(s#), (s#)]``                              |
+|                                                               | - Example: ``["NO3 * k", "1/day"]``                     |
++---------------------------------------------------------------+---------------------------------------------------------+
+| ``(i#)`` -> ``PARAMETER_NAMES``                               | List of parameter names in transformation equation      |
+| ``(i#)`` -> ``PARAMETER_VALUES``                              | - Define parameter values for equation                  |
+|                                                               | - Content: ``parameter_name``: ``value``                |
+|                                                               | - Format: ``(s#): (f#)``                                |
+|                                                               | - Example: ``"k": 0.001``                               |
++---------------------------------------------------------------+---------------------------------------------------------+
+
 
 The JSON file supports C/C++ syntax for comments: single-line comment (``//``) or comment blocks (``/*`` and ``*/``). 
+
+The symbol ``(i#)`` refers to a integer number sequence.. The symbol ``(s#)`` refers to a string input. The symbol ``<f#>`` refers to a float input value.
 
 The Kinetics Equation is supported by the C++ Mathematical Expression Toolkit Library
 `C++ Mathematical Expression Toolkit Library <http://www.partow.net/programming/exprtk/index.html>`_. The equations can be written with (1) multiple chemical species, (2) user-defined parameters (``PARAMETER_NAMES`` and ``PARAMETER_VALUES``), and (3) in-build hytdrological model dependencies (``Tair`` and ``Tsoil``).
 These model dependencies are tailored to each hydrological model. They can be soil moisture, air and/or soil temperature, etc.
+
+
 
 Example:
 

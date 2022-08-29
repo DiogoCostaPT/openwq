@@ -175,34 +175,36 @@
   <section id="configuration">
 <h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
 <p>The transportation and biogeochemical configuration file is a JSON file made up of the following components:</p>
+<p><strong>Principal Key 1</strong>: <code class="docutils literal notranslate"><span class="pre">BIOGEOCHEMISTRY_CONFIGURATION</span></code></p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 19%" />
-<col style="width: 54%" />
-<col style="width: 27%" />
+<col style="width: 35%" />
+<col style="width: 65%" />
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head" colspan="3"><p>Key -&gt; Sub-key(s)                                                                                                     | Description</p></th>
-</tr>
-</thead>
 <tbody>
-<tr class="row-even"><td colspan="3"><p><code class="docutils literal notranslate"><span class="pre">BIOGEOCHEMISTRY_CONFIGURATION</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;Compt_Name&gt;</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">CYCLING_FRAMEWORK</span></code></p></td>
+<td><ul class="simple">
+<li><p>List of cycling frameworks</p></li>
+<li><p>As defined in <a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#">Biogeochemical cycling configuration file</a></p></li>
+<li><p>Format: <code class="docutils literal notranslate"><span class="pre">[&lt;s#&gt;,</span> <span class="pre">&lt;s#&gt;,</span> <span class="pre">...]</span></code></p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">[&quot;N_org&quot;,</span> <span class="pre">&quot;N_inorg&quot;,</span> <span class="pre">&quot;P_org&quot;,</span> <span class="pre">&quot;P_inorg&quot;]</span></code></p></li>
+</ul>
+</td>
 </tr>
-<tr class="row-odd"><td colspan="3"><p><code class="docutils literal notranslate"><span class="pre">BIOGEOCHEMISTRY_CONFIGURATION</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">(Compt_Name)</span></code></p></td>
-</tr>
-<tr class="row-even"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">BIOGEOCHEMISTRY_CONFIGURATION</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">(Compt_Name)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">CYCLING_FRAMEWORK</span></code> -&gt; [<code class="docutils literal notranslate"><span class="pre">(s#)</span></code>, <code class="docutils literal notranslate"><span class="pre">(s#)</span></code>]</p></td>
-<td><p>List of cycling frameworks</p></td>
-</tr>
-<tr class="row-odd"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">BIOGEOCHEMISTRY_CONFIGURATION</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">(Compt_Name)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">INITIAL_CONDITIONS</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">(Chem_Name)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">[(f#),(s#)]</span></code></p></td>
-<td><p>Initial concentrations <code class="docutils literal notranslate"><span class="pre">[value,</span> <span class="pre">units]</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;Compt_Name&gt;</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">INITIAL_CONDITIONS</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">&lt;Chem_Name&gt;</span></code></p></td>
+<td><ul class="simple">
+<li><p>Initial concentrations <code class="docutils literal notranslate"><span class="pre">[value,</span> <span class="pre">units]</span></code></p></li>
+<li><p>Format: <code class="docutils literal notranslate"><span class="pre">[&lt;f#&gt;,&lt;s#&gt;]</span></code></p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">&quot;species_A&quot;:</span> <span class="pre">[10,&quot;mg&quot;]</span></code></p></li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
-<p>The JSON file supports C/C++ syntax for comments: single-line comment (<code class="docutils literal notranslate"><span class="pre">//</span></code>) or comment blocks (<code class="docutils literal notranslate"><span class="pre">/*</span></code> and <code class="docutils literal notranslate"><span class="pre">*/</span></code>).
-The symbol <code class="docutils literal notranslate"><span class="pre">(Compt_Name)</span></code> refers to compartment names as defined by the host model. We can add as many of such compartment json-key blocks as desired. The compartment names should match those defined in the hostmodel.
-The symbol <code class="docutils literal notranslate"><span class="pre">(Chem_Name)</span></code> refers to chemical species names as defined in the <a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#">Biogeochemical cycling configuration file</a>.
-The symbol <code class="docutils literal notranslate"><span class="pre">(f#)</span></code> refers to a float input value. In this case, it refers to the concentration initial conditions.
-The symbol <code class="docutils literal notranslate"><span class="pre">(s#)</span></code> refers to a string input. In this case, it refers to the concentration units.</p>
+<p>The JSON file supports C/C++ syntax for comments: single-line comment (<code class="docutils literal notranslate"><span class="pre">//</span></code>) or comment blocks (<code class="docutils literal notranslate"><span class="pre">/*</span></code> and <code class="docutils literal notranslate"><span class="pre">*/</span></code>).</p>
+<p>The symbol <code class="docutils literal notranslate"><span class="pre">&lt;Compt_Name&gt;</span></code> refers to compartment names as defined by the host model. We can add as many of such compartment json-key blocks as desired (see example below). The compartment names should match those defined in the hostmodel.</p>
+<p>The symbol <code class="docutils literal notranslate"><span class="pre">&lt;Chem_Name&gt;</span></code> refers to chemical species names as defined in the <a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#">Biogeochemical cycling configuration file</a>.</p>
+<p>The symbol <code class="docutils literal notranslate"><span class="pre">&lt;f#&gt;</span></code> refers to a float input value. In this case, it refers to the concentration initial conditions. The symbol <code class="docutils literal notranslate"><span class="pre">&lt;s#&gt;</span></code> refers to a string input.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="nt">&quot;BIOGEOCHEMISTRY_CONFIGURATION&quot;</span><span class="p">:{</span>
@@ -225,33 +227,33 @@ The symbol <code class="docutils literal notranslate"><span class="pre">(s#)</sp
         <span class="nt">&quot;SOIL_RECHR&quot;</span><span class="p">:{</span>
             <span class="nt">&quot;CYCLING_FRAMEWORK&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;N_inorg&quot;</span><span class="p">,</span><span class="s2">&quot;P_inorg&quot;</span><span class="p">,</span><span class="s2">&quot;N_soil_org&quot;</span><span class="p">,</span><span class="s2">&quot;P_soil_org&quot;</span><span class="p">],</span>
             <span class="nt">&quot;INITIAL_CONDITIONS&quot;</span><span class="p">:{</span>
-                <span class="nt">&quot;NO3&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;NH4&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;N2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;ug/l&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;NO3&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;NH4&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;N2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="s2">&quot;ug/l&quot;</span><span class="p">],</span>
                 <span class="nt">&quot;DON&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;labile_orgN&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;refractory_orgN&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;SRP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;DOP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;labile_orgN&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;refractory_orgN&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;SRP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;DOP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
                 <span class="nt">&quot;partP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;labile_orgP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;refractory_orgP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">]</span>
+                <span class="nt">&quot;labile_orgP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;refractory_orgP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">]</span>
             <span class="p">}</span>
         <span class="p">},</span>
         <span class="nt">&quot;GW&quot;</span><span class="p">:{</span>
             <span class="nt">&quot;CYCLING_FRAMEWORK&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;N_inorg&quot;</span><span class="p">,</span><span class="s2">&quot;P_inorg&quot;</span><span class="p">],</span>
             <span class="nt">&quot;INITIAL_CONDITIONS&quot;</span><span class="p">:{</span>
-                <span class="nt">&quot;NO3&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;NH4&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;N2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;ug/l&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;DON&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;labile_orgN&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;refractory_orgN&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;SRP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;DOP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;partP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;labile_orgP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">],</span>
-                <span class="nt">&quot;refractory_orgP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">]</span>
+                <span class="nt">&quot;NO3&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;NH4&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;N2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;ug/l&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;DON&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;labile_orgN&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;refractory_orgN&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;SRP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;DOP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;partP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;labile_orgP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">],</span>
+                <span class="nt">&quot;refractory_orgP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">]</span>
             <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>

@@ -175,126 +175,128 @@
   <section id="master">
 <h1>Master<a class="headerlink" href="#master" title="Permalink to this headline">¶</a></h1>
 <p>The master configuration is a JSON file that provides OpenWQ with information and instructions to run a simulation. It contains key-values pairs defined below:</p>
+<p><strong>Principal Key 1</strong>: General Project Information</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 40%" />
-<col style="width: 60%" />
+<col style="width: 43%" />
+<col style="width: 57%" />
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Key -&gt; Sub-key(s)</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PROJECT_NAME</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PROJECT_NAME</span></code></p></td>
 <td><p>Project name string</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GEOGRAPHICAL_LOCATION</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GEOGRAPHICAL_LOCATION</span></code></p></td>
 <td><p>Project location string</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AUTHORS</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">AUTHORS</span></code></p></td>
 <td><p>Model run authors</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DATE</span></code></p></td>
-<td><p>Model run data</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DATE</span></code></p></td>
+<td><p>Model run date</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">COMMENT</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">COMMENT</span></code></p></td>
 <td><p>Additional documentation information</p></td>
 </tr>
-<tr class="row-odd"><td></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">COMPUTATIONAL_SETTINGS</span></code></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">COMPUTATIONAL_SETTINGS</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">RUN_MODE_DEBUG</span></code></p></td>
+</tbody>
+</table>
+<p><strong>Principal Key 2</strong>: <code class="docutils literal notranslate"><span class="pre">COMPUTATIONAL_SETTINGS</span></code></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">RUN_MODE_DEBUG</span></code></p></td>
 <td><p>Run model debugging flag (true/false)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">COMPUTATIONAL_SETTINGS</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">USE_NUM_THREADS</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">USE_NUM_THREADS</span></code></p></td>
 <td><p>“all” or integer of number of threads to use (e.g., 10)</p></td>
 </tr>
-<tr class="row-odd"><td></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_INPUT</span></code></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_INPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">CONFIG_FILEPATH</span></code></p></td>
+</tbody>
+</table>
+<p><strong>Principal Keys 3</strong>: <code class="docutils literal notranslate"><span class="pre">OPENWQ_INPUT</span></code></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 65%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CONFIG_FILEPATH</span></code></p></td>
 <td><p><a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_2Config.html">Main configuration file path</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_INPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">EXTERNAL_WATER_FLUXES</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">EXTERNAL_WATER_FLUXES</span></code></p></td>
 <td><p>Numbered pairs of LABEL and FILEPATH for external-fluxes input files</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_INPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">EXTERNAL_WATER_FLUXES</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">(#)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">LABEL</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">EXTERNAL_WATER_FLUXES</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">(#)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">LABEL</span></code></p></td>
 <td><p>Label id for input file</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_INPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">EXTERNAL_WATER_FLUXES</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">(#)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">FILEPATH</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">EXTERNAL_WATER_FLUXES</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">(#)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">FILEPATH</span></code></p></td>
 <td><p>File path to <a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_4Source.html">External Water Fluxes file</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_INPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">SINK_SOURCE</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SINK_SOURCE</span></code></p></td>
 <td><p>Numbered pairs of LABEL and FILEPATH for chemical-sources input files</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_INPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">SINK_SOURCE</span></code>           -&gt; <code class="docutils literal notranslate"><span class="pre">(#)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">LABEL</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SINK_SOURCE</span></code>           -&gt; <code class="docutils literal notranslate"><span class="pre">(#)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">LABEL</span></code></p></td>
 <td><p>Label id for input file</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_INPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">EXTERNAL_WATER_FLUXES</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">(#)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">FILEPATH</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">EXTERNAL_WATER_FLUXES</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">(#)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">FILEPATH</span></code></p></td>
 <td><p>Path to <a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_4Source.html">Sink and Source file</a></p></td>
 </tr>
-<tr class="row-even"><td></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MODULES</span></code></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MODULES</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">BIOGEOCHEMISTRY</span></code></p></td>
-<td><p>Configuration of Biogeochemical reactions</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MODULES</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">BIOGEOCHEMISTRY</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">MODULE_NAME</span></code></p></td>
+</tbody>
+</table>
+<p><strong>Principal Keys 4</strong>: <code class="docutils literal notranslate"><span class="pre">MODULES</span></code></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 68%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">BIOGEOCHEMISTRY</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">MODULE_NAME</span></code></p></td>
 <td><p>Biogeochemical cycling module choice</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MODULES</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">BIOGEOCHEMISTRY</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">MODULE_CONFIG_FILEPATH</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BIOGEOCHEMISTRY</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">MODULE_CONFIG_FILEPATH</span></code></p></td>
 <td><p>Path to <a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#">Biogeochemical cycling configuration file</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MODULES</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">TRANSPORT_EROSION</span></code></p></td>
-<td><p>Configuration of Transport and Erosion</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MODULES</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">TRANSPORT_EROSION</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">MODULE_NAME</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TRANSPORT_EROSION</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">MODULE_NAME</span></code></p></td>
 <td><p>Transport-Erosion module choice</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MODULES</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">TRANSPORT_EROSION</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">MODULE_CONFIG_FILEPATH</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TRANSPORT_EROSION</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">MODULE_CONFIG_FILEPATH</span></code></p></td>
 <td><p>Transport-Erosion configuration file path</p></td>
 </tr>
-<tr class="row-even"><td></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_OUTPUT</span></code></p></td>
-<td><p>Output configuration</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_OUTPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">RESULTS_FOLDERPATH</span></code></p></td>
+</tbody>
+</table>
+<p><strong>Principal Keys 5</strong>: <code class="docutils literal notranslate"><span class="pre">OPENWQ_OUTPUT</span></code></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 78%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">RESULTS_FOLDERPATH</span></code></p></td>
 <td><p>Output folder path</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_OUTPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">FORMAT</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">FORMAT</span></code></p></td>
 <td><p>Output file format ( <a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_2_1file.html">VTU, CSV, or HDF5</a>)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_OUTPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">CHEMICAL_SPECIES</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CHEMICAL_SPECIES</span></code></p></td>
 <td><p>Chemical species to include in output files</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_OUTPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">UNITS</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UNITS</span></code></p></td>
 <td><p>Units of outputs of chemical species</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_OUTPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">NO_WATER_CONC_FLAG</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NO_WATER_CONC_FLAG</span></code></p></td>
 <td><p>Default value for concentration when there is not water</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_OUTPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">COMPARTMENTS_AND_CELLS</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">COMPARTMENTS_AND_CELLS</span></code></p></td>
 <td><p>Names of compartments and indices to output</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPENWQ_OUTPUT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">TIMESTEP</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TIMESTEP</span></code></p></td>
 <td><p>Temporal resolution of output file e.g., <code class="docutils literal notranslate"><span class="pre">[1,&quot;hour&quot;]</span></code></p></td>
 </tr>
 </tbody>
 </table>
 <p>The JSON file supports C/C++ syntax for comments: single-line comment (<code class="docutils literal notranslate"><span class="pre">//</span></code>) or comment blocks (<code class="docutils literal notranslate"><span class="pre">/*</span></code> and <code class="docutils literal notranslate"><span class="pre">*/</span></code>).
-The symbol <code class="docutils literal notranslate"><span class="pre">(#)</span></code> refers to a integer number sequence.</p>
+The symbol <code class="docutils literal notranslate"><span class="pre">(i#)</span></code> refers to a integer number sequence.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="nt">&quot;PROJECT_NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;My_Project&quot;</span><span class="p">,</span>

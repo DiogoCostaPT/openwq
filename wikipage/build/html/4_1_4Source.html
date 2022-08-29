@@ -175,78 +175,173 @@
   <section id="source-sink">
 <h1>Source/Sink<a class="headerlink" href="#source-sink" title="Permalink to this headline">¶</a></h1>
 <p>The chemical sink and source files used by OpenWQ are defined in the master configuration file. Each sink/source is defined in an individual .json file.</p>
+<p><strong>Principal Key 1</strong>: <code class="docutils literal notranslate"><span class="pre">METADATA</span></code></p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col style="width: 18%" />
+<col style="width: 82%" />
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Key</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
 <tbody>
-<tr class="row-even"><td><p>METADATA</p></td>
-<td><p>Comment and data source strings for storing metadata</p></td>
+<tr class="row-odd"><td><p>Comment
+Source</p></td>
+<td><p>Comments or relevant information about the data
+Additional information or additional comments</p></td>
 </tr>
-<tr class="row-odd"><td><p>Chemical_name</p></td>
-<td><p>Species name, e.g., <code class="docutils literal notranslate"><span class="pre">NO3</span></code></p></td>
+</tbody>
+</table>
+<p><strong>Principal Key 2</strong>: <code class="docutils literal notranslate"><span class="pre">(i#)</span></code> (input number in sequential order)</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 83%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CHEMICAL_NAME</span></code></p></td>
+<td><ul class="simple">
+<li><p>Chemical species names</p></li>
+<li><p>As defined in <a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#">Biogeochemical cycling configuration file</a></p></li>
+</ul>
+</td>
 </tr>
-<tr class="row-even"><td><p>Compartment_name</p></td>
-<td><p>Compartment name as used in host model</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">COMPARTMENT_NAME</span></code></p></td>
+<td><ul class="simple">
+<li><p>Compartment name</p></li>
+<li><p>As defined in the host model.</p></li>
+</ul>
+</td>
 </tr>
-<tr class="row-odd"><td><p>Type</p></td>
-<td><p>Define type, e.g., <code class="docutils literal notranslate"><span class="pre">source</span></code> or <code class="docutils literal notranslate"><span class="pre">sink</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TYPE</span></code></p></td>
+<td><p>Type of input, <code class="docutils literal notranslate"><span class="pre">&quot;source&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;sink&quot;</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>Units</p></td>
-<td><p>Units of source/sink load</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UNITS</span></code></p></td>
+<td><p>Units of input, e.g, <code class="docutils literal notranslate"><span class="pre">&quot;mg/l&quot;</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>Data</p></td>
-<td><p>Time series of load in format <code class="docutils literal notranslate"><span class="pre">{YYYY,MM,DD,HH,ix,iy,iz,load}</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code></p></td>
+<td><p>Data format: <code class="docutils literal notranslate"><span class="pre">&quot;JSON&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;ASCII&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DATA</span></code></p></td>
+<td><p>Input data.
+Format will depend on the <code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code>
+See details below.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>ADDITIONAL KEYS</strong></p>
+<p><strong>-&gt; If</strong> <code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;JSON&quot;</span></code></p>
+<p>Then <code class="docutils literal notranslate"><span class="pre">DATA</span></code> with the time series of load has the following format:
+<code class="docutils literal notranslate"><span class="pre">&quot;(i#)&quot;</span></code>: <code class="docutils literal notranslate"><span class="pre">[YYYY,MM,DD,HH,MIN,SEC,</span> <span class="pre">ix,iy,iz,load,</span> <span class="pre">load</span> <span class="pre">type,</span> <span class="pre">time</span> <span class="pre">units</span> <span class="pre">(if</span> <span class="pre">continuous)]</span></code></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 78%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;YYYY&gt;</span></code></p></td>
+<td><p>Input year: <code class="docutils literal notranslate"><span class="pre">&quot;(i#)&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;MM&gt;</span></code></p></td>
+<td><p>Input month: <code class="docutils literal notranslate"><span class="pre">&quot;(i#)&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;DD&gt;</span></code></p></td>
+<td><p>Input day: <code class="docutils literal notranslate"><span class="pre">&quot;(i#)&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;HH&gt;</span></code></p></td>
+<td><p>Input hour: <code class="docutils literal notranslate"><span class="pre">&quot;(i#)&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;MIN&gt;</span></code></p></td>
+<td><p>Input minute: <code class="docutils literal notranslate"><span class="pre">&quot;(i#)&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;SEC&gt;</span></code></p></td>
+<td><p>Input second:  <code class="docutils literal notranslate"><span class="pre">&quot;(i#)&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;ix&gt;</span></code></p></td>
+<td><p>Input ix index: <code class="docutils literal notranslate"><span class="pre">&quot;(i#)&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;iy&gt;</span></code></p></td>
+<td><p>Input iy index: <code class="docutils literal notranslate"><span class="pre">&quot;(i#)&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;iz&gt;</span></code></p></td>
+<td><p>Input iz index: <code class="docutils literal notranslate"><span class="pre">&quot;(i#)&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;load&gt;</span></code></p></td>
+<td><p>Input load: <code class="docutils literal notranslate"><span class="pre">&quot;(f#)&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;load</span> <span class="pre">type&gt;</span></code></p></td>
+<td><p>Input load type: <code class="docutils literal notranslate"><span class="pre">&quot;discrete&quot;``or</span> <span class="pre">``&quot;continuous&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;time</span> <span class="pre">units&gt;</span></code></p></td>
+<td><p>Time units of load if load type is <code class="docutils literal notranslate"><span class="pre">&quot;continuous&quot;</span></code>, e.g., <code class="docutils literal notranslate"><span class="pre">&quot;1/day&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>-&gt; If</strong> <code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;ASCII&quot;</span></code></p>
+<p>Then <code class="docutils literal notranslate"><span class="pre">DATA</span></code> with the time series of load has the same format above but it’s provided through an ASCII file. The following additional json-keys need be included.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 70%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;FILEPATH&quot;</span></code></p></td>
+<td><p>Path to ASCII file with the input data</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;DELIMITER&quot;</span></code></p></td>
+<td><ul class="simple">
+<li><p>Delimiter used in the ASCII file</p></li>
+<li><p>e.g., <code class="docutils literal notranslate"><span class="pre">&quot;,&quot;</span></code></p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;NUMBER_OF_HEADER_ROWS&quot;</span></code></p></td>
+<td><ul class="simple">
+<li><p>Number of header rows in the ASCII file to skip</p></li>
+<li><p>e.g., <code class="docutils literal notranslate"><span class="pre">3</span></code></p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;HEADER_KEY_ROW&quot;</span></code></p></td>
+<td><ul class="simple">
+<li><p>Number of header row with input keys.</p></li>
+<li><p>This row needs to contain all the keys listed above</p></li>
+<li><p>YYYY, MM, DD, HH, MIN, SEC, ix, iy, iz, load, load type, time units</p></li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
 <p>The JSON file supports C/C++ syntax for comments: single-line comment (<code class="docutils literal notranslate"><span class="pre">//</span></code>) or comment blocks (<code class="docutils literal notranslate"><span class="pre">/*</span></code> and <code class="docutils literal notranslate"><span class="pre">*/</span></code>).</p>
+<p>The symbol <code class="docutils literal notranslate"><span class="pre">(i#)</span></code> refers to a integer number sequence.. The symbol <code class="docutils literal notranslate"><span class="pre">(s#)</span></code> refers to a string input. The symbol <code class="docutils literal notranslate"><span class="pre">&lt;f#&gt;</span></code> refers to a float input value.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="nt">&quot;METADATA&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;Comment&quot;</span><span class="p">:</span> <span class="s2">&quot;N loading from fertilizer&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;Source&quot;</span><span class="p">:</span> <span class="s2">&quot;bla bla&quot;</span>
+        <span class="nt">&quot;Comment&quot;</span><span class="p">:</span> <span class="s2">&quot;synthetic loading&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Source&quot;</span><span class="p">:</span> <span class="s2">&quot;test_1&quot;</span>
     <span class="p">},</span>
     <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;Chemical_name&quot;</span><span class="p">:</span> <span class="s2">&quot;NO3&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;Compartment_name&quot;</span><span class="p">:</span> <span class="s2">&quot;SURFSOIL&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Chemical_name&quot;</span><span class="p">:</span> <span class="s2">&quot;species_A&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Compartment_name&quot;</span><span class="p">:</span> <span class="s2">&quot;SCALARAQUIFER&quot;</span><span class="p">,</span>
         <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;source&quot;</span><span class="p">,</span>
         <span class="nt">&quot;Units&quot;</span><span class="p">:</span> <span class="s2">&quot;kg&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Data_Format&quot;</span><span class="p">:</span> <span class="s2">&quot;ASCII&quot;</span><span class="p">,</span>
         <span class="nt">&quot;Data&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2017</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">304</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20000</span><span class="p">],</span>
-            <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2017</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">284</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20000</span><span class="p">],</span>
-            <span class="nt">&quot;3&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2018</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">304</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20000</span><span class="p">],</span>
-            <span class="nt">&quot;4&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2018</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">800</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20000</span><span class="p">]</span>
-            <span class="p">}</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;Chemical_name&quot;</span><span class="p">:</span> <span class="s2">&quot;NH4&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;Compartment_name&quot;</span><span class="p">:</span> <span class="s2">&quot;SURFSOIL&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;source&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;Units&quot;</span><span class="p">:</span> <span class="s2">&quot;kg&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;Data&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2017</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">304</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20000</span><span class="p">],</span>
-            <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2017</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">284</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20000</span><span class="p">],</span>
-            <span class="nt">&quot;3&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2018</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">304</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20000</span><span class="p">],</span>
-            <span class="nt">&quot;4&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2018</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">800</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20000</span><span class="p">],</span>
-            <span class="nt">&quot;5&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2019</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">304</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20000</span><span class="p">],</span>
-            <span class="nt">&quot;6&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2019</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">304</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">20000</span><span class="p">]</span>
+            <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="mf">0.0001</span><span class="p">,</span><span class="s2">&quot;discrete&quot;</span><span class="p">],</span>
+            <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="mf">0.0001</span><span class="p">,</span><span class="s2">&quot;continuous&quot;</span><span class="p">,</span><span class="s2">&quot;min&quot;</span><span class="p">],</span>
+            <span class="nt">&quot;3&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2018</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="s2">&quot;discrete&quot;</span><span class="p">],</span>
+            <span class="nt">&quot;4&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2019</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="s2">&quot;continuous&quot;</span><span class="p">,</span><span class="s2">&quot;min&quot;</span><span class="p">],</span>
+            <span class="nt">&quot;5&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2019</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">350</span><span class="p">,</span><span class="s2">&quot;discrete&quot;</span><span class="p">]</span>
         <span class="p">}</span>
     <span class="p">},</span>
-    <span class="nt">&quot;3&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;Chemical_name&quot;</span><span class="p">:</span> <span class="s2">&quot;NO3&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;Compartment_name&quot;</span><span class="p">:</span> <span class="s2">&quot;SOIL_RECHR&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Chemical_name&quot;</span><span class="p">:</span> <span class="s2">&quot;species_B&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Compartment_name&quot;</span><span class="p">:</span> <span class="s2">&quot;SCALARAQUIFER&quot;</span><span class="p">,</span>
         <span class="nt">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;source&quot;</span><span class="p">,</span>
         <span class="nt">&quot;Units&quot;</span><span class="p">:</span> <span class="s2">&quot;kg&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Data_Format&quot;</span><span class="p">:</span> <span class="s2">&quot;JSON&quot;</span><span class="p">,</span>
         <span class="nt">&quot;Data&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2017</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">304</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20000</span><span class="p">],</span>
-            <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2017</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">284</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20000</span><span class="p">]</span>
+            <span class="nt">&quot;Filepath&quot;</span><span class="p">:</span> <span class="s2">&quot;SS_speciesA_ScalarAquifer_test.csv&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;Delimiter&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;Number_of_header_rows&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="nt">&quot;Header_key_row&quot;</span><span class="p">:</span> <span class="mi">3</span>
         <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
