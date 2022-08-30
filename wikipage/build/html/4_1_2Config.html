@@ -93,7 +93,7 @@
 <li class="toctree-l3"><a class="reference internal" href="4_1_1Master.html">Master</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="4_1_3BGC.html">Biogeochemistry</a></li>
-<li class="toctree-l3"><a class="reference internal" href="4_1_4Source.html">Source/Sink &amp; External Fluxes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_1_4Source.html">Source/Sink</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="4_2_out.html">Output files</a></li>
@@ -183,15 +183,21 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;Compt_Name&gt;</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">CYCLING_FRAMEWORK</span></code></p></td>
-<td><p>List of cycling frameworks
-As defined in <a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#">Biogeochemical cycling configuration file</a>
-Format: <code class="docutils literal notranslate"><span class="pre">[&lt;s#&gt;,</span> <span class="pre">&lt;s#&gt;,</span> <span class="pre">...]</span></code>
-Example: <code class="docutils literal notranslate"><span class="pre">[&quot;N_org&quot;,</span> <span class="pre">&quot;N_inorg&quot;,</span> <span class="pre">&quot;P_org&quot;,</span> <span class="pre">&quot;P_inorg&quot;]</span></code></p></td>
+<td><ul class="simple">
+<li><p>List of cycling frameworks</p></li>
+<li><p>As defined in <a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#">Biogeochemical cycling configuration file</a></p></li>
+<li><p>Format: <code class="docutils literal notranslate"><span class="pre">[&lt;s#&gt;,</span> <span class="pre">&lt;s#&gt;,</span> <span class="pre">...]</span></code></p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">[&quot;N_org&quot;,</span> <span class="pre">&quot;N_inorg&quot;,</span> <span class="pre">&quot;P_org&quot;,</span> <span class="pre">&quot;P_inorg&quot;]</span></code></p></li>
+</ul>
+</td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;Compt_Name&gt;</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">INITIAL_CONDITIONS</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">&lt;Chem_Name&gt;</span></code></p></td>
-<td><p>Initial concentrations <code class="docutils literal notranslate"><span class="pre">[value,</span> <span class="pre">units]</span></code>
-Format: <code class="docutils literal notranslate"><span class="pre">[&lt;f#&gt;,&lt;s#&gt;]</span></code>
-Example: <code class="docutils literal notranslate"><span class="pre">&quot;species_A&quot;:</span> <span class="pre">[10,&quot;mg&quot;]</span></code></p></td>
+<td><ul class="simple">
+<li><p>Initial concentrations <code class="docutils literal notranslate"><span class="pre">[value,</span> <span class="pre">units]</span></code></p></li>
+<li><p>Format: <code class="docutils literal notranslate"><span class="pre">[&lt;f#&gt;,&lt;s#&gt;]</span></code></p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">&quot;species_A&quot;:</span> <span class="pre">[10,&quot;mg&quot;]</span></code></p></li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>

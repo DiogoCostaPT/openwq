@@ -6,14 +6,14 @@ The transportation and biogeochemical configuration file is a JSON file made up 
 **Principal Key 1**: ``BIOGEOCHEMISTRY_CONFIGURATION``
 
 +---------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
-| ``<Compt_Name>`` -> ``CYCLING_FRAMEWORK``                     | List of cycling frameworks                                                                                            |
-|                                                               | As defined in `Biogeochemical cycling configuration file <https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#>`_   |
-|                                                               | Format: ``[<s#>, <s#>, ...]``                                                                                         |
-|                                                               | Example: ``["N_org", "N_inorg", "P_org", "P_inorg"]``                                                                 |
+| ``<Compt_Name>`` -> ``CYCLING_FRAMEWORK``                     | - List of cycling frameworks                                                                                          |
+|                                                               | - As defined in `Biogeochemical cycling configuration file <https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#>`_ |
+|                                                               | - Format: ``[<s#>, <s#>, ...]``                                                                                       |
+|                                                               | - Example: ``["N_org", "N_inorg", "P_org", "P_inorg"]``                                                               |
 +---------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
-| ``<Compt_Name>`` -> ``INITIAL_CONDITIONS`` -> ``<Chem_Name>`` | Initial concentrations ``[value, units]``                                                                             |
-|                                                               | Format: ``[<f#>,<s#>]``                                                                                               |
-|                                                               | Example: ``"species_A": [10,"mg"]``                                                                                   |
+| ``<Compt_Name>`` -> ``INITIAL_CONDITIONS`` -> ``<Chem_Name>`` | - Initial concentrations ``[value, units]``                                                                           |
+|                                                               | - Format: ``[<f#>,<s#>]``                                                                                             |
+|                                                               | - Example: ``"species_A": [10,"mg"]``                                                                                 |
 +---------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
 
 The JSON file supports C/C++ syntax for comments: single-line comment (``//``) or comment blocks (``/*`` and ``*/``).

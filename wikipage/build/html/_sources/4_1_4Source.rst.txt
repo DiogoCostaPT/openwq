@@ -17,14 +17,14 @@ Each sink/source is defined in an individual ``json-block``, and you can add as 
 **Principal Key 2**: ``(i#)`` (input number in sequential order)
 
 +--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| ``CHEMICAL_NAME``                    | Chemical species names                                                                                                  |
-|                                      | As defined in `Biogeochemical cycling configuration file <https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#>`_     |
+| ``CHEMICAL_NAME``                    | - Chemical species names                                                                                                |
+|                                      | - As defined in `Biogeochemical cycling configuration file <https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#>`_   |
 +--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| - ``COMPARTMENT_NAME``               | Compartment name                                                                                                        |
-| - *if Sink/Source*                   | As defined in the interface-hydrolink.                                                                                  |
+| - ``COMPARTMENT_NAME``               | - Compartment name                                                                                                      |
+| - *if Sink/Source*                   | - As defined in the interface-hydrolink.                                                                                |
 +--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| - ``External_InputFlux_name``        | External Water Source name                                                                                              |
-| - *else-if External Water Source*    | As defined in the interface-hydrolink.                                                                                  |
+| - ``External_InputFlux_name``        | - External Water Source name                                                                                            |
+| - *else-if External Water Source*    | - As defined in the interface-hydrolink.                                                                                |
 +--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | - ``TYPE``                           | Type of input,                                                                                                          |
 | - *if Sink/Source only*              | Options: ``"source"`` or ``"sink"``                                                                                     |
@@ -33,9 +33,9 @@ Each sink/source is defined in an individual ``json-block``, and you can add as 
 +--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | ``DATA_FORMAT``                      | Data format: ``"JSON"`` or ``"ASCII"``                                                                                  |
 +--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| ``DATA``                             | Input data.                                                                                                             |
-|                                      | Format will depend on the ``DATA_FORMAT``                                                                               |
-|                                      | See details below.                                                                                                      |
+| ``DATA``                             | - Input data.                                                                                                           |
+|                                      | - Format will depend on the ``DATA_FORMAT``                                                                             |
+|                                      | - See details below.                                                                                                    |
 +--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
 
 **ADDITIONAL KEYS**
@@ -78,15 +78,15 @@ Then ``DATA`` with the time series of load has the same format above but it's pr
 +-------------------------------+-------------------------------------------------------------------------+
 | ``"FILEPATH"``                | Path to ASCII file with the input data                                  |
 +-------------------------------+-------------------------------------------------------------------------+
-| ``"DELIMITER"``               | Delimiter used in the ASCII file                                        |
-|                               | e.g., ``","``                                                           |
+| ``"DELIMITER"``               | - Delimiter used in the ASCII file                                      |
+|                               | - e.g., ``","``                                                         |
 +-------------------------------+-------------------------------------------------------------------------+
-|``"NUMBER_OF_HEADER_ROWS"``    | Number of header rows in the ASCII file to skip                         |
-|                               | e.g., ``3``                                                             |
+|``"NUMBER_OF_HEADER_ROWS"``    | - Number of header rows in the ASCII file to skip                       |
+|                               | - e.g., ``3``                                                           |
 +-------------------------------+-------------------------------------------------------------------------+
-|``"HEADER_KEY_ROW"``           | Number of header row with input keys.                                   |
-|                               | This row needs to contain all the keys listed above                     |
-|                               | YYYY, MM, DD, HH, MIN, SEC, ix, iy, iz, load, load type, time units     |
+|``"HEADER_KEY_ROW"``           | - Number of header row with input keys.                                 |
+|                               | - This row needs to contain all the keys listed above                   |
+|                               | - YYYY, MM, DD, HH, MIN, SEC, ix, iy, iz, load, load type, time units   |
 +-------------------------------+-------------------------------------------------------------------------+
 
 
