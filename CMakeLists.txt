@@ -334,7 +334,8 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                 ############################################################################
                 file(GLOB OPENWQ_SOURCES 
                         ${OPENWQ_DIR}/src/*.cpp 
-                        ${PARENT_DIR}/OpenWQ_hydrolink.cpp)
+                        ${PARENT_DIR}/OpenWQ_hydrolink.cpp
+                        ${PARENT_DIR}/OpenWQ_interface.cpp)
 
                 ############################################################################
                 ## File definitions for subcomponents - For Summa
