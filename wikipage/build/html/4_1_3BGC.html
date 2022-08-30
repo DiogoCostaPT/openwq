@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Source/Sink" href="4_1_4Source.html" />
+    <link rel="next" title="Source/Sink &amp; External Fluxes" href="4_1_4Source.html" />
     <link rel="prev" title="Configuration" href="4_1_2Config.html" /> 
 </head>
 
@@ -93,7 +93,7 @@
 <li class="toctree-l3"><a class="reference internal" href="4_1_1Master.html">Master</a></li>
 <li class="toctree-l3"><a class="reference internal" href="4_1_2Config.html">Configuration</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Biogeochemistry</a></li>
-<li class="toctree-l3"><a class="reference internal" href="4_1_4Source.html">Source/Sink</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_1_4Source.html">Source/Sink &amp; External Fluxes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="4_2_out.html">Output files</a></li>
@@ -195,11 +195,8 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LIST</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">(i#)</span></code></p></td>
-<td><ul class="simple">
-<li><p>Numbered list of chemical species</p></li>
-<li><p>Example: <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;:&quot;NO3&quot;</span></code></p></li>
-</ul>
-</td>
+<td><p>Numbered list of chemical species
+Example: <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;:&quot;NO3&quot;</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BGC_GENERAL_MOBILE_SPECIES</span></code></p></td>
 <td><p>List of numbers of mobile species</p></td>
@@ -217,13 +214,10 @@
 <td><p>Define cycling framework names</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;BGQ_cycle_name&gt;</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">LIST_TRANSFORMATIONS</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">(i#)</span></code></p></td>
-<td><ul class="simple">
-<li><p>List transformation names for each cycling framework</p></li>
-<li><p>Content: <code class="docutils literal notranslate"><span class="pre">&quot;index&quot;</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;transformation_name&quot;</span></code></p></li>
-<li><p>Format: <code class="docutils literal notranslate"><span class="pre">(i#):</span> <span class="pre">(s#)</span></code></p></li>
-<li><p>Example: <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;:</span> <span class="pre">&quot;mineralization&quot;</span></code></p></li>
-</ul>
-</td>
+<td><p>List transformation names for each cycling framework
+Content: <code class="docutils literal notranslate"><span class="pre">&quot;index&quot;</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;transformation_name&quot;</span></code>
+Format: <code class="docutils literal notranslate"><span class="pre">(i#):</span> <span class="pre">(s#)</span></code>
+Example: <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;:</span> <span class="pre">&quot;mineralization&quot;</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">(i#)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">CONSUMED</span></code></p></td>
 <td><p>Species consumed. e.g, <code class="docutils literal notranslate"><span class="pre">&quot;NH4&quot;</span></code></p></td>
@@ -232,21 +226,18 @@
 <td><p>Species produced, e.g., <code class="docutils literal notranslate"><span class="pre">&quot;NO3&quot;</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">(i#)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">KINETICS</span></code></p></td>
-<td><ul class="simple">
-<li><p>Kinetics equation and time units</p></li>
-<li><p>Content: [<code class="docutils literal notranslate"><span class="pre">equation</span></code>, <code class="docutils literal notranslate"><span class="pre">units</span></code>]</p></li>
-<li><p>Format: <code class="docutils literal notranslate"><span class="pre">[(s#),</span> <span class="pre">(s#)]</span></code></p></li>
-<li><p>Example: <code class="docutils literal notranslate"><span class="pre">[&quot;NO3</span> <span class="pre">*</span> <span class="pre">k&quot;,</span> <span class="pre">&quot;1/day&quot;]</span></code></p></li>
-</ul>
-</td>
+<td><p>Kinetics equation and time units
+Content: [<code class="docutils literal notranslate"><span class="pre">equation</span></code>, <code class="docutils literal notranslate"><span class="pre">units</span></code>]
+Format: <code class="docutils literal notranslate"><span class="pre">[(s#),</span> <span class="pre">(s#)]</span></code>
+Example: <code class="docutils literal notranslate"><span class="pre">[&quot;NO3</span> <span class="pre">*</span> <span class="pre">k&quot;,</span> <span class="pre">&quot;1/day&quot;]</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">(i#)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">PARAMETER_NAMES</span></code>
 <code class="docutils literal notranslate"><span class="pre">(i#)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">PARAMETER_VALUES</span></code></p></td>
 <td><p>List of parameter names in transformation equation
-- Define parameter values for equation
-- Content: <code class="docutils literal notranslate"><span class="pre">parameter_name</span></code>: <code class="docutils literal notranslate"><span class="pre">value</span></code>
-- Format: <code class="docutils literal notranslate"><span class="pre">(s#):</span> <span class="pre">(f#)</span></code>
-- Example: <code class="docutils literal notranslate"><span class="pre">&quot;k&quot;:</span> <span class="pre">0.001</span></code></p></td>
+Define parameter values for equation
+Content: <code class="docutils literal notranslate"><span class="pre">parameter_name</span></code>: <code class="docutils literal notranslate"><span class="pre">value</span></code>
+Format: <code class="docutils literal notranslate"><span class="pre">(s#):</span> <span class="pre">(f#)</span></code>
+Example: <code class="docutils literal notranslate"><span class="pre">&quot;k&quot;:</span> <span class="pre">0.001</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -320,7 +311,7 @@ These model dependencies are tailored to each hydrological model. They can be so
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="4_1_4Source.html" class="btn btn-neutral float-right" title="Source/Sink" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="4_1_4Source.html" class="btn btn-neutral float-right" title="Source/Sink &amp; External Fluxes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="4_1_2Config.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

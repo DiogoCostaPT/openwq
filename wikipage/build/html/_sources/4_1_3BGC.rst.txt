@@ -12,8 +12,8 @@ The biogeochemical cycling file is a JSON file that defines both the chemical sp
 **Principal Key 2**: ``CHEMICAL_SPECIES``
 
 +-----------------------------------+-------------------------------------------------------+
-| ``LIST`` -> ``(i#)``              | - Numbered list of chemical species                   |
-|                                   | - Example: ``"1":"NO3"``                              |
+| ``LIST`` -> ``(i#)``              | Numbered list of chemical species                     |
+|                                   | Example: ``"1":"NO3"``                                |
 +-----------------------------------+-------------------------------------------------------+
 | ``BGC_GENERAL_MOBILE_SPECIES``    | List of numbers of mobile species                     |
 +-----------------------------------+-------------------------------------------------------+
@@ -23,25 +23,25 @@ The biogeochemical cycling file is a JSON file that defines both the chemical sp
 +---------------------------------------------------------------+---------------------------------------------------------+
 | ``<BGQ_cycle_name>``                                          | Define cycling framework names                          |
 +---------------------------------------------------------------+---------------------------------------------------------+
-| ``<BGQ_cycle_name>`` -> ``LIST_TRANSFORMATIONS`` -> ``(i#)``  | - List transformation names for each cycling framework  |
-|                                                               | - Content: ``"index"``: ``"transformation_name"``       |
-|                                                               | - Format: ``(i#): (s#)``                                |
-|                                                               | - Example: ``"1": "mineralization"``                    |
+| ``<BGQ_cycle_name>`` -> ``LIST_TRANSFORMATIONS`` -> ``(i#)``  | List transformation names for each cycling framework    |
+|                                                               | Content: ``"index"``: ``"transformation_name"``         |
+|                                                               | Format: ``(i#): (s#)``                                  |
+|                                                               | Example: ``"1": "mineralization"``                      |
 +---------------------------------------------------------------+---------------------------------------------------------+
 | ``(i#)`` -> ``CONSUMED``                                      | Species consumed. e.g, ``"NH4"``                        |
 +---------------------------------------------------------------+---------------------------------------------------------+
 | ``(i#)`` -> ``PRODUCED``                                      | Species produced, e.g., ``"NO3"``                       |
 +---------------------------------------------------------------+---------------------------------------------------------+
-| ``(i#)`` -> ``KINETICS``                                      | - Kinetics equation and time units                      |
-|                                                               | - Content: [``equation``, ``units``]                    |
-|                                                               | - Format: ``[(s#), (s#)]``                              |
-|                                                               | - Example: ``["NO3 * k", "1/day"]``                     |
+| ``(i#)`` -> ``KINETICS``                                      | Kinetics equation and time units                        |
+|                                                               | Content: [``equation``, ``units``]                      |
+|                                                               | Format: ``[(s#), (s#)]``                                |
+|                                                               | Example: ``["NO3 * k", "1/day"]``                       |
 +---------------------------------------------------------------+---------------------------------------------------------+
 | ``(i#)`` -> ``PARAMETER_NAMES``                               | List of parameter names in transformation equation      |
-| ``(i#)`` -> ``PARAMETER_VALUES``                              | - Define parameter values for equation                  |
-|                                                               | - Content: ``parameter_name``: ``value``                |
-|                                                               | - Format: ``(s#): (f#)``                                |
-|                                                               | - Example: ``"k": 0.001``                               |
+| ``(i#)`` -> ``PARAMETER_VALUES``                              | Define parameter values for equation                    |
+|                                                               | Content: ``parameter_name``: ``value``                  |
+|                                                               | Format: ``(s#): (f#)``                                  |
+|                                                               | Example: ``"k": 0.001``                                 |
 +---------------------------------------------------------------+---------------------------------------------------------+
 
 
