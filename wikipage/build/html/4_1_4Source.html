@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Source/Sink &mdash; OpenWQ 0.0.2 documentation</title>
+  <title>Source/Sink &amp; External Fluxes &mdash; OpenWQ 0.0.2 documentation</title>
   
 
   
@@ -93,7 +93,7 @@
 <li class="toctree-l3"><a class="reference internal" href="4_1_1Master.html">Master</a></li>
 <li class="toctree-l3"><a class="reference internal" href="4_1_2Config.html">Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="4_1_3BGC.html">Biogeochemistry</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Source/Sink</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Source/Sink &amp; External Fluxes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="4_2_out.html">Output files</a></li>
@@ -153,7 +153,7 @@
         
           <li><a href="4_1_In.html">Input files</a> &raquo;</li>
         
-      <li>Source/Sink</li>
+      <li>Source/Sink &amp; External Fluxes</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -172,28 +172,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="source-sink">
-<h1>Source/Sink<a class="headerlink" href="#source-sink" title="Permalink to this headline">¶</a></h1>
-<p>The chemical sink and source files used by OpenWQ are defined in the master configuration file. Each sink/source is defined in an individual .json file.</p>
+  <section id="source-sink-external-fluxes">
+<h1>Source/Sink &amp; External Fluxes<a class="headerlink" href="#source-sink-external-fluxes" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">Source/Sink</span></code> loads and <code class="docutils literal notranslate"><span class="pre">External</span> <span class="pre">Fluxes</span></code> use a similar data input structure. The differences are minimal and highlighted below.</p>
+<p>The chemical sink and source files used by OpenWQ are defined in the master configuration file.
+Each sink/source is defined in an individual <code class="docutils literal notranslate"><span class="pre">json-block</span></code>, and you can add as many <code class="docutils literal notranslate"><span class="pre">json</span></code> files as desired.</p>
 <p><strong>Principal Key 1</strong>: <code class="docutils literal notranslate"><span class="pre">METADATA</span></code></p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 18%" />
-<col style="width: 82%" />
+<col style="width: 23%" />
+<col style="width: 77%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p>Comment
-Source</p></td>
-<td><p>Comments or relevant information about the data
-Additional information or additional comments</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">COMMNENT</span></code></p></td>
+<td><p>Comments or relevant information about the data</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SOURCE</span></code></p></td>
+<td><p>Additional information or additional comments</p></td>
 </tr>
 </tbody>
 </table>
 <p><strong>Principal Key 2</strong>: <code class="docutils literal notranslate"><span class="pre">(i#)</span></code> (input number in sequential order)</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 17%" />
-<col style="width: 83%" />
+<col style="width: 24%" />
+<col style="width: 76%" />
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CHEMICAL_NAME</span></code></p></td>
@@ -203,26 +206,49 @@ Additional information or additional comments</p></td>
 </ul>
 </td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">COMPARTMENT_NAME</span></code></p></td>
+<tr class="row-even"><td><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">COMPARTMENT_NAME</span></code></p></li>
+<li><p><em>if Sink/Source</em></p></li>
+</ul>
+</td>
 <td><ul class="simple">
 <li><p>Compartment name</p></li>
-<li><p>As defined in the host model.</p></li>
+<li><p>As defined in the interface-hydrolink.</p></li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TYPE</span></code></p></td>
-<td><p>Type of input, <code class="docutils literal notranslate"><span class="pre">&quot;source&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;sink&quot;</span></code></p></td>
+<tr class="row-odd"><td><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">External_InputFlux_name</span></code></p></li>
+<li><p><em>else-if External Water Source</em></p></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li><p>External Water Source name</p></li>
+<li><p>As defined in the interface-hydrolink.</p></li>
+</ul>
+</td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UNITS</span></code></p></td>
+<tr class="row-even"><td><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TYPE</span></code></p></li>
+<li><p><em>if Sink/Source only</em></p></li>
+</ul>
+</td>
+<td><p>Type of input,
+Options: <code class="docutils literal notranslate"><span class="pre">&quot;source&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;sink&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UNITS</span></code></p></td>
 <td><p>Units of input, e.g, <code class="docutils literal notranslate"><span class="pre">&quot;mg/l&quot;</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code></p></td>
 <td><p>Data format: <code class="docutils literal notranslate"><span class="pre">&quot;JSON&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;ASCII&quot;</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DATA</span></code></p></td>
-<td><p>Input data.
-Format will depend on the <code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code>
-See details below.</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DATA</span></code></p></td>
+<td><ul class="simple">
+<li><p>Input data.</p></li>
+<li><p>Format will depend on the <code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code></p></li>
+<li><p>See details below.</p></li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>

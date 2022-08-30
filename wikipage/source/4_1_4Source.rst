@@ -1,34 +1,42 @@
-Source/Sink
-==================================
+Source/Sink & External Fluxes
+=====================================
 
-The chemical sink and source files used by OpenWQ are defined in the master configuration file. Each sink/source is defined in an individual .json file. 
+``Source/Sink`` loads and ``External Fluxes`` use a similar data input structure. The differences are minimal and highlighted below.
+
+The chemical sink and source files used by OpenWQ are defined in the master configuration file.
+Each sink/source is defined in an individual ``json-block``, and you can add as many ``json`` files as desired.
 
 **Principal Key 1**: ``METADATA``
 
-+-----------+--------------------------------------------------+
-| Comment   | Comments or relevant information about the data  |
-| Source    | Additional information or additional comments    |
-+-----------+--------------------------------------------------+
++---------------+--------------------------------------------------+
+| ``COMMNENT``  | Comments or relevant information about the data  |
++---------------+--------------------------------------------------+
+| ``SOURCE``    | Additional information or additional comments    |
++---------------+--------------------------------------------------+
 
 **Principal Key 2**: ``(i#)`` (input number in sequential order)
 
-+-------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| ``CHEMICAL_NAME``       | - Chemical species names                                                                                                |
-|                         | - As defined in `Biogeochemical cycling configuration file <https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#>`_   |
-+-------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| ``COMPARTMENT_NAME``    | - Compartment name                                                                                                      |
-|                         | - As defined in the host model.                                                                                         |
-+-------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| ``TYPE``                | Type of input, ``"source"`` or ``"sink"``                                                                               |
-+-------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| ``UNITS``               | Units of input, e.g, ``"mg/l"``                                                                                         |
-+-------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| ``DATA_FORMAT``         | Data format: ``"JSON"`` or ``"ASCII"``                                                                                  |
-+-------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| ``DATA``                | Input data.                                                                                                             |
-|                         | Format will depend on the ``DATA_FORMAT``                                                                               |
-|                         | See details below.                                                                                                      |
-+-------------------------+-------------------------------------------------------------------------------------------------------------------------+
++--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| ``CHEMICAL_NAME``                    | - Chemical species names                                                                                                |
+|                                      | - As defined in `Biogeochemical cycling configuration file <https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#>`_   |
++--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| - ``COMPARTMENT_NAME``               | - Compartment name                                                                                                      |
+| - *if Sink/Source*                   | - As defined in the interface-hydrolink.                                                                                |
++--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| - ``External_InputFlux_name``        | - External Water Source name                                                                                            |
+| - *else-if External Water Source*    | - As defined in the interface-hydrolink.                                                                                |
++--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| - ``TYPE``                           | Type of input,                                                                                                          |
+| - *if Sink/Source only*              | Options: ``"source"`` or ``"sink"``                                                                                     |
++--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| ``UNITS``                            | Units of input, e.g, ``"mg/l"``                                                                                         |
++--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| ``DATA_FORMAT``                      | Data format: ``"JSON"`` or ``"ASCII"``                                                                                  |
++--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| ``DATA``                             | - Input data.                                                                                                           |
+|                                      | - Format will depend on the ``DATA_FORMAT``                                                                             |
+|                                      | - See details below.                                                                                                    |
++--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
 
 **ADDITIONAL KEYS**
 
