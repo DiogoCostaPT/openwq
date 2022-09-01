@@ -110,7 +110,7 @@ Example:
             "Compartment_name": "SCALARAQUIFER",
             "Type": "source",
             "Units": "kg",
-            "Data_Format": "ASCII",
+            "Data_Format": "JSON",
             "Data": {
                 "1": ["all","all","all","all","all","all","all","all","all",0.0001,"discrete"],
                 "2": ["all","all","all","all","all","all","all","all","all",0.0001,"continuous","min"],
@@ -124,7 +124,7 @@ Example:
             "Compartment_name": "SCALARAQUIFER",
             "Type": "source",
             "Units": "kg",
-            "Data_Format": "JSON",
+            "Data_Format": "ASCII",
             "Data": {
                 "Filepath": "SS_speciesA_ScalarAquifer_test.csv",
                 "Delimiter": ",",
@@ -133,3 +133,7 @@ Example:
             }
         }
     }
+
+File: SS_speciesA_ScalarAquifer_test.csv
+
+.. image:: ss_ascii.png
