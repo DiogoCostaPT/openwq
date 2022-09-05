@@ -424,7 +424,7 @@ void OpenWQ_couplercalls::RunSpaceStep(
 // Applicable to:
 // 1) IN-fluxes (external water fluxes)
 // ################################################################
-void RunSpaceStep_IN(
+void OpenWQ_couplercalls::RunSpaceStep_IN(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_json& OpenWQ_json,                       // create OpenWQ_json object
     OpenWQ_wqconfig& OpenWQ_wqconfig,               // create OpenWQ_wqconfig object
