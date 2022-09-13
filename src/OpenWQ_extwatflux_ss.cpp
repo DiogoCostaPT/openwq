@@ -353,7 +353,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                         ["DATA"][std::to_string(di+1)].at(0);}
                     // if ASCII
                     else if (DataFormat.compare("ASCII")==0){
-                        std::cout << OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"YYYY") << std::endl;
                         entryVal = ASCIIRowElemEntry[ 
                             OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"YYYY")];}
 
