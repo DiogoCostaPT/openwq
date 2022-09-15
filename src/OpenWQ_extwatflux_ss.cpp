@@ -1048,7 +1048,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                     (double) iy_json,
                     (double) iz_json,
                     ss_data_json,
-                    loadScheme_id,  // load scheme (1) discrete or (2) continuous
+                    loadScheme_id,  // load scheme (0) not applicable, (1) discrete or (2) continuous
                     0,0,0,0,0,0     // field to specify the number of times it has been used aleady
                     };              // in the case of and "all" element (YYYY, MM, DD, HH, MIN, SEC)
                                     // it starts with 0 (zero), meaning that has not been used
