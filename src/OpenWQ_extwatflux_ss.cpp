@@ -1147,9 +1147,6 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
 
         );
 
-        // Flag to note that 1st time step has been completed
-        OpenWQ_wqconfig.tstep1_flag = false;
-
     }
 
     // Convert sim time to time_t

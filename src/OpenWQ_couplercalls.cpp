@@ -75,6 +75,7 @@ void OpenWQ_couplercalls::InitialConfig(
         OpenWQ_utils,
         OpenWQ_output,
         (std::string) "ss");    // flag for SS
+
     // EWF
     OpenWQ_extwatflux_ss.Set_EWFandSS(
         OpenWQ_json.ExtWatFlux, // EWF json
@@ -85,7 +86,6 @@ void OpenWQ_couplercalls::InitialConfig(
         OpenWQ_utils,
         OpenWQ_output,
         (std::string) "ewf");  // flag for EWF
-
 
     // ##################################
     // MODULES
@@ -239,6 +239,8 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
         (std::string) "ewf",
         OpenWQ_wqconfig.ExtFlux_FORC); 
 
+    // Flag to note that 1st time step has been completed
+    OpenWQ_wqconfig.tstep1_flag = false;
 
     // #################################################
     // MODULES
