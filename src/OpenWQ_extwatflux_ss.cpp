@@ -871,15 +871,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 
                 elemName = "Load/Sink Scheme";
 
-                // Create Warning Message
-                // only printed if entry is not valid
-                msg_string = 
-                        "<OpenWQ> WARNING: SS/EWF '" 
-                        + elemName 
-                        + "' is not valid. It can only be 'discrete' or 'continuous' (entry skipped): File=" 
-                        + std::to_string(ssf+1)
-                        + ", Sub_structure=" + std::to_string(ssi+1)
-                        + ", Data_row=" + std::to_string(di + 1); 
                 try{
 
                     // try as string for the cases where entry is "all"
@@ -896,21 +887,98 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 
                     loadScheme_str = entryVal;
 
-                    // Set loadScheme_id
-                    // 1) discrete
-                    // 2) continuous (needs time units)
-                    if (loadScheme_str.compare("DISCRETE") == 0) loadScheme_id = 0;
-                    else if (loadScheme_str.compare("CONTINUOUS") == 0 && MM_json != -1){ 
-                        // continuous option needs MIN = 'all' to allow a minimum continuous period
-                        loadScheme_id = 0;
+                    // loading scheme only needed if SS
+                    // EWF is in concentration and associated with fluxes
+                    if (inputType.compare("ss")==0){
+
+                        // Set loadScheme_id
+                        // 1) discrete
+                        // 2) continuous (needs time units)
+                        if (loadScheme_str.compare("DISCRETE") == 0) loadScheme_id = 0;
+                        else if (loadScheme_str.compare("CONTINUOUS") == 0 && MM_json != -1){ 
+                            // continuous option needs MIN = 'all' to allow a minimum continuous period
+                            loadScheme_id = 0;
+                            // Create Warning Message
+                            msg_string = 
+                                    "<OpenWQ> WARNING: SS/EWF '" 
+                                    + elemName 
+                                    + "' was defaulted to 'discrete'. The 'continuous' option is only valid with MIN set as 'all' for a minimum continuous period: File=" 
+                                    + std::to_string(ssf+1)
+                                    + ", Sub_structure=" + std::to_string(ssi+1)
+                                    + ", Data_row=" + std::to_string(di + 1);  
+                            // Print it (Console and/or Log file)
+                            OpenWQ_output.ConsoleLog(
+                                OpenWQ_wqconfig,    // for Log file name
+                                msg_string,         // message
+                                true,               // print in console
+                                true);              // print in log file
+
+                        }else if (loadScheme_str.compare("CONTINUOUS") == 0 && MM_json == -1){
+                            // continuous option needs MIN = 'all' (otherwise it's discrete input)
+                            loadScheme_id = 1;
+                            // get time units
+                            try{
+
+                                std::string entryVal; // dummy variable
+                                // if JSON
+                                if (DataFormat.compare("JSON")==0){
+                                    entryVal = EWF_SS_json 
+                                    [std::to_string(ssf+1)][std::to_string(ssi+1)]
+                                    ["DATA"][std::to_string(di+1)].at(11);}
+                                // if ASCII
+                                else if (DataFormat.compare("ASCII")==0){
+                                    entryVal = ASCIIRowElemEntry[ 
+                                        OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"TIME_UNITS")];}
+
+                                contDt_str = entryVal;
+
+                                // Concatenate the time units to the load
+                                ss_units_json += "/";
+                                ss_units_json += contDt_str;
+
+                            }catch(...){ 
+                                // Create Warning Message
+                                msg_string = 
+                                    "<OpenWQ> WARNING: SS/EWF '" 
+                                    + elemName 
+                                    + "'continuous' requires an additional array element with the load/sink time units (entry skipped): File=" 
+                                    + std::to_string(ssf+1)
+                                    + ", Sub_structure=" + std::to_string(ssi+1)
+                                    + ", Data_row=" + std::to_string(di + 1); 
+                                // Print it (Console and/or Log file)
+                                OpenWQ_output.ConsoleLog(
+                                    OpenWQ_wqconfig,    // for Log file name
+                                    msg_string,         // message
+                                    true,               // print in console
+                                    true);              // print in log file
+                                continue; // skip entry
+                            }
+                        }else{
+
+                            // Print it (Console and/or Log file)
+                            OpenWQ_output.ConsoleLog(
+                                OpenWQ_wqconfig,    // for Log file name
+                                msg_string,         // message
+                                true,               // print in console
+                                true);              // print in log file
+
+                            continue;
+                        }
+
+                    }else{
+                        // if EWF, send a warning message saying that the 
+                        // load scheme and period are not used in EWF inputs
+
                         // Create Warning Message
                         msg_string = 
-                                "<OpenWQ> WARNING: SS/EWF '" 
-                                + elemName 
-                                + "' was default to 'discrete'. The 'continuous' option is only valid with MIN set as 'all' for a minimum continuous period: File=" 
-                                + std::to_string(ssf+1)
-                                + ", Sub_structure=" + std::to_string(ssi+1)
-                                + ", Data_row=" + std::to_string(di + 1);  
+                            "<OpenWQ> WARNING: EWF '" 
+                            + elemName 
+                            + "' is not used in EWF entries because these are" 
+                            " concentrations associated with external fluxes (entry ignored): File=" 
+                            + std::to_string(ssf+1)
+                            + ", Sub_structure=" + std::to_string(ssi+1)
+                            + ", Data_row=" + std::to_string(di + 1); 
+
                         // Print it (Console and/or Log file)
                         OpenWQ_output.ConsoleLog(
                             OpenWQ_wqconfig,    // for Log file name
@@ -918,47 +986,22 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                             true,               // print in console
                             true);              // print in log file
 
-                    }else if (loadScheme_str.compare("CONTINUOUS") == 0 && MM_json == -1){
-                        // continuous option needs MIN = 'all' (otherwise it's discrete input)
-                        loadScheme_id = 1;
-                        // get time units
-                        try{
+                    }
 
-                            std::string entryVal; // dummy variable
-                            // if JSON
-                            if (DataFormat.compare("JSON")==0){
-                                entryVal = EWF_SS_json 
-                                [std::to_string(ssf+1)][std::to_string(ssi+1)]
-                                ["DATA"][std::to_string(di+1)].at(11);}
-                            // if ASCII
-                            else if (DataFormat.compare("ASCII")==0){
-                                entryVal = ASCIIRowElemEntry[ 
-                                    OpenWQ_utils.FindStrIndexInVectStr(headerKeys,"TIME_UNITS")];}
+                }catch(...){  
+                    
+                    // load scheme is needed for SS, but not for EWF
+                    if (inputType.compare("ss")==0){
 
-                            contDt_str = entryVal;
-
-                            // Concatenate the time units to the load
-                            ss_units_json += "/";
-                            ss_units_json += contDt_str;
-
-                        }catch(...){ 
-                            // Create Warning Message
-                            msg_string = 
-                                "<OpenWQ> WARNING: SS/EWF '" 
-                                + elemName 
-                                + "'continuous' requires an additional array element with the load/sink time units (entry skipped): File=" 
-                                + std::to_string(ssf+1)
-                                + ", Sub_structure=" + std::to_string(ssi+1)
-                                + ", Data_row=" + std::to_string(di + 1); 
-                            // Print it (Console and/or Log file)
-                            OpenWQ_output.ConsoleLog(
-                                OpenWQ_wqconfig,    // for Log file name
-                                msg_string,         // message
-                                true,               // print in console
-                                true);              // print in log file
-                            continue; // skip entry
-                        }
-                    }else{
+                        // Create Warning Message
+                        // only printed if entry is not valid
+                        msg_string = 
+                            "<OpenWQ> WARNING: SS '" 
+                            + elemName 
+                            + "' is not valid. It can only be 'discrete' or 'continuous' (entry skipped): File=" 
+                            + std::to_string(ssf+1)
+                            + ", Sub_structure=" + std::to_string(ssi+1)
+                            + ", Data_row=" + std::to_string(di + 1); 
 
                         // Print it (Console and/or Log file)
                         OpenWQ_output.ConsoleLog(
@@ -969,17 +1012,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 
                         continue;
                     }
-
-                }catch(...){  
-
-                    // Print it (Console and/or Log file)
-                    OpenWQ_output.ConsoleLog(
-                        OpenWQ_wqconfig,    // for Log file name
-                        msg_string,         // message
-                        true,               // print in console
-                        true);              // print in log file
-
-                    continue;
                 }
 
                 // Convert SS units
