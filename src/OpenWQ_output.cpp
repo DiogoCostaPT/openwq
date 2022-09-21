@@ -554,7 +554,7 @@ int OpenWQ_output::writeHDF5(
                         (icmp)
                         (OpenWQ_wqconfig.chem2print[ichem])
                         (ix,iy,iz)
-                    * unit_multiplers[0]                            // numerator unit conversion
+                    * unit_multiplers[0]          // numerator unit conversion
                     / (  water_vol_i              // water volume (= 1 if mass requested (and not conc))
                         * unit_multiplers [1] );  // denominator unit conversion 
 

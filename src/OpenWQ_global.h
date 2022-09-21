@@ -119,7 +119,7 @@ class OpenWQ_hostModelconfig
     // Water volume minimum limit (critical for concentration calculations)
     // to avoid concentration instabilities and numerical blowup
     // uses native units: m3
-    const double watervol_minlim = 0.01;
+    const double watervol_minlim = 1;
 
 };
 
