@@ -82,7 +82,7 @@ void OpenWQ_solver::Numerical_Solver(
                         // ####################################
                         // 3
                         // EWF (External Water Fluxes)
-                        // Discrete or continuous chemical load
+                        // Continuous load caused by external fluxes
 
                         dm_ewf = (*OpenWQ_vars.d_chemass_ewf)(icmp)(chemi)(ix,iy,iz);
                         // updating cumulative calc for output in debug mode
