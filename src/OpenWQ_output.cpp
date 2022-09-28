@@ -104,7 +104,7 @@ int OpenWQ_output::writeResults(
                     OpenWQ_json,
                     OpenWQ_hostModelconfig,
                     OpenWQ_wqconfig,
-                    OpenWQ_vars.d_chemass_dt_chem,
+                    OpenWQ_vars.d_chemass_dt_chem_out,
                     output_file_label,
                     timestr,
                     icmp);
@@ -115,7 +115,7 @@ int OpenWQ_output::writeResults(
                     OpenWQ_json,
                     OpenWQ_hostModelconfig,
                     OpenWQ_wqconfig,
-                    OpenWQ_vars.d_chemass_dt_transp,
+                    OpenWQ_vars.d_chemass_dt_transp_out,
                     output_file_label,
                     timestr,
                     icmp);
@@ -128,7 +128,7 @@ int OpenWQ_output::writeResults(
                     OpenWQ_json,
                     OpenWQ_hostModelconfig,
                     OpenWQ_wqconfig,
-                    OpenWQ_vars.d_chemass_ss,
+                    OpenWQ_vars.d_chemass_ss_out,
                     output_file_label,
                     timestr,
                     icmp);
@@ -141,7 +141,7 @@ int OpenWQ_output::writeResults(
                     OpenWQ_json,
                     OpenWQ_hostModelconfig,
                     OpenWQ_wqconfig,
-                    OpenWQ_vars.d_chemass_ewf,
+                    OpenWQ_vars.d_chemass_ewf_out,
                     output_file_label,
                     timestr,
                     icmp);
