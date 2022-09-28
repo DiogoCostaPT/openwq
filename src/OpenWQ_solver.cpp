@@ -32,7 +32,7 @@ void OpenWQ_solver::Numerical_Solver(
     unsigned int ix, iy, iz;    // interactive compartment domain cell indexes
     double dm_dt_chem;          // ineractive final derivative (mass) - chemistry transformations
     double dm_dt_trans;         // ineractive final derivative (mass) - transport
-    double dm_start;            // interactive dynamic change to state-variable at start of simulations
+    double dm_ic;            // interactive dynamic change to state-variable at start of simulations
     double dm_ss;               // interactive ss load/ink (mass)
     double dm_ewf;              // interactive ewf load/ink (mass)
 
@@ -41,7 +41,7 @@ void OpenWQ_solver::Numerical_Solver(
     // Compartment loop
     ##################################################### */
 
-    #pragma omp parallel for private (nx, ny, nz, ix, iy, iz, dm_start, dm_ss, dm_dt_chem, dm_dt_trans) num_threads(OpenWQ_wqconfig.num_threads_requested)
+    #pragma omp parallel for private (nx, ny, nz, ix, iy, iz, dm_ic, dm_ss, dm_dt_chem, dm_dt_trans) num_threads(OpenWQ_wqconfig.num_threads_requested)
     for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
 
         // Dimensions for compartment icmp
@@ -63,11 +63,11 @@ void OpenWQ_solver::Numerical_Solver(
                         //  (IC and input unit conversions)
                         if (OpenWQ_hostModelconfig.interaction_step == 1){
 
-                            dm_start = 
+                            dm_ic = 
                                 (*OpenWQ_vars.d_chemass_ic)(icmp)(chemi)(ix,iy,iz);
 
                         }else{
-                            dm_start = 0.0f;
+                            dm_ic = 0.0f;
                         };
 
                         // ####################################
@@ -111,8 +111,9 @@ void OpenWQ_solver::Numerical_Solver(
 
                         // Change state-variable
                         (*OpenWQ_vars.chemass)(icmp)(chemi)(ix,iy,iz) += 
-                            (dm_start               // Mass change due to IC (= to zero if not 1st timestep)
-                                + dm_ss           // Mass change due to SS input
+                            (   dm_ic               // Mass change due to IC (= to zero if not 1st timestep)
+                                + dm_ss             // Mass change due to SS input
+                                + dm_ewf            //
                                 + dm_dt_chem        // Mass change due to chemistry                            
                                 + dm_dt_trans);     // Mass change due to transport
 
