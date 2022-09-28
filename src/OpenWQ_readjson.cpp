@@ -681,7 +681,8 @@ void OpenWQ_readjson::SetConfigInfo(
     (OpenWQ_wqconfig.TE_module).append(TE_method_local);
 
     // Load information fo the method
-    if ((OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE") == 0 
+    if ((OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_ADVDISP") == 0 
+        || (OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_ADVP") == 0 
         || (OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_NO_ADVDISP") == 0){
         
         // Get Erodibility coeficients for native IntMob function 
