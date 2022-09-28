@@ -120,7 +120,7 @@ int OpenWQ_output::writeResults(
                     timestr,
                     icmp);
 
-                // ########### SS (isolated inputs) #############   
+                // ########### SS (sink and source loads) #############   
 
                 // Var: d_chemass_ss
                 output_file_label.assign("d_output_ss");
@@ -133,9 +133,22 @@ int OpenWQ_output::writeResults(
                     timestr,
                     icmp);
 
+                // ########### EWF (external water fluxes) #############   
+
+                // Var: d_chemass_ewf
+                output_file_label.assign("d_output_ewf");
+                OpenWQ_output::writeCSV(
+                    OpenWQ_json,
+                    OpenWQ_hostModelconfig,
+                    OpenWQ_wqconfig,
+                    OpenWQ_vars.d_chemass_ewf,
+                    output_file_label,
+                    timestr,
+                    icmp);
+
                 // ########### IC (just print once) #############   
 
-                // Var: d_chemass_ss
+                // Var: d_chemass_ic
                 if (OpenWQ_wqconfig.print_oneStep == true){
                     output_file_label.assign("d_output_ic");
                     OpenWQ_output::writeCSV(
@@ -230,9 +243,22 @@ int OpenWQ_output::writeResults(
                     timestr,
                     icmp);
 
+                // ########### EWF (isolated inputs) #############   
+
+                // Var: d_chemass_ewf
+                output_file_label.assign("d_output_ewf");
+                OpenWQ_output::writeHDF5(
+                    OpenWQ_json,
+                    OpenWQ_hostModelconfig,
+                    OpenWQ_wqconfig,
+                    OpenWQ_vars.d_chemass_ewf_out,
+                    output_file_label,
+                    timestr,
+                    icmp);
+
                 // ########### IC (just print once) #############   
 
-                // Var: d_chemass_ss
+                // Var: d_chemass_ic
                 if (OpenWQ_wqconfig.print_oneStep == true){
                     output_file_label.assign("d_output_ic");
                     OpenWQ_output::writeHDF5(

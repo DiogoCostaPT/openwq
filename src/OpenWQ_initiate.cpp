@@ -81,11 +81,13 @@ void OpenWQ_initiate::initmemory(
         (*OpenWQ_vars.d_chemass_dt_transp)(icmp) = domain_field;
         (*OpenWQ_vars.d_chemass_ic)(icmp) = domain_field;
         (*OpenWQ_vars.d_chemass_ss)(icmp) = domain_field;
+        (*OpenWQ_vars.d_chemass_ewf)(icmp) = domain_field;
 
         // Cumulative Derivatives (for export in debug mode)
         (*OpenWQ_vars.d_chemass_dt_chem_out)(icmp) = domain_field;
         (*OpenWQ_vars.d_chemass_dt_transp_out)(icmp) = domain_field;
         (*OpenWQ_vars.d_chemass_ss_out)(icmp) = domain_field;
+        (*OpenWQ_vars.d_chemass_ewf_out)(icmp) = domain_field;
 
         // Hydro model variables (water volumes for calc of concentrations)
         // Set them to ones in case concentrations are not requested

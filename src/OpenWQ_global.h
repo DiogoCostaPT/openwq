@@ -355,8 +355,15 @@ class OpenWQ_vars
                 arma::Cube<  // Dimensions: nx, ny, nz
                 double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
     
-            // Derivative (sink and source)
+            // Derivative (ss: sink or load)
             d_chemass_ss = std::unique_ptr<
+                arma::field< // Compartments
+                arma::field< // Chemical Species
+                arma::Cube<  // Dimensions: nx, ny, nz
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
+
+            // Derivative (ewf: external water flux)
+            d_chemass_ewf = std::unique_ptr<
                 arma::field< // Compartments
                 arma::field< // Chemical Species
                 arma::Cube<  // Dimensions: nx, ny, nz
@@ -389,13 +396,20 @@ class OpenWQ_vars
             // Single time, constant or isolated changes 
             // to state-variable
 
-            // Derivative (sink and source)
+            // Derivative (ss: sink and source)
             d_chemass_ss_out = std::unique_ptr<
                 arma::field< // Compartments
                 arma::field< // Chemical Species
                 arma::Cube<  // Dimensions: nx, ny, nz
                 double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
             
+            // Derivative (ewf: external water flux)
+            d_chemass_ewf_out = std::unique_ptr<
+                arma::field< // Compartments
+                arma::field< // Chemical Species
+                arma::Cube<  // Dimensions: nx, ny, nz
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
+
             // ############################################
             // External IN-fluxes
             // ############################################
@@ -423,10 +437,12 @@ class OpenWQ_vars
         d_chemass_dt_chem,          // derivative (chemistry)
         d_chemass_dt_transp,        // derivative (transport)
         d_chemass_ss,               // derivative (isolated) SS
+        d_chemass_ewf,              // derivative (isolated) EWF
         d_chemass_ic,               // derivative (at start) IC
-        d_chemass_dt_chem_out,      // cumulative derivative for output in ddebug model
-        d_chemass_dt_transp_out,    // cumulative derivative for output in ddebug model
-        d_chemass_ss_out,           // cumulative derivative for output in ddebug model
+        d_chemass_dt_chem_out,      // cumulative derivative for output in debug model
+        d_chemass_dt_transp_out,    // cumulative derivative for output in debug model
+        d_chemass_ss_out,           // cumulative derivative for output in debug model
+        d_chemass_ewf_out,          // cumulative derivative for output in debug model
         ewf_conc;                   // concentration of external water fluxes
 
 };

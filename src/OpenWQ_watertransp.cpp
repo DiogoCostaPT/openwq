@@ -91,7 +91,7 @@ void OpenWQ_watertransp::Adv_IN(
     // Set derivative for source and recipient 
     
     // Add Chemical mass flux to RECIPIENT 
-    (*OpenWQ_vars.d_chemass_dt_transp)(recipient)(chemi)(ix_r,iy_r,iz_r) 
+    (*OpenWQ_vars.d_chemass_ewf)(recipient)(chemi)(ix_r,iy_r,iz_r) 
         += chemass_flux_adv;
 
 }

@@ -57,6 +57,7 @@ function output_openwq_tscollect_all = read_OpenWQ_outputs(...
                        'd_output_dt_chemisry',...   % only in debug mode
                        'd_output_dt_transport',...  % only in debug mode
                        'd_output_ss',...            % only in debug mode
+                       'd_output_ewf',...           % only in debug mode
                        'd_output_ic'};              % only in debug mode
     
    % Get number of files to load

@@ -33,14 +33,15 @@ void OpenWQ_solver::Numerical_Solver(
     double dm_dt_chem;          // ineractive final derivative (mass) - chemistry transformations
     double dm_dt_trans;         // ineractive final derivative (mass) - transport
     double dm_start;            // interactive dynamic change to state-variable at start of simulations
-    double dm_inst;             // interactive instantaneous isolated changes to state-vsriable
+    double dm_ss;               // interactive ss load/ink (mass)
+    double dm_ewf;              // interactive ewf load/ink (mass)
 
 
     /* #####################################################
     // Compartment loop
     ##################################################### */
 
-    #pragma omp parallel for private (nx, ny, nz, ix, iy, iz, dm_start, dm_inst, dm_dt_chem, dm_dt_trans) num_threads(OpenWQ_wqconfig.num_threads_requested)
+    #pragma omp parallel for private (nx, ny, nz, ix, iy, iz, dm_start, dm_ss, dm_dt_chem, dm_dt_trans) num_threads(OpenWQ_wqconfig.num_threads_requested)
     for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
 
         // Dimensions for compartment icmp
@@ -71,12 +72,21 @@ void OpenWQ_solver::Numerical_Solver(
 
                         // ####################################
                         // 2
-                        // Instantaneous, isolated change to state-variable
-                        // Sink & Sources
+                        // SS (Sink & Sources)
+                        // Discrete or continuous chemical load
 
-                        dm_inst = (*OpenWQ_vars.d_chemass_ss)(icmp)(chemi)(ix,iy,iz);
+                        dm_ss = (*OpenWQ_vars.d_chemass_ss)(icmp)(chemi)(ix,iy,iz);
                         // updating cumulative calc for output in debug mode
-                        (*OpenWQ_vars.d_chemass_ss_out)(icmp)(chemi)(ix,iy,iz) += dm_inst;
+                        (*OpenWQ_vars.d_chemass_ss_out)(icmp)(chemi)(ix,iy,iz) += dm_ss;
+
+                        // ####################################
+                        // 3
+                        // EWF (External Water Fluxes)
+                        // Discrete or continuous chemical load
+
+                        dm_ewf = (*OpenWQ_vars.d_chemass_ewf)(icmp)(chemi)(ix,iy,iz);
+                        // updating cumulative calc for output in debug mode
+                        (*OpenWQ_vars.d_chemass_ewf_out)(icmp)(chemi)(ix,iy,iz) += dm_ewf;
 
                         // ####################################
                         // 4
@@ -102,7 +112,7 @@ void OpenWQ_solver::Numerical_Solver(
                         // Change state-variable
                         (*OpenWQ_vars.chemass)(icmp)(chemi)(ix,iy,iz) += 
                             (dm_start               // Mass change due to IC (= to zero if not 1st timestep)
-                                + dm_inst           // Mass change due to SS input
+                                + dm_ss           // Mass change due to SS input
                                 + dm_dt_chem        // Mass change due to chemistry                            
                                 + dm_dt_trans);     // Mass change due to transport
 
@@ -140,6 +150,7 @@ void OpenWQ_solver::Reset_Deriv(
                 // Reset derivatives of state-variables to zero after each time interaction
                 (*OpenWQ_vars.d_chemass_ic)(icmp)(chemi).zeros();
                 (*OpenWQ_vars.d_chemass_ss)(icmp)(chemi).zeros();
+                (*OpenWQ_vars.d_chemass_ewf)(icmp)(chemi).zeros();
                 (*OpenWQ_vars.d_chemass_dt_chem)(icmp)(chemi).zeros();
                 (*OpenWQ_vars.d_chemass_dt_transp)(icmp)(chemi).zeros();
 
@@ -161,6 +172,7 @@ void OpenWQ_solver::Reset_Deriv(
 
                 // Reset derivatives of state-variables to zero after each time interaction
                 (*OpenWQ_vars.d_chemass_ss_out)(icmp)(chemi).zeros();
+                (*OpenWQ_vars.d_chemass_ewf_out)(icmp)(chemi).zeros();
                 (*OpenWQ_vars.d_chemass_dt_chem_out)(icmp)(chemi).zeros();
                 (*OpenWQ_vars.d_chemass_dt_transp_out)(icmp)(chemi).zeros();
 
