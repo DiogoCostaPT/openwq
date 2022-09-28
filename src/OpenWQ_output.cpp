@@ -588,12 +588,6 @@ int OpenWQ_output::writeHDF5(
                     / (  water_vol_i              // water volume (= 1 if mass requested (and not conc))
                         * unit_multiplers [1] );  // denominator unit conversion 
 
-                //std::cout << "mass = " + std::to_string((*OpenWQ_var2print)
-                //        (icmp)
-                //        (OpenWQ_wqconfig.chem2print[ichem])
-                //        (ix,iy,iz)) << std::endl;
-                //std::cout << "conc = " + std::to_string(data2print(celli,0)) << std::endl;
-
             }else{
 
                 // Set as NaN because the concentration is not really zero,

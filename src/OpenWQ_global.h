@@ -392,19 +392,19 @@ class OpenWQ_vars
                 arma::Cube<  // Dimensions: nx, ny, nz
                 double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
 
+            // Derivative (ewf: external water flux)
+            d_chemass_ewf_out = std::unique_ptr<
+                arma::field< // Compartments
+                arma::field< // Chemical Species
+                arma::Cube<  // Dimensions: nx, ny, nz
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
+                
             // ############################################
             // Single time, constant or isolated changes 
             // to state-variable
 
             // Derivative (ss: sink and source)
             d_chemass_ss_out = std::unique_ptr<
-                arma::field< // Compartments
-                arma::field< // Chemical Species
-                arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
-            
-            // Derivative (ewf: external water flux)
-            d_chemass_ewf_out = std::unique_ptr<
                 arma::field< // Compartments
                 arma::field< // Chemical Species
                 arma::Cube<  // Dimensions: nx, ny, nz
