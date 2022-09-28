@@ -546,8 +546,12 @@ int OpenWQ_output::writeHDF5(
 
             // Save data to data2print datastructure
             // Set to zero if volume of water is smaller 
-            // than OpenWQ_hostModelconfig.watervol_minlim
-            if (water_vol_i > OpenWQ_hostModelconfig.watervol_minlim){
+            // than OpenWQ_hostModelconfig.watervol_minlim (only if requesting conc)
+            if (
+                (std::get<3>(OpenWQ_wqconfig.output_units) == true &&
+                water_vol_i > OpenWQ_hostModelconfig.watervol_minlim) 
+                || std::get<3>(OpenWQ_wqconfig.output_units) == false){
+            
             
                 data2print(celli,0) = 
                     (*OpenWQ_var2print)
@@ -557,6 +561,12 @@ int OpenWQ_output::writeHDF5(
                     * unit_multiplers[0]          // numerator unit conversion
                     / (  water_vol_i              // water volume (= 1 if mass requested (and not conc))
                         * unit_multiplers [1] );  // denominator unit conversion 
+
+                //std::cout << "mass = " + std::to_string((*OpenWQ_var2print)
+                //        (icmp)
+                //        (OpenWQ_wqconfig.chem2print[ichem])
+                //        (ix,iy,iz)) << std::endl;
+                //std::cout << "conc = " + std::to_string(data2print(celli,0)) << std::endl;
 
             }else{
 
