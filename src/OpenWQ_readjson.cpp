@@ -1052,8 +1052,8 @@ void OpenWQ_readjson::SetConfigInfo(
                 ["OPENWQ_OUTPUT"]["COMPARTMENTS_AND_CELLS"]
                 [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))];
 
-            // if "ALL_CELLS", then put true in cells2print_bool for compartment icmp
-            if(cells_input.compare("ALL_CELLS") == 0){
+            // if "all" (cells and compartments), then put true in cells2print_bool for compartment icmp
+            if(cells_input.compare("ALL") == 0){
 
                 // set print all true
                 OpenWQ_wqconfig.cells2print_bool.push_back(true);
@@ -1082,7 +1082,7 @@ void OpenWQ_readjson::SetConfigInfo(
                 }
             }else{
                 
-                // if entry is no "ALL_CELLS", 
+                // if entry is no "all" (cells), 
                 // then exclude from printing all (set print all false)
                 OpenWQ_wqconfig.cells2print_bool.push_back(false); 
 
