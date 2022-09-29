@@ -332,13 +332,14 @@ int OpenWQ_output::writeCSV(
     std::string filename;                   // iteractive output file name 
     std::vector<double> unit_multiplers;    // multipliers to convert units  
     double water_vol_i;                     // interactive water volume for calc of concentrations   
-
+    bool printflag;                         // flag for printing
     
     // Get number of cells to print for compartment icmp
     num_cells2print = OpenWQ_wqconfig.cells2print_vec.at(icmp).n_rows;
+    printflag = OpenWQ_wqconfig.cells2print_bool.at(icmp);
 
     // If nothing to prin, then exit
-    if (num_cells2print == 0){
+    if (printflag == false || num_cells2print == 0){
         return EXIT_SUCCESS;
     }
     
@@ -461,9 +462,18 @@ int OpenWQ_output::writeHDF5(
     std::vector<double> unit_multiplers;    // multipliers to convert units
     std::string units_string;               // units of output
     std::size_t it;                         // Iterator used to locate "/" symbol in units
-    double water_vol_i;                    // interactive water volume for calc of concentrationsdouble water_vol_i;                    // interactive water volume for calc of concentrations
+    double water_vol_i;                    // interactive water volume for calc of concentrationsdouble water_vol_i;                 
+    bool printflag;                         // flag for printing
+    
+    // Get number of cells to print for compartment icmp
+    num_cells2print = OpenWQ_wqconfig.cells2print_vec.at(icmp).n_rows;
+    printflag = OpenWQ_wqconfig.cells2print_bool.at(icmp);
 
-
+    // If nothing to prin, then exit
+    if (printflag == false || num_cells2print == 0){
+        return EXIT_SUCCESS;
+    }
+    
     // Compartment info
     CompName_icmp = std::get<1>(
         OpenWQ_hostModelconfig.HydroComp.at(icmp));  // name

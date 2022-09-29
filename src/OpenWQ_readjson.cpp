@@ -534,13 +534,13 @@ void OpenWQ_readjson::SetConfigInfo(
     std::string cells_input;                                // interactive string for cells input for each compartment
     arma::mat cells2print_cmpt;                             // cumulative vector with all cells to print for each compartment
     arma::mat cells2print_row(1,3,arma::fill::zeros);       // iteractive vector with cell x, y and z indexes
-    unsigned int ix_json;                                   // iteractive ix info for COMPARTMENTS_AND_CELLS cell data 
-    unsigned int iy_json;                                   // iteractive iy info for COMPARTMENTS_AND_CELLS cell data  
-    unsigned int iz_json;                                   // iteractive iz info for COMPARTMENTS_AND_CELLS cell data  
-    unsigned int nx;                                        // interactive nx inforationfor each compartment
-    unsigned int ny;                                        // interactive ny inforationfor each compartment
-    unsigned int nz;                                        // interactive nz inforationfor each compartment
-    unsigned int spX_min, spX_max, spY_min, spY_max, spZ_min, spZ_max; // range of ix, iy, iz of cells to print (if selected "all")
+    int ix_json;                                            // iteractive ix info for COMPARTMENTS_AND_CELLS cell data 
+    int iy_json;                                            // iteractive iy info for COMPARTMENTS_AND_CELLS cell data  
+    int iz_json;                                            // iteractive iz info for COMPARTMENTS_AND_CELLS cell data  
+    int nx;                                                 // interactive nx inforationfor each compartment
+    int ny;                                                 // interactive ny inforationfor each compartment
+    int nz;                                                 // interactive nz inforationfor each compartment
+    int spX_min, spX_max, spY_min, spY_max, spZ_min, spZ_max; // range of ix, iy, iz of cells to print (if selected "all")
     std::vector<int>::iterator it;                          // iteractor for flagging if compartment i has been selected for printing
     std::vector<double> unit_multiplers;                    // multiplers (numerator and denominator)
     bool volume_unit_flag;                                  // flag to note if denominator is a volume (needed for calculation of concentration in output)
@@ -1047,17 +1047,18 @@ void OpenWQ_readjson::SetConfigInfo(
         ny = std::get<3>(OpenWQ_hostModelconfig.HydroComp.at(icmp));
         nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icmp));
         
+        // first set default no print
+        // this gets true if loading of json input is sucessfull
+        OpenWQ_wqconfig.cells2print_bool.push_back(false);
+
         // Check if requesting to print "ALL_CELLS"
-        try{
+        try{ // try if string input
             cells_input = OpenWQ_json.Master
                 ["OPENWQ_OUTPUT"]["COMPARTMENTS_AND_CELLS"]
                 [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))];
 
             // if "all" (cells and compartments), then put true in cells2print_bool for compartment icmp
             if(cells_input.compare("ALL") == 0){
-
-                // set print all true
-                OpenWQ_wqconfig.cells2print_bool.push_back(true);
 
                 // Construct vector cells2print_vec with all x,y,z combinations
                 for (unsigned int iz=0;iz<nz;iz++){   
@@ -1081,13 +1082,9 @@ void OpenWQ_readjson::SetConfigInfo(
                         }
                     }
                 }
+
             }else{
                 
-                // if entry is no "all" (cells), 
-                // then exclude from printing all (set print all false)
-                OpenWQ_wqconfig.cells2print_bool.push_back(false); 
-
-
                 // Create Message (Warning Message)
                 msg_string = 
                     "<OpenWQ> WARNING: Unkown entry (" 
@@ -1102,15 +1099,14 @@ void OpenWQ_readjson::SetConfigInfo(
                     msg_string,         // message
                     true,               // print in console
                     true);              // print in log file
-                    }
 
+                // not a valid entry
                 continue;
+
+            } 
 
         // If not "ALL" (cells and compartments), then look for vectors with cell locations requested"
         }catch(...){
-
-            // Set no print all because specific cell for printing are provided
-            OpenWQ_wqconfig.cells2print_bool.push_back(false);
 
             // Get number of cell entries provided
             num_cells2print = OpenWQ_json.Master
@@ -1155,7 +1151,9 @@ void OpenWQ_readjson::SetConfigInfo(
                             true,               // print in console
                             true);              // print in log file
 
+                        // not a valid entry
                         continue;
+                        
                     }
                 }
 
@@ -1196,7 +1194,9 @@ void OpenWQ_readjson::SetConfigInfo(
                             true,               // print in console
                             true);              // print in log file
 
+                        // not a valid entry
                         continue;
+
                     }
                 }
 
@@ -1237,9 +1237,12 @@ void OpenWQ_readjson::SetConfigInfo(
                             true,               // print in console
                             true);              // print in log file
 
+                        // not a valid entry
                         continue;
+
                     }
                 }
+
                 // Check if cell requested is witin the boundaries of the spatial domain
                 // If yes, add the cell selected to cells2print_vec
                 // Otherwise, write warning message (skip entry)
@@ -1260,9 +1263,9 @@ void OpenWQ_readjson::SetConfigInfo(
                     // add cell requested to list to print for each compartment
                     // first create the vector cells2print_row with x, y and z values
                     // loop is to account for "all" entries
-                    for (unsigned int ix_j = spX_min; ix_j < spX_max; ix_j++){
-                        for (unsigned int iy_j = spY_min; iy_j < spY_max; iy_j++){
-                            for (unsigned int iz_j = spZ_min; iz_j < spZ_max; iz_j++){
+                    for (int ix_j = spX_min; ix_j < spX_max; ix_j++){
+                        for (int iy_j = spY_min; iy_j < spY_max; iy_j++){
+                            for (int iz_j = spZ_min; iz_j < spZ_max; iz_j++){
                                 
                                 cells2print_row(0,0) = ix_j;
                                 cells2print_row(0,1) = iy_j;
@@ -1295,6 +1298,9 @@ void OpenWQ_readjson::SetConfigInfo(
                         true,               // print in console
                         true);              // print in log file
 
+                    // not a valid entry
+                    continue;
+
                 }
                   
             }
@@ -1303,12 +1309,15 @@ void OpenWQ_readjson::SetConfigInfo(
 
         // Add the complete list of cells to print
         OpenWQ_wqconfig.cells2print_vec.push_back(cells2print_cmpt);
+        
+         // all went well in "try", so set print to true
+        OpenWQ_wqconfig.cells2print_bool[icmp] = true;
+
         // Clear cells2print_cmpt for reuse
         cells2print_cmpt.clear();
 
     }
 
-    
 }
 
 // Check if directory exists and create it
