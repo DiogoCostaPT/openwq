@@ -540,6 +540,7 @@ void OpenWQ_readjson::SetConfigInfo(
     unsigned int nx;                                        // interactive nx inforationfor each compartment
     unsigned int ny;                                        // interactive ny inforationfor each compartment
     unsigned int nz;                                        // interactive nz inforationfor each compartment
+    unsigned int spX_min, spX_max, spY_min, spY_max, spZ_min, spZ_max; // range of ix, iy, iz of cells to print (if selected "all")
     std::vector<int>::iterator it;                          // iteractor for flagging if compartment i has been selected for printing
     std::vector<double> unit_multiplers;                    // multiplers (numerator and denominator)
     bool volume_unit_flag;                                  // flag to note if denominator is a volume (needed for calculation of concentration in output)
@@ -1092,7 +1093,8 @@ void OpenWQ_readjson::SetConfigInfo(
                     "<OpenWQ> WARNING: Unkown entry (" 
                     + cells_input
                     + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
-                    + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp));
+                    + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
+                    + "(entry skipped";
 
                 // Print it (Console and/or Log file)
                 OpenWQ_output.ConsoleLog(
@@ -1102,8 +1104,9 @@ void OpenWQ_readjson::SetConfigInfo(
                     true);              // print in log file
                     }
 
+                continue;
 
-        // If not "ALL_CELLS", then look for vectors with cell locations requested"
+        // If not "ALL" (cells and compartments), then look for vectors with cell locations requested"
         }catch(...){
 
             // Set no print all because specific cell for printing are provided
@@ -1116,30 +1119,127 @@ void OpenWQ_readjson::SetConfigInfo(
 
             for (unsigned int celli = 0; celli < num_cells2print; celli++){
                 
-                // Get ix value
-                ix_json = OpenWQ_json.Master
-                    ["OPENWQ_OUTPUT"]["COMPARTMENTS_AND_CELLS"]
-                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
-                    [std::to_string(celli + 1)]
-                    .at(0);
-                ix_json --; // remove 1 to match c++ convention to start in zero
+                // Get ix value (as integer)
+                try{
+                    ix_json = OpenWQ_json.Master
+                        ["OPENWQ_OUTPUT"]["COMPARTMENTS_AND_CELLS"]
+                        [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                        [std::to_string(celli + 1)]
+                        .at(0);
+                    ix_json --; // remove 1 to match c++ convention to start in zero
+                
+                }catch(...){
+                    // if not integer, then check if "all"
+                    cells_input = OpenWQ_json.Master
+                        ["OPENWQ_OUTPUT"]["COMPARTMENTS_AND_CELLS"]
+                        [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                        [std::to_string(celli + 1)]
+                        .at(0);
+
+                    if (cells_input.compare("ALL")==0){
+                        // then, use "all" flag (=-1)
+                        ix_json = -1;
+
+                    }else{
+                        msg_string = 
+                            "<OpenWQ> WARNING: Unkown entry for ix (" 
+                            + cells_input
+                            + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
+                            + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
+                            + "(entry skipped)";
+
+                        // Print it (Console and/or Log file)
+                        OpenWQ_output.ConsoleLog(
+                            OpenWQ_wqconfig,    // for Log file name
+                            msg_string,         // message
+                            true,               // print in console
+                            true);              // print in log file
+
+                        continue;
+                    }
+                }
 
                 // Get iy value
-                iy_json = OpenWQ_json.Master
-                    ["OPENWQ_OUTPUT"]["COMPARTMENTS_AND_CELLS"]
-                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
-                    [std::to_string(celli + 1)]
-                    .at(1);
-                iy_json--;  // remove 1 to match c++ convention to start in zero
+                try{
+                    iy_json = OpenWQ_json.Master
+                        ["OPENWQ_OUTPUT"]["COMPARTMENTS_AND_CELLS"]
+                        [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                        [std::to_string(celli + 1)]
+                        .at(1);
+                    iy_json--;  // remove 1 to match c++ convention to start in zero
+                
+                }catch(...){
+
+                    // if not integer, then check if "all"
+                    cells_input = OpenWQ_json.Master
+                        ["OPENWQ_OUTPUT"]["COMPARTMENTS_AND_CELLS"]
+                        [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                        [std::to_string(celli + 1)]
+                        .at(1);
+
+                    if (cells_input.compare("ALL")==0){
+                        // then, use "all" flag (=-1)
+                        iy_json = -1;
+
+                    }else{
+                        msg_string = 
+                            "<OpenWQ> WARNING: Unkown entry for iy (" 
+                            + cells_input
+                            + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
+                            + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
+                            + "(entry skipped)";
+
+                        // Print it (Console and/or Log file)
+                        OpenWQ_output.ConsoleLog(
+                            OpenWQ_wqconfig,    // for Log file name
+                            msg_string,         // message
+                            true,               // print in console
+                            true);              // print in log file
+
+                        continue;
+                    }
+                }
 
                 // Get iz value
-                iz_json = OpenWQ_json.Master
-                    ["OPENWQ_OUTPUT"]["COMPARTMENTS_AND_CELLS"]
-                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
-                    [std::to_string(celli + 1)]
-                    .at(2);
-                iz_json --; // remove 1 to match c++ convention to start in zero
+                try{
+                    iz_json = OpenWQ_json.Master
+                        ["OPENWQ_OUTPUT"]["COMPARTMENTS_AND_CELLS"]
+                        [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                        [std::to_string(celli + 1)]
+                        .at(2);
+                    iz_json --; // remove 1 to match c++ convention to start in zero
 
+                }catch(...){
+
+                    // if not integer, then check if "all"
+                    cells_input = OpenWQ_json.Master
+                        ["OPENWQ_OUTPUT"]["COMPARTMENTS_AND_CELLS"]
+                        [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                        [std::to_string(celli + 1)]
+                        .at(2);
+
+                    if (cells_input.compare("ALL")==0){
+                        // then, use "all" flag (=-1)
+                        iz_json = -1;
+
+                    }else{
+                        msg_string = 
+                            "<OpenWQ> WARNING: Unkown entry for iz (" 
+                            + cells_input
+                            + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
+                            + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
+                            + "(entry skipped)";
+
+                        // Print it (Console and/or Log file)
+                        OpenWQ_output.ConsoleLog(
+                            OpenWQ_wqconfig,    // for Log file name
+                            msg_string,         // message
+                            true,               // print in console
+                            true);              // print in log file
+
+                        continue;
+                    }
+                }
                 // Check if cell requested is witin the boundaries of the spatial domain
                 // If yes, add the cell selected to cells2print_vec
                 // Otherwise, write warning message (skip entry)
@@ -1147,19 +1247,37 @@ void OpenWQ_readjson::SetConfigInfo(
                     && iy_json <= ny
                     && iz_json <= nz){
 
-                     // add cell requested to list to print for each compartment
+                    // ix
+                    if(ix_json != -1){spX_min = ix_json; spX_max = ix_json;}
+                    else{spX_min = 0; spX_max = nx - 1;}
+                    // iy
+                    if(iy_json != -1){spY_min = iy_json; spY_max = iy_json;}
+                    else{spY_min = 0; spY_max = ny - 1;}
+                    // iz
+                    if(iz_json != -1){spZ_min = iz_json; spZ_max = iz_json;}
+                    else{spZ_min = 0; spZ_max = nz - 1;}
+
+                    // add cell requested to list to print for each compartment
                     // first create the vector cells2print_row with x, y and z values
-                    cells2print_row(0,0) = ix_json;
-                    cells2print_row(0,1) = iy_json;
-                    cells2print_row(0,2) = iz_json;
+                    // loop is to account for "all" entries
+                    for (unsigned int ix_j = spX_min; ix_j < spX_max; ix_j++){
+                        for (unsigned int iy_j = spY_min; iy_j < spY_max; iy_j++){
+                            for (unsigned int iz_j = spZ_min; iz_j < spZ_max; iz_j++){
+                                
+                                cells2print_row(0,0) = ix_j;
+                                cells2print_row(0,1) = iy_j;
+                                cells2print_row(0,2) = iz_j;
 
-                    // add that cells2print_row to cells2print_cmpt
-                    cells2print_cmpt.insert_rows(
-                        cells2print_cmpt.n_rows,
-                        cells2print_row);
+                                // add that cells2print_row to cells2print_cmpt
+                                cells2print_cmpt.insert_rows(
+                                    cells2print_cmpt.n_rows,
+                                    cells2print_row);
 
-                    // clear cells2print_row for re-use
-                    cells2print_row.zeros();
+                                // clear cells2print_row for re-use
+                                cells2print_row.zeros();
+                            }
+                        }
+                    }
 
                 }else{
                     
