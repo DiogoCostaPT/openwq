@@ -70,10 +70,20 @@ The master configuration is a JSON file that provides OpenWQ with information an
 +----------------------------+-----------------------------------------------------------------------------------------------------+
 | ``COMPARTMENTS_AND_CELLS`` | Names of compartments and indices to output                                                         |
 +----------------------------+-----------------------------------------------------------------------------------------------------+
-| ``TIMESTEP``               | Temporal resolution of output file e.g., ``[1,"hour"]``                                             |
+| ``TIMESTEP``               | Temporal resolution of output file, e.g., ``[1,"hour"]``                                            |
 +----------------------------+-----------------------------------------------------------------------------------------------------+
 
+**Principal Keys 5**: ``COMPARTMENTS_AND_CELLS``
+
++------------------------------------------------------------+---------------------------------------------------------------------+
+| ``COMPARTMENTS_AND_CELLS`` -> ``<Compt_Name>`` -> ``"all"``| This will print all cells of the compartment                        |
++------------------------------------------------------------+---------------------------------------------------------------------+
+| ``COMPARTMENTS_AND_CELLS`` -> ``<Compt_Name>`` -> ``(i#)`` | ix, iy and iz cells locations, e.g., ``[1,"all","all"]``            |
++------------------------------------------------------------+---------------------------------------------------------------------+
+
 The JSON file supports C/C++ syntax for comments: single-line comment (``//``) or comment blocks (``/*`` and ``*/``).
+| Names of compartments and indices to output                                                         |
+
 The symbol ``(i#)`` refers to a integer number sequence.
 
 Example:
@@ -122,8 +132,12 @@ Example:
             "UNITS": "kg",
             "NO_WATER_CONC_FLAG": -9999,
             "COMPARTMENTS_AND_CELLS": {
-                "SCALARAQUIFER": {
-                    "1": [1, 1, 1]
+                "COMPART_1": "all",
+                "COMPART_2": {
+                    "1": [4, "all", 2],
+                },
+                "COMPART_3": {
+                    "1": [1, 20, 5],
                 }
             },
             "TIMESTEP": [1, "day"]

@@ -291,12 +291,28 @@
 <td><p>Names of compartments and indices to output</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TIMESTEP</span></code></p></td>
-<td><p>Temporal resolution of output file e.g., <code class="docutils literal notranslate"><span class="pre">[1,&quot;hour&quot;]</span></code></p></td>
+<td><p>Temporal resolution of output file, e.g., <code class="docutils literal notranslate"><span class="pre">[1,&quot;hour&quot;]</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Principal Keys 5</strong>: <code class="docutils literal notranslate"><span class="pre">COMPARTMENTS_AND_CELLS</span></code></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 47%" />
+<col style="width: 53%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">COMPARTMENTS_AND_CELLS</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">&lt;Compt_Name&gt;</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></td>
+<td><p>This will print all cells of the compartment</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">COMPARTMENTS_AND_CELLS</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">&lt;Compt_Name&gt;</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">(i#)</span></code></p></td>
+<td><p>ix, iy and iz cells locations, e.g., <code class="docutils literal notranslate"><span class="pre">[1,&quot;all&quot;,&quot;all&quot;]</span></code></p></td>
 </tr>
 </tbody>
 </table>
 <p>The JSON file supports C/C++ syntax for comments: single-line comment (<code class="docutils literal notranslate"><span class="pre">//</span></code>) or comment blocks (<code class="docutils literal notranslate"><span class="pre">/*</span></code> and <code class="docutils literal notranslate"><span class="pre">*/</span></code>).
-The symbol <code class="docutils literal notranslate"><span class="pre">(i#)</span></code> refers to a integer number sequence.</p>
+| Names of compartments and indices to output                                                         |</p>
+<p>The symbol <code class="docutils literal notranslate"><span class="pre">(i#)</span></code> refers to a integer number sequence.</p>
 <p>Example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="nt">&quot;PROJECT_NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;My_Project&quot;</span><span class="p">,</span>
@@ -340,8 +356,12 @@ The symbol <code class="docutils literal notranslate"><span class="pre">(i#)</sp
         <span class="nt">&quot;UNITS&quot;</span><span class="p">:</span> <span class="s2">&quot;kg&quot;</span><span class="p">,</span>
         <span class="nt">&quot;NO_WATER_CONC_FLAG&quot;</span><span class="p">:</span> <span class="mi">-9999</span><span class="p">,</span>
         <span class="nt">&quot;COMPARTMENTS_AND_CELLS&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;SCALARAQUIFER&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="nt">&quot;COMPART_1&quot;</span><span class="p">:</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;COMPART_2&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="p">},</span>
+            <span class="nt">&quot;COMPART_3&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
             <span class="p">}</span>
         <span class="p">},</span>
         <span class="nt">&quot;TIMESTEP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;day&quot;</span><span class="p">]</span>
