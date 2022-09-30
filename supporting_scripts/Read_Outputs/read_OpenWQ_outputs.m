@@ -39,10 +39,8 @@
 function output_openwq_tscollect_all = read_OpenWQ_outputs(...
     openwq_readfuncs_dir,...    % Fullpath for needed functions
     folderpath,...              % Provide fullpath to directory where the HDF5 files are located
-    plot_elemt_flag,...         % Flag to specify if to plot variables
     extractElm_info,...         % If the flag above is 1, then provide details about the variables to plot
     OpenWQ_output_format,...    % Output format
-    openwq_noWaterConcFlag,...  % No water concentration flag in openwq
     OpenWQ_output_debugmode)    % Debug mode
 
     % Disable Latex interpreter
@@ -115,19 +113,7 @@ function output_openwq_tscollect_all = read_OpenWQ_outputs(...
         output_openwq_tscollect_all{f,2} = output_openwq_tscollect;
         
         
-    end
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Plot elements
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    if plot_elemt_flag
-
-        % plot requested data defined in plotElm_info
-        plot_OpenWQ_outputs(...
-            output_openwq_tscollect_all,...
-            openwq_noWaterConcFlag);
-
-    end
+   end
 
 end
 
