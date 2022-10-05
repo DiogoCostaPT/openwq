@@ -1068,9 +1068,9 @@ void OpenWQ_readjson::SetConfigInfo(
             if(cells_input.compare("ALL") == 0){
 
                 // Construct vector cells2print_vec with all x,y,z combinations
-                for (unsigned int iz=0;iz<nz;iz++){   
-                    for (unsigned int iy=0;iy<ny;iy++){
-                        for (unsigned int ix=0;ix<nx;ix++){
+                for (int iz=0;iz<nz;iz++){   
+                    for (int iy=0;iy<ny;iy++){
+                        for (int ix=0;ix<nx;ix++){
                         
                             // add cell requested to list to print for each compartment
                             // first create the vector cells2print_row with x, y and z values
