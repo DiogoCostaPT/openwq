@@ -26,6 +26,9 @@ function plot_OpenWQ_outputs_ConcX_ZProfileY_perTime(...
     
     % Extracting requestProfileAPI_raw container
     requestProfileAPI_raw_profile = requestProfileAPI_raw('Profile');
+    requestProfileAPI_Axis = requestProfileAPI_raw('ReverseAxis_XY');
+    requestProfileAPI_XaxisRev = requestProfileAPI_Axis{1};
+    requestProfileAPI_YaxisRev = requestProfileAPI_Axis{2};
     requestProfileAPI_timestamps = requestProfileAPI_raw('TimeStamps');
     
     % API request: Convert to char and remove all whitespaces
@@ -202,8 +205,18 @@ function plot_OpenWQ_outputs_ConcX_ZProfileY_perTime(...
                 hold on
                 plot(ts.data_save_final(TimeStamps_Loc(l),ProfileCells_Loc),...
                      1:1:nelemProfile,...
-                     '-o')
+                     '-o');
+                 
+                % Reverse axis if requested
+                if(requestProfileAPI_XaxisRev == true)
+                    set(gca, 'Xdir', 'reverse'); 
+                end
+                if(requestProfileAPI_YaxisRev == true)
+                    set(gca, 'Ydir', 'reverse'); 
+                end
             end
+            
+            
             
             % Grind and labels
             grid on
