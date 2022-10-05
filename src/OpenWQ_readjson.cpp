@@ -550,6 +550,80 @@ void OpenWQ_readjson::SetConfigInfo(
     std::string msg_string;                                 // error/warning message string
     
     // ########################################
+    // Log file
+    // ########################################
+
+    // Create Log file name with full or relative path
+    OpenWQ_wqconfig.LogFile_name.insert(0,"/");
+    OpenWQ_wqconfig.LogFile_name.insert(0,
+        OpenWQ_json.Master["OPENWQ_OUTPUT"]["RESULTS_FOLDERPATH"]);
+
+    // Create log file
+    std::ofstream outfile (OpenWQ_wqconfig.LogFile_name);
+
+    // ###############
+    // Write header in log file
+
+    // Separator
+    msg_string.clear();
+    msg_string = "\n ############################## \n";
+    OpenWQ_output.ConsoleLog(
+        OpenWQ_wqconfig,    // for Log file name
+        msg_string, // message
+        false,              // print in console
+        true);              // print in log file
+
+    // PROJECT_NAME
+    msg_string.clear();
+    msg_string = "PROJECT_NAME: ";
+    msg_string.append(OpenWQ_json.Master["PROJECT_NAME"]);
+    OpenWQ_output.ConsoleLog(
+        OpenWQ_wqconfig,    // for Log file name
+        msg_string, // message
+        false,              // print in console
+        true);              // print in log file
+
+    // GEOGRAPHICAL_LOCATION
+    msg_string.clear();
+    msg_string = "GEOGRAPHICAL_LOCATION: ";
+    msg_string.append(OpenWQ_json.Master["GEOGRAPHICAL_LOCATION"]);
+    OpenWQ_output.ConsoleLog(
+        OpenWQ_wqconfig,    // for Log file name
+        msg_string, // message
+        false,              // print in console
+        true);              // print in log file
+    
+    // AUTHORS
+    msg_string.clear();
+    msg_string = "AUTHORS: ";
+    msg_string.append(OpenWQ_json.Master["AUTHORS"]);
+    OpenWQ_output.ConsoleLog(
+        OpenWQ_wqconfig,    // for Log file name
+        msg_string, // message
+        false,              // print in console
+        true);              // print in log file
+
+    // DATE
+    msg_string.clear();
+    msg_string = "DATE: ";
+    msg_string.append(OpenWQ_json.Master["DATE"]);
+    OpenWQ_output.ConsoleLog(
+        OpenWQ_wqconfig,    // for Log file name
+        msg_string, // message
+        false,              // print in console
+        true);              // print in log file
+
+    // Separator
+    msg_string.clear();
+    msg_string = "\n ##############################\n ";
+    OpenWQ_output.ConsoleLog(
+        OpenWQ_wqconfig,    // for Log file name
+        msg_string, // message
+        false,              // print in console
+        true);              // print in log file
+
+
+    // ########################################
     // COMPUTATION SETTINGS
     // ########################################
 
