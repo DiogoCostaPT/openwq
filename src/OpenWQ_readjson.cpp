@@ -534,6 +534,7 @@ void OpenWQ_readjson::SetConfigInfo(
     std::string cells_input;                                // interactive string for cells input for each compartment
     arma::mat cells2print_cmpt;                             // cumulative vector with all cells to print for each compartment
     arma::mat cells2print_row(1,3,arma::fill::zeros);       // iteractive vector with cell x, y and z indexes
+    bool noValPrintRequest_flag;                            // flag to through message if no valid compartments/cells have been selected for printing
     int ix_json;                                            // iteractive ix info for COMPARTMENTS_AND_CELLS cell data 
     int iy_json;                                            // iteractive iy info for COMPARTMENTS_AND_CELLS cell data  
     int iz_json;                                            // iteractive iz info for COMPARTMENTS_AND_CELLS cell data  
@@ -1024,6 +1025,12 @@ void OpenWQ_readjson::SetConfigInfo(
 
     // ########################################
     // Cells to print 
+
+    // Set noValPrintRequest_flag to default false
+    // if no valid request are found, then this will remain false and a warning message will be sent
+    // otherwise, this will change to true and all is good
+    noValPrintRequest_flag = false;
+
     // Check what cells to print for each viable (compt2print) compartment requested
     for (unsigned int icmp = 0; icmp < OpenWQ_hostModelconfig.num_HydroComp; icmp++){
 
@@ -1263,9 +1270,9 @@ void OpenWQ_readjson::SetConfigInfo(
                     // add cell requested to list to print for each compartment
                     // first create the vector cells2print_row with x, y and z values
                     // loop is to account for "all" entries
-                    for (int ix_j = spX_min; ix_j < spX_max; ix_j++){
-                        for (int iy_j = spY_min; iy_j < spY_max; iy_j++){
-                            for (int iz_j = spZ_min; iz_j < spZ_max; iz_j++){
+                    for (int ix_j = spX_min; ix_j <= spX_max; ix_j++){
+                        for (int iy_j = spY_min; iy_j <= spY_max; iy_j++){
+                            for (int iz_j = spZ_min; iz_j <= spZ_max; iz_j++){
                                 
                                 cells2print_row(0,0) = ix_j;
                                 cells2print_row(0,1) = iy_j;
@@ -1311,10 +1318,32 @@ void OpenWQ_readjson::SetConfigInfo(
         OpenWQ_wqconfig.cells2print_vec.push_back(cells2print_cmpt);
         
          // all went well in "try", so set print to true
-        OpenWQ_wqconfig.cells2print_bool[icmp] = true;
+         // and noValPrintRequest_flag to true
+        if(cells2print_cmpt.is_empty() == false){
+            OpenWQ_wqconfig.cells2print_bool[icmp] = true;
+            noValPrintRequest_flag = true;
+        }
 
         // Clear cells2print_cmpt for reuse
         cells2print_cmpt.clear();
+
+    }
+
+    // If no valid output request are found, then through a warning message
+    if (noValPrintRequest_flag == false){
+
+        // Create Message (Error - locate problematic cell)
+        msg_string = 
+            "<OpenWQ> WARNING: No 'COMPARTMENTS_AND_CELLS' requests have been found. "
+            "The model will not print any results. "
+            "Revise the 'OPENWQ_OUTPUT' keys in the master-json file and try again.";
+
+        // Print it (Console and/or Log file)
+        OpenWQ_output.ConsoleLog(
+            OpenWQ_wqconfig,    // for Log file name
+            msg_string,         // message
+            true,               // print in console
+            true);              // print in log file
 
     }
 
