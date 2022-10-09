@@ -5,9 +5,9 @@ openWQ aims to enable a more flexible representation of local and global nuances
 
 OpenWQ addresses three main challenges with existing biogeochemical and water quality models:
 
-* ``Structural rigidity`` that hinder the effective use of models across landscapes and in complex, diverse environments (permafrost, peatlands, variable contributing areas) that require more investigative, open-ended, and interactive simulation approaches;
-* ``Hydro-flux calculations`` embedded in these modelling tools are often outdated, or limited, when compared to dedicated, disciplinary hydro-models (e.g., hydrologiocal or hydrodynamic modelling tools); and
-* ``Uncertainty`` in model structure, process representation, and future scenarios (e.g., climate change) cannot be properly addressed because the current models are not suitable for adequate testing of modelling hypothesis.
+* ``Structural rigidity`` that hinders the effective use of models across landscapes and in complex, diverse environments (permafrost, peatlands, variable contributing areas) that require more investigative, open-ended, and interactive simulation approaches;
+* ``Hydro-flux calculations`` embedded in these modelling tools are often outdated or limited when compared to dedicated, disciplinary hydro-models (e.g., hydrological or hydrodynamic modelling tools); and
+* ``Uncertainty`` in model structure, process representation, and future scenarios (e.g., climate change) cannot be properly addressed because the current models are not suitable for adequate testing of modelling hypotheses.
 
 ..
     Structural rigidity
