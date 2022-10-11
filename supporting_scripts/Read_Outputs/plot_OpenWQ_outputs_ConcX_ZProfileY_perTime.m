@@ -26,6 +26,7 @@ function plot_OpenWQ_outputs_ConcX_ZProfileY_perTime(...
     
     % Extracting requestProfileAPI_raw container
     requestProfileAPI_raw_profile = requestProfileAPI_raw('Profile');
+    requestProfileAPI_raw_layer_m_interv = requestProfileAPI_raw('layer_m_interval');
     requestProfileAPI_Axis = requestProfileAPI_raw('ReverseAxis_XY');
     requestProfileAPI_XaxisRev = requestProfileAPI_Axis{1};
     requestProfileAPI_YaxisRev = requestProfileAPI_Axis{2};
@@ -204,7 +205,7 @@ function plot_OpenWQ_outputs_ConcX_ZProfileY_perTime(...
             for l = 1:num_elem2print    
                 hold on
                 plot(ts.data_save_final(TimeStamps_Loc(l),ProfileCells_Loc),...
-                     1:1:nelemProfile,...
+                     (1:1:nelemProfile)*requestProfileAPI_raw_layer_m_interv,...
                      '-o');
                  
                 % Reverse axis if requested

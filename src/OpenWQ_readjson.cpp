@@ -246,12 +246,14 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
     std::string old_jsonkey_layer_3;
     std::string old_jsonkey_layer_4;
     std::string old_jsonkey_layer_5;
+    std::string old_jsonkey_layer_6;
 
     std::string new_jsonkey_layer_1;
     std::string new_jsonkey_layer_2;
     std::string new_jsonkey_layer_3;
     std::string new_jsonkey_layer_4;
     std::string new_jsonkey_layer_5;
+    std::string new_jsonkey_layer_6;
     
     // ########################################
     // Identify all keys in JSON tree data and replace ny upper case keys
@@ -320,7 +322,7 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                 continue;
                             }
 
-                            // -------------> Third possible layer of keys
+                            // -------------> Fourth possible layer of keys
                             for (auto& x4 : jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3].items()){
                                     
                                 try{
@@ -343,7 +345,7 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                     continue;
                                     }   
 
-                                    // -------------> Fourth possible layer of keys
+                                    // -------------> Fifth possible layer of keys
                                     for (auto& x5 : jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3][new_jsonkey_layer_4].items()){
                             
                                         try{
@@ -364,6 +366,33 @@ void OpenWQ_readjson::ConvertJSONtext_2upperCase(
                                                 jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3],
                                                 new_jsonkey_layer_4);
                                                 continue;
+                                            }
+
+                                            // -------------> Sixth possible layer of keys
+                                            for (auto& x6 : jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3][new_jsonkey_layer_4][new_jsonkey_layer_5].items()){
+                                
+                                                try{
+                                                
+                                                    old_jsonkey_layer_6 = x6.key();
+
+                                                    if (!old_jsonkey_layer_6.empty() && // if not null
+                                                        jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3][new_jsonkey_layer_4][new_jsonkey_layer_5].type() != json::value_t::array){ // and not array
+                                                        
+                                                        OpenWQ_readjson::change_JSON_key_to_upper_case(
+                                                            OpenWQ_utils,
+                                                            jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3][new_jsonkey_layer_4][new_jsonkey_layer_5], 
+                                                            old_jsonkey_layer_6,
+                                                            new_jsonkey_layer_6);
+                                                    }else{
+                                                        OpenWQ_readjson::change_JSON_value_to_upper_case(
+                                                        OpenWQ_utils,
+                                                        jsondata[new_jsonkey_layer_1][new_jsonkey_layer_2][new_jsonkey_layer_3][new_jsonkey_layer_4],
+                                                        new_jsonkey_layer_5);
+                                                        continue;
+                                                    }
+
+                                                }catch (...){}
+                                                
                                             }
 
                                         }catch (...){}

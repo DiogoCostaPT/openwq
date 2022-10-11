@@ -329,7 +329,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 try{
 
                     // try entry as int
-                    int entryVal; // dummy variable
+                    int entryVal = 0; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -345,7 +345,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 }catch(...){
 
                     // try as string for the cases where entry is "all"
-                    std::string entryVal; // dummy variable
+                    std::string entryVal = ""; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -375,7 +375,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 try{
 
                     // try entry as int
-                    int entryVal; // dummy variable
+                    int entryVal = 0; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -391,7 +391,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 }catch(...){
 
                     // try as string for the cases where entry is "all"
-                    std::string entryVal; // dummy variable
+                    std::string entryVal = ""; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -422,7 +422,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 try{
 
                     // try entry as int
-                    int entryVal; // dummy variable
+                    int entryVal = 0; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -438,7 +438,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 }catch(...){
 
                     // try as string for the cases where entry is "all"
-                    std::string entryVal; // dummy variable
+                    std::string entryVal = ""; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -469,7 +469,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 try{
 
                     // try entry as int
-                    int entryVal; // dummy variable
+                    int entryVal = 0; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -485,7 +485,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 }catch(...){
 
                     // try as string for the cases where entry is "all"
-                    std::string entryVal; // dummy variable
+                    std::string entryVal = ""; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -516,7 +516,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 try{
 
                     // try entry as int
-                    int entryVal; // dummy variable
+                    int entryVal = 0; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -532,7 +532,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 }catch(...){
 
                     // try as string for the cases where entry is "all"
-                    std::string entryVal; // dummy variable
+                    std::string entryVal = ""; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -563,7 +563,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 try{
 
                     // try entry as int
-                    int entryVal; // dummy variable
+                    int entryVal = 0; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -579,7 +579,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 }catch(...){
 
                     // try as string for the cases where entry is "all"
-                    std::string entryVal; // dummy variable
+                    std::string entryVal = ""; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -612,7 +612,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 try{
 
                     // try entry as int
-                    int entryVal; // dummy variable
+                    int entryVal = 0; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -653,7 +653,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 }catch(...){
 
                     // try as string for the cases where entry is "all"
-                    std::string entryVal; // dummy variable
+                    std::string entryVal = ""; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -684,7 +684,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 try{
 
                     // try entry as int
-                    int entryVal; // dummy variable
+                    int entryVal = 0; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -725,7 +725,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 }catch(...){
 
                     // try as string for the cases where entry is "all"
-                    std::string entryVal; // dummy variable
+                    std::string entryVal = ""; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -756,7 +756,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 try{
 
                     // try entry as int
-                    int entryVal; // dummy variable
+                    int entryVal = 0; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -797,7 +797,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 }catch(...){
 
                     // try as string for the cases where entry is "all"
-                    std::string entryVal; // dummy variable
+                    std::string entryVal = ""; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -826,7 +826,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 // cannot have negative values
                 // ###################
 
-                double entryVal; // dummy variable
+                double entryVal = 0.0f; // dummy variable
                 // if JSON
                 if (DataFormat.compare("JSON")==0){
                     entryVal = EWF_SS_json 
@@ -874,7 +874,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 try{
 
                     // try as string for the cases where entry is "all"
-                    std::string entryVal; // dummy variable
+                    std::string entryVal = ""; // dummy variable
                     // if JSON
                     if (DataFormat.compare("JSON")==0){
                         entryVal = EWF_SS_json 
@@ -919,7 +919,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                             // get time units
                             try{
 
-                                std::string entryVal; // dummy variable
+                                std::string entryVal = ""; // dummy variable
                                 // if JSON
                                 if (DataFormat.compare("JSON")==0){
                                     entryVal = EWF_SS_json 

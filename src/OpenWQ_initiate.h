@@ -58,11 +58,7 @@ class OpenWQ_initiate{
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output,
-        const int icmp,
-        const int ix,
-        const int iy,
-        const int iz,
-        double i_volume);    // all calculations assume unit = m3
+        const int icmp);
 
     // Update time variables
     void setTimeVars(
