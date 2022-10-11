@@ -201,7 +201,7 @@ void OpenWQ_initiate::setIC(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_units& OpenWQ_units,
     OpenWQ_output& OpenWQ_output,
-    const int icmp){    // volume (water or soil)
+    const int icmp){
 
     // Local variables
     int nx, ny, nz;                    // interactive compartment domain dimensions       
@@ -241,10 +241,7 @@ void OpenWQ_initiate::setIC(
 
         // First default all IC chemical mass to zero, 
         // so that then we just need to change the ic entries requested
-        (*OpenWQ_vars.d_chemass_ic)(icmp)(chemi)(
-            arma::span(0, nx-1), 
-            arma::span(0, ny-1),
-            arma::span(0, nz-1)) = 0.0f;
+        (*OpenWQ_vars.d_chemass_ic)(icmp)(chemi).zeros();
 
         // Get tuple with IC information for compartment CompName_icmp and chemical chemname
         // If not found in compartment icmp, it's because IC were not defined - set to zero.
