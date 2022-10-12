@@ -35,6 +35,9 @@ void OpenWQ_watertransp::Adv(
     double chemass_flux_adv;
     unsigned int ichem_mob;
 
+    // Return if no flux: wflux_s2r == 0
+    if(wflux_s2r == 0.0f){return;}
+
     // CHANGE THE LINE BELOW: see my notes -> there should be no icmp because all compartments should have the same number of mobile species
     unsigned int numspec = OpenWQ_wqconfig.BGC_general_mobile_species.size();
 
@@ -82,6 +85,9 @@ void OpenWQ_watertransp::Adv_IN(
     // Local variables
     double chemass_flux_adv;
 
+    // Return if no flux: wflux_s2r == 0
+    if(wflux_s2r == 0.0f){return;}
+
     // Chemical mass flux between source and recipient (Advection)
     chemass_flux_adv = 
         wflux_s2r
@@ -110,6 +116,9 @@ void OpenWQ_watertransp::AdvDisp(
 
     double chemass_flux_adv;
     unsigned int ichem_mob;
+
+    // Return if no flux: wflux_s2r == 0
+    if(wflux_s2r == 0.0f){return;}
 
     // CHANGE THE LINE BELOW: see my notes -> there should be no icmp because all compartments should have the same number of mobile species
     unsigned int numspec = OpenWQ_wqconfig.BGC_general_mobile_species.size();
@@ -162,6 +171,9 @@ void OpenWQ_watertransp::IntMob(
 
     // Internal Variables
     double chemass_flux;
+
+    // Return if no flux: wflux_s2r == 0
+    if(wflux_s2r == 0.0f){return;}
 
     // Loop for immobile chemical species
     for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_num_chem;chemi++){
@@ -216,7 +228,6 @@ void OpenWQ_watertransp::BoundMix(
     double wflux_s2r, 
     double wmass_source){
     
-    
     // Local Variables
     double chemass_exchange_upper_comprt;
     double chemass_exchange_lower_comprt;
@@ -240,6 +251,8 @@ void OpenWQ_watertransp::BoundMix(
     if (source != recipient)
         return;
 
+    // Return if no flux: wflux_s2r == 0
+    if(wflux_s2r == 0.0f){return;}
 
     for (unsigned int entry_i = 0; entry_i < OpenWQ_wqconfig.OpenWQ_TE_native_BoundMix_info.size(); entry_i++){
 
