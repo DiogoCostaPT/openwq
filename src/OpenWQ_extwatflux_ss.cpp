@@ -1144,7 +1144,6 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
             HH,           // current model step: hour
             MIN,          // current model step: min
             SEC           // current model step: sec
-
         );
 
     }
@@ -1848,7 +1847,30 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             if (all_HH_flag){increm4 = 1;}
             if (all_DD_flag){increm3 = 2;}
             if (all_MM_flag){increm2 = 2;}
-        //}else if (YYYY_json == YYYY){
+        }else if (!all_YYYY_flag & (YYYY_json == YYYY) 
+              && (!all_MM_flag & (MM_json > MM))){
+            if (all_SEC_flag){increm6 = 1;}
+            if (all_MIN_flag){increm5 = 1;}
+            if (all_HH_flag){increm4 = 1;}
+            if (all_DD_flag){increm3 = 2;}
+        }else if (!all_YYYY_flag & (YYYY_json == YYYY) 
+              && (!all_MM_flag & (MM_json == MM))
+              && (!all_DD_flag & (DD_json == DD))){
+            if (all_SEC_flag){increm6 = 1;}
+            if (all_MIN_flag){increm5 = 1;}
+            if (all_HH_flag){increm4 = 1;}
+        }else if (!all_YYYY_flag & (YYYY_json == YYYY) 
+              && (!all_MM_flag & (MM_json == MM))
+              && (!all_DD_flag & (DD_json == DD))
+              && (!all_HH_flag & (HH_json == HH))){
+            if (all_SEC_flag){increm6 = 1;}
+            if (all_MIN_flag){increm5 = 1;}
+        }else if (!all_YYYY_flag & (YYYY_json == YYYY) 
+              && (!all_MM_flag & (MM_json == MM))
+              && (!all_DD_flag & (DD_json == DD))
+              && (!all_HH_flag & (HH_json == HH))
+              && (!all_MIN_flag & (MIN_json == MIN))){
+            if (all_SEC_flag){increm6 = 1;}
         }else{
             // if YYYY_json is in same year as YYYY, then we need to look for the closest month, day, hour and mib
             if (all_SEC_flag){increm6 = SEC - SEC_json;}
