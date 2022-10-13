@@ -219,9 +219,10 @@ function plot_OpenWQ_outputs_ConcX_ZProfileY_perTime(...
             
             
             
-            % Grind and labels
+            % Grnd and labels
             grid on
-            ylabel(tsnames_i,...
+            ylabel([requestProfileAPI_raw_profile(1), ' (m)'])
+            xlabel(tsnames_i,...
                 'Interpreter', 'none')
             
             % Prepare legend
