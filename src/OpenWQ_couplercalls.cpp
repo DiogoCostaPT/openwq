@@ -163,6 +163,15 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
         true,       // reset inst derivatives
         false);     // reset cumulative derivatives
 
+    // ########################################
+    // Reset EWF conc 
+    // Specially needed for discrete conc requests
+    // ########################################
+    OpenWQ_solver.Reset_EWFconc(
+        OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig,
+        OpenWQ_vars);
+
 
     // ########################################
     // Update all time vars

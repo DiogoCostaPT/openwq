@@ -183,3 +183,28 @@ void OpenWQ_solver::Reset_Deriv(
     }
 
 }
+
+// ########################################
+// Reset EWF conc 
+// // Specially needed for discrete conc requests
+// ########################################
+void OpenWQ_solver::Reset_EWFconc(
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_vars& OpenWQ_vars){
+
+    // Compartment loop
+    #pragma omp parallel for collapse(2) num_threads(OpenWQ_wqconfig.num_threads_requested)
+    for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.num_EWF;ewfi++){
+
+        // Chemical loop
+        for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){
+
+            // Reset ewf_conc after each iteraction
+            // Specially needed for discrete conc requests
+            (*OpenWQ_vars.ewf_conc)(ewfi)(chemi).zeros();
+
+        }
+
+    }
+}

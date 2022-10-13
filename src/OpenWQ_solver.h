@@ -39,6 +39,12 @@ class OpenWQ_solver{
         bool inst_deriv_flag,
         bool cum_deriv_flag);
 
+    // Reset EWF conc (before each time iteraction)
+    void Reset_EWFconc(
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_vars& OpenWQ_vars);
+
 };
 
 #endif
