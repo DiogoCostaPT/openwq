@@ -587,12 +587,7 @@ int OpenWQ_output::writeHDF5(
                 (std::get<3>(OpenWQ_wqconfig.output_units) == true &&
                 water_vol_i > OpenWQ_hostModelconfig.watervol_minlim) 
                 || std::get<3>(OpenWQ_wqconfig.output_units) == false){
-            
-                //std::cout << std::to_string((*OpenWQ_var2print)
-                //        (icmp)
-                //        (OpenWQ_wqconfig.chem2print[ichem])
-                //        (ix,iy,iz)) << std::endl;
-
+             
                 data2print(celli,0) = 
                     (*OpenWQ_var2print)
                         (icmp)
