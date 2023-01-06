@@ -531,8 +531,10 @@ elseif("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
 
                 # Declare use of multiple Languages
                 project("${COMPILE_TARGET}" LANGUAGES CXX Fortran)
+
                 # C needs to be enables
                 enable_language(C)
+                
                 # Verify language compilers can talk to each other
                 include(FortranCInterface)
                 FortranCInterface_VERIFY(CXX)
@@ -611,11 +613,15 @@ elseif("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                         )
 
                 set(CMAKE_CXX_STANDARD 17)
+
+                if("${COMPILE_MODE}" STREQUAL "debug")
+                        set(CMAKE_Fortran_FLAGS "-g -Wall -fmax-errors=0 -fbacktrace -fcheck=all -ffpe-trap=zero -ffree-line-length-none $(FLAGS_OMP) -lstdc++")
+                elseif("${COMPILE_MODE}" STREQUAL "fast")
+                        set(CMAKE_Fortran_FLAGS "-O3 -fmax-errors=0 -ffree-line-length-none -lstdc++ -fopenmp")
+                endif()
+
                 set(CMAKE_CXX_FLAGS "-g -O0 -Wall -pedantic")
-                IF(APPLE)
-                        MESSAGE(STATUS "add flags")
-                        set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic -Wno-c++11-narrowing")
-                ENDIF()
+
 
                 find_package(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
                 find_package(HDF5 REQUIRED)
