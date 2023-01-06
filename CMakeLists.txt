@@ -1,4 +1,3 @@
-
 #################################################
 # Set up the Docker container
 # ====> (ONLY NEED TO SET UP ONCE!) <====
@@ -32,8 +31,8 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # 1) openwq -> compile standalone using main
 # 2) crhm_openwq -> compile with crhm using hydrolink
 # 3) summa_openwq -> compile with summa using hydrolink
-# 4) mesh_openwq -> compile with mesh using hydrolink
-set(COMPILE_MODE summa_openwq)
+# 4) mizuroute_openwq -> compile with mizuRoute using hydrolink
+set(COMPILE_MODE mizuroute_openwq)
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Don't change beyond this point
@@ -525,7 +524,7 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
 
                 # compile openWQ into an object file
                 add_library(openWQ OBJECT 
-                ${OPENWQ_SOURCES})
+                        ${OPENWQ_SOURCES})
                 target_compile_options(openWQ PRIVATE
                         -g3 -Wall -pedantic)
                 target_include_directories(openWQ PRIVATE
@@ -554,15 +553,15 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
                 # Compile Summa_Comm into object/.mod files
                 add_library(SUMMA_COMM OBJECT
                         ${COMM_ALL})
-                        target_compile_options(SUMMA_COMM PRIVATE
+                target_compile_options(SUMMA_COMM PRIVATE
                         -ffree-line-length-none -fmax-errors=0 -lstdc++)
-                        target_include_directories(SUMMA_COMM PRIVATE
-                                "/usr/include/"
-                                "/code/")
-                        target_link_libraries(SUMMA_COMM PUBLIC
-                                #"/usr/lib/x86_64-linux-gnu/libnetcdff.a"
-                                "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
-                                SUMMA_NOAHMP)
+                target_include_directories(SUMMA_COMM PRIVATE
+                        "/usr/include/"
+                        "/code/")
+                target_link_libraries(SUMMA_COMM PUBLIC
+                        #"/usr/lib/x86_64-linux-gnu/libnetcdff.a"
+                        "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
+                        SUMMA_NOAHMP)
 
                 # Create the executable with openWQ coupled to Summa                 
                 add_executable(${exec_name}
@@ -592,14 +591,172 @@ elseif("${COMPILE_MODE}" STREQUAL "summa_openwq")
 
         ENDIF()
 
-
 #################################################
-# if mode: coupled (MESH)
+# if mode: coupled (MIZUROUTE)
 #################################################
-elseif("${COMPILE_MODE}" STREQUAL "mesh_openwq")
+elseif("${COMPILE_MODE}" STREQUAL "mizuroute_openwq")
 
-        MESSAGE(STATUS "Compilation mode: mesh-openwq")
-        MESSAGE(STATUS "*not supported yet!")
-        #set(exec_name mesh_openwq)
+        # Choose where to create the executable
+        set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+        set(EXEC_DIR ${PARENT_DIR}/../bin)
+
+        set(exec_name mizuroute_openwq)
+
+        IF(UNIX)
+                IF(UNIX AND NOT APPLE)
+                        MESSAGE(STATUS "current platform : Linux")
+                ELSEIF(APPLE)
+                        MESSAGE(STATUS "current platform : MacOS")
+                ENDIF()
+                # Declare use of multiple Languages
+                project(${exec_name} LANGUAGES CXX Fortran)
+                # C needs to be enables
+                enable_language(C)
+                # Verify language compilers can talk to each other
+                include(FortranCInterface)
+                FortranCInterface_VERIFY(CXX)
+
+                # Get paths to source code
+                set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+                set(MIZUROUTE_DIR ${PARENT_DIR}/src/)
+                set(OPENWQ_DIR ${PARENT_DIR}/openwq)
+
+                # Setting OpenWQ sources
+                set(MIZUROUTE_UTILS
+                        ${MIZUROUTE_DIR}/nrtype.f90
+                        ${MIZUROUTE_DIR}/nr_utility.f90
+                        ${MIZUROUTE_DIR}/ascii_util.f90
+                        ${MIZUROUTE_DIR}/ncio_utils.f90
+                        ${MIZUROUTE_DIR}/gamma_func.f90
+                )
+                set(MIZUROUTE_DATATYPES
+                        ${MIZUROUTE_DIR}/public_var.f90
+                        ${MIZUROUTE_DIR}/dataTypes.f90
+                        ${MIZUROUTE_DIR}/var_lookup.f90
+                        ${MIZUROUTE_DIR}/time_utils.f90
+                        ${MIZUROUTE_DIR}/datetime_data.f90
+                        ${MIZUROUTE_DIR}/globalData.f90
+                        ${MIZUROUTE_DIR}/popMetadat.f90
+                        ${MIZUROUTE_DIR}/allocation.f90
+                )
+                set(MIZUROUTE_INIT
+                        ${MIZUROUTE_DIR}/network_topo.f90
+                        ${MIZUROUTE_DIR}/process_param.f90
+                        ${MIZUROUTE_DIR}/process_ntopo.f90
+                        ${MIZUROUTE_DIR}/pfafstetter.f90
+                        ${MIZUROUTE_DIR}/domain_decomposition.f90
+                )
+                set(MIZUROUTE_IO
+                        ${MIZUROUTE_DIR}/remap.f90
+                        ${MIZUROUTE_DIR}/read_control.f90
+                        ${MIZUROUTE_DIR}/read_param.f90
+                        ${MIZUROUTE_DIR}/read_streamSeg.f90
+                        ${MIZUROUTE_DIR}/write_streamSeg.f90
+                        ${MIZUROUTE_DIR}/read_runoff.f90
+                        ${MIZUROUTE_DIR}/get_basin_runoff.f90
+                        ${MIZUROUTE_DIR}/read_remap.f90
+                        ${MIZUROUTE_DIR}/read_restart.f90
+                        ${MIZUROUTE_DIR}/write_restart.f90
+                        ${MIZUROUTE_DIR}/write_simoutput.f90
+                )
+                set(MIZUROUTE_CORE
+                        ${MIZUROUTE_DIR}/model_finalize.f90
+                        ${MIZUROUTE_DIR}/accum_runoff.f90
+                        ${MIZUROUTE_DIR}/basinUH.f90
+                        ${MIZUROUTE_DIR}/irf_route.f90
+                        ${MIZUROUTE_DIR}/kwt_route.f90
+                        ${MIZUROUTE_DIR}/dfw_route.f90
+                        ${MIZUROUTE_DIR}/kw_route.f90
+                        ${MIZUROUTE_DIR}/mc_route.f90
+                        ${MIZUROUTE_DIR}/main_route.f90
+                        ${MIZUROUTE_DIR}/model_setup.f90
+                )
+                set(MIZUROUTE_DRIVER 
+                        ${MIZUROUTE_DIR}/route_runoff.f90
+                )
+                # Stitch together MIZUROUTE programs
+                set(MIZUROUTE_MOD_ALL
+                        ${MIZUROUTE_UTILS}
+                        ${MIZUROUTE_DATATYPES}
+                        ${MIZUROUTE_INIT}
+                        ${MIZUROUTE_IO}
+                        ${MIZUROUTE_CORE})
+
+                # Setting MizuRoute sources
+                file(GLOB OPENWQ_SOURCES 
+                        ${OPENWQ_DIR}/src/*.cpp 
+                        #${PARENT_DIR}/OpenWQ_hydrolink.cpp
+                        #${PARENT_DIR}/OpenWQ_interface.cpp
+                        )
+
+                #####################################################
+
+                set(CMAKE_CXX_STANDARD 17)
+                set(CMAKE_CXX_FLAGS "-g -O0 -Wall -pedantic")
+                IF(APPLE)
+                        MESSAGE(STATUS "add flags")
+                        set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic -Wno-c++11-narrowing")
+                ENDIF()
+
+                find_package(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
+                find_package(HDF5 REQUIRED)
+                find_package(OpenMP REQUIRED)
+                find_package(netCDF REQUIRED)
+                find_package(LAPACK REQUIRED)
+
+                set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+
+                set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
+
+                # compile openWQ into an object file
+                add_library(OPENWQ_OBJ OBJECT 
+                        ${OPENWQ_SOURCES})
+                target_compile_options(OPENWQ_OBJ PRIVATE
+                        -g3 -Wall -pedantic)
+                target_include_directories(OPENWQ_OBJ PRIVATE
+                        ${ARMADILLO_INCLUDE_DIR}
+                        ${HDF5_INCLUDE_DIRS}
+                        ${OpenMP_INCLUDE_DIR}
+                        ${OPENWQ_DIR}/src/)
+                target_link_libraries(OPENWQ_OBJ PUBLIC
+                        ${ARMADILLO_LIBRARIES}
+                        ${HDF5_C_LIBRARY_hdf5}
+                        -fopenmp)
+
+                # Create the executable with openWQ coupled to Summa                 
+                add_executable(${exec_name}
+                        ${MIZUROUTE_MOD_ALL}
+                        ${MIZUROUTE_DRIVER})
+                target_compile_options(${exec_name} PRIVATE
+                        -ffree-line-length-none)
+                set_property(TARGET ${exec_name} PROPERTY LINKER_LANGUAGE Fortran)
+                target_include_directories(
+                        ${exec_name} PUBLIC
+                        ${LAPACK_INCLUDES}
+                        ${netCDF_INCLUDES}
+                        "/usr/include/"
+                        "/code/")
+                target_link_libraries(
+                        ${exec_name} PUBLIC
+                        #"/usr/lib/x86_64-linux-gnu/libnetcdff.a"
+                        "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
+                        ${LAPACK_LIBRARIES}
+                        ${netCDF_LIBRARIES}
+                        OPENWQ_OBJ)
+
+        ELSE()
+
+                MESSAGE(STATUS "current platform : Windows")
+                MESSAGE(STATUS "*not supported yet!")
+
+        ENDIF()
+                
+#################################################
+# if mode Unkown
+#################################################
+else()
+
+        MESSAGE(STATUS "Compilation mode: Unkown")
+        MESSAGE(STATUS "Double check the mode tag requested!")
 
 endif()
