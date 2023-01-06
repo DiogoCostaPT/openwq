@@ -30,7 +30,7 @@
 #include "src/OpenWQ_initiate.h"
 #include "src/OpenWQ_chem.h"
 #include "src/OpenWQ_watertransp.h"
-#include "src/OpenWQ_sinksource.h"
+#include "src/OpenWQ_extwatflux_ss.h"
 #include "src/OpenWQ_units.h"
 #include "src/OpenWQ_solver.h"
 #include "src/OpenWQ_output.h"
@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
     OpenWQ_couplercalls OpenWQ_couplercalls;
     OpenWQ_hostModelconfig OpenWQ_hostModelconfig;
     OpenWQ_json OpenWQ_json;                    // create OpenWQ_json object
-    OpenWQ_wqconfig OpenWQ_wqconfig(13);        // create OpenWQ_wqconfig object
+    OpenWQ_wqconfig OpenWQ_wqconfig;        // create OpenWQ_wqconfig object
     OpenWQ_units OpenWQ_units;                  // functions for unit conversion
     OpenWQ_readjson OpenWQ_readjson;            // read json files
     int num_HydroComp = 8; // number of compartments to link openWQ (see details in OpenWQ_hydrolink.cpp) 
@@ -53,9 +53,10 @@ int main(int argc, char* argv[])
     OpenWQ_initiate OpenWQ_initiate;            // initiate modules
     OpenWQ_watertransp OpenWQ_watertransp;      // transport modules
     OpenWQ_chem OpenWQ_chem;                    // biochemistry modules
-    OpenWQ_sinksource OpenWQ_sinksource;        // sink and source modules
+    OpenWQ_extwatflux_ss OpenWQ_extwatflux_ss;        // sink and source modules
     OpenWQ_solver OpenWQ_solver;                // solver module
     OpenWQ_output OpenWQ_output;                // output module
+    OpenWQ_utils OpenWQ_utils;
     
 
     // #####################################################################################################################
@@ -109,12 +110,13 @@ int main(int argc, char* argv[])
             OpenWQ_json,                    // create OpenWQ_json object
             OpenWQ_wqconfig,            // create OpenWQ_wqconfig object
             OpenWQ_units,                  // functions for unit conversion
+            OpenWQ_utils,                    // utility methods/functions
             OpenWQ_readjson,            // read json files
             OpenWQ_vars,
             OpenWQ_initiate,            // initiate modules
             OpenWQ_watertransp,      // transport modules
             OpenWQ_chem,                   // biochemistry modules
-            OpenWQ_sinksource,        // sink and source modules)
+            OpenWQ_extwatflux_ss,        // sink and source modules)
             OpenWQ_output);
 
     time_t simtime;
@@ -139,16 +141,16 @@ int main(int argc, char* argv[])
         // Update chemistry dependencies
         // #######################################
 
-        #pragma omp parallel for num_threads(OpenWQ_wqconfig.num_threads_requested)
-        for (unsigned int nx=0;nx<nx_num;nx++){
-            for (unsigned int ny=0;ny<ny_num;ny++){
-                for (unsigned int nz=0;nz<nz_num;nz++){
-                    (*OpenWQ_hostModelconfig.SM)(nx,ny,nz) = 0,3;  // loop needed - Save all SM data from hostmodel at time t
-                    (*OpenWQ_hostModelconfig.Tair)(nx,ny,nz) = 20;  // loop needed - Save all Taair data from hostmodel at time t      
-                    (*OpenWQ_hostModelconfig.Tsoil)(nx,ny,nz) = 15;   // keeping the same as Tair for now
-                }
-            }
-        }
+        //#pragma omp parallel for num_threads(OpenWQ_wqconfig.num_threads_requested)
+        //for (unsigned int nx=0;nx<nx_num;nx++){
+        //    for (unsigned int ny=0;ny<ny_num;ny++){
+        //        for (unsigned int nz=0;nz<nz_num;nz++){
+        //            (*OpenWQ_hostModelconfig.SM)(nx,ny,nz) = 0,3;  // loop needed - Save all SM data from hostmodel at time t
+        //            (*OpenWQ_hostModelconfig.Tair)(nx,ny,nz) = 20;  // loop needed - Save all Taair data from hostmodel at time t      
+        //            (*OpenWQ_hostModelconfig.Tsoil)(nx,ny,nz) = 15;   // keeping the same as Tair for now
+        //        }
+        //    }
+        //}
 
         // #######################################
         // 2.2) COUPLER CODE 
@@ -183,12 +185,13 @@ int main(int argc, char* argv[])
             OpenWQ_json,                    // create OpenWQ_json object
             OpenWQ_wqconfig,            // create OpenWQ_wqconfig object
             OpenWQ_units,                  // functions for unit conversion
+            OpenWQ_utils,
             OpenWQ_readjson,            // read json files
             OpenWQ_vars,
             OpenWQ_initiate,            // initiate modules
             OpenWQ_watertransp,      // transport modules
             OpenWQ_chem,                   // biochemistry modules
-            OpenWQ_sinksource,        // sink and source modules)
+            OpenWQ_extwatflux_ss,        // sink and source modules)
             OpenWQ_solver,
             OpenWQ_output,
             simtime);
@@ -236,25 +239,19 @@ int main(int argc, char* argv[])
                         OpenWQ_json,                    // create OpenWQ_json object
                         OpenWQ_wqconfig,            // create OpenWQ_wqconfig object
                         OpenWQ_units,                  // functions for unit conversion
+                        OpenWQ_utils,
                         OpenWQ_readjson,            // read json files
                         OpenWQ_vars,
                         OpenWQ_initiate,            // initiate modules
                         OpenWQ_watertransp,      // transport modules
                         OpenWQ_chem,                   // biochemistry modules
-                        OpenWQ_sinksource,        // sink and source modules)
+                        OpenWQ_extwatflux_ss,        // sink and source modules)
                         OpenWQ_solver,
                         OpenWQ_output,
                         simtime,                            // simulation time in seconds since seconds since 00:00 hours, Jan 1, 1970 UTC
-                        source,
-                        ix_s, 
-                        iy_s,
-                        iz_s,
-                        recipient,
-                        ix_r,
-                        iy_r,
-                        iz_r,
-                        wflux_s2r,
-                        wmass_source);
+                        source, ix_s, iy_s, iz_s,
+                        recipient, ix_r, iy_r, iz_r,
+                        wflux_s2r, wmass_source);
 
                 }
             }
@@ -271,12 +268,13 @@ int main(int argc, char* argv[])
             OpenWQ_json,                    // create OpenWQ_json object
             OpenWQ_wqconfig,            // create OpenWQ_wqconfig object
             OpenWQ_units,                  // functions for unit conversion
+            OpenWQ_utils,
             OpenWQ_readjson,            // read json files
             OpenWQ_vars,
             OpenWQ_initiate,            // initiate modules
             OpenWQ_watertransp,      // transport modules
             OpenWQ_chem,                   // biochemistry modules
-            OpenWQ_sinksource,        // sink and source modules)
+            OpenWQ_extwatflux_ss,        // sink and source modules)
             OpenWQ_solver,
             OpenWQ_output,
             simtime);
