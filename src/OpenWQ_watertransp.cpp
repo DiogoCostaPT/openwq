@@ -86,7 +86,7 @@ void OpenWQ_watertransp::Adv_IN(
     double chemass_flux_adv;
 
     // Return if no flux: wflux_s2r == 0
-    if(wflux_s2r == 0.0f){return;}
+    if(wflux_s2r == 0.0f || ewf_conc == 0.0f){return;}
 
     // Chemical mass flux between source and recipient (Advection)
     chemass_flux_adv = 
