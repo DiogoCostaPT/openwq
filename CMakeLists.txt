@@ -1,6 +1,7 @@
 
 #################################################
 # Set up the Docker container
+# ====> (ONLY NEED TO SET UP ONCE!) <====
 # 1) Go to the folder that contains: docker-compose.yml
 # 1) clear all images and containers: docker system prune -a
 # 2) check if docker-compose.yml file is good: docker-compose config
@@ -9,7 +10,7 @@
 # 5) see the containers running: docker ps
 # 6) run a shell inside the container: docker exec -it <container name> /bin/bash
 #################################################
-# How to use this CMakeLists
+# How to use this CMakeLists to compile the code
 # 1) Change the compilation mode below: set(COMPILE_MODE XXXX)
 # 2) Open terminal and go to the openwq folder that contains CMakeLists.txt, Dockerfile, and docker-compose.yml
 # 3) Create a docker container: docker compose up -d
