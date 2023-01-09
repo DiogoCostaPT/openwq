@@ -615,7 +615,7 @@ elseif("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                 set(CMAKE_CXX_STANDARD 17)
 
                 if("${COMPILE_MODE}" STREQUAL "debug")
-                        set(CMAKE_Fortran_FLAGS "-g -Wall -fmax-errors=0 -fbacktrace -fcheck=all -ffpe-trap=zero -ffree-line-length-none $(FLAGS_OMP) -lstdc++")
+                        set(CMAKE_Fortran_FLAGS "-g -Wall -fmax-errors=0 -fbacktrace -fcheck=all -ffpe-trap=zero -ffree-line-length-none -lstdc++")
                 elseif("${COMPILE_MODE}" STREQUAL "fast")
                         set(CMAKE_Fortran_FLAGS "-O3 -fmax-errors=0 -ffree-line-length-none -lstdc++ -fopenmp")
                 endif()
