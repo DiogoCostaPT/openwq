@@ -35,7 +35,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10 FATAL_ERROR)
 # optA2) crhm_openwq -> compile with crhm using hydrolink
 # optA3) summa_openwq -> compile with summa using hydrolink
 # optA4) mizuroute_openwq -> compile with mizuRoute using hydrolink
-SET(COMPILE_TARGET mizuroute_openwq)
+SET(COMPILE_TARGET openwq)
 
 # B) Set Compilation mode:
 # optB1) debug -> set the necessary flags for debugging
@@ -60,10 +60,10 @@ MESSAGE(STATUS "##########################################")
 IF("${COMPILE_TARGET}" STREQUAL "openwq")
         
         SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-        SET(EXEC_DIR ${PARENT_DIR}/../../../bin)
+        SET(EXEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
         PROJECT("${COMPILE_TARGET}")
-        SET(exec_name "${COMPILE_TARGET}")
+        SET(exec_name "${COMPILE_TARGET}_${COMPILE_MODE}")
         SET(CMAKE_CXX_STANDARD 17)
 
         FILE(GLOB SOURCES "main.cpp" "src/*.cpp")
@@ -168,7 +168,8 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "crhm_openwq")
 
                 # Choose where to create the executable
                 SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-                SET(EXEC_DIR ${PARENT_DIR}/bin)
+                SET(EXEC_DIR ${PARENT_DIR}/../case_studies/bin)
+
                 SET(CRHM_DIR ${PARENT_DIR}/crhm)
                 SET(OPENWQ_DIR ${PARENT_DIR}/openwq)
                 SET(HYDROLINK_DIR ${PARENT_DIR})
