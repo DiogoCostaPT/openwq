@@ -35,7 +35,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10 FATAL_ERROR)
 # optA2) crhm_openwq -> compile with crhm using hydrolink
 # optA3) summa_openwq -> compile with summa using hydrolink
 # optA4) mizuroute_openwq -> compile with mizuRoute using hydrolink
-SET(COMPILE_TARGET crhm_openwq)
+SET(COMPILE_TARGET summa_openwq)
 
 # B) Set Compilation mode:
 # optB1) debug -> set the necessary flags for debugging
@@ -164,7 +164,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "crhm_openwq")
                 MESSAGE(STATUS "** OpenWQ **: current platform is Linux")
 
                 PROJECT("${COMPILE_TARGET}")
-                SET(exec_name "${COMPILE_TARGET}")
+                SET(exec_name "${COMPILE_TARGET}_${COMPILE_MODE}")
 
                 # Choose where to create the executable
                 SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
@@ -273,10 +273,9 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
         #FLAGS_SUMMA = -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds
         
         # Choose where to create the executable
-        SET(EXEC_DIR ${PARENT_DIR}/../../../bin)
-        SET(EXEC_DIR ${PARENT_DIR}/../../../../case_studies)
+        SET(EXEC_DIR ${PARENT_DIR}/../../../../../case_studies)
 
-        SET(exec_name "${COMPILE_TARGET}")
+        SET(exec_name "${COMPILE_TARGET}_${COMPILE_MODE}")
 
         IF(UNIX AND NOT APPLE)
 
@@ -551,7 +550,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
 # ..................
 ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
 
-        SET(exec_name "${COMPILE_TARGET}")
+        SET(exec_name "${COMPILE_TARGET}_${COMPILE_MODE}")
 
         # Choose where to create the executable
         SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
