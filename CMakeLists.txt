@@ -271,9 +271,6 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
         #FLAGS_NOAH = -p -g -ffree-form -ffree-line-length-none -fmax-errors=0 -fbacktrace -Wno-unused -Wno-unused-dummy-argument
         #FLAGS_COMM = -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds
         #FLAGS_SUMMA = -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds
-        
-        # Choose where to create the executable
-        SET(EXEC_DIR ${PARENT_DIR}/../../../../../case_studies)
 
         SET(exec_name "${COMPILE_TARGET}_${COMPILE_MODE}")
 
@@ -291,6 +288,8 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
 
                 # Get paths to source code
                 SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+                SET(EXEC_DIR ${PARENT_DIR}/../../../../case_studies)
+
                 SET(SUMMA_DIR ${PARENT_DIR}../../../../../../)
                 SET(OPENWQ_DIR ${PARENT_DIR}/openwq)
 
