@@ -35,7 +35,7 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # optA2) crhm_openwq -> compile with crhm using hydrolink
 # optA3) summa_openwq -> compile with summa using hydrolink
 # optA4) mizuroute_openwq -> compile with mizuRoute using hydrolink
-set(COMPILE_TARGET openwq)
+set(COMPILE_TARGET summa_openwq)
 
 # B) Set Compilation mode:
 # optB1) debug -> set the necessary flags for debugging
@@ -48,7 +48,7 @@ set(COMPILE_MODE fast)
 
 MESSAGE(STATUS "##########################################")
 MESSAGE(STATUS "OpenWQ Compilation Setup:")
-MESSAGE(STATUS "  => Compilation Targer: ${COMPILE_TARGET}")
+MESSAGE(STATUS "  => Compilation Target: ${COMPILE_TARGET}")
 MESSAGE(STATUS "  => Compilation Mode: ${COMPILE_MODE}")
 MESSAGE(STATUS "##########################################")
 
@@ -428,8 +428,10 @@ elseif("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                 # Compilation mode
                 if("${COMPILE_MODE}" STREQUAL "debug")
                         set(CMAKE_CXX_FLAGS "-g -O0 -Wall -pedantic")
+                        set(CMAKE_Fortran_FLAGS "-p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds")
                 elseif("${COMPILE_MODE}" STREQUAL "fast")
-                        set(CMAKE_CXX_FLAGS "-O3")
+                        set(CMAKE_CXX_FLAGS "-O3 ${OpenMP_CXX_FLAGS}")
+                        set(CMAKE_Fortran_FLAGS "-O3 -ffree-line-length-none -fmax-errors=0 -lstdc++ -fopenmp")
                 endif()
 
                 # Add packages
@@ -439,8 +441,6 @@ elseif("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                 find_package(OpenMP REQUIRED)
                 find_package(netCDF REQUIRED)
                 find_package(LAPACK REQUIRED)
-
-                set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
                 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
 
@@ -464,19 +464,20 @@ elseif("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         ${NOAHMP_DIR}/module_sf_noahlsm.F
                         ${NOAHMP_DIR}/module_sf_noahmplsm.F
                         ${NRUTIL})
-                target_compile_options(SUMMA_NOAHMP PRIVATE
-                        -ffree-form -ffree-line-length-none -fmax-errors=0)
                 if("${COMPILE_MODE}" STREQUAL "debug")
-                        set(CMAKE_Fortran_FLAGS "-g -O0 -ffree-line-length-none -fmax-errors=0 -lstdc++")
+                        target_compile_options(SUMMA_NOAHMP PRIVATE -p -g -ffree-form -ffree-line-length-none -fmax-errors=0 -fbacktrace -Wno-unused -Wno-unused-dummy-argument)
                 elseif("${COMPILE_MODE}" STREQUAL "fast")
-                        set(CMAKE_Fortran_FLAGS "-O3 -ffree-form -ffree-line-length-none -fmax-errors=0 -lstdc++ -fopenmp")
+                        target_compile_options(SUMMA_NOAHMP PRIVATE -O3 -ffree-form -ffree-line-length-none -fmax-errors=0 -lstdc++ -fopenmp)
                 endif()
 
                 # Compile Summa_Comm into object/.mod files
                 add_library(SUMMA_COMM OBJECT
                         ${COMM_ALL})
-                target_compile_options(SUMMA_COMM PRIVATE
-                        -ffree-line-length-none -fmax-errors=0 -lstdc++)
+                if("${COMPILE_MODE}" STREQUAL "debug")
+                        target_compile_options(SUMMA_COMM PRIVATE -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds)
+                elseif("${COMPILE_MODE}" STREQUAL "fast")
+                        target_compile_options(SUMMA_COMM PRIVATE -O3 -ffree-line-length-none -fmax-errors=0 -lstdc++ -fopenmp)
+                endif()    
                 target_include_directories(SUMMA_COMM PRIVATE
                         "/usr/include/"
                         "/code/")
