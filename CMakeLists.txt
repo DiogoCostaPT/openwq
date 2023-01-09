@@ -4,7 +4,7 @@
 ######
 # 1) Go to the folder that contains: docker-compose.yml
 # 1) clear all images and containers: docker system prune -a
-# 2) check if docker-compose.yml file is good: docker-compose config
+# 2) check IF docker-compose.yml file is good: docker-compose config
 # 3) running container: docker compose up -d 
 # 4) stop container: docker compose down
 # 5) see the containers running: docker ps
@@ -13,7 +13,7 @@
 #####
 # STEPS TO COMPILE THE PROGRAM WITH THIS CMakeLists
 ######
-# 1) Change the compilation mode below: set(COMPILE_TARGET XXXX)
+# 1) Change the compilation mode below: SET(COMPILE_TARGET XXXX)
 # 2) Open terminal and go to the openwq folder that contains CMakeLists.txt, Dockerfile, and docker-compose.yml
 # 3) Create a docker container: docker compose up -d
 # 4) check the container id: docker ps
@@ -23,7 +23,7 @@
 # 8) Compile with: rm CMakeCache.txt; rm -r CMakeFiles; cmake . ; make -B; rm *.mod
 # That's all !!!
 
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10 FATAL_ERROR)
 
 #####
 # USER SECTION: Select the compilation options
@@ -35,12 +35,12 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # optA2) crhm_openwq -> compile with crhm using hydrolink
 # optA3) summa_openwq -> compile with summa using hydrolink
 # optA4) mizuroute_openwq -> compile with mizuRoute using hydrolink
-set(COMPILE_TARGET summa_openwq)
+SET(COMPILE_TARGET openwq)
 
 # B) Set Compilation mode:
 # optB1) debug -> set the necessary flags for debugging
 # optB2) fast -> set optimization flags
-set(COMPILE_MODE fast)
+SET(COMPILE_MODE debug)
 
 #####
 # DON'T CHANGE BEYOND THIS POINT...............
@@ -56,193 +56,197 @@ MESSAGE(STATUS "##########################################")
 # IF TARGET = openwq
 # Supports linux, iOS and windows
 # ..................
-if("${COMPILE_TARGET}" STREQUAL "openwq")
+IF("${COMPILE_TARGET}" STREQUAL "openwq")
         
-        set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-        set(EXEC_DIR ${PARENT_DIR}/../../../bin)
+        SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+        SET(EXEC_DIR ${PARENT_DIR}/../../../bin)
 
-        project("${COMPILE_TARGET}")
-        set(exec_name "${COMPILE_TARGET}")
-        set(CMAKE_CXX_STANDARD 17)
+        PROJECT("${COMPILE_TARGET}")
+        SET(exec_name "${COMPILE_TARGET}")
+        SET(CMAKE_CXX_STANDARD 17)
 
-        file(GLOB SOURCES "main.cpp" "src/*.cpp")
+        FILE(GLOB SOURCES "main.cpp" "src/*.cpp")
 
-        if(UNIX)
+        IF(UNIX)
 
-                if(UNIX AND NOT APPLE)
+                IF(UNIX AND NOT APPLE)
 
                         MESSAGE(STATUS "current platform : Linux")
                         # Compilation mode
-                        if("${COMPILE_MODE}" STREQUAL "debug")
-                                set(CMAKE_CXX_FLAGS "-g -Wall -pedantic")
-                        elseif("${COMPILE_MODE}" STREQUAL "fast")
-                                set(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic ${OpenMP_CXX_FLAGS}")
-                        endif()
+                        IF("${COMPILE_MODE}" STREQUAL "debug")
+                                SET(CMAKE_CXX_FLAGS "-g -Wall -pedantic")
+                        ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
+                                SET(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic ${OpenMP_CXX_FLAGS}")
+                        ENDIF()
 
-                elseif(APPLE)
+                ELSEIF(APPLE)
 
                         MESSAGE(STATUS "current platform : MacOS")
                         # Compilation mode
-                        if("${COMPILE_MODE}" STREQUAL "debug")
-                                set(CMAKE_CXX_FLAGS "-g -Wall -pedantic -Wno-c++11-narrowing")
-                        elseif("${COMPILE_MODE}" STREQUAL "fast")
-                                set(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic -Wno-c++11-narrowing ${OpenMP_CXX_FLAGS}")
-                        endif()
+                        IF("${COMPILE_MODE}" STREQUAL "debug")
+                                SET(CMAKE_CXX_FLAGS "-g -Wall -pedantic -Wno-c++11-narrowing")
+                        ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
+                                SET(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic -Wno-c++11-narrowing ${OpenMP_CXX_FLAGS}")
+                        ENDIF()
 
-                endif()
+                ENDIF()
 
                 # Add packages
                 # don't forget to activate HDF5 support when installing Armadillo (line 121)
-                find_package(Armadillo REQUIRED) 
-                find_package(HDF5 REQUIRED)
-                find_package(OpenMP REQUIRED)
+                FIND_PACKAGE(Armadillo REQUIRED) 
+                FIND_PACKAGE(HDF5 REQUIRED)
+                FIND_PACKAGE(OpenMP REQUIRED)
 
-                set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
+                SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
 
-                add_executable(
+                ADD_EXECUTABLE(
                         ${exec_name}
                         ${SOURCES})
 
-                target_include_directories(
+                TARGET_INCLUDE_DIRECTORIES(
                         ${exec_name} PUBLIC 
-                        ${ARMADILLO_INCLUDE_DIR}
-                        ${HDF5_INCLUDE_DIRS})
+                        ${OpenMP_INCLUDE_DIR}
+                        ${HDF5_INCLUDE_DIRS}
+                        ${ARMADILLO_INCLUDE_DIR})
 
-                target_link_libraries(
+                TARGET_LINK_LIBRARIES(
                         ${exec_name} PUBLIC
-                        ${ARMADILLO_LIBRARIES}
-                        ${HDF5_C_LIBRARY_hdf5})
+                        ${OPENMP_LIB}
+                        ${HDF5_C_LIBRARY_hdf5}
+                        ${ARMADILLO_LIBRARIES})
 
-        else()
+        ELSE()
 
                 # Windows 
                 MESSAGE(STATUS "current platform : Windows")
 
-                if("${COMPILE_MODE}" STREQUAL "debug")
-                        set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic")
-                elseif("${COMPILE_MODE}" STREQUAL "fast")
-                        set(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic -Wno-c++11-narrowing ${OpenMP_CXX_FLAGS}")
-                endif()
+                IF("${COMPILE_MODE}" STREQUAL "debug")
+                        SET(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic")
+                ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
+                        SET(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic -Wno-c++11-narrowing ${OpenMP_CXX_FLAGS}")
+                ENDIF()
  
-                find_package(OpenMP REQUIRED)
+                FIND_PACKAGE(OpenMP REQUIRED)
 
-                set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
+                SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
 
-                add_executable(
+                ADD_EXECUTABLE(
                         ${exec_name}
                         ${SOURCES})
 
                 # Please set the directory to the "Armadillo"
-                target_include_directories(
+                TARGET_INCLUDE_DIRECTORIES(
                         ${exec_name} PUBLIC 
                         "I:/FLUXOS_cpp/Armadillo/include"
                         ${HDF5_INCLUDE_DIRS})
 
-                target_link_libraries(
+                TARGET_LINK_LIBRARIES(
                         ${exec_name}
                         ${HDF5_C_LIBRARY_hdf5})
 
-        endif()
+        ENDIF()
 
 # ..................
 # IF TARGET = crhm_openwq
 # Only supports compilation in linux
 # ..................
-elseif("${COMPILE_TARGET}" STREQUAL "crhm_openwq")
+ELSEIF("${COMPILE_TARGET}" STREQUAL "crhm_openwq")
 
-        project("${COMPILE_TARGET}")
-        set(exec_name "${COMPILE_TARGET}")
+        IF(UNIX AND NOT APPLE)
 
-        # Choose where to create the executable
-        set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-        set(EXEC_DIR ${PARENT_DIR}/bin)
-        set(CRHM_DIR ${PARENT_DIR}/crhm)
-        set(OPENWQ_DIR ${PARENT_DIR}/openwq)
-        set(HYDROLINK_DIR ${PARENT_DIR})
+                MESSAGE(STATUS "current platform : Linux")
 
-        file(GLOB SOURCES
-                ${CRHM_DIR}/vcl.cpp
-                ${CRHM_DIR}/GlobalDll.cpp
-                ${CRHM_DIR}/Common.cpp
-                ${CRHM_DIR}/ClassCRHM.cpp
-                ${CRHM_DIR}/ClassModule.cpp
-                ${CRHM_DIR}/NewModules.cpp
-                ${CRHM_DIR}/CRHM_parse.cpp
-                ${CRHM_DIR}/MacroUnit.cpp
-                ${CRHM_DIR}/WQ_Soil_NPCcycling.cpp
-                ${CRHM_DIR}/WQ_CRHM.cpp
-                ${CRHM_DIR}/About.cpp
-                ${CRHM_DIR}/Bld.cpp
-                ${CRHM_DIR}/Log.cpp
-                ${CRHM_DIR}/UpdateForm.cpp
-                ${CRHM_DIR}/CRHMmain.cpp
-                ${OPENWQ_DIR}/src/*.cpp
-                ${HYDROLINK_DIR}/OpenWQ_hydrolink.cpp)
-        #include_directories("../")
-        list(REMOVE_ITEM SOURCES ${OPENWQ_DIR}/main.cpp)
+                PROJECT("${COMPILE_TARGET}")
+                SET(exec_name "${COMPILE_TARGET}")
 
-        if(UNIX)
-                if(UNIX AND NOT APPLE)
+                # Choose where to create the executable
+                SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+                SET(EXEC_DIR ${PARENT_DIR}/bin)
+                SET(CRHM_DIR ${PARENT_DIR}/crhm)
+                SET(OPENWQ_DIR ${PARENT_DIR}/openwq)
+                SET(HYDROLINK_DIR ${PARENT_DIR})
+
+                FILE(GLOB SOURCES
+                        ${CRHM_DIR}/vcl.cpp
+                        ${CRHM_DIR}/GlobalDll.cpp
+                        ${CRHM_DIR}/Common.cpp
+                        ${CRHM_DIR}/ClassCRHM.cpp
+                        ${CRHM_DIR}/ClassModule.cpp
+                        ${CRHM_DIR}/NewModules.cpp
+                        ${CRHM_DIR}/CRHM_parse.cpp
+                        ${CRHM_DIR}/MacroUnit.cpp
+                        ${CRHM_DIR}/WQ_Soil_NPCcycling.cpp
+                        ${CRHM_DIR}/WQ_CRHM.cpp
+                        ${CRHM_DIR}/About.cpp
+                        ${CRHM_DIR}/Bld.cpp
+                        ${CRHM_DIR}/Log.cpp
+                        ${CRHM_DIR}/UpdateForm.cpp
+                        ${CRHM_DIR}/CRHMmain.cpp
+                        ${OPENWQ_DIR}/src/*.cpp
+                        ${HYDROLINK_DIR}/OpenWQ_hydrolink.cpp)
+
+                IF(UNIX AND NOT APPLE)
                         MESSAGE(STATUS "current platform : Linux")
-                elseif(APPLE)
-                        MESSAGE(STATUS "current platform : MacOS")
-                endif()
-                
-                
-                set(CMAKE_CXX_STANDARD 17)
-                #set(CMAKE_CXX_FLAGS "-O3")
-                set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic")
-                #set(CMAKE_CXX_FLAGS "-O2 -g ")
-                #set(CMAKE_BUILD_TYPE RelWithDebInfo)
-                
-                if(APPLE)
-                        MESSAGE(STATUS "add flags")
-                        set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic -Wno-c++11-narrowing")
-                endif()
+                ENDIF()
+                        
+                SET(CMAKE_CXX_STANDARD 17)
 
-                if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+                IF("${COMPILE_MODE}" STREQUAL "debug")
+                        set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic")
+                ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
+                        set(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic ${OpenMP_CXX_FLAGS}")
+                ENDIF()
+
+                IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
                         set(CXX_fileSYSTEM_LIBRARIES "stdc++fs")
-                endif()
+                ENDIF()
 
-                find_package(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
-                find_package(HDF5 REQUIRED)
-                find_package(OpenMP REQUIRED)
-                find_package(Boost)
+                FIND_PACKAGE(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
+                FIND_PACKAGE(HDF5 REQUIRED)
+                FIND_PACKAGE(OpenMP REQUIRED)
+                FIND_PACKAGE(Boost)
 
-                set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-
-                set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
+                SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
 
                 # Create the executable with openWQ coupled to CRHM   
-                add_executable(
+                ADD_EXECUTABLE(
                         ${exec_name}
                         ${SOURCES})
 
-                target_include_directories(
+                TARGET_INCLUDE_DIRECTORIES(
                         ${exec_name} PUBLIC 
                         ${Boost_INCLUDE_DIRS}
                         ${ARMADILLO_INCLUDE_DIR}
                         ${HDF5_INCLUDE_DIRS}
-                        )
+                        "/usr/include/"
+                        "/code/")
 
-                target_link_libraries(
+                TARGET_LINK_LIBRARIES(
                         ${exec_name} PUBLIC
+                        #"/usr/lib/x86_64-linux-gnu/libnetcdff.a"
+                        "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
                         ${Boost_LIBRARIES}
                         ${ARMADILLO_LIBRARIES}
-                        ${HDF5_C_LIBRARY_hdf5}
-                        )
+                        ${HDF5_C_LIBRARY_hdf5})
 
         ELSE()
-                MESSAGE(STATUS "current platform : Windows")
+                # Apple and Windows not supported
+                IF(UNIX AND APPLE)
+                        MESSAGE(STATUS "current platform : MacOS")
+                ELSE()
+                        MESSAGE(STATUS "current platform : Windows")
+                ENDIF()
                 MESSAGE(STATUS "Not supported yet!")
+                MESSAGE(STATUS "Please compile the code inside the Docker container!")
+                MESSAGE(STATUS "See intructions in the CMakeLists.txt.")
 
-        endif()
+        ENDIF()
 
 # ..................
 # IF TARGET = summa_openwq
 # Only supports compilation in linux
 # ..................
-elseif("${COMPILE_TARGET}" STREQUAL "summa_openwq")
+ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
         
         # FLAGS_NOAH = -O3 -ffree-form -ffree-line-length-none -fmax-errors=0 $(FLAGS_OMP)
         # FLAGS_COMM = -O3 -ffree-line-length-none -fmax-errors=0 $(FLAGS_OMP)
@@ -254,52 +258,52 @@ elseif("${COMPILE_TARGET}" STREQUAL "summa_openwq")
         #FLAGS_SUMMA = -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds
         
         # Choose where to create the executable
-        set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-        set(EXEC_DIR ${PARENT_DIR}/../../../bin)
+        SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+        SET(EXEC_DIR ${PARENT_DIR}/../../../bin)
 
-        set(exec_name "${COMPILE_TARGET}")
+        SET(exec_name "${COMPILE_TARGET}")
 
         IF(UNIX AND NOT APPLE)
 
                 MESSAGE(STATUS "current platform : Linux")
    
                 # Declare use of multiple Languages
-                project(openwq_summa LANGUAGES CXX Fortran)
+                PROJECT(openwq_summa LANGUAGES CXX Fortran)
                 # C needs to be enables
-                enable_language(C)
+                ENABLE_LANGUAGE(C)
                 # Verify language compilers can talk to each other
-                include(FortranCInterface)
+                INCLUDE(FortranCInterface)
                 FortranCInterface_VERIFY(CXX)
 
                 # Get paths to source code
-                set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-                set(SUMMA_DIR ${PARENT_DIR}../../../../../../)
-                set(OPENWQ_DIR ${PARENT_DIR}/openwq)
+                SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+                SET(SUMMA_DIR ${PARENT_DIR}../../../../../../)
+                SET(OPENWQ_DIR ${PARENT_DIR}/openwq)
 
                 # File definitions for subcomponents - For OpenWQ
-                file(GLOB OPENWQ_SOURCES 
+                FILE(GLOB OPENWQ_SOURCES 
                         ${OPENWQ_DIR}/src/*.cpp 
                         ${PARENT_DIR}/OpenWQ_hydrolink.cpp
                         ${PARENT_DIR}/OpenWQ_interface.cpp)
 
                 # File definitions for subcomponents - For Summa
-                set(DRIVER_DIR ${SUMMA_DIR}/build/source/driver)
-                set(HOOKUP_DIR ${SUMMA_DIR}/build/source/hookup)
-                set(NETCDF_DIR ${SUMMA_DIR}/build/source/netcdf)
-                set(DSHARE_DIR ${SUMMA_DIR}/build/source/dshare)
-                set(NOAHMP_DIR ${SUMMA_DIR}/build/source/noah-mp)
-                set(ENGINE_DIR ${SUMMA_DIR}/build/source/engine)
-                set(OPENWQ_INTERFACE_DIR ${SUMMA_DIR}/build/source/openwq)
+                SET(DRIVER_DIR ${SUMMA_DIR}/build/source/driver)
+                SET(HOOKUP_DIR ${SUMMA_DIR}/build/source/hookup)
+                SET(NETCDF_DIR ${SUMMA_DIR}/build/source/netcdf)
+                SET(DSHARE_DIR ${SUMMA_DIR}/build/source/dshare)
+                SET(NOAHMP_DIR ${SUMMA_DIR}/build/source/noah-mp)
+                SET(ENGINE_DIR ${SUMMA_DIR}/build/source/engine)
+                SET(OPENWQ_INTERFACE_DIR ${SUMMA_DIR}/build/source/openwq)
 
                 #  utilities
-                set(NRUTIL
+                SET(NRUTIL
                         ${ENGINE_DIR}/nrtype.f90
                         ${ENGINE_DIR}/f2008funcs.f90
                         ${ENGINE_DIR}/nr_utility.f90)
 
                 # Numerical recipes procedures
                 # NOTE: all numerical recipes procedures are now replaced with free versions
-                set(NRPROC
+                SET(NRPROC
                         ${ENGINE_DIR}/expIntegral.f90
                         ${ENGINE_DIR}/spline_int.f90)
 
@@ -309,7 +313,7 @@ elseif("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         ${HOOKUP_DIR}/summaFileManager.f90)
 
                 # Data modules
-                set(DATAMS
+                SET(DATAMS
                         ${OPENWQ_INTERFACE_DIR}/openWQ.f90 # needs to be compiled before globalData
                         ${DSHARE_DIR}/multiconst.f90
                         ${DSHARE_DIR}/var_lookup.f90
@@ -321,7 +325,7 @@ elseif("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         ${DSHARE_DIR}/outpt_stat.f90)
 
                 # utility modules
-                set(UTILMS
+                SET(UTILMS
                         ${ENGINE_DIR}/time_utils.f90
                         ${ENGINE_DIR}/mDecisions.f90
                         ${ENGINE_DIR}/snow_utils.f90
@@ -330,7 +334,7 @@ elseif("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         ${ENGINE_DIR}/matrixOper.f90)
 
                 # Solver
-                set(SOLVER
+                SET(SOLVER
                         ${ENGINE_DIR}/vegPhenlgy.f90
                         ${ENGINE_DIR}/diagn_evar.f90
                         ${ENGINE_DIR}/stomResist.f90
@@ -355,7 +359,7 @@ elseif("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         ${ENGINE_DIR}/run_oneHRU.f90)
 
                 # Define routines for SUMMA preliminaries
-                set(PRELIM
+                SET(PRELIM
                         ${ENGINE_DIR}/conv_funcs.f90
                         ${ENGINE_DIR}/sunGeomtry.f90
                         ${ENGINE_DIR}/convE2Temp.f90
@@ -371,7 +375,7 @@ elseif("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         ${ENGINE_DIR}/check_icond.f90)
 
                 # Define routines for the SUMMA model runs
-                set(MODRUN
+                SET(MODRUN
                         ${ENGINE_DIR}/indexState.f90
                         ${ENGINE_DIR}/getVectorz.f90
                         ${ENGINE_DIR}/updateVars.f90
@@ -387,28 +391,28 @@ elseif("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         ${ENGINE_DIR}/volicePack.f90
                         ${ENGINE_DIR}/qTimeDelay.f90)
 
-                set(NETCDF
+                SET(NETCDF
                         ${NETCDF_DIR}/netcdf_util.f90
                         ${NETCDF_DIR}/def_output.f90
                         ${NETCDF_DIR}/modelwrite.f90
                         ${NETCDF_DIR}/read_icond.f90)
 
                 # Stitch together common programs
-                set(COMM_ALL
+                SET(COMM_ALL
                         ${NRPROC}
                         ${HOOKUP}
                         ${DATAMS}
                         ${UTILMS})
 
                 # Stitch together SUMMA programs
-                set(SUMMA_ALL
+                SET(SUMMA_ALL
                         ${NETCDF}
                         ${PRELIM}
                         ${MODRUN}
                         ${SOLVER})
 
                 # Define the driver routine
-                set(DRIVER
+                SET(DRIVER
                         ${DRIVER_DIR}/summa_type.f90
                         ${DRIVER_DIR}/summa_util.f90
                         ${DRIVER_DIR}/summa_alarms.f90
@@ -423,81 +427,81 @@ elseif("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         ${DRIVER_DIR}/summa_openWQ.f90
                         ${DRIVER_DIR}/summa_driver.f90)
 
-                set(CMAKE_CXX_STANDARD 17)
+                SET(CMAKE_CXX_STANDARD 17)
 
                 # Compilation mode
-                if("${COMPILE_MODE}" STREQUAL "debug")
-                        set(CMAKE_CXX_FLAGS "-g -O0 -Wall -pedantic")
-                        set(CMAKE_Fortran_FLAGS "-p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds")
-                elseif("${COMPILE_MODE}" STREQUAL "fast")
-                        set(CMAKE_CXX_FLAGS "-O3 ${OpenMP_CXX_FLAGS}")
-                        set(CMAKE_Fortran_FLAGS "-O3 -ffree-line-length-none -fmax-errors=0 -lstdc++ -fopenmp")
-                endif()
+                IF("${COMPILE_MODE}" STREQUAL "debug")
+                        SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -pedantic")
+                        SET(CMAKE_Fortran_FLAGS "-p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds")
+                ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
+                        SET(CMAKE_CXX_FLAGS "-O3 ${OpenMP_CXX_FLAGS}")
+                        SET(CMAKE_Fortran_FLAGS "-O3 -ffree-line-length-none -fmax-errors=0 -lstdc++ -fopenmp")
+                ENDIF()
 
                 # Add packages
                 # don't forget to activate HDF5 support when installing Armadillo
-                find_package(Armadillo REQUIRED) 
-                find_package(HDF5 REQUIRED)
-                find_package(OpenMP REQUIRED)
-                find_package(netCDF REQUIRED)
-                find_package(LAPACK REQUIRED)
+                FIND_PACKAGE(Armadillo REQUIRED) 
+                FIND_PACKAGE(HDF5 REQUIRED)
+                FIND_PACKAGE(OpenMP REQUIRED)
+                FIND_PACKAGE(netCDF REQUIRED)
+                FIND_PACKAGE(LAPACK REQUIRED)
 
-                set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
+                SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
 
                 # compile openWQ into an object file
-                add_library(openWQ OBJECT 
+                ADD_LIBRARY(openWQ OBJECT 
                         ${OPENWQ_SOURCES})
-                target_include_directories(openWQ PRIVATE
+                TARGET_INCLUDE_DIRECTORIES(openWQ PRIVATE
                         ${ARMADILLO_INCLUDE_DIR}
                         ${HDF5_INCLUDE_DIRS}
                         ${OpenMP_INCLUDE_DIR}
                         ${OPENWQ_DIR}/src/)
-                target_link_libraries(openWQ PUBLIC
+                TARGET_LINK_LIBRARIES(openWQ PUBLIC
                         ${ARMADILLO_LIBRARIES}
                         ${HDF5_C_LIBRARY_hdf5}
                         -fopenmp)
 
                 # Compile the NOAHMP into object/.mod files
-                add_library(SUMMA_NOAHMP OBJECT
+                ADD_LIBRARY(SUMMA_NOAHMP OBJECT
                         ${NOAHMP_DIR}/module_model_constants.F
                         ${NOAHMP_DIR}/module_sf_noahutl.F
                         ${NOAHMP_DIR}/module_sf_noahlsm.F
                         ${NOAHMP_DIR}/module_sf_noahmplsm.F
                         ${NRUTIL})
-                if("${COMPILE_MODE}" STREQUAL "debug")
+                IF("${COMPILE_MODE}" STREQUAL "debug")
                         target_compile_options(SUMMA_NOAHMP PRIVATE -p -g -ffree-form -ffree-line-length-none -fmax-errors=0 -fbacktrace -Wno-unused -Wno-unused-dummy-argument)
-                elseif("${COMPILE_MODE}" STREQUAL "fast")
+                ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
                         target_compile_options(SUMMA_NOAHMP PRIVATE -O3 -ffree-form -ffree-line-length-none -fmax-errors=0 -lstdc++ -fopenmp)
-                endif()
+                ENDIF()
 
                 # Compile Summa_Comm into object/.mod files
-                add_library(SUMMA_COMM OBJECT
+                ADD_LIBRARY(SUMMA_COMM OBJECT
                         ${COMM_ALL})
-                if("${COMPILE_MODE}" STREQUAL "debug")
+                IF("${COMPILE_MODE}" STREQUAL "debug")
                         target_compile_options(SUMMA_COMM PRIVATE -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds)
-                elseif("${COMPILE_MODE}" STREQUAL "fast")
+                ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
                         target_compile_options(SUMMA_COMM PRIVATE -O3 -ffree-line-length-none -fmax-errors=0 -lstdc++ -fopenmp)
-                endif()    
-                target_include_directories(SUMMA_COMM PRIVATE
+                ENDIF()    
+                TARGET_INCLUDE_DIRECTORIES(SUMMA_COMM PRIVATE
                         "/usr/include/"
                         "/code/")
-                target_link_libraries(SUMMA_COMM PUBLIC
+                TARGET_LINK_LIBRARIES(SUMMA_COMM PUBLIC
                         #"/usr/lib/x86_64-linux-gnu/libnetcdff.a"
                         "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
                         SUMMA_NOAHMP)
 
                 # Create the executable with openWQ coupled to Summa                 
-                add_executable(${exec_name}
+                ADD_EXECUTABLE(${exec_name}
                         ${SUMMA_ALL}
                         ${DRIVER})
-                        set_property(TARGET ${exec_name} PROPERTY LINKER_LANGUAGE Fortran)
-                        target_include_directories(
+                        SET_PROPERTY(TARGET ${exec_name} PROPERTY LINKER_LANGUAGE Fortran)
+                        TARGET_INCLUDE_DIRECTORIES(
                                 ${exec_name} PUBLIC
                                 ${LAPACK_INCLUDES}
                                 ${netCDF_INCLUDES}
                                 "/usr/include/"
                                 "/code/")
-                        target_link_libraries(
+                        TARGET_LINK_LIBRARIES(
                                 ${exec_name} PUBLIC
                                 #"/usr/lib/x86_64-linux-gnu/libnetcdff.a"
                                 "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
@@ -524,42 +528,42 @@ elseif("${COMPILE_TARGET}" STREQUAL "summa_openwq")
 # IF TARGET = mizuroute_openwq
 # Only supports compilation in linux
 # ..................
-elseif("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
+ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
 
-        set(exec_name "${COMPILE_TARGET}")
+        SET(exec_name "${COMPILE_TARGET}")
 
         # Choose where to create the executable
-        set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-        set(EXEC_DIR ${PARENT_DIR}/../bin)
+        SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+        SET(EXEC_DIR ${PARENT_DIR}/../bin)
 
         IF(UNIX AND NOT APPLE)
 
                 MESSAGE(STATUS "current platform : Linux")
 
                 # Declare use of multiple Languages
-                project("${COMPILE_TARGET}" LANGUAGES CXX Fortran)
+                PROJECT("${COMPILE_TARGET}" LANGUAGES CXX Fortran)
 
                 # C needs to be enables
-                enable_language(C)
+                ENABLE_LANGUAGE(C)
                 
                 # Verify language compilers can talk to each other
-                include(FortranCInterface)
+                INCLUDE(FortranCInterface)
                 FortranCInterface_VERIFY(CXX)
 
                 # Get paths to source code
-                set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-                set(MIZUROUTE_DIR ${PARENT_DIR}/src/)
-                set(OPENWQ_DIR ${PARENT_DIR}/openwq)
+                SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+                SET(MIZUROUTE_DIR ${PARENT_DIR}/src/)
+                SET(OPENWQ_DIR ${PARENT_DIR}/openwq)
 
                 # Setting OpenWQ sources
-                set(MIZUROUTE_UTILS
+                SET(MIZUROUTE_UTILS
                         ${MIZUROUTE_DIR}/nrtype.f90
                         ${MIZUROUTE_DIR}/nr_utility.f90
                         ${MIZUROUTE_DIR}/ascii_util.f90
                         ${MIZUROUTE_DIR}/ncio_utils.f90
                         ${MIZUROUTE_DIR}/gamma_func.f90
                 )
-                set(MIZUROUTE_DATATYPES
+                SET(MIZUROUTE_DATATYPES
                         ${MIZUROUTE_DIR}/public_var.f90
                         ${MIZUROUTE_DIR}/dataTypes.f90
                         ${MIZUROUTE_DIR}/var_lookup.f90
@@ -569,14 +573,14 @@ elseif("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                         ${MIZUROUTE_DIR}/popMetadat.f90
                         ${MIZUROUTE_DIR}/allocation.f90
                 )
-                set(MIZUROUTE_INIT
+                SET(MIZUROUTE_INIT
                         ${MIZUROUTE_DIR}/network_topo.f90
                         ${MIZUROUTE_DIR}/process_param.f90
                         ${MIZUROUTE_DIR}/process_ntopo.f90
                         ${MIZUROUTE_DIR}/pfafstetter.f90
                         ${MIZUROUTE_DIR}/domain_decomposition.f90
                 )
-                set(MIZUROUTE_IO
+                SET(MIZUROUTE_IO
                         ${MIZUROUTE_DIR}/remap.f90
                         ${MIZUROUTE_DIR}/read_control.f90
                         ${MIZUROUTE_DIR}/read_param.f90
@@ -589,7 +593,7 @@ elseif("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                         ${MIZUROUTE_DIR}/write_restart.f90
                         ${MIZUROUTE_DIR}/write_simoutput.f90
                 )
-                set(MIZUROUTE_CORE
+                SET(MIZUROUTE_CORE
                         ${MIZUROUTE_DIR}/model_finalize.f90
                         ${MIZUROUTE_DIR}/accum_runoff.f90
                         ${MIZUROUTE_DIR}/basinUH.f90
@@ -601,11 +605,11 @@ elseif("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                         ${MIZUROUTE_DIR}/main_route.f90
                         ${MIZUROUTE_DIR}/model_setup.f90
                 )
-                set(MIZUROUTE_DRIVER 
+                SET(MIZUROUTE_DRIVER 
                         ${MIZUROUTE_DIR}/route_runoff.f90
                 )
                 # Stitch together MIZUROUTE programs
-                set(MIZUROUTE_MOD_ALL
+                SET(MIZUROUTE_MOD_ALL
                         ${MIZUROUTE_UTILS}
                         ${MIZUROUTE_DATATYPES}
                         ${MIZUROUTE_INIT}
@@ -613,55 +617,55 @@ elseif("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                         ${MIZUROUTE_CORE})
 
                 # Setting MizuRoute sources
-                file(GLOB OPENWQ_SOURCES 
+                FILE(GLOB OPENWQ_SOURCES 
                         ${OPENWQ_DIR}/src/*.cpp 
                         #${PARENT_DIR}/OpenWQ_hydrolink.cpp
                         #${PARENT_DIR}/OpenWQ_interface.cpp
                         )
 
-                set(CMAKE_CXX_STANDARD 17)
+                SET(CMAKE_CXX_STANDARD 17)
 
-                if("${COMPILE_MODE}" STREQUAL "debug")
-                        set(CMAKE_Fortran_FLAGS "-g -Wall -fmax-errors=0 -fbacktrace -fcheck=all -ffpe-trap=zero -ffree-line-length-none -lstdc++")
-                        set(CMAKE_CXX_FLAGS "-g -O0 -Wall -pedantic")
-                elseif("${COMPILE_MODE}" STREQUAL "fast")
-                        set(CMAKE_Fortran_FLAGS "-O3 -fmax-errors=0 -ffree-line-length-none -lstdc++ -fopenmp")
-                        set(CMAKE_CXX_FLAGS "-O3 ${OpenMP_CXX_FLAGS}")
-                endif()
+                IF("${COMPILE_MODE}" STREQUAL "debug")
+                        SET(CMAKE_Fortran_FLAGS "-g -Wall -fmax-errors=0 -fbacktrace -fcheck=all -ffpe-trap=zero -ffree-line-length-none -lstdc++")
+                        SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -pedantic")
+                ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
+                        SET(CMAKE_Fortran_FLAGS "-O3 -fmax-errors=0 -ffree-line-length-none -lstdc++ -fopenmp")
+                        SET(CMAKE_CXX_FLAGS "-O3 ${OpenMP_CXX_FLAGS}")
+                ENDIF()
 
-                find_package(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
-                find_package(HDF5 REQUIRED)
-                find_package(OpenMP REQUIRED)
-                find_package(netCDF REQUIRED)
-                find_package(LAPACK REQUIRED)
+                FIND_PACKAGE(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
+                FIND_PACKAGE(HDF5 REQUIRED)
+                FIND_PACKAGE(OpenMP REQUIRED)
+                FIND_PACKAGE(netCDF REQUIRED)
+                FIND_PACKAGE(LAPACK REQUIRED)
 
-                set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
+                SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
 
                 # compile openWQ into an object file
-                add_library(OPENWQ_OBJ OBJECT 
+                ADD_LIBRARY(OPENWQ_OBJ OBJECT 
                         ${OPENWQ_SOURCES})
-                target_include_directories(OPENWQ_OBJ PRIVATE
+                TARGET_INCLUDE_DIRECTORIES(OPENWQ_OBJ PRIVATE
                         ${ARMADILLO_INCLUDE_DIR}
                         ${HDF5_INCLUDE_DIRS}
                         ${OpenMP_INCLUDE_DIR}
                         ${OPENWQ_DIR}/src/)
-                target_link_libraries(OPENWQ_OBJ PUBLIC
+                TARGET_LINK_LIBRARIES(OPENWQ_OBJ PUBLIC
                         ${ARMADILLO_LIBRARIES}
                         ${HDF5_C_LIBRARY_hdf5}
                         -fopenmp)
 
                 # Create the executable with openWQ coupled to Mizuroute                 
-                add_executable(${exec_name}
+                ADD_EXECUTABLE(${exec_name}
                         ${MIZUROUTE_MOD_ALL}
                         ${MIZUROUTE_DRIVER})
-                set_property(TARGET ${exec_name} PROPERTY LINKER_LANGUAGE Fortran)
-                target_include_directories(
+                SET_PROPERTY(TARGET ${exec_name} PROPERTY LINKER_LANGUAGE Fortran)
+                TARGET_INCLUDE_DIRECTORIES(
                         ${exec_name} PUBLIC
                         ${LAPACK_INCLUDES}
                         ${netCDF_INCLUDES}
                         "/usr/include/"
                         "/code/")
-                target_link_libraries(
+                TARGET_LINK_LIBRARIES(
                         ${exec_name} PUBLIC
                         #"/usr/lib/x86_64-linux-gnu/libnetcdff.a"
                         "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
@@ -686,9 +690,9 @@ elseif("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
 # ..................
 # IF TARGET = unknown
 # ..................
-else()
+ELSE()
 
         MESSAGE(STATUS "Compilation mode: Unkown")
         MESSAGE(STATUS "Double check the mode tag requested!")
 
-endif()
+ENDIF()
