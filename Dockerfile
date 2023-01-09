@@ -19,6 +19,8 @@ RUN apt-get -y install libblas-dev
 RUN apt-get -y install libopenblas-dev
 RUN apt-get -y install libboost-all-dev
 RUN apt-get -y install hdf5-tools
+# Install OpenMP
+RUN apt-get -y install libomp-dev
 # Get Armadillo (get 10.8.2 version, but this can be changed)
 # RUN apt-get -y install libarmadillo-dev # very old version in aptitude (not suitable)
 RUN apt-get install wget
