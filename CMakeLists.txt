@@ -273,8 +273,8 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
         #FLAGS_SUMMA = -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds
         
         # Choose where to create the executable
-        SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
         SET(EXEC_DIR ${PARENT_DIR}/../../../bin)
+        SET(EXEC_DIR ${PARENT_DIR}/../../../../case_studies/bin)
 
         SET(exec_name "${COMPILE_TARGET}")
 
