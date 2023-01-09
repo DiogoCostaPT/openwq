@@ -35,7 +35,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10 FATAL_ERROR)
 # optA2) crhm_openwq -> compile with crhm using hydrolink
 # optA3) summa_openwq -> compile with summa using hydrolink
 # optA4) mizuroute_openwq -> compile with mizuRoute using hydrolink
-SET(COMPILE_TARGET mizuroute_openwq)
+SET(COMPILE_TARGET crhm_openwq)
 
 # B) Set Compilation mode:
 # optB1) debug -> set the necessary flags for debugging
@@ -161,7 +161,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "crhm_openwq")
 
         IF(UNIX AND NOT APPLE)
 
-                MESSAGE(STATUS "current platform : Linux")
+                MESSAGE(STATUS "** OpenWQ **: current platform is Linux")
 
                 PROJECT("${COMPILE_TARGET}")
                 SET(exec_name "${COMPILE_TARGET}")
@@ -202,6 +202,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "crhm_openwq")
                         set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic")
                 ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
                         set(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic ${OpenMP_CXX_FLAGS}")
+                        FIND_PACKAGE(OpenMP)
                 ENDIF()
 
                 IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -210,7 +211,6 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "crhm_openwq")
 
                 FIND_PACKAGE(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
                 FIND_PACKAGE(HDF5 REQUIRED)
-                FIND_PACKAGE(OpenMP REQUIRED)
                 FIND_PACKAGE(Boost)
 
                 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
@@ -235,13 +235,20 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "crhm_openwq")
                         ${Boost_LIBRARIES}
                         ${ARMADILLO_LIBRARIES}
                         ${HDF5_C_LIBRARY_hdf5})
+                
+                IF(OpenMP_CXX_FOUND)
+                        MESSAGE("** OpenWQ **: OpenMP enabled!")
+                        TARGET_LINK_LIBRARIES(
+                                ${exec_name} PUBLIC 
+                                OpenMP::OpenMP_CXX)
+                ENDIF()
 
         ELSE()
                 # Apple and Windows not supported
                 IF(UNIX AND APPLE)
-                        MESSAGE(STATUS "current platform : MacOS")
+                        MESSAGE(STATUS "** OpenWQ **: current platform is MacOS")
                 ELSE()
-                        MESSAGE(STATUS "current platform : Windows")
+                        MESSAGE(STATUS "** OpenWQ **: current platform is Windows")
                 ENDIF()
                 MESSAGE(STATUS "Not supported yet!")
                 MESSAGE(STATUS "Please compile the code inside the Docker container!")
