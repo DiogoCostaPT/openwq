@@ -35,12 +35,12 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10 FATAL_ERROR)
 # optA2) crhm_openwq -> compile with crhm using hydrolink
 # optA3) summa_openwq -> compile with summa using hydrolink
 # optA4) mizuroute_openwq -> compile with mizuRoute using hydrolink
-SET(COMPILE_TARGET summa_openwq)
+SET(COMPILE_TARGET mizuroute_openwq)
 
 # B) Set Compilation mode:
 # optB1) debug -> set the necessary flags for debugging
 # optB2) fast -> set optimization flags
-SET(COMPILE_MODE debug)
+SET(COMPILE_MODE fast)
 
 #####
 # DON'T CHANGE BEYOND THIS POINT...............
@@ -272,7 +272,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
 
         IF(UNIX AND NOT APPLE)
 
-                MESSAGE(STATUS "current platform : Linux")
+                MESSAGE(STATUS "** OpenWQ **: current platform is Linux")
    
                 # Declare use of multiple Languages
                 PROJECT(openwq_summa LANGUAGES CXX Fortran)
@@ -551,7 +551,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
 
         IF(UNIX AND NOT APPLE)
 
-                MESSAGE(STATUS "current platform : Linux")
+                MESSAGE(STATUS "** OpenWQ ** current platform is Linux")
 
                 # Declare use of multiple Languages
                 PROJECT("${COMPILE_TARGET}" LANGUAGES CXX Fortran)
@@ -644,11 +644,11 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                 ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
                         SET(CMAKE_Fortran_FLAGS "-O3 -fmax-errors=0 -ffree-line-length-none -lstdc++ -fopenmp")
                         SET(CMAKE_CXX_FLAGS "-O3 ${OpenMP_CXX_FLAGS}")
+                        FIND_PACKAGE(OpenMP)
                 ENDIF()
 
                 FIND_PACKAGE(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
                 FIND_PACKAGE(HDF5 REQUIRED)
-                FIND_PACKAGE(OpenMP REQUIRED)
                 FIND_PACKAGE(netCDF REQUIRED)
                 FIND_PACKAGE(LAPACK REQUIRED)
 
@@ -664,8 +664,14 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                         ${OPENWQ_DIR}/src/)
                 TARGET_LINK_LIBRARIES(OPENWQ_OBJ PUBLIC
                         ${ARMADILLO_LIBRARIES}
-                        ${HDF5_C_LIBRARY_hdf5}
-                        -fopenmp)
+                        ${HDF5_C_LIBRARY_hdf5})
+
+                IF(OpenMP_CXX_FOUND)
+                        MESSAGE("** OpenWQ **: OpenMP enabled!")
+                        TARGET_LINK_LIBRARIES(
+                                OPENWQ_OBJ PUBLIC 
+                                OpenMP::OpenMP_CXX)
+                ENDIF()
 
                 # Create the executable with openWQ coupled to Mizuroute                 
                 ADD_EXECUTABLE(${exec_name}
@@ -690,9 +696,9 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
 
                 # Apple and Windows not supported
                 IF(UNIX AND APPLE)
-                        MESSAGE(STATUS "current platform : MacOS")
+                        MESSAGE(STATUS "** OpenWQ: current platform is MacOS")
                 ELSE()
-                        MESSAGE(STATUS "current platform : Windows")
+                        MESSAGE(STATUS "** OpenWQ: current platform is Windows")
                 ENDIF()
                 MESSAGE(STATUS "Not supported yet!")
                 MESSAGE(STATUS "Please compile the code inside the Docker container!")
