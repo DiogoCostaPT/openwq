@@ -35,7 +35,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10 FATAL_ERROR)
 # optA2) crhm_openwq -> compile with crhm using hydrolink
 # optA3) summa_openwq -> compile with summa using hydrolink
 # optA4) mizuroute_openwq -> compile with mizuRoute using hydrolink
-SET(COMPILE_TARGET openwq)
+SET(COMPILE_TARGET summa_openwq)
 
 # B) Set Compilation mode:
 # optB1) debug -> set the necessary flags for debugging
@@ -47,6 +47,7 @@ SET(COMPILE_MODE debug)
 #####
 
 MESSAGE(STATUS "##########################################")
+MESSAGE(STATUS "** OpenWQ **")
 MESSAGE(STATUS "OpenWQ Compilation Setup:")
 MESSAGE(STATUS "  => Compilation Target: ${COMPILE_TARGET}")
 MESSAGE(STATUS "  => Compilation Mode: ${COMPILE_MODE}")
@@ -71,22 +72,24 @@ IF("${COMPILE_TARGET}" STREQUAL "openwq")
 
                 IF(UNIX AND NOT APPLE)
 
-                        MESSAGE(STATUS "current platform : Linux")
+                        MESSAGE(STATUS "** OpenWQ **: current platform is Linux")
                         # Compilation mode
                         IF("${COMPILE_MODE}" STREQUAL "debug")
                                 SET(CMAKE_CXX_FLAGS "-g -Wall -pedantic")
                         ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
                                 SET(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic ${OpenMP_CXX_FLAGS}")
+                                FIND_PACKAGE(OpenMP)
                         ENDIF()
 
                 ELSEIF(APPLE)
 
-                        MESSAGE(STATUS "current platform : MacOS")
+                        MESSAGE(STATUS "** OpenWQ **: current platform is MacOS")
                         # Compilation mode
                         IF("${COMPILE_MODE}" STREQUAL "debug")
                                 SET(CMAKE_CXX_FLAGS "-g -Wall -pedantic -Wno-c++11-narrowing")
                         ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
                                 SET(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic -Wno-c++11-narrowing ${OpenMP_CXX_FLAGS}")
+                                FIND_PACKAGE(OpenMP)
                         ENDIF()
 
                 ENDIF()
@@ -95,7 +98,6 @@ IF("${COMPILE_TARGET}" STREQUAL "openwq")
                 # don't forget to activate HDF5 support when installing Armadillo (line 121)
                 FIND_PACKAGE(Armadillo REQUIRED) 
                 FIND_PACKAGE(HDF5 REQUIRED)
-                FIND_PACKAGE(OpenMP REQUIRED)
 
                 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
 
@@ -105,15 +107,20 @@ IF("${COMPILE_TARGET}" STREQUAL "openwq")
 
                 TARGET_INCLUDE_DIRECTORIES(
                         ${exec_name} PUBLIC 
-                        ${OpenMP_INCLUDE_DIR}
                         ${HDF5_INCLUDE_DIRS}
                         ${ARMADILLO_INCLUDE_DIR})
 
                 TARGET_LINK_LIBRARIES(
                         ${exec_name} PUBLIC
-                        ${OPENMP_LIB}
                         ${HDF5_C_LIBRARY_hdf5}
                         ${ARMADILLO_LIBRARIES})
+
+                IF(OpenMP_CXX_FOUND)
+                        MESSAGE("** OpenWQ **: OpenMP enabled!")
+                        TARGET_LINK_LIBRARIES(
+                                ${exec_name} PUBLIC 
+                                OpenMP::OpenMP_CXX)
+                ENDIF()
 
         ELSE()
 
@@ -435,14 +442,15 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         SET(CMAKE_Fortran_FLAGS "-p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds")
                 ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
                         SET(CMAKE_CXX_FLAGS "-O3 ${OpenMP_CXX_FLAGS}")
-                        SET(CMAKE_Fortran_FLAGS "-O3 -ffree-line-length-none -fmax-errors=0 -lstdc++ -fopenmp")
+                        SET(CMAKE_Fortran_FLAGS "-O3 -ffree-line-length-none -fmax-errors=0 -lstdc++")
+                        FIND_PACKAGE(OpenMP)
                 ENDIF()
 
                 # Add packages
                 # don't forget to activate HDF5 support when installing Armadillo
                 FIND_PACKAGE(Armadillo REQUIRED) 
                 FIND_PACKAGE(HDF5 REQUIRED)
-                FIND_PACKAGE(OpenMP REQUIRED)
+                
                 FIND_PACKAGE(netCDF REQUIRED)
                 FIND_PACKAGE(LAPACK REQUIRED)
 
@@ -454,12 +462,17 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                 TARGET_INCLUDE_DIRECTORIES(openWQ PRIVATE
                         ${ARMADILLO_INCLUDE_DIR}
                         ${HDF5_INCLUDE_DIRS}
-                        ${OpenMP_INCLUDE_DIR}
                         ${OPENWQ_DIR}/src/)
                 TARGET_LINK_LIBRARIES(openWQ PUBLIC
                         ${ARMADILLO_LIBRARIES}
-                        ${HDF5_C_LIBRARY_hdf5}
-                        -fopenmp)
+                        ${HDF5_C_LIBRARY_hdf5})
+                
+                IF(OpenMP_CXX_FOUND)
+                        MESSAGE("** OpenWQ **: OpenMP enabled!")
+                        TARGET_LINK_LIBRARIES(
+                                openWQ PUBLIC 
+                                OpenMP::OpenMP_CXX)
+                ENDIF()
 
                 # Compile the NOAHMP into object/.mod files
                 ADD_LIBRARY(SUMMA_NOAHMP OBJECT
@@ -514,9 +527,9 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
         ELSE()
                 # Apple and Windows not supported
                 IF(UNIX AND APPLE)
-                        MESSAGE(STATUS "current platform : MacOS")
+                        MESSAGE(STATUS "** OpenWQ **: current platform is MacOS")
                 ELSE()
-                        MESSAGE(STATUS "current platform : Windows")
+                        MESSAGE(STATUS "** OpenWQ **: current platform is Windows")
                 ENDIF()
                 MESSAGE(STATUS "Not supported yet!")
                 MESSAGE(STATUS "Please compile the code inside the Docker container!")
