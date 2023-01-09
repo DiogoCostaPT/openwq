@@ -35,7 +35,7 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 # optA2) crhm_openwq -> compile with crhm using hydrolink
 # optA3) summa_openwq -> compile with summa using hydrolink
 # optA4) mizuroute_openwq -> compile with mizuRoute using hydrolink
-set(COMPILE_TARGET summa_openwq)
+set(COMPILE_TARGET openwq)
 
 # B) Set Compilation mode:
 # optB1) debug -> set the necessary flags for debugging
@@ -45,6 +45,12 @@ set(COMPILE_MODE fast)
 #####
 # DON'T CHANGE BEYOND THIS POINT...............
 #####
+
+MESSAGE(STATUS "##########################################")
+MESSAGE(STATUS "OpenWQ Compilation Setup:")
+MESSAGE(STATUS "  => Compilation Targer: ${COMPILE_TARGET}")
+MESSAGE(STATUS "  => Compilation Mode: ${COMPILE_MODE}")
+MESSAGE(STATUS "##########################################")
 
 # ..................
 # IF TARGET = openwq
@@ -70,7 +76,7 @@ if("${COMPILE_TARGET}" STREQUAL "openwq")
                         if("${COMPILE_MODE}" STREQUAL "debug")
                                 set(CMAKE_CXX_FLAGS "-g -Wall -pedantic")
                         elseif("${COMPILE_MODE}" STREQUAL "fast")
-                                set(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic")
+                                set(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic ${OpenMP_CXX_FLAGS}")
                         endif()
 
                 elseif(APPLE)
@@ -80,7 +86,7 @@ if("${COMPILE_TARGET}" STREQUAL "openwq")
                         if("${COMPILE_MODE}" STREQUAL "debug")
                                 set(CMAKE_CXX_FLAGS "-g -Wall -pedantic -Wno-c++11-narrowing")
                         elseif("${COMPILE_MODE}" STREQUAL "fast")
-                                set(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic -Wno-c++11-narrowing")
+                                set(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic -Wno-c++11-narrowing ${OpenMP_CXX_FLAGS}")
                         endif()
 
                 endif()
@@ -90,9 +96,6 @@ if("${COMPILE_TARGET}" STREQUAL "openwq")
                 find_package(Armadillo REQUIRED) 
                 find_package(HDF5 REQUIRED)
                 find_package(OpenMP REQUIRED)
-
-                # Add OpenWQ flags
-                set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
                 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
 
@@ -112,13 +115,16 @@ if("${COMPILE_TARGET}" STREQUAL "openwq")
 
         else()
 
+                # Windows 
                 MESSAGE(STATUS "current platform : Windows")
+
+                if("${COMPILE_MODE}" STREQUAL "debug")
+                        set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic")
+                elseif("${COMPILE_MODE}" STREQUAL "fast")
+                        set(CMAKE_CXX_FLAGS "-O3 -Wall -pedantic -Wno-c++11-narrowing ${OpenMP_CXX_FLAGS}")
+                endif()
  
-                set(CMAKE_CXX_FLAGS "-g3 -Wall -pedantic -fopenmp")
-
                 find_package(OpenMP REQUIRED)
-
-                set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
                 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
 
@@ -616,12 +622,11 @@ elseif("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
 
                 if("${COMPILE_MODE}" STREQUAL "debug")
                         set(CMAKE_Fortran_FLAGS "-g -Wall -fmax-errors=0 -fbacktrace -fcheck=all -ffpe-trap=zero -ffree-line-length-none -lstdc++")
+                        set(CMAKE_CXX_FLAGS "-g -O0 -Wall -pedantic")
                 elseif("${COMPILE_MODE}" STREQUAL "fast")
                         set(CMAKE_Fortran_FLAGS "-O3 -fmax-errors=0 -ffree-line-length-none -lstdc++ -fopenmp")
+                        set(CMAKE_CXX_FLAGS "-O3 ${OpenMP_CXX_FLAGS}")
                 endif()
-
-                set(CMAKE_CXX_FLAGS "-g -O0 -Wall -pedantic")
-
 
                 find_package(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
                 find_package(HDF5 REQUIRED)
@@ -629,15 +634,11 @@ elseif("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                 find_package(netCDF REQUIRED)
                 find_package(LAPACK REQUIRED)
 
-                set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-
                 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
 
                 # compile openWQ into an object file
                 add_library(OPENWQ_OBJ OBJECT 
                         ${OPENWQ_SOURCES})
-                target_compile_options(OPENWQ_OBJ PRIVATE
-                        -g3 -Wall -pedantic)
                 target_include_directories(OPENWQ_OBJ PRIVATE
                         ${ARMADILLO_INCLUDE_DIR}
                         ${HDF5_INCLUDE_DIRS}
@@ -648,12 +649,10 @@ elseif("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                         ${HDF5_C_LIBRARY_hdf5}
                         -fopenmp)
 
-                # Create the executable with openWQ coupled to Summa                 
+                # Create the executable with openWQ coupled to Mizuroute                 
                 add_executable(${exec_name}
                         ${MIZUROUTE_MOD_ALL}
                         ${MIZUROUTE_DRIVER})
-                target_compile_options(${exec_name} PRIVATE
-                        -ffree-line-length-none)
                 set_property(TARGET ${exec_name} PROPERTY LINKER_LANGUAGE Fortran)
                 target_include_directories(
                         ${exec_name} PUBLIC
