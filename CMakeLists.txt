@@ -552,7 +552,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
         SET(exec_name "${COMPILE_TARGET}_${COMPILE_MODE}")
 
         # Choose where to create the executable
-        SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+        SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
         SET(EXEC_DIR ${PARENT_DIR}/../../../case_studies/testCase_cameo_v1.2/bin)
 
         IF(UNIX AND NOT APPLE)
@@ -570,9 +570,9 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                 FortranCInterface_VERIFY(CXX)
 
                 # Get paths to source code
-                SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-                SET(MIZUROUTE_DIR ${PARENT_DIR}/src/)
-                SET(OPENWQ_DIR ${PARENT_DIR}/openwq)
+                SET(MIZUROUTE_DIR ${PARENT_DIR}/src)
+                SET(OPENWQ_DIR ${PARENT_DIR}/openwq/openwq)
+                SET(OPENWQ_INTERFACE_DIR ${OPENWQ_DIR}/..)
 
                 # Setting OpenWQ sources
                 SET(MIZUROUTE_UTILS
@@ -583,6 +583,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                         ${MIZUROUTE_DIR}/gamma_func.f90
                 )
                 SET(MIZUROUTE_DATATYPES
+                        ${OPENWQ_INTERFACE_DIR}/openWQ.f90 # needs to be compiled before globalData
                         ${MIZUROUTE_DIR}/public_var.f90
                         ${MIZUROUTE_DIR}/dataTypes.f90
                         ${MIZUROUTE_DIR}/var_lookup.f90
@@ -623,6 +624,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                         ${MIZUROUTE_DIR}/mc_route.f90
                         ${MIZUROUTE_DIR}/main_route.f90
                         ${MIZUROUTE_DIR}/model_setup.f90
+                        ${OPENWQ_INTERFACE_DIR}/mizuroute_openwq.f90
                 )
                 SET(MIZUROUTE_DRIVER 
                         ${MIZUROUTE_DIR}/route_runoff.f90
@@ -637,10 +639,9 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
 
                 # Setting MizuRoute sources
                 FILE(GLOB OPENWQ_SOURCES 
-                        ${OPENWQ_DIR}/src/*.cpp 
-                        #${PARENT_DIR}/OpenWQ_hydrolink.cpp
-                        #${PARENT_DIR}/OpenWQ_interface.cpp
-                        )
+                        ${OPENWQ_DIR}/src/*.cpp
+                        ${OPENWQ_INTERFACE_DIR}/OpenWQ_hydrolink.cpp
+                        ${OPENWQ_INTERFACE_DIR}/OpenWQ_interface.cpp)
 
                 SET(CMAKE_CXX_STANDARD 17)
 
