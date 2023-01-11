@@ -69,12 +69,12 @@ OpenWQ_hydrolink.h
     #include "OpenWQ_output.h"
 
 
-    class ClassWQ_OpenWQ : public ClassModule
+    class CLASSWQ_openwq : public ClassModule
     {
 
         public:
 
-        ClassWQ_OpenWQ(std::string Name, std::string Version = "undefined", CRHM::LMODULE Lvl = CRHM::PROTO) : ClassModule(Name, Version, Lvl) {};
+        CLASSWQ_openwq(std::string Name, std::string Version = "undefined", CRHM::LMODULE Lvl = CRHM::PROTO) : ClassModule(Name, Version, Lvl) {};
 
         // Variables from CRHM
         const float *hru_t; // has to be converted to soil temperatures.
@@ -173,7 +173,7 @@ OpenWQ_hydrolink.cpp
     // Declare and initiate variables
     // function that calls coupler function: OpenWQ_couplercalls.InitialConfig
     //************************************************************************************************
-    void ClassWQ_OpenWQ::decl(
+    void CLASSWQ_openwq::decl(
         OpenWQ_couplercalls& OpenWQ_couplercalls,     // Class with all call from coupler
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object
@@ -271,7 +271,7 @@ OpenWQ_hydrolink.cpp
     // 2) OpenWQ_couplercalls.RunSpaceStep
     // 3) OpenWQ_couplercalls.RunTimeLoopEnd
     //************************************************************************************************
-    void ClassWQ_OpenWQ::run(
+    void CLASSWQ_openwq::run(
         OpenWQ_couplercalls& OpenWQ_couplercalls,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_json& OpenWQ_json,                    // create OpenWQ_json object

@@ -131,7 +131,7 @@ This coupler function contains a series of API calls that handles tasks related 
    :width: 700
    :alt: API calls
 
-* Coupler Function 4 (``ClassWQ_OpenWQ::OpenWQ::run_time_end``)
+* Coupler Function 4 (``CLASSWQ_openwq::OpenWQ::run_time_end``)
 
 This coupler call function contains a series of API calls that handle tasks required at the end of each time step.
 
