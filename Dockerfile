@@ -30,6 +30,8 @@ RUN tar -xf armadillo-10.3.0.tar.xz
 WORKDIR /code/armadillo-10.3.0
 RUN cmake . -D DETECT_HDF5=true -DCMAKE_C_FLAGS="-DH5_USE_110_API"
 RUN make install
+# Install Nano that will be needed to activate hdf5 in armadillo
+RUN apt-get -y install nano
 
 ######################################
 # Copy local folders to image
