@@ -38,6 +38,7 @@ If no information is provided for a particular compartment and/or chemical speci
 +---------------------+-------------------------------------------------------------------------+
 
 **-> If** ``DATA_FORMAT``: ``"H5"``
+
 Then IC data is provided using H5 files with the format as exported when running the model.
 The following additional json-keys need be included.
 
