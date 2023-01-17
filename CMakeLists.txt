@@ -2,13 +2,14 @@
 # STEPS TO SET UP THE APPROPRIATE Docker CONTAINER
 # ====> (ONLY NEED TO SET UP ONCE!) <====
 ######
+# 0) Start Docker
 # 1) Go to the folder that contains: docker-compose.yml
-# 1) clear all images and containers: docker system prune -a
-# 2) check IF docker-compose.yml file is good: docker-compose config
-# 3) running container: docker compose up -d 
-# 4) stop container: docker compose down
-# 5) see the containers running: docker ps
-# 6) run a shell inside the container: docker exec -it <container name> /bin/bash
+# 2) clear all images and containers: docker system prune -a
+# 3) check IF docker-compose.yml file is good: docker-compose config
+# 4) running container: docker compose up -d 
+# 5) stop container: docker compose down
+# 6) see the containers running: docker ps
+# 7) run a shell inside the container: docker exec -it <container name> /bin/bash
 
 #####
 # STEPS TO COMPILE THE PROGRAM WITH THIS CMakeLists
