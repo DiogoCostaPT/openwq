@@ -11,13 +11,15 @@ The transportation and biogeochemical configuration file is a JSON file made up 
 |                                                               | - Format: ``[<s#>, <s#>, ...]``                                                                                       |
 |                                                               | - Example: ``["N_org", "N_inorg", "P_org", "P_inorg"]``                                                               |
 +---------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
-| ``<Compt_Name>`` -> ``INITIAL_CONDITIONS``                    | - Initial concentrations.                                                                                             |
-|                                                               | - See details below.                                                                                                  |
+| ``<Compt_Name>`` -> ``INITIAL_CONDITIONS`` -> ``DATA_FORMAT`` | - Format of IC input.                                                                                                 |
+|                                                               | - Options: ``"JSON"`` or ``"H5"``                                                                                     |
 +---------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
 
 **ADDITIONAL KEYS**:
 
-The value of the ``INITIAL_CONDITIONS`` key has the following format:
+**-> If** ``DATA_FORMAT``: ``"JSON"``
+
+Then IC data in ``DATA`` is provided in the following format:
 ``<Chem_Name>``: {``"(i#)"``: ``[ix,iy,iz,conc/load, units]``}.
 If no information is provided for a particular compartment and/or chemical species, the initial conditions (concentrations and masss) will be assumed ZERO.
 
@@ -34,6 +36,21 @@ If no information is provided for a particular compartment and/or chemical speci
 +---------------------+-------------------------------------------------------------------------+
 | ``<units>``         | Units of the previous field, e.g., ``"mg/l"``, ```kg``                  |
 +---------------------+-------------------------------------------------------------------------+
+
+**-> If** ``DATA_FORMAT``: ``"H5"``
+Then IC data is provided using H5 files with the format as exported when running the model.
+The following additional json-keys need be included.
+
++---------------------+--------------------------------------------------------------------------+
+| ``FOLDERPATH``      | Folder that contains the ``*.h5`` files containing the IC data.          |
++---------------------+--------------------------------------------------------------------------+
+| ``TIMESTAMP``       | - Timestamp to be extracted.                                             |
+|                     | - Format: ``YYYYMMMDD-HH:MM:SS``                                         |
+|                     | - Example: ``"1950Apr01-12:00:00"``                                      |
++---------------------+--------------------------------------------------------------------------+
+| ``UNITS``           | - Units of the input data, which will be used to located the IC h5 files.|
+|                     | - Example: ``"mg"``, ``"mg/l"``                                          |
++---------------------+--------------------------------------------------------------------------+
 
 The JSON file supports C/C++ syntax for comments: single-line comment (``//``) or comment blocks (``/*`` and ``*/``).
 
@@ -57,22 +74,17 @@ Example:
                     "2": [1,5,1,2,"mg/l"]
                 },
                 "species_B": {
-                    "1": ["all","all","all",5,"mg/l"]
+                    "1": ["all","all","all",5,"kg"]
                 }
               }
           },
           "SOIL_RECHR":{
               "CYCLING_FRAMEWORK": ["N_inorg","P_inorg","N_soil_org","P_soil_org"],
               "INITIAL_CONDITIONS":{
-                "species_A": {
-                    "1": ["all","all","all",3,"mg/l"],
-                },
-                "species_B": {
-                    "1": ["all","all","all",0,"mg/l"],
-                    "2": ["all","all","all",0,"mg/l"],
-                    "3": ["all","all","all",0,"mg/l"],
-                    "4": ["all","all","all",0,"mg/l"]
-                }
+                    "Data_Format": "H5",
+                    "FOLDERPATH": "openwq_ic_h5",
+                    "TIMESTAMP": "1950Apr01-12:00:00",
+                    "UNITS": "mg"
               }
           }
       }

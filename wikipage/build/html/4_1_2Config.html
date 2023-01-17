@@ -191,17 +191,18 @@
 </ul>
 </td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;Compt_Name&gt;</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">INITIAL_CONDITIONS</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;Compt_Name&gt;</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">INITIAL_CONDITIONS</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code></p></td>
 <td><ul class="simple">
-<li><p>Initial concentrations.</p></li>
-<li><p>See details below.</p></li>
+<li><p>Format of IC input.</p></li>
+<li><p>Options: <code class="docutils literal notranslate"><span class="pre">&quot;JSON&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;H5&quot;</span></code></p></li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <p><strong>ADDITIONAL KEYS</strong>:</p>
-<p>The value of the <code class="docutils literal notranslate"><span class="pre">INITIAL_CONDITIONS</span></code> key has the following format:
+<p><strong>-&gt; If</strong> <code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;JSON&quot;</span></code></p>
+<p>Then IC data in <code class="docutils literal notranslate"><span class="pre">DATA</span></code> is provided in the following format:
 <code class="docutils literal notranslate"><span class="pre">&lt;Chem_Name&gt;</span></code>: {<code class="docutils literal notranslate"><span class="pre">&quot;(i#)&quot;</span></code>: <code class="docutils literal notranslate"><span class="pre">[ix,iy,iz,conc/load,</span> <span class="pre">units]</span></code>}.
 If no information is provided for a particular compartment and/or chemical species, the initial conditions (concentrations and masss) will be assumed ZERO.</p>
 <table class="docutils align-default">
@@ -230,6 +231,35 @@ If no information is provided for a particular compartment and/or chemical speci
 </tr>
 </tbody>
 </table>
+<p><strong>-&gt; If</strong> <code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;H5&quot;</span></code>
+Then IC data is provided using H5 files with the format as exported when running the model.
+The following additional json-keys need be included.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 78%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">FOLDERPATH</span></code></p></td>
+<td><p>Folder that contains the <code class="docutils literal notranslate"><span class="pre">*.h5</span></code> files containing the IC data.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TIMESTAMP</span></code></p></td>
+<td><ul class="simple">
+<li><p>Timestamp to be extracted.</p></li>
+<li><p>Format: <code class="docutils literal notranslate"><span class="pre">YYYYMMMDD-HH:MM:SS</span></code></p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">&quot;1950Apr01-12:00:00&quot;</span></code></p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UNITS</span></code></p></td>
+<td><ul class="simple">
+<li><p>Units of the input data, which will be used to located the IC h5 files.</p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">&quot;mg&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;mg/l&quot;</span></code></p></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <p>The JSON file supports C/C++ syntax for comments: single-line comment (<code class="docutils literal notranslate"><span class="pre">//</span></code>) or comment blocks (<code class="docutils literal notranslate"><span class="pre">/*</span></code> and <code class="docutils literal notranslate"><span class="pre">*/</span></code>).</p>
 <p>The symbol <code class="docutils literal notranslate"><span class="pre">&lt;Compt_Name&gt;</span></code> refers to compartment names as defined by the host model. We can add as many of such compartment json-key blocks as desired (see example below). The compartment names should match those defined in the hostmodel.</p>
 <p>The symbol <code class="docutils literal notranslate"><span class="pre">&lt;Chem_Name&gt;</span></code> refers to chemical species names as defined in the <a class="reference external" href="https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#">Biogeochemical cycling configuration file</a>.</p>
@@ -245,22 +275,17 @@ If no information is provided for a particular compartment and/or chemical speci
                   <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">]</span>
               <span class="p">},</span>
               <span class="nt">&quot;species_B&quot;</span><span class="p">:</span> <span class="p">{</span>
-                  <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">]</span>
+                  <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="s2">&quot;kg&quot;</span><span class="p">]</span>
               <span class="p">}</span>
             <span class="p">}</span>
         <span class="p">},</span>
         <span class="nt">&quot;SOIL_RECHR&quot;</span><span class="p">:{</span>
             <span class="nt">&quot;CYCLING_FRAMEWORK&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;N_inorg&quot;</span><span class="p">,</span><span class="s2">&quot;P_inorg&quot;</span><span class="p">,</span><span class="s2">&quot;N_soil_org&quot;</span><span class="p">,</span><span class="s2">&quot;P_soil_org&quot;</span><span class="p">],</span>
             <span class="nt">&quot;INITIAL_CONDITIONS&quot;</span><span class="p">:{</span>
-              <span class="nt">&quot;species_A&quot;</span><span class="p">:</span> <span class="p">{</span>
-                  <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-              <span class="p">},</span>
-              <span class="nt">&quot;species_B&quot;</span><span class="p">:</span> <span class="p">{</span>
-                  <span class="nt">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                  <span class="nt">&quot;2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                  <span class="nt">&quot;3&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">],</span>
-                  <span class="nt">&quot;4&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">&quot;mg/l&quot;</span><span class="p">]</span>
-              <span class="p">}</span>
+                  <span class="nt">&quot;Data_Format&quot;</span><span class="p">:</span> <span class="s2">&quot;H5&quot;</span><span class="p">,</span>
+                  <span class="nt">&quot;FOLDERPATH&quot;</span><span class="p">:</span> <span class="s2">&quot;openwq_ic_h5&quot;</span><span class="p">,</span>
+                  <span class="nt">&quot;TIMESTAMP&quot;</span><span class="p">:</span> <span class="s2">&quot;1950Apr01-12:00:00&quot;</span><span class="p">,</span>
+                  <span class="nt">&quot;UNITS&quot;</span><span class="p">:</span> <span class="s2">&quot;mg&quot;</span>
             <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>

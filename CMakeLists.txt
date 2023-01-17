@@ -35,12 +35,12 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10 FATAL_ERROR)
 # optA2) crhm_openwq -> compile with crhm using hydrolink
 # optA3) summa_openwq -> compile with summa using hydrolink
 # optA4) mizuroute_openwq -> compile with mizuRoute using hydrolink
-SET(COMPILE_TARGET crhm_openwq)
+SET(COMPILE_TARGET mizuroute_openwq)
 
 # B) Set Compilation mode:
 # optB1) debug -> set the necessary flags for debugging
 # optB2) fast -> set optimization flags
-SET(COMPILE_MODE fast)
+SET(COMPILE_MODE debug)
 
 #####
 # DON'T CHANGE BEYOND THIS POINT...............
@@ -60,10 +60,10 @@ MESSAGE(STATUS "##########################################")
 IF("${COMPILE_TARGET}" STREQUAL "openwq")
         
         SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-        SET(EXEC_DIR ${PARENT_DIR}/../../../bin)
+        SET(EXEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
         PROJECT("${COMPILE_TARGET}")
-        SET(exec_name "${COMPILE_TARGET}")
+        SET(exec_name "${COMPILE_TARGET}_${COMPILE_MODE}")
         SET(CMAKE_CXX_STANDARD 17)
 
         FILE(GLOB SOURCES "main.cpp" "src/*.cpp")
@@ -164,11 +164,12 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "crhm_openwq")
                 MESSAGE(STATUS "** OpenWQ **: current platform is Linux")
 
                 PROJECT("${COMPILE_TARGET}")
-                SET(exec_name "${COMPILE_TARGET}")
+                SET(exec_name "${COMPILE_TARGET}_${COMPILE_MODE}")
 
                 # Choose where to create the executable
                 SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-                SET(EXEC_DIR ${PARENT_DIR}/bin)
+                SET(EXEC_DIR ${PARENT_DIR}/../case_studies)
+
                 SET(CRHM_DIR ${PARENT_DIR}/crhm)
                 SET(OPENWQ_DIR ${PARENT_DIR}/openwq)
                 SET(HYDROLINK_DIR ${PARENT_DIR})
@@ -270,12 +271,8 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
         #FLAGS_NOAH = -p -g -ffree-form -ffree-line-length-none -fmax-errors=0 -fbacktrace -Wno-unused -Wno-unused-dummy-argument
         #FLAGS_COMM = -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds
         #FLAGS_SUMMA = -p -g -Wall -ffree-line-length-none -fmax-errors=0 -fbacktrace -fcheck=bounds
-        
-        # Choose where to create the executable
-        SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-        SET(EXEC_DIR ${PARENT_DIR}/../../../bin)
 
-        SET(exec_name "${COMPILE_TARGET}")
+        SET(exec_name "${COMPILE_TARGET}_${COMPILE_MODE}")
 
         IF(UNIX AND NOT APPLE)
 
@@ -291,6 +288,8 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
 
                 # Get paths to source code
                 SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+                SET(EXEC_DIR ${PARENT_DIR}/../../../../case_studies)
+
                 SET(SUMMA_DIR ${PARENT_DIR}../../../../../../)
                 SET(OPENWQ_DIR ${PARENT_DIR}/openwq)
 
@@ -550,11 +549,11 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
 # ..................
 ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
 
-        SET(exec_name "${COMPILE_TARGET}")
+        SET(exec_name "${COMPILE_TARGET}_${COMPILE_MODE}")
 
         # Choose where to create the executable
-        SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-        SET(EXEC_DIR ${PARENT_DIR}/../bin)
+        SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+        SET(EXEC_DIR ${PARENT_DIR}/../../../case_studies/testCase_cameo_v1.2/bin)
 
         IF(UNIX AND NOT APPLE)
 
@@ -571,9 +570,9 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                 FortranCInterface_VERIFY(CXX)
 
                 # Get paths to source code
-                SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
-                SET(MIZUROUTE_DIR ${PARENT_DIR}/src/)
-                SET(OPENWQ_DIR ${PARENT_DIR}/openwq)
+                SET(MIZUROUTE_DIR ${PARENT_DIR}/src)
+                SET(OPENWQ_DIR ${PARENT_DIR}/openwq/openwq)
+                SET(OPENWQ_INTERFACE_DIR ${OPENWQ_DIR}/..)
 
                 # Setting OpenWQ sources
                 SET(MIZUROUTE_UTILS
@@ -584,6 +583,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                         ${MIZUROUTE_DIR}/gamma_func.f90
                 )
                 SET(MIZUROUTE_DATATYPES
+                        ${OPENWQ_INTERFACE_DIR}/openWQ.f90 # needs to be compiled before globalData
                         ${MIZUROUTE_DIR}/public_var.f90
                         ${MIZUROUTE_DIR}/dataTypes.f90
                         ${MIZUROUTE_DIR}/var_lookup.f90
@@ -624,6 +624,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                         ${MIZUROUTE_DIR}/mc_route.f90
                         ${MIZUROUTE_DIR}/main_route.f90
                         ${MIZUROUTE_DIR}/model_setup.f90
+                        ${OPENWQ_INTERFACE_DIR}/mizuroute_openwq.f90
                 )
                 SET(MIZUROUTE_DRIVER 
                         ${MIZUROUTE_DIR}/route_runoff.f90
@@ -638,16 +639,15 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
 
                 # Setting MizuRoute sources
                 FILE(GLOB OPENWQ_SOURCES 
-                        ${OPENWQ_DIR}/src/*.cpp 
-                        #${PARENT_DIR}/OpenWQ_hydrolink.cpp
-                        #${PARENT_DIR}/OpenWQ_interface.cpp
-                        )
+                        ${OPENWQ_DIR}/src/*.cpp
+                        ${OPENWQ_INTERFACE_DIR}/OpenWQ_hydrolink.cpp
+                        ${OPENWQ_INTERFACE_DIR}/OpenWQ_interface.cpp)
 
                 SET(CMAKE_CXX_STANDARD 17)
 
                 IF("${COMPILE_MODE}" STREQUAL "debug")
-                        SET(CMAKE_Fortran_FLAGS "-g -Wall -fmax-errors=0 -fbacktrace -fcheck=all -ffpe-trap=zero -ffree-line-length-none -lstdc++")
-                        SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -pedantic")
+                        SET(CMAKE_Fortran_FLAGS "-g3 -Wall -fmax-errors=0 -fbacktrace -fcheck=all -ffpe-trap=zero -ffree-line-length-none -lstdc++")
+                        SET(CMAKE_CXX_FLAGS "-g3 -O0 -Wall -pedantic")
                 ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
                         SET(CMAKE_Fortran_FLAGS "-O3 -fmax-errors=0 -ffree-line-length-none -lstdc++ -fopenmp")
                         SET(CMAKE_CXX_FLAGS "-O3 ${OpenMP_CXX_FLAGS}")
