@@ -47,6 +47,16 @@ int OpenWQ_output::writeResults(
     strftime(timechar,30,"%Y%b%d-%H:%M:%S",tm_simtime);
     std::string timestr = std::string(timechar);
 
+    // Convert timestr to upper case to avoid issues
+    try{
+        std::transform(
+        timestr.begin(),
+        timestr.end(),
+        timestr.begin(), // Convert to lower case to avoid issues
+        [](unsigned char c) { return std::toupper(c); });
+        
+    }catch (...){}
+
     // Get outputfile_type name
     if (OpenWQ_wqconfig.output_type == 0){outputfile_type = "CSV";}
     else if (OpenWQ_wqconfig.output_type == 1){outputfile_type = "HDF5";}

@@ -235,14 +235,20 @@ void OpenWQ_initiate::setIC_driver(
             ic_data_format = OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
                 ["INITIAL_CONDITIONS"]["DATA_FORMAT"];
 
-            if(ic_data_format.compare("H5")==0){
-
-                //setIC_h5()
-                std::cout << "placeholder" << std::endl;
-                
-            }else if(ic_data_format.compare("JSON")==0){
+            if(ic_data_format.compare("JSON")==0){
 
                 setIC_json(OpenWQ_json,
+                    OpenWQ_vars,
+                    OpenWQ_hostModelconfig,
+                    OpenWQ_wqconfig,
+                    OpenWQ_units,
+                    OpenWQ_output,
+                    icmp,
+                    chemi);
+                
+            }else if(ic_data_format.compare("H5")==0){
+
+                setIC_h5(OpenWQ_json,
                     OpenWQ_vars,
                     OpenWQ_hostModelconfig,
                     OpenWQ_wqconfig,
@@ -520,6 +526,79 @@ void OpenWQ_initiate::setIC_json(
             }
         }
     }
+}
+
+/* #################################################
+// Read and set IC conditions: H5 format
+################################################# */
+void OpenWQ_initiate::setIC_h5(
+    OpenWQ_json& OpenWQ_json,
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_units& OpenWQ_units,
+    OpenWQ_output& OpenWQ_output,
+    const int icmp,
+    const int chemi){
+
+    // Local variables
+    std::string ic_h5_folderPath;
+    std::string ic_h5_timestamp;
+    std::string ic_filenamePath;
+    std::string ic_h5_units;
+    std::size_t it;
+    arma::mat xyzIC_h5;
+    arma::mat dataIC_h5;
+
+    // Find compartment icmp name from code (host hydrological model)
+    std::string CompName_icmp = std::get<1>(
+        OpenWQ_hostModelconfig.HydroComp.at(icmp)); // Compartment icomp name
+
+    // Get chem name
+    std::string chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi]; // chemical name in BGC-json list
+
+    // h5 IC folder path
+    ic_h5_folderPath = 
+        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
+        ["INITIAL_CONDITIONS"]["FOLDERPATH"];
+
+    // h5 ic timestamp
+    ic_h5_timestamp = 
+        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
+        ["INITIAL_CONDITIONS"]["TIMESTAMP"];
+
+    // h5 ic units
+    ic_h5_units = 
+        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
+        ["INITIAL_CONDITIONS"]["UNITS"];
+
+    // replace "/" by "|" is needed because "/" is not compatible with directory full paths
+    it = (int) ic_h5_units.find("/");
+    if (it <= ic_h5_units.size()){
+        ic_h5_units.replace(it,1, "|");
+     }
+
+    // Generate full ic filename
+    ic_filenamePath = ic_h5_folderPath;
+
+    ic_filenamePath.append("/");
+    ic_filenamePath.append(CompName_icmp); // compartment
+    ic_filenamePath.append("@");
+    ic_filenamePath.append(chemname);     // chemical name
+    ic_filenamePath.append("#");
+    ic_filenamePath.append(ic_h5_units); // units
+    ic_filenamePath.append("-main.h5"); 
+
+    xyzIC_h5
+        .load(arma::hdf5_name(
+            ic_filenamePath,            // file name
+            "xyz_elements"));          // options
+
+    dataIC_h5
+        .load(arma::hdf5_name(
+            ic_filenamePath,            // file name
+            ic_h5_timestamp));          // options
+
 }
 
 /* #################################################

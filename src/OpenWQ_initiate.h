@@ -70,6 +70,16 @@ class OpenWQ_initiate{
         const int icmp,
         const int chemi);
 
+    void setIC_h5(
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units,
+        OpenWQ_output& OpenWQ_output,
+        const int icmp,
+        const int chemi);
+
     // Update time variables
     void setTimeVars(
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
