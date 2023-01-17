@@ -51,7 +51,7 @@ class OpenWQ_initiate{
         OpenWQ_output& OpenWQ_output);
 
     // Set initial conditions
-    void setIC(
+    void setIC_driver(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -59,6 +59,16 @@ class OpenWQ_initiate{
         OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output,
         const int icmp);
+
+    void setIC_json(
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_units& OpenWQ_units,
+        OpenWQ_output& OpenWQ_output,
+        const int icmp,
+        const int chemi);
 
     // Update time variables
     void setTimeVars(
