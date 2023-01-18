@@ -12,7 +12,7 @@ The transportation and biogeochemical configuration file is a JSON file made up 
 |                                                               | - Example: ``["N_org", "N_inorg", "P_org", "P_inorg"]``                                                               |
 +---------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
 | ``<Compt_Name>`` -> ``INITIAL_CONDITIONS`` -> ``DATA_FORMAT`` | - Format of IC input.                                                                                                 |
-|                                                               | - Options: ``"JSON"`` or ``"H5"``                                                                                     |
+|                                                               | - Options: ``"JSON"`` or ``"HDF5"``                                                                                   |
 +---------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
 
 **ADDITIONAL KEYS**:
@@ -37,7 +37,7 @@ If no information is provided for a particular compartment and/or chemical speci
 | ``<units>``         | Units of the previous field, e.g., ``"mg/l"``, ```kg``                  |
 +---------------------+-------------------------------------------------------------------------+
 
-**-> If** ``DATA_FORMAT``: ``"H5"``
+**-> If** ``DATA_FORMAT``: ``"HDF5"``
 
 Then IC data is provided using H5 files with the format as exported when running the model.
 The following additional json-keys need be included.
@@ -82,7 +82,7 @@ Example:
           "SOIL_RECHR":{
               "CYCLING_FRAMEWORK": ["N_inorg","P_inorg","N_soil_org","P_soil_org"],
               "INITIAL_CONDITIONS":{
-                    "Data_Format": "H5",
+                    "Data_Format": "HDF5",
                     "FOLDERPATH": "openwq_ic_h5",
                     "TIMESTAMP": "1950Apr01-12:00:00",
                     "UNITS": "mg"
