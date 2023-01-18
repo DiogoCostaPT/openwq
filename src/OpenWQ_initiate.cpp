@@ -623,6 +623,29 @@ void OpenWQ_initiate::setIC_h5(
             ic_filenamePath,            // file name
             ic_h5_timestamp));          // options
 
+    // If no data found for requested ic_h5_timestamp
+    // Then, through warning message and return
+    if(dataIC_h5.is_empty() == true){
+
+        // Create Message
+        msg_string = 
+            "<OpenWQ> WARNING: IC conc not found for timestamp='"
+            + ic_h5_timestamp
+            + "' in h5 file='" + ic_filenamePath
+            + "'. Request ignored and IC concentrations defaulted to zero for all chemicals of "
+            "compartment=" + OpenWQ_hostModelconfig.cmpt_names[icmp];
+
+        // Print it (Console and/or Log file)
+        OpenWQ_output.ConsoleLog(
+            OpenWQ_wqconfig,    // for Log file name
+            msg_string,         // message
+            true,               // print in console
+            true);              // print in log file
+
+        return;
+    }
+
+
     // Saving IC in state variable 
     #pragma omp parallel for private (irow, ic_x, ic_y, ic_z) num_threads(OpenWQ_wqconfig.num_threads_requested)
     for (irow=0;irow<xyzIC_h5.n_rows-1;irow++){

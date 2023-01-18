@@ -194,7 +194,7 @@
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;Compt_Name&gt;</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">INITIAL_CONDITIONS</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code></p></td>
 <td><ul class="simple">
 <li><p>Format of IC input.</p></li>
-<li><p>Options: <code class="docutils literal notranslate"><span class="pre">&quot;JSON&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;H5&quot;</span></code></p></li>
+<li><p>Options: <code class="docutils literal notranslate"><span class="pre">&quot;JSON&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;HDF5&quot;</span></code></p></li>
 </ul>
 </td>
 </tr>
@@ -231,7 +231,7 @@ If no information is provided for a particular compartment and/or chemical speci
 </tr>
 </tbody>
 </table>
-<p><strong>-&gt; If</strong> <code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;H5&quot;</span></code></p>
+<p><strong>-&gt; If</strong> <code class="docutils literal notranslate"><span class="pre">DATA_FORMAT</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;HDF5&quot;</span></code></p>
 <p>Then IC data is provided using H5 files with the format as exported when running the model.
 The following additional json-keys need be included.</p>
 <table class="docutils align-default">
@@ -282,7 +282,7 @@ The following additional json-keys need be included.</p>
         <span class="nt">&quot;SOIL_RECHR&quot;</span><span class="p">:{</span>
             <span class="nt">&quot;CYCLING_FRAMEWORK&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;N_inorg&quot;</span><span class="p">,</span><span class="s2">&quot;P_inorg&quot;</span><span class="p">,</span><span class="s2">&quot;N_soil_org&quot;</span><span class="p">,</span><span class="s2">&quot;P_soil_org&quot;</span><span class="p">],</span>
             <span class="nt">&quot;INITIAL_CONDITIONS&quot;</span><span class="p">:{</span>
-                  <span class="nt">&quot;Data_Format&quot;</span><span class="p">:</span> <span class="s2">&quot;H5&quot;</span><span class="p">,</span>
+                  <span class="nt">&quot;Data_Format&quot;</span><span class="p">:</span> <span class="s2">&quot;HDF5&quot;</span><span class="p">,</span>
                   <span class="nt">&quot;FOLDERPATH&quot;</span><span class="p">:</span> <span class="s2">&quot;openwq_ic_h5&quot;</span><span class="p">,</span>
                   <span class="nt">&quot;TIMESTAMP&quot;</span><span class="p">:</span> <span class="s2">&quot;1950Apr01-12:00:00&quot;</span><span class="p">,</span>
                   <span class="nt">&quot;UNITS&quot;</span><span class="p">:</span> <span class="s2">&quot;mg&quot;</span>
