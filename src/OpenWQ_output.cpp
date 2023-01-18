@@ -219,7 +219,7 @@ int OpenWQ_output::writeResults(
                 // chem and transport
 
                 // Var: d_chemass_dt_chem
-                output_file_label.assign("d_output_dt_chemisry");
+                output_file_label.assign("d_output_dt_chemistry");
                 OpenWQ_output::writeHDF5(
                     OpenWQ_json,
                     OpenWQ_hostModelconfig,

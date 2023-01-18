@@ -52,7 +52,7 @@ function output_openwq_tscollect_all = read_OpenWQ_outputs(...
     fullpath_outputs = [folderpath,OpenWQ_output_format,'/'];
     
     file_extensions = {'main',...
-                       'd_output_dt_chemisry',...   % only in debug mode
+                       'd_output_dt_chemistry',...   % only in debug mode
                        'd_output_dt_transport',...  % only in debug mode
                        'd_output_ss',...            % only in debug mode
                        'd_output_ewf',...           % only in debug mode
