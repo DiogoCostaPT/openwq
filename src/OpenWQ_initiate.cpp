@@ -246,7 +246,7 @@ void OpenWQ_initiate::setIC_driver(
                     icmp,
                     chemi);
                 
-            }else if(ic_data_format.compare("H5")==0){
+            }else if(ic_data_format.compare("HDF5")==0){
 
                 setIC_h5(OpenWQ_json,
                     OpenWQ_vars,

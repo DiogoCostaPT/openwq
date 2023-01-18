@@ -25,7 +25,7 @@ Install Docker in your machine.
 6. Get the appropriate container ID and use it in the command below
 7. Run a shell inside the container with ``docker exec -it <container id> /bin/bash``
 8. Armadillo now disables default ``hdf5`` support for save/load, so run ``nano “/usr/include/armadillo_bits/config.hpp”``
-9. You are now inside the ``config.hpp``file, so locate and uncomment ``#define ARMA_USE_HDF5``
+9. You are now inside the ``config.hpp`` file, so locate and uncomment ``#define ARMA_USE_HDF5``
 10. Go to the main OpenWQ folder that contains the ``CMakeLists.txt`` file
 11. Compile with: ``rm CMakeCache.txt; rm -r CMakeFiles; cmake . ; make -B; rm *.mod``
 
