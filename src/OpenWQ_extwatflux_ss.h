@@ -39,6 +39,7 @@ class OpenWQ_extwatflux_ss{
     public:
 
     // Save Sink and Source data to tuple (more efficient than allways calling jnlohmann)
+    // Driver function
     void Set_EWFandSS_drive(
         json &EWF_SS_json,
         OpenWQ_vars& OpenWQ_vars,
@@ -48,6 +49,29 @@ class OpenWQ_extwatflux_ss{
         OpenWQ_utils& OpenWQ_utils,
         OpenWQ_output& OpenWQ_output,
         std::string inputType);
+
+    // if DATA_FORMAT = JSON or ASCII
+    void Set_EWFandSS_jsonAscii(
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
+        OpenWQ_units& OpenWQ_units,
+        OpenWQ_output& OpenWQ_output,
+        unsigned int ssf, unsigned int ssi,   // file-structure and substructure indexes
+        std::string DataFormat,         // (JSON or ASCII)
+        json EWF_SS_json_sub,           // relevant sub-json
+        std::string Element_name,
+        std::string inputType,
+        bool foundflag);
+
+    // if DATA_FORMAT = HDF5
+    void Set_EWFandSS_h5(
+        OpenWQ_units& OpenWQ_units,
+        OpenWQ_output& OpenWQ_output,
+        json EWF_SS_json_sub,  // relevant sub-json
+        std::string Element_name,
+        std::string inputType,
+        bool foundflag);
 
     // Check if sink or sources needs to be applied
     void CheckApply_EWFandSS(
