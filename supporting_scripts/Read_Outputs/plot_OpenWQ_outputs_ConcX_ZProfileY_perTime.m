@@ -44,6 +44,13 @@ function plot_OpenWQ_outputs_ConcX_ZProfileY_perTime(...
     reqAPI_SecDir2_dim = char(extractBetween(requestProfileAPI,',','='));
     reqAPI_SecDir2_val = str2double(extractBetween(requestProfileAPI,...
                           	[reqAPI_SecDir2_dim,'='],')'));
+                        
+    % IC doesn't make sense to include in profile plotting
+    % So, check if it's plot_OpenWQ_outputs_all in and remove it
+    index_ic = find(plot_OpenWQ_outputs_all(:,1) == "d_output_ic");
+    if ~isempty(index_ic)
+        plot_OpenWQ_outputs_all(index_ic,:) = [];
+    end
     
     % Number of variables to plot (only valid entries)
     % Get this from any file
