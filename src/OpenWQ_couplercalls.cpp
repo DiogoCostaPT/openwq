@@ -66,7 +66,7 @@ void OpenWQ_couplercalls::InitialConfig(
     // and store them in tuple and arma::mat for quick access
     // ##################################
     // SS
-    OpenWQ_extwatflux_ss.Set_EWFandSS(
+    OpenWQ_extwatflux_ss.Set_EWFandSS_drive(
         OpenWQ_json.SinkSource, // SS json
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
@@ -77,7 +77,7 @@ void OpenWQ_couplercalls::InitialConfig(
         (std::string) "ss");    // flag for SS
 
     // EWF
-    OpenWQ_extwatflux_ss.Set_EWFandSS(
+    OpenWQ_extwatflux_ss.Set_EWFandSS_drive(
         OpenWQ_json.ExtWatFlux, // EWF json
         OpenWQ_vars,
         OpenWQ_hostModelconfig,

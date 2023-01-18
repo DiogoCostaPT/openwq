@@ -20,7 +20,7 @@
 /* #################################################
  // Check Sources and Sinks and Apply
  ################################################# */
-void OpenWQ_extwatflux_ss::Set_EWFandSS(
+void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
     json &EWF_SS_json,                                  // SS or EWF json    
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -63,7 +63,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
     std::string headerWord;                     // interactive header words
 
     std::string elemName;                       // temporary element name
-    std::string keyName;                        // interactive json-key name
+    std::string main_keyName;                   // interactive json-key name
     int YYYY_json;                              // Year in JSON-sink_source (interactive)
     int MM_json;                                // Month in JSON-sink_source (interactive)
     int DD_json;                                // Day in JSON-sink_source (interactive)
@@ -96,6 +96,10 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
     // Get number of sub-structures of SS/EWF data
     num_srcfiles = EWF_SS_json.size(); 
 
+    // Element names: Compartment or External Flux
+    if (inputType.compare("ss")==0)         main_keyName = "COMPARTMENT_NAME";           // SS
+    else if (inputType.compare("ewf")==0)   main_keyName = "EXTERNAL_INPUTFLUX_NAME";    // EWF
+    
     /* ########################################
     // Loop over file (saved as sub-structure of SS/EWF data)
     ######################################## */
@@ -113,31 +117,37 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
 
         for (unsigned int ssi=0;ssi<num_srchem;ssi++){
             
-            /* ########
-            // Get chemical name and compartment/external-flux name 
-            // if SS, then get also SS_type (source or sink)
-            ###########*/
-
-            // needs this here because there can be entries that are not relevant e.g. COMMENTS
-            // Chemical
+            // Get mainKeyName
+            // "COMPARTMENT_NAME" in the case of "ss"
+            // "EXTERNAL_INPUTFLUX_NAME" in the case of "ewf"
+            // Needs try-catch because there may be other irrelevant entries e.g. COMMENTS
             try{
-                Chemical_name = EWF_SS_json // chemical name
+                
+                Element_name = EWF_SS_json
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
-                    ["CHEMICAL_NAME"];
+                    [main_keyName];
 
             }catch(...){   
                 continue;
             }
 
-            // Element names: Compartment or External Flux
-            if (inputType.compare("ss")==0)         keyName = "COMPARTMENT_NAME";           // SS
-            else if (inputType.compare("ewf")==0)   keyName = "EXTERNAL_INPUTFLUX_NAME";    // EWF
-            
-            Element_name = EWF_SS_json
+            /* ########
+            // Get data format
+            ###########*/
+            DataFormat = EWF_SS_json // units
                 [std::to_string(ssf+1)]
                 [std::to_string(ssi+1)]
-                [keyName];
+                ["DATA_FORMAT"];
+
+            /* ########
+            // Get chemical name and compartment/external-flux name 
+            // if SS, then get also SS_type (source or sink)
+            ###########*/
+            Chemical_name = EWF_SS_json // chemical name
+                    [std::to_string(ssf+1)]
+                    [std::to_string(ssi+1)]
+                    ["CHEMICAL_NAME"];
 
             // Type (sink or source) (only used in SS)
             if (inputType.compare("ss")==0) {
@@ -146,13 +156,11 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 [std::to_string(ssi+1)]
                 ["TYPE"];}
             else if (inputType.compare("ewf")==0) Type = "SOURCE";
-            
-
+        
             /* ########
             // Check if the requests are valid
             // chemical name, compartment name and SS_type (source or sink)
             ###########*/
-
             // Get chemical index
             err_text.assign("Chemical name");
             foundflag = getModIndex(
@@ -193,14 +201,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS(
                 [std::to_string(ssf+1)]
                 [std::to_string(ssi+1)]
                 ["UNITS"];
-
-            /* ########
-            // Get actual data
-            ###########*/
-            DataFormat = EWF_SS_json // units
-                [std::to_string(ssf+1)]
-                [std::to_string(ssi+1)]
-                ["DATA_FORMAT"];
 
             /* ########
             // Check if DATA_FORMAT=ASCII

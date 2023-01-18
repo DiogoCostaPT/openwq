@@ -39,7 +39,7 @@ class OpenWQ_extwatflux_ss{
     public:
 
     // Save Sink and Source data to tuple (more efficient than allways calling jnlohmann)
-    void Set_EWFandSS(
+    void Set_EWFandSS_drive(
         json &EWF_SS_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
