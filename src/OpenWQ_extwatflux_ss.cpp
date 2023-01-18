@@ -1090,6 +1090,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
     std::string inputType,
     bool foundflag){
 
+    
+
 }
 
 /* #################################################
@@ -1138,7 +1140,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
     if (OpenWQ_wqconfig.tstep1_flag){
 
         // Remove requested loads that are prior to the simulation start datetime
-        OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
+        RemoveLoadBeforeSimStart(
             array_FORC,
             OpenWQ_units,
             YYYY,           // current model step: Year
@@ -1150,7 +1152,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         );
 
         // Update time increments for rows with "all" elements
-        OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
+        UpdateAllElemTimeIncremts(
             array_FORC,
             OpenWQ_units,
             YYYY,         // current model step: Year
