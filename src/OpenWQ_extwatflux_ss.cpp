@@ -1292,6 +1292,29 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
                 ewf_filenamePath,          // file name
                 "xyz_elements"));          // options
 
+        // xyzEWF_h5 is empty, 
+        // it means that the h5 file requested was not found
+        if(xyzEWF_h5.is_empty()){
+
+            // Throw warning and skip
+            msg_string = 
+                "<OpenWQ> WARNNING "
+                + inputType
+                + " h5 file requested="
+                + ewf_filenamePath
+                + " was not found. Revise the json inputs and "
+                "corresponding h5 files (entry skipped).";
+
+            // Print it (Console and/or Log file)
+            OpenWQ_output.ConsoleLog(
+                OpenWQ_wqconfig,    // for Log file name
+                msg_string,         // message
+                true,               // print in console
+                true);              // print in log file
+
+            continue;
+        }
+
         // Get valid timestamps
         for (long unsigned int tSamp=0;tSamp<tSamp_valid.size();tSamp++){
 
