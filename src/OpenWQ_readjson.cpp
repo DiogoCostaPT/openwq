@@ -1010,7 +1010,7 @@ void OpenWQ_readjson::SetConfigInfo(
                                      // from native to desired output units (false)
     std::get<1>(OpenWQ_wqconfig.output_units) = unit_multiplers[0]; // multipler for numerator
     std::get<2>(OpenWQ_wqconfig.output_units) = unit_multiplers[1]; // multiupler for denominator
-    std::get<3>(OpenWQ_wqconfig.output_units) = volume_unit_flag; // flag if denominator is volumeo
+    std::get<3>(OpenWQ_wqconfig.output_units) = volume_unit_flag; // flag if denominator is volume
 
     // Output format
     output_format = OpenWQ_json.Master

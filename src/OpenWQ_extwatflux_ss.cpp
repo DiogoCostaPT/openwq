@@ -1107,6 +1107,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
     std::string ewf_filenamePath;
     std::string ewf_h5_units;
     std::string ewf_h5_units_file;
+    bool volume_unit_flag;
     std::vector<std::string> units;
     std::string ewf_external_compartName;
     std::string chemname;
@@ -1114,7 +1115,9 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
     arma::mat dataEWF_h5;
     std::vector<double> unit_multiplers;  // multiplers (numerator and denominator)
     std::vector<std::string> tSamp_valid; // save valid time stamps
+    time_t tSamp_valid_i_time_t; 
     arma::vec row_data_col;                     // new row data (initially as col data)
+    int x_externModel, y_externModel, z_externModel;
    
     // h5 IC folder path
     ewf_h5_folderPath = EWF_SS_json_sub["FOLDERPATH"];
@@ -1130,7 +1133,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
     }
 
     // Get unit conversion multipliers
-    OpenWQ_units.Calc_Unit_Multipliers(
+    volume_unit_flag = OpenWQ_units.Calc_Unit_Multipliers(
         OpenWQ_wqconfig,
         OpenWQ_output,
         unit_multiplers,    // multiplers (numerator and denominator)
@@ -1183,29 +1186,39 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
                     ewf_filenamePath,            // file name
                     tSamp_valid[tSamp]));          // options
 
-            // Get the vector with the data
-            /*
-            row_data_col = {
-                (double) chem_ssi,
-                (double) cmpi_ssi,
-                (double) sinksource_ssi,
-                (double) YYYY_json,
-                (double) MM_json,
-                (double) DD_json,
-                (double) HH_json,
-                (double) MIN_json,
-                (double) SEC_json,
-                (double) ix_json,
-                (double) iy_json,
-                (double) iz_json,
-                ss_data_json,
-                loadScheme_id,  // load scheme (0) not applicable, (1) discrete or (2) continuous
-                0,0,0,0,0,0     // field to specify the number of times it has been used aleady
-                };              // in the case of and "all" element (YYYY, MM, DD, HH, MIN, SEC)
-                                // it starts with 0 (zero), meaning that has not been used
-                                // if not an "all" element, then it's set to -1
+            // Get timestamp sting into time_t
+            tSamp_valid_i_time_t = OpenWQ_units.convert_timeChar2time_t(
+                tSamp_valid[tSamp]);
 
-            */
+            for (int rowi=0;rowi<(int)xyzEWF_h5.n_cols;rowi++){
+
+                // Get element x,y,z indexes of external model
+                // Using convention of external model
+                // Needs to be converted into local openwq implementation
+                x_externModel = xyzEWF_h5(rowi, 0);
+                y_externModel = xyzEWF_h5(rowi, 1);
+                z_externModel = xyzEWF_h5(rowi, 2);
+
+                // Extract H5 row to row_data_col
+                // Unit conversion performed inside this function
+                row_data_col = ConvertH5row2ArmaVec(
+                    OpenWQ_units,
+                    unit_multiplers,
+                    tSamp_valid_i_time_t,
+                    x_externModel, 
+                    y_externModel, 
+                    z_externModel,
+                    dataEWF_h5, 
+                    rowi,
+                    chemi);
+
+                // Add new row to SinkSource_FORC or ExtFlux_FORC
+                AppendRow_SS_EWF_FORC(
+                    OpenWQ_wqconfig,
+                    inputType,
+                    row_data_col);
+
+            }
 
         }
 
@@ -1287,7 +1300,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
     }
 
     // Convert sim time to time_t
-    simTime = OpenWQ_units.convert_time(YYYY, MM, DD, HH, MIN, SEC);
+    simTime = OpenWQ_units.converTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
 
     // Get number of rows in SinkSource_FORC
     num_rowdata = (*array_FORC).n_rows; 
@@ -1330,7 +1343,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         if (SEC_json == -1){SEC_json    += (*array_FORC)(ri,19); anyAll_flag = true; SECall_flag = true;}
 
         // jsonTime in time_t
-        jsonTime = OpenWQ_units.convert_time(YYYY_json, MM_json, DD_json, HH_json, MIN_json, SEC_json);
+        jsonTime = OpenWQ_units.converTime_ints2time_t(YYYY_json, MM_json, DD_json, HH_json, MIN_json, SEC_json);
 
         // Skip if not time to load yet
         if (simTime < jsonTime) continue;
@@ -1483,7 +1496,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
             if(addAnyIncrem_flag) break;
 
             // Determine new jsonTime for checking in while loop
-            jsonTime = OpenWQ_units.convert_time(YYYY_json, MM_json, DD_json, HH_json, MIN_json, SEC_json);
+            jsonTime = OpenWQ_units.converTime_ints2time_t(YYYY_json, MM_json, DD_json, HH_json, MIN_json, SEC_json);
 
         }
 
@@ -1838,7 +1851,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
     std::vector<int> rows2Remove;  // List of rows indexes to remove     
 
     // Convert sim time to time_t
-    simTime = OpenWQ_units.convert_time(YYYY, MM, DD, HH, MIN, SEC);
+    simTime = OpenWQ_units.converTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
 
     // Get number of rows in SinkSource_FORC
     num_rowdata = (*array_FORC).n_rows; 
@@ -1871,7 +1884,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
         if (SEC_json == -1){SEC_json = SEC; all_flag=true;}
 
         // jsonTime in time_t
-        jsonTime = OpenWQ_units.convert_time(
+        jsonTime = OpenWQ_units.converTime_ints2time_t(
             YYYY_json, 
             MM_json, 
             DD_json, 
@@ -1932,7 +1945,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
     unsigned int DD_max;                                                // max number of days for a given month and year
     
     // Convert sim time to time_t
-    simTime = OpenWQ_units.convert_time(YYYY, MM, DD, HH, MIN, SEC);
+    simTime = OpenWQ_units.converTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
 
     // Get number of rows in SinkSource_FORC
     num_rowdata = (*array_FORC).n_rows; 
@@ -2021,7 +2034,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
         }
 
         // Determine new jsonTime if using the first guess for the increment
-        jsonTime = OpenWQ_units.convert_time(
+        jsonTime = OpenWQ_units.converTime_ints2time_t(
             YYYY_json + increm1, 
             MM_json + increm2, 
             DD_json + increm3, 
@@ -2040,7 +2053,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             if (all_SEC_flag){
                 while(jsonTime < simTime && (SEC_json + increm6) < 59){
                     increm6++;
-                    jsonTime = OpenWQ_units.convert_time(
+                    jsonTime = OpenWQ_units.converTime_ints2time_t(
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2056,7 +2069,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             if (all_MIN_flag){
                 while(jsonTime < simTime && (MIN_json + increm5) < 59){
                     increm5++;
-                    jsonTime = OpenWQ_units.convert_time(
+                    jsonTime = OpenWQ_units.converTime_ints2time_t(
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2072,7 +2085,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             if (all_HH_flag){
                 while(jsonTime < simTime && (HH_json + increm4) < 23){
                     increm4++;
-                    jsonTime = OpenWQ_units.convert_time(
+                    jsonTime = OpenWQ_units.converTime_ints2time_t(
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2089,7 +2102,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             if (all_DD_flag){
                 while(jsonTime < simTime && (DD_json + increm3) < DD_max){
                     increm3++;
-                    jsonTime = OpenWQ_units.convert_time(
+                    jsonTime = OpenWQ_units.converTime_ints2time_t(
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2105,7 +2118,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             if (all_MM_flag){
                 while(jsonTime < simTime && (MM_json + increm2) < 12){
                     increm2++;
-                    jsonTime = OpenWQ_units.convert_time(
+                    jsonTime = OpenWQ_units.converTime_ints2time_t(
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2121,7 +2134,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             if (all_YYYY_flag){
                 while(jsonTime < simTime){
                     increm1++;
-                    jsonTime = OpenWQ_units.convert_time(
+                    jsonTime = OpenWQ_units.converTime_ints2time_t(
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2164,5 +2177,56 @@ void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC(
     else if (inputType.compare("ewf")==0){ (*OpenWQ_wqconfig.ExtFlux_FORC).insert_rows(
         std::max(int_n_elem-1,0),
         row_data_row);}
-        
+
+}
+
+// Extract H5 row to row_data_col
+arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
+    OpenWQ_units& OpenWQ_units,
+    std::vector<double> unit_multiplers,
+    time_t timestamp_time_t,
+    int x_externModel, 
+    int y_externModel, 
+    int z_externModel,
+    arma::mat dataEWF_h5, 
+    int rowi,
+    int chemi){
+
+    // Local variables
+    arma::vec row_data_col;                     // new row data (initially as col data)
+    double conc_h5;
+    int YYYY_h5, MM_h5, DD_h5, HH_h5, MIN_h5, SEC_h5;
+    int ix_h5, iy_h5, iz_h5;
+
+    // Get concentration
+    conc_h5 = dataEWF_h5(rowi);
+
+    // Convert conc to local units
+    OpenWQ_units.Convert_Units(
+        conc_h5,               // value passed by reference so that it can be changed
+        unit_multiplers);       // units
+
+    /*
+    row_data_col = {
+        (double) chemi,
+        (double) cmp_recipient,
+        (double) sinksource_ssi,
+        (double) timestamp_time_t.tm_year,
+        (double) timestamp_time_t.tm_mon,
+        (double) timestamp_time_t.hour,
+        (double) timestamp_time_t.mday,
+        (double) timestamp_time_t.min,
+        (double) timestamp_time_t.sec,
+        (double) ix_h5,
+        (double) iy_h5,
+        (double) iz_h5,
+        conc_h5,
+        loadScheme_id,  // load scheme (0) not applicable, (1) discrete or (2) continuous
+        0,0,0,0,0,0     // field to specify the number of times it has been used aleady
+        };              // in the case of and "all" element (YYYY, MM, DD, HH, MIN, SEC)
+                        // it starts with 0 (zero), meaning that has not been used
+                        // if not an "all" element, then it's set to -1
+
+    */
+    return row_data_col;
 }

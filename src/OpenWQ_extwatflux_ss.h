@@ -179,6 +179,17 @@ class OpenWQ_extwatflux_ss{
         std::string inputType,
         arma::vec row_data_col);
 
+    arma::vec ConvertH5row2ArmaVec(
+        OpenWQ_units& OpenWQ_units,
+        std::vector<double> unit_multiplers,
+        time_t timestamp_time_t,
+        int x_externModel, 
+        int y_externModel, 
+        int z_externModel,
+        arma::mat dataEWF_h5, 
+        int rowi,
+        int chem_ssi);
+
 };
 
 #endif
