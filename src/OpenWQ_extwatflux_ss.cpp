@@ -38,6 +38,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
     std::string Element_name;                   // from JSON file (compartment name or external-flux name)
     std::string DataFormat;                     // from JSON file (JSON or ASCII)
     std::string main_keyName;                   // interactive json-key name
+    std::string msg_string;                     // error/warning message string
 
 
     // Get number of sub-structures of SS/EWF data
@@ -109,10 +110,12 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
                     inputType, // ss or ewf
                     foundflag);
 
-            }else if(DataFormat.compare("HD5F")==0){
+            }else if(DataFormat.compare("HDF5")==0){
                 
                 // if H5 format
                 Set_EWFandSS_h5(
+                    OpenWQ_wqconfig,
+                    OpenWQ_utils,
                     OpenWQ_units,
                     OpenWQ_output,
                     EWF_SS_json[std::to_string(ssf+1)][std::to_string(ssi+1)],  // relevant sub-json
@@ -120,8 +123,24 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
                     inputType, // ss or ewf
                     foundflag);
 
-            }
+            }else{
 
+                // Create Message (Warning Message)
+                msg_string = 
+                    "<OpenWQ> WARNING: Unkown data format='" 
+                    + DataFormat
+                    + "' for EWF configuration > " + Element_name 
+                    + " > DATA_FORMAT (only supports JSON, ASCII and HD5F) "
+                    + "(entry skipped)";
+
+                // Print it (Console and/or Log file)
+                OpenWQ_output.ConsoleLog(
+                    OpenWQ_wqconfig,    // for Log file name
+                    msg_string,         // message
+                    true,               // print in console
+                    true);              // print in log file
+
+            }
         }
     }
 }
@@ -1083,14 +1102,99 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
  // Case: JSON and ASCII format
  ################################################# */
 void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
     OpenWQ_units& OpenWQ_units,
     OpenWQ_output& OpenWQ_output,
     json EWF_SS_json_sub,  // relevant sub-json
     std::string Element_name,
     std::string inputType,
     bool foundflag){
-
     
+    // Local variables
+    std::size_t it;
+    std::string ewf_h5_folderPath;
+    std::string ewf_filenamePath;
+    std::string ewf_h5_units;
+    std::string ewf_h5_units_file;
+    std::vector<std::string> units;
+    std::string ewf_external_compartName;
+    std::string chemname;
+    arma::mat xyzEWF_h5;
+    arma::mat dataEWF_h5;
+    std::vector<double> unit_multiplers;  // multiplers (numerator and denominator)
+    std::vector<std::string> tSamp_valid; // save valid time stamps
+   
+    // h5 IC folder path
+    ewf_h5_folderPath = EWF_SS_json_sub["FOLDERPATH"];
+    
+    // h5 ic units
+    ewf_h5_units = EWF_SS_json_sub["UNITS"];
+    ewf_h5_units_file = ewf_h5_units;
+
+    // replace "/" by "|" is needed because "/" is not compatible with directory full paths
+    it = (int) ewf_h5_units_file.find("/");
+    if (it <= ewf_h5_units_file.size()){
+        ewf_h5_units_file.replace(it,1, "|");
+    }
+
+    // Get external compartment name
+    ewf_external_compartName = EWF_SS_json_sub["EXTERNAL_COMPARTMENT_NAME"];
+
+    // Get valid time steps from log file of EWF simulation
+    OpenWQ_utils.GetTimeStampsFromLogFile(
+        OpenWQ_wqconfig,
+        OpenWQ_output,
+        ewf_h5_folderPath,
+        "<OpenWQ> Output export successful (HDF5): ", // Substring of the output to search
+        tSamp_valid,
+        "SS/EWF load/sink/conc H5 supporting logFile"); // Logfile errMsg identifier
+
+    // Loop over chemical species 
+    for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_num_chem;chemi++){
+        
+        chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi];
+
+        // Generate full ic filename
+        ewf_filenamePath = ewf_h5_folderPath;
+
+        ewf_filenamePath.append("/");
+        ewf_filenamePath.append(ewf_external_compartName); // compartment
+        ewf_filenamePath.append("@");
+        ewf_filenamePath.append(chemname);     // chemical name
+        ewf_filenamePath.append("#");
+        ewf_filenamePath.append(ewf_h5_units_file); // units
+        ewf_filenamePath.append("-main.h5"); 
+
+        // Get unit conversion multipliers
+        OpenWQ_units.Calc_Unit_Multipliers(
+            OpenWQ_wqconfig,
+            OpenWQ_output,
+            unit_multiplers,    // multiplers (numerator and denominator)
+            ewf_h5_units,       // input units
+            units,
+            true);              // direction of the conversion: 
+                                // to native (true) or 
+                                // from native to desired output units (false)
+
+        // Get x,y,z elements in h5 ic data
+        xyzEWF_h5
+            .load(arma::hdf5_name(
+                ewf_filenamePath,          // file name
+                "xyz_elements"));          // options
+
+        // Get valid timestamps
+        for (long unsigned int tSamp=0;tSamp<tSamp_valid.size();tSamp++){
+
+            // Get the corresponding data
+            dataEWF_h5
+                .load(arma::hdf5_name(
+                    ewf_filenamePath,            // file name
+                    tSamp_valid[tSamp]));          // options
+
+        }
+
+    }
 
 }
 
@@ -2040,3 +2144,6 @@ int  OpenWQ_extwatflux_ss::getNumberOfDays(
 		return 30;
 
 } 
+
+
+

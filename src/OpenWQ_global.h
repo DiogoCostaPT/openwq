@@ -184,7 +184,7 @@ class OpenWQ_wqconfig
     double time_previous;           // previous time (in seconds) for calculation of dynamic
                                     // timesteps that critical for calculation of transformation rates
     std::string LogFile_name = "Log_OpenWQ.txt";       // name of log file
-
+    std::string LogFile_name_fullpath;
     // #################################################
     // Computation settings
     int num_threads_system;       // number of threads in the system
@@ -203,8 +203,7 @@ class OpenWQ_wqconfig
     bool tstep1_flag = true;            // flag to note that it's the first time step, so need to exclude loads prior to that
 
     // #################################################
-    // Output 
-    
+
     // Time
     double timetep_out;             // time step (in seconds)
     std::string timestep_out_unit;  // time step unit

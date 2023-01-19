@@ -612,12 +612,16 @@ void OpenWQ_readjson::SetConfigInfo(
     // ########################################
 
     // Create Log file name with full or relative path
-    OpenWQ_wqconfig.LogFile_name.insert(0,"/");
-    OpenWQ_wqconfig.LogFile_name.insert(0,
+     OpenWQ_wqconfig.LogFile_name_fullpath =  OpenWQ_wqconfig.LogFile_name;
+    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0,"/");
+     OpenWQ_wqconfig.LogFile_name_fullpath.insert(0,
+        OpenWQ_json.Master["OPENWQ_OUTPUT"]["FORMAT"]);
+    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0,"/");
+    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0,
         OpenWQ_json.Master["OPENWQ_OUTPUT"]["RESULTS_FOLDERPATH"]);
 
     // Create log file
-    std::ofstream outfile (OpenWQ_wqconfig.LogFile_name);
+    std::ofstream outfile (OpenWQ_wqconfig.LogFile_name_fullpath);
 
     // ###############
     // Write header in log file

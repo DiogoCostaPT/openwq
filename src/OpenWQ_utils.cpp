@@ -150,3 +150,81 @@ std::string OpenWQ_utils::ConvertStringToUpperCase(
     return NewStr;
 
 }
+
+// Get valid time stamps
+void OpenWQ_utils::GetTimeStampsFromLogFile(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output,
+    std::string logFile_folderPath,             // Path where LogFile is location
+    std::string preOutputRow_substring,         // Substring of the output to search
+    std::vector<std::string>& timeStamps_vec,   // Vector with timestamps
+    std::string errMsg_LofFileIdentifier){      // Logfile errMsg identifier
+
+    // Local variables
+    std::string rowEntryLogfile;
+    std::string ewf_sim_logFile_path;
+    std::string output_str;
+    std::string msg_string;
+    int pos;
+
+    // Full path to LogFile of EWF source
+    ewf_sim_logFile_path = logFile_folderPath;
+    ewf_sim_logFile_path.append("/");
+    ewf_sim_logFile_path.append(OpenWQ_wqconfig.LogFile_name);
+
+    // Open LogFile_name_fullpath file to read timestamps (read mode only)
+    std::ifstream logFile_ewf (ewf_sim_logFile_path, std::ios::in);
+
+    // Read and skip irrelevant lines
+    if (logFile_ewf.is_open()){
+
+        while(std::getline(logFile_ewf, rowEntryLogfile)){
+            // Check if row contains output info
+            if (rowEntryLogfile.find(preOutputRow_substring) != std::string::npos) {
+                pos = preOutputRow_substring.size();
+                timeStamps_vec.push_back(rowEntryLogfile.substr(pos + 1));
+            }
+        }
+        logFile_ewf.close();
+
+        // If output info in supporting "logFile_folderPath" file not found, 
+        // through warning message (entry skipped)
+        if (timeStamps_vec.empty()){
+
+            msg_string = 
+                "<OpenWQ> WARNING: '"
+                + errMsg_LofFileIdentifier 
+                + " =" + ewf_sim_logFile_path
+                + " found, but it contains no output/print info."
+                " Make sure this is the correct log file (entry skipped).";
+            // Print it (Console and/or Log file)
+            OpenWQ_output.ConsoleLog(
+                OpenWQ_wqconfig,    // for Log file name
+                msg_string,         // message
+                true,               // print in console
+                true);              // print in log file
+            return;
+
+        }
+
+    }else{
+
+        // If supporting "logFile_folderPath" not found, 
+        // through warning message (entry skipped)
+        msg_string = 
+            "<OpenWQ> WARNING: SS/EWF '" 
+                + errMsg_LofFileIdentifier 
+                + " =" + ewf_sim_logFile_path
+                + " not found. Make sure to include it in the same path "
+                "as the SS/EWF h5 files (entry skipped).";
+        // Print it (Console and/or Log file)
+        OpenWQ_output.ConsoleLog(
+            OpenWQ_wqconfig,    // for Log file name
+            msg_string,         // message
+            true,               // print in console
+            true);              // print in log file
+        return;
+
+    }
+    
+}

@@ -21,6 +21,7 @@
 
 #include "OpenWQ_global.h"
 #include "OpenWQ_solver.h"
+#include "OpenWQ_output.h"
 
 class OpenWQ_utils{
 
@@ -48,6 +49,15 @@ class OpenWQ_utils{
     // Convert string to upper case
     std::string ConvertStringToUpperCase(
         const std::string StrEntry);
+
+    // Get timestamps from logFile
+    void GetTimeStampsFromLogFile(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
+        std::string logFile_folderPath,
+        std::string preOutputRow_substring,
+        std::vector<std::string>& timeStamps_vec,
+        std::string errMsg_LofFileIdentifier); 
 
 };
 

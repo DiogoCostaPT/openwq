@@ -66,6 +66,8 @@ class OpenWQ_extwatflux_ss{
 
     // if DATA_FORMAT = HDF5
     void Set_EWFandSS_h5(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
         OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output,
         json EWF_SS_json_sub,  // relevant sub-json
@@ -117,16 +119,16 @@ class OpenWQ_extwatflux_ss{
 
     // Update EWF concentrations
     void Update_EWFconc(
-    OpenWQ_vars& OpenWQ_vars,
-    OpenWQ_wqconfig& OpenWQ_wqconfig,
-    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-    OpenWQ_output& OpenWQ_output,
-    const unsigned int ewfi,            // compartment model index
-    const unsigned int chemi,           // chemical model index    
-    int ix,                             // compartment model ix
-    int iy,                             // compartment model iy
-    int iz,                             // compartment model iz
-    const double new_concVal);          // new EWF conc value
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_output& OpenWQ_output,
+        const unsigned int ewfi,            // compartment model index
+        const unsigned int chemi,           // chemical model index    
+        int ix,                             // compartment model ix
+        int iy,                             // compartment model iy
+        int iz,                             // compartment model iz
+        const double new_concVal);          // new EWF conc value
 
     void Convert_Mass_Units(
         double &ss_value,     // SS value
