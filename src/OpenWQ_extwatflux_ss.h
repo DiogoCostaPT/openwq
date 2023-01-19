@@ -80,6 +80,7 @@ class OpenWQ_extwatflux_ss{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
         OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output,
         const unsigned int YYYY,                            // current model step: Year
@@ -164,6 +165,7 @@ class OpenWQ_extwatflux_ss{
 
     void UpdateAllElemTimeIncremts(
         std::unique_ptr<arma::Mat<double>>& array_FORC,
+        OpenWQ_utils& OpenWQ_utils,
         OpenWQ_units& OpenWQ_units,
         const int YYYY,             // current model step: Year
         const int MM,               // current model step: month
@@ -172,9 +174,10 @@ class OpenWQ_extwatflux_ss{
         const int MIN,              // current model step: min
         const int SEC);             // current model step: sec
 
-    int getNumberOfDays(
-        const unsigned int YYYY_check,          // json: Year 
-        const unsigned int MM_check);           // json: Month
+    void AppendRow_SS_EWF_FORC(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        std::string inputType,
+        arma::vec row_data_col);
 
 };
 

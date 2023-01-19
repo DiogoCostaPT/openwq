@@ -151,6 +151,28 @@ std::string OpenWQ_utils::ConvertStringToUpperCase(
 
 }
 
+// Function to return total number of days in a given year and month
+int  OpenWQ_utils::getNumberOfDaysInMonthYear(
+        const unsigned int YYYY_check,          // json: Year 
+        const unsigned int MM_check)            // json: Month
+{
+	//leap year condition, if month is 2
+	if(MM_check == 2)
+	{
+		if((YYYY_check%400==0) || (YYYY_check%4==0 && YYYY_check%100!=0))	
+			return 29;
+		else	
+			return 28;
+	}
+	//months which has 31 days
+	else if(MM_check == 1 || MM_check == 3 || MM_check == 5 || MM_check == 7 || MM_check == 8
+	||MM_check == 10 || MM_check==12)	
+		return 31;
+	else 		
+		return 30;
+
+} 
+
 // Get valid time stamps
 void OpenWQ_utils::GetTimeStampsFromLogFile(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
@@ -182,7 +204,7 @@ void OpenWQ_utils::GetTimeStampsFromLogFile(
             // Check if row contains output info
             if (rowEntryLogfile.find(preOutputRow_substring) != std::string::npos) {
                 pos = preOutputRow_substring.size();
-                timeStamps_vec.push_back(rowEntryLogfile.substr(pos + 1));
+                timeStamps_vec.push_back(rowEntryLogfile.substr(pos));
             }
         }
         logFile_ewf.close();

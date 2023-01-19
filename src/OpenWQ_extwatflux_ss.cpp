@@ -172,7 +172,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     unsigned long sinksource_ssi;               // = 0 (source), = 1 (sink)
 
     unsigned int num_rowdata;                   // number of rows of data in JSON (YYYY, MM, DD, HH,...)
-    int int_n_elem;                             // iterative counting of number of elements in arma:mat
     
     std::string Type;                           // from JSON filec (only used in SS)
 
@@ -204,7 +203,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     std::vector<double> unit_multiplers;        // multiplers (numerator and denominator)
    
     arma::vec row_data_col;                     // new row data (initially as col data)
-    arma::Mat<double> row_data_row;             // for conversion of row_data_col to row data
 
     std::string msg_string;                     // error/warning message string
     bool validEntryFlag;                        // valid entry flag to skip problematic row data
@@ -365,7 +363,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
         
         // Reset the size to zero (the object will have no elements)
         row_data_col.reset(); 
-        row_data_row.reset();
 
         // If DataFormat=ASCII, then get row data 
         // and convert-to-upper-case and split it by element entry
@@ -1080,19 +1077,12 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                             // it starts with 0 (zero), meaning that has not been used
                             // if not an "all" element, then it's set to -1
 
-        // Transpose vector for adding to SinkSource_FORC as a new row
-        row_data_row = row_data_col.t();
+        // Add new row to SinkSource_FORC or ExtFlux_FORC
+        AppendRow_SS_EWF_FORC(
+            OpenWQ_wqconfig,
+            inputType,
+            row_data_col);
 
-        // Add new row_data_row to SinkSource_FORC   
-        if (inputType.compare("ss")==0)     int_n_elem = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows;
-        if (inputType.compare("ewf")==0)    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC).n_rows;
-        
-        if (inputType.compare("ss")==0){ (*OpenWQ_wqconfig.SinkSource_FORC).insert_rows(
-            std::max(int_n_elem-1,0),
-            row_data_row);}
-        else if (inputType.compare("ewf")==0){ (*OpenWQ_wqconfig.ExtFlux_FORC).insert_rows(
-            std::max(int_n_elem-1,0),
-            row_data_row);}
     }
 
  }
@@ -1124,6 +1114,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
     arma::mat dataEWF_h5;
     std::vector<double> unit_multiplers;  // multiplers (numerator and denominator)
     std::vector<std::string> tSamp_valid; // save valid time stamps
+    arma::vec row_data_col;                     // new row data (initially as col data)
    
     // h5 IC folder path
     ewf_h5_folderPath = EWF_SS_json_sub["FOLDERPATH"];
@@ -1138,10 +1129,21 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
         ewf_h5_units_file.replace(it,1, "|");
     }
 
+    // Get unit conversion multipliers
+    OpenWQ_units.Calc_Unit_Multipliers(
+        OpenWQ_wqconfig,
+        OpenWQ_output,
+        unit_multiplers,    // multiplers (numerator and denominator)
+        ewf_h5_units,       // input units
+        units,
+        true);              // direction of the conversion: 
+                            // to native (true) or 
+                            // from native to desired output units (false)
+
     // Get external compartment name
     ewf_external_compartName = EWF_SS_json_sub["EXTERNAL_COMPARTMENT_NAME"];
-
-    // Get valid time steps from log file of EWF simulation
+    
+    // Get valid time steps from the logFile of EWF simulation
     OpenWQ_utils.GetTimeStampsFromLogFile(
         OpenWQ_wqconfig,
         OpenWQ_output,
@@ -1166,17 +1168,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
         ewf_filenamePath.append(ewf_h5_units_file); // units
         ewf_filenamePath.append("-main.h5"); 
 
-        // Get unit conversion multipliers
-        OpenWQ_units.Calc_Unit_Multipliers(
-            OpenWQ_wqconfig,
-            OpenWQ_output,
-            unit_multiplers,    // multiplers (numerator and denominator)
-            ewf_h5_units,       // input units
-            units,
-            true);              // direction of the conversion: 
-                                // to native (true) or 
-                                // from native to desired output units (false)
-
         // Get x,y,z elements in h5 ic data
         xyzEWF_h5
             .load(arma::hdf5_name(
@@ -1192,6 +1183,30 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
                     ewf_filenamePath,            // file name
                     tSamp_valid[tSamp]));          // options
 
+            // Get the vector with the data
+            /*
+            row_data_col = {
+                (double) chem_ssi,
+                (double) cmpi_ssi,
+                (double) sinksource_ssi,
+                (double) YYYY_json,
+                (double) MM_json,
+                (double) DD_json,
+                (double) HH_json,
+                (double) MIN_json,
+                (double) SEC_json,
+                (double) ix_json,
+                (double) iy_json,
+                (double) iz_json,
+                ss_data_json,
+                loadScheme_id,  // load scheme (0) not applicable, (1) discrete or (2) continuous
+                0,0,0,0,0,0     // field to specify the number of times it has been used aleady
+                };              // in the case of and "all" element (YYYY, MM, DD, HH, MIN, SEC)
+                                // it starts with 0 (zero), meaning that has not been used
+                                // if not an "all" element, then it's set to -1
+
+            */
+
         }
 
     }
@@ -1205,6 +1220,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
     OpenWQ_units& OpenWQ_units,
     OpenWQ_output& OpenWQ_output,
     const unsigned int YYYY,                            // current model step: Year
@@ -1258,6 +1274,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         // Update time increments for rows with "all" elements
         UpdateAllElemTimeIncremts(
             array_FORC,
+            OpenWQ_utils,
             OpenWQ_units,
             YYYY,         // current model step: Year
             MM,           // current model step: month
@@ -1413,7 +1430,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         // Also reset time elements to 1 when they reach their max value
 
         // Get max no of days in a given month
-        DD_max = getNumberOfDays(YYYY_json, MM_json);   
+        DD_max = OpenWQ_utils.getNumberOfDaysInMonthYear(YYYY_json, MM_json);   
 
         while (simTime >= jsonTime){
 
@@ -1895,6 +1912,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
 #################################################*/
 void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
     std::unique_ptr<arma::Mat<double>>& array_FORC,
+    OpenWQ_utils& OpenWQ_utils,
     OpenWQ_units& OpenWQ_units,
     const int YYYY,         // current model step: Year
     const int MM,           // current model step: month
@@ -2067,7 +2085,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             
             // Try changing 
             // at DD scale (if it is an "all" element)
-            DD_max = OpenWQ_extwatflux_ss::getNumberOfDays(YYYY_json, MM_json);
+            DD_max = OpenWQ_utils.getNumberOfDaysInMonthYear(YYYY_json, MM_json);
             if (all_DD_flag){
                 while(jsonTime < simTime && (DD_json + increm3) < DD_max){
                     increm3++;
@@ -2123,27 +2141,28 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
 
 }
 
-// Function to return total number of days in a given year and month
-int  OpenWQ_extwatflux_ss::getNumberOfDays(
-        const unsigned int YYYY_check,          // json: Year 
-        const unsigned int MM_check)            // json: Month
-{
-	//leap year condition, if month is 2
-	if(MM_check == 2)
-	{
-		if((YYYY_check%400==0) || (YYYY_check%4==0 && YYYY_check%100!=0))	
-			return 29;
-		else	
-			return 28;
-	}
-	//months which has 31 days
-	else if(MM_check == 1 || MM_check == 3 || MM_check == 5 || MM_check == 7 || MM_check == 8
-	||MM_check == 10 || MM_check==12)	
-		return 31;
-	else 		
-		return 30;
+// Add new row to SinkSource_FORC or ExtFlux_FORC
+void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    std::string inputType,
+    arma::vec row_data_col){
 
-} 
+    // Local variables            
+    arma::Mat<double> row_data_row;                     // new row data (initially as col data)
+    int int_n_elem;
 
+    // Transpose vector for adding to SinkSource_FORC as a new row
+    row_data_row = row_data_col.t();
 
-
+    // Add new row_data_row to SinkSource_FORC   
+    if (inputType.compare("ss")==0)     int_n_elem = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows;
+    if (inputType.compare("ewf")==0)    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC).n_rows;
+    
+    if (inputType.compare("ss")==0){ (*OpenWQ_wqconfig.SinkSource_FORC).insert_rows(
+        std::max(int_n_elem-1,0),
+        row_data_row);}
+    else if (inputType.compare("ewf")==0){ (*OpenWQ_wqconfig.ExtFlux_FORC).insert_rows(
+        std::max(int_n_elem-1,0),
+        row_data_row);}
+        
+}

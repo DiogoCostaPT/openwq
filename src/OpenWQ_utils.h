@@ -50,6 +50,10 @@ class OpenWQ_utils{
     std::string ConvertStringToUpperCase(
         const std::string StrEntry);
 
+    int getNumberOfDaysInMonthYear(
+        const unsigned int YYYY_check,          // json: Year 
+        const unsigned int MM_check);           // json: Month
+
     // Get timestamps from logFile
     void GetTimeStampsFromLogFile(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
