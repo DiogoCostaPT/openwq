@@ -178,7 +178,7 @@ int  OpenWQ_utils::getNumberOfDaysInMonthYear(
 } 
 
 // Get valid time stamps
-void OpenWQ_utils::GetTimeStampsFromLogFile(
+bool OpenWQ_utils::GetTimeStampsFromLogFile(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_output& OpenWQ_output,
     std::string logFile_folderPath,             // Path where LogFile is location
@@ -192,6 +192,7 @@ void OpenWQ_utils::GetTimeStampsFromLogFile(
     std::string output_str;
     std::string msg_string;
     int pos;
+    bool foundTimeStmps = true;
 
     // Full path to LogFile of EWF source
     ewf_sim_logFile_path = logFile_folderPath;
@@ -229,7 +230,8 @@ void OpenWQ_utils::GetTimeStampsFromLogFile(
                 msg_string,         // message
                 true,               // print in console
                 true);              // print in log file
-            return;
+
+            foundTimeStmps = false;
 
         }
 
@@ -249,8 +251,11 @@ void OpenWQ_utils::GetTimeStampsFromLogFile(
             msg_string,         // message
             true,               // print in console
             true);              // print in log file
-        return;
+        
+        foundTimeStmps = false;
 
     }
+
+    return foundTimeStmps;
     
 }

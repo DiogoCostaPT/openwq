@@ -1118,6 +1118,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
     int x_externModel, y_externModel, z_externModel;
     double cmp_recipient;
     std::string ss_cmp_recipient_name;
+    bool foundTimeStmps;                 // flag to record (un)success in finding timestamps
    
     // h5 IC folder path
     ewf_h5_folderPath = EWF_SS_json_sub["FOLDERPATH"];
@@ -1233,7 +1234,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
                 msg_string,         // message
                 true,               // print in console
                 true);              // print in log file
-
         }
 
     }catch(...){
@@ -1254,19 +1254,21 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
                 true);              // print in log file
 
             return;
-
         }
-
     }
 
     // Get valid time steps from the logFile of EWF simulation
-    OpenWQ_utils.GetTimeStampsFromLogFile(
+    foundTimeStmps = OpenWQ_utils.GetTimeStampsFromLogFile(
         OpenWQ_wqconfig,
         OpenWQ_output,
         ewf_h5_folderPath,
         "<OpenWQ> Output export successful (HDF5): ", // Substring of the output to search
         tSamp_valid,
         "SS/EWF load/sink/conc H5 supporting logFile"); // Logfile errMsg identifier
+
+    // if timeStamps not found, then return 
+    // warning message alerady printed in GetTimeStampsFromLogFile
+    if (foundTimeStmps==false) return;
 
     // Loop over chemical species 
     for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_num_chem;chemi++){

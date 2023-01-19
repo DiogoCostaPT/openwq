@@ -55,7 +55,7 @@ class OpenWQ_utils{
         const unsigned int MM_check);           // json: Month
 
     // Get timestamps from logFile
-    void GetTimeStampsFromLogFile(
+    bool GetTimeStampsFromLogFile(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_output& OpenWQ_output,
         std::string logFile_folderPath,
