@@ -84,12 +84,12 @@ std::vector<std::string> OpenWQ_utils::StringSplit (
 // ########################################
 // Find index of string in vector::string
 // ########################################
-unsigned int OpenWQ_utils::FindStrIndexInVectStr(
+int OpenWQ_utils::FindStrIndexInVectStr(
     std::vector<std::string> VectString,
     std::string Str2Find){
 
     // Local variables
-    unsigned int strIndex; // index of the Str2Find in VectString
+    int strIndex; // index of the Str2Find in VectString
 
     std::vector<std::string>::iterator strInter = std::find(
         VectString.begin(), 
@@ -98,6 +98,10 @@ unsigned int OpenWQ_utils::FindStrIndexInVectStr(
         
     // determine index
     strIndex = distance(VectString.begin(), strInter);
+    
+    // if not found, return -1
+    if(strIndex=VectString.size()) strIndex=-1;
+
     return strIndex;
 }
 

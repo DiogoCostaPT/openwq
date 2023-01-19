@@ -38,7 +38,7 @@ class OpenWQ_utils{
         std::string delimiter);
 
     // Find index of string in vector::string
-    unsigned int FindStrIndexInVectStr(
+    int FindStrIndexInVectStr(
         std::vector<std::string> VectString,
         std::string Str2Find);
 
