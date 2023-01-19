@@ -100,7 +100,7 @@ int OpenWQ_utils::FindStrIndexInVectStr(
     strIndex = distance(VectString.begin(), strInter);
     
     // if not found, return -1
-    if(strIndex=VectString.size()) strIndex=-1;
+    if(strIndex==(int)VectString.size()) strIndex=-1;
 
     return strIndex;
 }

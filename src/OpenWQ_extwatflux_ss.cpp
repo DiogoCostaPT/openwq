@@ -1106,7 +1106,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
     std::string ewf_h5_units_file;
     bool volume_unit_flag;
     std::vector<std::string> units;
-    std::string ewf_external_compartName;
+    std::string external_compartName;
+    std::string external_waterFluxName;
     std::string chemname;
     arma::mat xyzEWF_h5;
     arma::mat dataEWF_h5;
@@ -1124,6 +1125,9 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
     // h5 ic units
     ewf_h5_units = EWF_SS_json_sub["UNITS"];
     ewf_h5_units_file = ewf_h5_units;
+
+    // get external compartment name (needed for both ss and ewf)
+    external_compartName = EWF_SS_json_sub["EXTERNAL_COMPARTMENT_NAME"];
 
     // replace "/" by "|" is needed because "/" is not compatible with directory full paths
     it = (int) ewf_h5_units_file.find("/");
@@ -1178,7 +1182,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
             // If key not found, throw warning and skip
             msg_string = 
                 "<OpenWQ> WARNNING json key 'RECIPIENT_COMPARTMENT_NAME' is not used "
-                "for SS requests. (key option ignored)";
+                "for EWF requests. Check the EWF files (key option ignored).";
 
             // Print it (Console and/or Log file)
             OpenWQ_output.ConsoleLog(
@@ -1206,33 +1210,52 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
                 true);              // print in log file
 
             return;
-
         }
-
     }
 
     // 2) if EWF, get EXTERNAL_COMPARTMENT_NAME
     try{
 
         // Try to find the key
-        ewf_external_compartName = EWF_SS_json_sub["EXTERNAL_COMPARTMENT_NAME"];
-    
+        external_waterFluxName = EWF_SS_json_sub["EXTERNAL_INPUTFLUX_NAME"];
+
+         // not needed for ss
+        if(inputType.compare("ss")==0){
+
+            // If key not found, throw warning and skip
+            msg_string = 
+                "<OpenWQ> WARNNING json key 'EXTERNAL_INPUTFLUX_NAME' is not used "
+                "for SS requests. Check the SS files (key option ignored).";
+
+            // Print it (Console and/or Log file)
+            OpenWQ_output.ConsoleLog(
+                OpenWQ_wqconfig,    // for Log file name
+                msg_string,         // message
+                true,               // print in console
+                true);              // print in log file
+
+        }
+
     }catch(...){
 
-        // If key not found, throw warning and skip
-        msg_string = 
-            "<OpenWQ> WARNNING json key 'EXTERNAL_COMPARTMENT_NAME' is needed "
-            "for all SS and EWF requests when using HDF5 input. This is needed to identify the file name"
-            "Check all your EWF json files and try again (entry skipped).";
+        if(inputType.compare("ewf")==0){
 
-        // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+            // If key not found, throw warning and skip
+            msg_string = 
+                "<OpenWQ> WARNNING json key 'EXTERNAL_COMPARTMENT_NAME' is needed "
+                "for all SS and EWF requests when using HDF5 input. This is needed to identify the file name"
+                "Check all your EWF json files and try again (entry skipped).";
 
-        return;
+            // Print it (Console and/or Log file)
+            OpenWQ_output.ConsoleLog(
+                OpenWQ_wqconfig,    // for Log file name
+                msg_string,         // message
+                true,               // print in console
+                true);              // print in log file
+
+            return;
+
+        }
 
     }
 
@@ -1254,7 +1277,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
         ewf_filenamePath = ewf_h5_folderPath;
 
         ewf_filenamePath.append("/");
-        ewf_filenamePath.append(ewf_external_compartName); // compartment
+        ewf_filenamePath.append(external_compartName); // compartment
         ewf_filenamePath.append("@");
         ewf_filenamePath.append(chemname);     // chemical name
         ewf_filenamePath.append("#");
