@@ -60,18 +60,17 @@ class OpenWQ_extwatflux_ss{
         unsigned int ssf, unsigned int ssi,   // file-structure and substructure indexes
         std::string DataFormat,         // (JSON or ASCII)
         json EWF_SS_json_sub,           // relevant sub-json
-        std::string Element_name,
         std::string inputType,
         bool foundflag);
 
     // if DATA_FORMAT = HDF5
     void Set_EWFandSS_h5(
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_utils& OpenWQ_utils,
         OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output,
         json EWF_SS_json_sub,  // relevant sub-json
-        std::string Element_name,
         std::string inputType,
         bool foundflag);
 
@@ -186,6 +185,7 @@ class OpenWQ_extwatflux_ss{
         int x_externModel, 
         int y_externModel, 
         int z_externModel,
+        double cmp_recipient,
         arma::mat dataEWF_h5, 
         int rowi,
         int chem_ssi);

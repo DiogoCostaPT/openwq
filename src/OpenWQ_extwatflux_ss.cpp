@@ -35,7 +35,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
     unsigned int num_srcfiles;                  // number of sink-source files 
                                                 // (saved as sub-structure of SinkSource)
     unsigned int num_srchem;                    // number of chemical loads per file
-    std::string Element_name;                   // from JSON file (compartment name or external-flux name)
     std::string DataFormat;                     // from JSON file (JSON or ASCII)
     std::string main_keyName;                   // interactive json-key name
     std::string msg_string;                     // error/warning message string
@@ -44,10 +43,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
     // Get number of sub-structures of SS/EWF data
     num_srcfiles = EWF_SS_json.size(); 
 
-    // Element names: Compartment or External Flux
-    if (inputType.compare("ss")==0)         main_keyName = "COMPARTMENT_NAME";           // SS
-    else if (inputType.compare("ewf")==0)   main_keyName = "EXTERNAL_INPUTFLUX_NAME";    // EWF
-    
     /* ########################################
     // Loop over file (saved as sub-structure of SS/EWF data)
     ######################################## */
@@ -65,30 +60,18 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
         foundflag = false;      // reset to false at every 
 
         for (unsigned int ssi=0;ssi<num_srchem;ssi++){
-            
-            // Get mainKeyName
-            // "COMPARTMENT_NAME" in the case of "ss"
-            // "EXTERNAL_INPUTFLUX_NAME" in the case of "ewf"
-            // Needs try-catch because there may be other irrelevant entries e.g. COMMENTS
-            try{
-                
-                Element_name = EWF_SS_json
-                    [std::to_string(ssf+1)]
-                    [std::to_string(ssi+1)]
-                    [main_keyName];
-
-            }catch(...){   
-                continue;
-            }
 
             /* ########
             // Get data format
+            // try-catch block because we may have other sub-structures
+            // Example: Metadata 
             ###########*/
-
-            DataFormat = EWF_SS_json // units
-                [std::to_string(ssf+1)]
-                [std::to_string(ssi+1)]
-                ["DATA_FORMAT"];
+            try{
+                DataFormat = EWF_SS_json // units
+                    [std::to_string(ssf+1)]
+                    [std::to_string(ssi+1)]
+                    ["DATA_FORMAT"];
+            }catch(...){}
 
             /* ########
             // Call appropriate function depending on data format
@@ -106,7 +89,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
                     ssf, ssi,
                     DataFormat,
                     EWF_SS_json[std::to_string(ssf+1)][std::to_string(ssi+1)],  // relevant sub-json
-                    Element_name,
                     inputType, // ss or ewf
                     foundflag);
 
@@ -114,12 +96,12 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
                 
                 // if H5 format
                 Set_EWFandSS_h5(
+                    OpenWQ_hostModelconfig,
                     OpenWQ_wqconfig,
                     OpenWQ_utils,
                     OpenWQ_units,
                     OpenWQ_output,
                     EWF_SS_json[std::to_string(ssf+1)][std::to_string(ssi+1)],  // relevant sub-json
-                    Element_name,
                     inputType, // ss or ewf
                     foundflag);
 
@@ -129,7 +111,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
                 msg_string = 
                     "<OpenWQ> WARNING: Unkown data format='" 
                     + DataFormat
-                    + "' for EWF configuration > " + Element_name 
+                    + "' in SS or EWF json files > "
                     + " > DATA_FORMAT (only supports JSON, ASCII and HD5F) "
                     + "(entry skipped)";
 
@@ -145,7 +127,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
     }
 }
 
-
 /* #################################################
  // Prepare SS and EWF input data for use at running time: 
  // Case: JSON and ASCII format
@@ -159,11 +140,12 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     unsigned int ssf, unsigned int ssi,   // file-structure and substructure indexes
     std::string DataFormat,         // (JSON or ASCII)
     json EWF_SS_json_sub,           // relevant sub-json
-    std::string Element_name,
     std::string inputType,
     bool foundflag){                // ss or ewf
 
     // Local variables
+    std::string main_keyName;
+    std::string Element_name;
     std::string Chemical_name;                  // chemical name
     std::vector<std::string> elm_list;          // model compartment list
     std::string err_text;                       // iteractive string for text to pass to error messages
@@ -215,6 +197,20 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     // Get element list (compartment for SS, and External fluxes for EWF)
     if (inputType.compare("ss")==0)     elm_list = OpenWQ_hostModelconfig.cmpt_names;
     if (inputType.compare("ewf")==0)    elm_list = OpenWQ_hostModelconfig.ewf_names;
+
+    // Element names: Compartment or External Flux
+    if (inputType.compare("ss")==0)       main_keyName = "RECIPIENT_COMPARTMENT_NAME"; // SS
+    else if (inputType.compare("ewf")==0) main_keyName = "EXTERNAL_INPUTFLUX_NAME";    // EWF
+
+    // Get mainKeyName
+    // "RECIPIENT_COMPARTMENT_NAME" in the case of "ss"
+    // "EXTERNAL_INPUTFLUX_NAME" in the case of "ewf"
+    // Needs try-catch because there may be other irrelevant entries e.g. COMMENTS
+    try{
+        Element_name = EWF_SS_json_sub[main_keyName];
+    }catch(...){   
+        return;
+    }
 
     /* ########
     // Get chemical name and compartment/external-flux name 
@@ -1092,16 +1088,17 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
  // Case: JSON and ASCII format
  ################################################# */
 void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_utils& OpenWQ_utils,
     OpenWQ_units& OpenWQ_units,
     OpenWQ_output& OpenWQ_output,
     json EWF_SS_json_sub,  // relevant sub-json
-    std::string Element_name,
     std::string inputType,
     bool foundflag){
     
     // Local variables
+    std::string msg_string;
     std::size_t it;
     std::string ewf_h5_folderPath;
     std::string ewf_filenamePath;
@@ -1118,6 +1115,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
     time_t tSamp_valid_i_time_t; 
     arma::vec row_data_col;                     // new row data (initially as col data)
     int x_externModel, y_externModel, z_externModel;
+    double cmp_recipient;
+    std::string ss_cmp_recipient_name;
    
     // h5 IC folder path
     ewf_h5_folderPath = EWF_SS_json_sub["FOLDERPATH"];
@@ -1143,9 +1142,82 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
                             // to native (true) or 
                             // from native to desired output units (false)
 
-    // Get external compartment name
-    ewf_external_compartName = EWF_SS_json_sub["EXTERNAL_COMPARTMENT_NAME"];
+    // Get specific field for SS and EWF
+    // 1) if SS, get RECIPIENT_COMPARTMENT_NAME
+    try{
+        // Try to find the key
+        ss_cmp_recipient_name = EWF_SS_json_sub["RECIPIENT_COMPARTMENT_NAME"];
+
+        // get index
+        cmp_recipient = OpenWQ_utils.FindStrIndexInVectStr(
+            OpenWQ_hostModelconfig.cmpt_names,
+            ss_cmp_recipient_name);
+
+        // not needed for ewf
+        if(inputType.compare("ewf")==0){
+
+            // If key not found, throw warning and skip
+            msg_string = 
+                "<OpenWQ> WARNNING json key 'RECIPIENT_COMPARTMENT_NAME' is not used "
+                "for SS requests. (key option ignored)";
+
+            // Print it (Console and/or Log file)
+            OpenWQ_output.ConsoleLog(
+                OpenWQ_wqconfig,    // for Log file name
+                msg_string,         // message
+                true,               // print in console
+                true);              // print in log file
+        }
+
+
+    }catch(...){
+
+        if(inputType.compare("ss")==0){
+
+            // If key not found, throw warning and skip
+            msg_string = 
+                "<OpenWQ> WARNNING json key 'RECIPIENT_COMPARTMENT_NAME' is needed "
+                "for all SS requests when using HDF5 input. "
+                "Check all your SS json files and try again.";
+
+            // Print it (Console and/or Log file)
+            OpenWQ_output.ConsoleLog(
+                OpenWQ_wqconfig,    // for Log file name
+                msg_string,         // message
+                true,               // print in console
+                true);              // print in log file
+
+            return;
+
+        }
+
+    }
+
+    // 2) if EWF, get EXTERNAL_COMPARTMENT_NAME
+    try{
+
+        // Try to find the key
+        ewf_external_compartName = EWF_SS_json_sub["EXTERNAL_COMPARTMENT_NAME"];
     
+    }catch(...){
+
+        // If key not found, throw warning and skip
+        msg_string = 
+            "<OpenWQ> WARNNING json key 'EXTERNAL_COMPARTMENT_NAME' is needed "
+            "for all SS and EWF requests when using HDF5 input. This is needed to identify the file name"
+            "Check all your EWF json files and try again (entry skipped).";
+
+        // Print it (Console and/or Log file)
+        OpenWQ_output.ConsoleLog(
+            OpenWQ_wqconfig,    // for Log file name
+            msg_string,         // message
+            true,               // print in console
+            true);              // print in log file
+
+        return;
+
+    }
+
     // Get valid time steps from the logFile of EWF simulation
     OpenWQ_utils.GetTimeStampsFromLogFile(
         OpenWQ_wqconfig,
@@ -1208,6 +1280,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
                     x_externModel, 
                     y_externModel, 
                     z_externModel,
+                    cmp_recipient,
                     dataEWF_h5, 
                     rowi,
                     chemi);
@@ -2188,6 +2261,7 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
     int x_externModel, 
     int y_externModel, 
     int z_externModel,
+    double cmp_recipient,
     arma::mat dataEWF_h5, 
     int rowi,
     int chemi){
@@ -2210,7 +2284,6 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
         unit_multiplers);       // units
 
     // TO ASSIGN PROPERLY
-    double cmp_recipient = 1;
     double sinksource_ssi = 1;
     ix_h5 = 1;
     iy_h5 = 1;
