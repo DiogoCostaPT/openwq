@@ -2195,8 +2195,11 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
     // Local variables
     arma::vec row_data_col;                     // new row data (initially as col data)
     double conc_h5;
-    int YYYY_h5, MM_h5, DD_h5, HH_h5, MIN_h5, SEC_h5;
-    int ix_h5, iy_h5, iz_h5;
+    double ix_h5, iy_h5, iz_h5;
+    std::tm* timeStructure_tm;           // time stucture
+
+    // Generate time structure from time_t
+    timeStructure_tm = gmtime(&timestamp_time_t);
 
     // Get concentration
     conc_h5 = dataEWF_h5(rowi);
@@ -2206,17 +2209,25 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
         conc_h5,               // value passed by reference so that it can be changed
         unit_multiplers);       // units
 
-    /*
+    // TO ASSIGN PROPERLY
+    double cmp_recipient = 1;
+    double sinksource_ssi = 1;
+    ix_h5 = 1;
+    iy_h5 = 1;
+    iz_h5 = 1;
+    double loadScheme_id = 0;
+
+    // Generate the arma::vec row_data_col
     row_data_col = {
         (double) chemi,
         (double) cmp_recipient,
         (double) sinksource_ssi,
-        (double) timestamp_time_t.tm_year,
-        (double) timestamp_time_t.tm_mon,
-        (double) timestamp_time_t.hour,
-        (double) timestamp_time_t.mday,
-        (double) timestamp_time_t.min,
-        (double) timestamp_time_t.sec,
+        (double) timeStructure_tm->tm_year,
+        (double) timeStructure_tm->tm_mon,
+        (double) timeStructure_tm->tm_hour,
+        (double) timeStructure_tm->tm_mday,
+        (double) timeStructure_tm->tm_min,
+        (double) timeStructure_tm->tm_sec,
         (double) ix_h5,
         (double) iy_h5,
         (double) iz_h5,
@@ -2227,6 +2238,5 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
                         // it starts with 0 (zero), meaning that has not been used
                         // if not an "all" element, then it's set to -1
 
-    */
     return row_data_col;
 }
