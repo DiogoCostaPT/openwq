@@ -61,7 +61,7 @@ class OpenWQ_units{
         std::string unit_i,         // unit of numerator or denominator
         double& unit_multipler_i);  // multiplier of numerator or denominator
 
-    time_t converTime_ints2time_t(
+    time_t convertTime_ints2time_t(
         int YYYY, 
         int MM, 
         int DD, 
@@ -69,7 +69,7 @@ class OpenWQ_units{
         int MIN,
         int SEC);
 
-    time_t convert_timeChar2time_t(
+    time_t convertTime_str2time_t(
     std::string datetime_str);
         
 };

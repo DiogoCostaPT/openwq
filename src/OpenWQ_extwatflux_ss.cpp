@@ -1187,7 +1187,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
                     tSamp_valid[tSamp]));          // options
 
             // Get timestamp sting into time_t
-            tSamp_valid_i_time_t = OpenWQ_units.convert_timeChar2time_t(
+            tSamp_valid_i_time_t = OpenWQ_units.convertTime_str2time_t(
                 tSamp_valid[tSamp]);
 
             for (int rowi=0;rowi<(int)xyzEWF_h5.n_cols;rowi++){
@@ -1300,7 +1300,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
     }
 
     // Convert sim time to time_t
-    simTime = OpenWQ_units.converTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
+    simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
 
     // Get number of rows in SinkSource_FORC
     num_rowdata = (*array_FORC).n_rows; 
@@ -1343,7 +1343,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         if (SEC_json == -1){SEC_json    += (*array_FORC)(ri,19); anyAll_flag = true; SECall_flag = true;}
 
         // jsonTime in time_t
-        jsonTime = OpenWQ_units.converTime_ints2time_t(YYYY_json, MM_json, DD_json, HH_json, MIN_json, SEC_json);
+        jsonTime = OpenWQ_units.convertTime_ints2time_t(YYYY_json, MM_json, DD_json, HH_json, MIN_json, SEC_json);
 
         // Skip if not time to load yet
         if (simTime < jsonTime) continue;
@@ -1496,7 +1496,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
             if(addAnyIncrem_flag) break;
 
             // Determine new jsonTime for checking in while loop
-            jsonTime = OpenWQ_units.converTime_ints2time_t(YYYY_json, MM_json, DD_json, HH_json, MIN_json, SEC_json);
+            jsonTime = OpenWQ_units.convertTime_ints2time_t(YYYY_json, MM_json, DD_json, HH_json, MIN_json, SEC_json);
 
         }
 
@@ -1851,7 +1851,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
     std::vector<int> rows2Remove;  // List of rows indexes to remove     
 
     // Convert sim time to time_t
-    simTime = OpenWQ_units.converTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
+    simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
 
     // Get number of rows in SinkSource_FORC
     num_rowdata = (*array_FORC).n_rows; 
@@ -1884,7 +1884,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
         if (SEC_json == -1){SEC_json = SEC; all_flag=true;}
 
         // jsonTime in time_t
-        jsonTime = OpenWQ_units.converTime_ints2time_t(
+        jsonTime = OpenWQ_units.convertTime_ints2time_t(
             YYYY_json, 
             MM_json, 
             DD_json, 
@@ -1945,7 +1945,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
     unsigned int DD_max;                                                // max number of days for a given month and year
     
     // Convert sim time to time_t
-    simTime = OpenWQ_units.converTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
+    simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
 
     // Get number of rows in SinkSource_FORC
     num_rowdata = (*array_FORC).n_rows; 
@@ -2034,7 +2034,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
         }
 
         // Determine new jsonTime if using the first guess for the increment
-        jsonTime = OpenWQ_units.converTime_ints2time_t(
+        jsonTime = OpenWQ_units.convertTime_ints2time_t(
             YYYY_json + increm1, 
             MM_json + increm2, 
             DD_json + increm3, 
@@ -2053,7 +2053,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             if (all_SEC_flag){
                 while(jsonTime < simTime && (SEC_json + increm6) < 59){
                     increm6++;
-                    jsonTime = OpenWQ_units.converTime_ints2time_t(
+                    jsonTime = OpenWQ_units.convertTime_ints2time_t(
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2069,7 +2069,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             if (all_MIN_flag){
                 while(jsonTime < simTime && (MIN_json + increm5) < 59){
                     increm5++;
-                    jsonTime = OpenWQ_units.converTime_ints2time_t(
+                    jsonTime = OpenWQ_units.convertTime_ints2time_t(
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2085,7 +2085,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             if (all_HH_flag){
                 while(jsonTime < simTime && (HH_json + increm4) < 23){
                     increm4++;
-                    jsonTime = OpenWQ_units.converTime_ints2time_t(
+                    jsonTime = OpenWQ_units.convertTime_ints2time_t(
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2102,7 +2102,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             if (all_DD_flag){
                 while(jsonTime < simTime && (DD_json + increm3) < DD_max){
                     increm3++;
-                    jsonTime = OpenWQ_units.converTime_ints2time_t(
+                    jsonTime = OpenWQ_units.convertTime_ints2time_t(
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2118,7 +2118,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             if (all_MM_flag){
                 while(jsonTime < simTime && (MM_json + increm2) < 12){
                     increm2++;
-                    jsonTime = OpenWQ_units.converTime_ints2time_t(
+                    jsonTime = OpenWQ_units.convertTime_ints2time_t(
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2134,7 +2134,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
             if (all_YYYY_flag){
                 while(jsonTime < simTime){
                     increm1++;
-                    jsonTime = OpenWQ_units.converTime_ints2time_t(
+                    jsonTime = OpenWQ_units.convertTime_ints2time_t(
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }

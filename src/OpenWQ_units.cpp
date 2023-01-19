@@ -428,7 +428,7 @@ bool OpenWQ_units::Check_Time_Units(
 /* #################################################
 // Convert discreted date info into time_t
 ################################################# */
-time_t OpenWQ_units::converTime_ints2time_t(
+time_t OpenWQ_units::convertTime_ints2time_t(
     int YYYY, 
     int MM, 
     int DD, 
@@ -453,7 +453,7 @@ time_t OpenWQ_units::converTime_ints2time_t(
 /* #################################################
 // Convert date string info into time_t
 ################################################# */
-time_t OpenWQ_units::convert_timeChar2time_t(
+time_t OpenWQ_units::convertTime_str2time_t(
     std::string datetime_str) {
 
     std::time_t sim_time;
