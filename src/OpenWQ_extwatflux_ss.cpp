@@ -1153,6 +1153,25 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
             OpenWQ_hostModelconfig.cmpt_names,
             ss_cmp_recipient_name);
 
+        // if comparment not found
+        if(inputType.compare("ss")==0 && cmp_recipient==-1.0f){
+
+            // If key not found, throw warning and skip
+            msg_string = 
+                "<OpenWQ> WARNNING SS json key RECIPIENT_COMPARTMENT_NAME= "
+                + ss_cmp_recipient_name
+                + " not valid for this host-model coupling (entry ignored).";
+
+            // Print it (Console and/or Log file)
+            OpenWQ_output.ConsoleLog(
+                OpenWQ_wqconfig,    // for Log file name
+                msg_string,         // message
+                true,               // print in console
+                true);              // print in log file
+
+            return;
+        }
+
         // not needed for ewf
         if(inputType.compare("ewf")==0){
 
@@ -1168,7 +1187,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
                 true,               // print in console
                 true);              // print in log file
         }
-
 
     }catch(...){
 
