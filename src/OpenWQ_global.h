@@ -153,7 +153,7 @@ class OpenWQ_wqconfig
         // 10 - iy
         // 11 - iz
         // 12 - value (already converted to mg/l (concentration) or g(mass))
-        // 13 - Load scheme: "discrete" or "continuous"
+        // 13 - load scheme (0) not applicable, (1) discrete or (2) continuous
         // 14, 15 ,16, 17, 18, 19 - flag to deal with "ALL" entries in YYYY, MM, DD, HH, MIN, SEC
             // if there are no "all"s, then it's to use one time only and 
             // and it is set to -1, which after use becomes -2 for not use again

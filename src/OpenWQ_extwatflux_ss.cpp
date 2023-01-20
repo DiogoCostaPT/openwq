@@ -94,16 +94,36 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
 
             }else if(DataFormat.compare("HDF5")==0){
                 
-                // if H5 format
-                Set_EWFandSS_h5(
-                    OpenWQ_hostModelconfig,
-                    OpenWQ_wqconfig,
-                    OpenWQ_utils,
-                    OpenWQ_units,
-                    OpenWQ_output,
-                    EWF_SS_json[std::to_string(ssf+1)][std::to_string(ssi+1)],  // relevant sub-json
-                    inputType, // ss or ewf
-                    foundflag);
+                // h5 format only supported for ewf
+                if(inputType.compare("ewf")==0){
+
+                    // if H5 format
+                    Set_EWF_h5(
+                        OpenWQ_hostModelconfig,
+                        OpenWQ_wqconfig,
+                        OpenWQ_utils,
+                        OpenWQ_units,
+                        OpenWQ_output,
+                        EWF_SS_json[std::to_string(ssf+1)][std::to_string(ssi+1)],  // relevant sub-json
+                        inputType, // ss or ewf
+                        foundflag);
+
+                }else if(inputType.compare("ss")==0){
+
+                    // Create Message (Warning Message)
+                    msg_string = 
+                        "<OpenWQ> WARNING: HDF5 input only supported for'" 
+                        " EWF forcing. For SS forcing, please use JSON or "
+                        "ASCII format (entry skipped).";
+
+                    // Print it (Console and/or Log file)
+                    OpenWQ_output.ConsoleLog(
+                        OpenWQ_wqconfig,    // for Log file name
+                        msg_string,         // message
+                        true,               // print in console
+                        true);              // print in log file
+
+                }
 
             }else{
 
@@ -222,7 +242,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     // Type (sink or source) (only used in SS)
     if (inputType.compare("ss")==0) {
         Type = EWF_SS_json_sub["TYPE"];}
-    else if (inputType.compare("ewf")==0) Type = "SOURCE";
+    else if (inputType.compare("ewf")==0){
+        Type = "SOURCE";}
 
     /* ########
     // Check if the requests are valid
@@ -1087,7 +1108,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
  // Prepare SS and EWF input data for use at running time: 
  // Case: JSON and ASCII format
  ################################################# */
-void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
+void OpenWQ_extwatflux_ss::Set_EWF_h5(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_utils& OpenWQ_utils,
@@ -1108,6 +1129,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
     std::vector<std::string> units;
     std::string external_compartName;
     std::string external_waterFluxName;
+    double external_waterFluxName_id;
     std::string chemname;
     arma::mat xyzEWF_h5;
     arma::mat dataEWF_h5;
@@ -1116,7 +1138,6 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
     time_t tSamp_valid_i_time_t; 
     arma::vec row_data_col;                     // new row data (initially as col data)
     int x_externModel, y_externModel, z_externModel;
-    double cmp_recipient;
     std::string ss_cmp_recipient_name;
     bool foundTimeStmps;                 // flag to record (un)success in finding timestamps
    
@@ -1147,24 +1168,26 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
                             // to native (true) or 
                             // from native to desired output units (false)
 
-    // Get specific field for SS and EWF
-    // 1) if SS, get RECIPIENT_COMPARTMENT_NAME
+    // Try to find the key EXTERNAL_INPUTFLUX_NAME entry
     try{
-        // Try to find the key
-        ss_cmp_recipient_name = EWF_SS_json_sub["RECIPIENT_COMPARTMENT_NAME"];
 
-        // get index
-        cmp_recipient = OpenWQ_utils.FindStrIndexInVectStr(
-            OpenWQ_hostModelconfig.cmpt_names,
-            ss_cmp_recipient_name);
+        // get external flux name
+        external_waterFluxName = EWF_SS_json_sub["EXTERNAL_INPUTFLUX_NAME"];
 
-        // if comparment not found
-        if(inputType.compare("ss")==0 && cmp_recipient==-1.0f){
+        // get corresponding id
+        external_waterFluxName_id = 
+            (double)OpenWQ_utils.FindStrIndexInVectStr(
+                OpenWQ_hostModelconfig.ewf_names,
+                external_waterFluxName);
+
+        // if not found in internal list of EWF, then
+        // throw warning msg and skip entry
+        if(external_waterFluxName_id==-1.0f){
 
             // If key not found, throw warning and skip
             msg_string = 
-                "<OpenWQ> WARNNING SS json key RECIPIENT_COMPARTMENT_NAME= "
-                + ss_cmp_recipient_name
+                "<OpenWQ> WARNNING SS json key EXTERNAL_INPUTFLUX_NAME= "
+                + external_waterFluxName
                 + " not valid for this host-model coupling (entry ignored).";
 
             // Print it (Console and/or Log file)
@@ -1176,85 +1199,24 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
 
             return;
         }
-
-        // not needed for ewf
-        if(inputType.compare("ewf")==0){
-
-            // If key not found, throw warning and skip
-            msg_string = 
-                "<OpenWQ> WARNNING json key 'RECIPIENT_COMPARTMENT_NAME' is not used "
-                "for EWF requests. Check the EWF files (key option ignored).";
-
-            // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
-        }
+        
 
     }catch(...){
 
-        if(inputType.compare("ss")==0){
+        // If key not found, throw warning and skip
+        msg_string = 
+            "<OpenWQ> WARNNING json key 'EXTERNAL_COMPARTMENT_NAME' is needed "
+            "for EWF requests when using HDF5 input. This is needed to identify the file name"
+            "Check all your EWF json files and try again (entry skipped).";
 
-            // If key not found, throw warning and skip
-            msg_string = 
-                "<OpenWQ> WARNNING json key 'RECIPIENT_COMPARTMENT_NAME' is needed "
-                "for all SS requests when using HDF5 input. "
-                "Check all your SS json files and try again.";
+        // Print it (Console and/or Log file)
+        OpenWQ_output.ConsoleLog(
+            OpenWQ_wqconfig,    // for Log file name
+            msg_string,         // message
+            true,               // print in console
+            true);              // print in log file
 
-            // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
-
-            return;
-        }
-    }
-
-    // 2) if EWF, get EXTERNAL_COMPARTMENT_NAME
-    try{
-
-        // Try to find the key
-        external_waterFluxName = EWF_SS_json_sub["EXTERNAL_INPUTFLUX_NAME"];
-
-         // not needed for ss
-        if(inputType.compare("ss")==0){
-
-            // If key not found, throw warning and skip
-            msg_string = 
-                "<OpenWQ> WARNNING json key 'EXTERNAL_INPUTFLUX_NAME' is not used "
-                "for SS requests. Check the SS files (key option ignored).";
-
-            // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
-        }
-
-    }catch(...){
-
-        if(inputType.compare("ewf")==0){
-
-            // If key not found, throw warning and skip
-            msg_string = 
-                "<OpenWQ> WARNNING json key 'EXTERNAL_COMPARTMENT_NAME' is needed "
-                "for all SS and EWF requests when using HDF5 input. This is needed to identify the file name"
-                "Check all your EWF json files and try again (entry skipped).";
-
-            // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
-
-            return;
-        }
+        return;
     }
 
     // Get valid time steps from the logFile of EWF simulation
@@ -1343,10 +1305,10 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_h5(
                     OpenWQ_units,
                     unit_multiplers,
                     tSamp_valid_i_time_t,
+                    external_waterFluxName_id,
                     x_externModel, 
                     y_externModel, 
                     z_externModel,
-                    cmp_recipient,
                     dataEWF_h5, 
                     rowi,
                     chemi);
@@ -2324,19 +2286,22 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
     OpenWQ_units& OpenWQ_units,
     std::vector<double> unit_multiplers,
     time_t timestamp_time_t,
+    double ewf_id,
     int x_externModel, 
     int y_externModel, 
     int z_externModel,
-    double cmp_recipient,
     arma::mat dataEWF_h5, 
     int rowi,
     int chemi){
 
     // Local variables
-    arma::vec row_data_col;                     // new row data (initially as col data)
+    arma::vec row_data_col;              // new row data (initially as col data)
     double conc_h5;
     double ix_h5, iy_h5, iz_h5;
     std::tm* timeStructure_tm;           // time stucture
+    // Because this is EWF only
+    double sourcSink_type_id = 0.0f; // 0=source (see ExtFlux_FORC structure)
+    double loadSink_scheme_id = 0.0f; // 0=loading scheme not applicable (see ExtFlux_FORC structure)
 
     // Generate time structure from time_t
     timeStructure_tm = gmtime(&timestamp_time_t);
@@ -2350,17 +2315,15 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
         unit_multiplers);       // units
 
     // TO ASSIGN PROPERLY
-    double sinksource_ssi = 1;
     ix_h5 = 1;
     iy_h5 = 1;
     iz_h5 = 1;
-    double loadScheme_id = 0;
 
     // Generate the arma::vec row_data_col
     row_data_col = {
         (double) chemi,
-        (double) cmp_recipient,
-        (double) sinksource_ssi,
+        (double) ewf_id,
+        (double) sourcSink_type_id,
         (double) timeStructure_tm->tm_year,
         (double) timeStructure_tm->tm_mon,
         (double) timeStructure_tm->tm_hour,
@@ -2371,11 +2334,11 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
         (double) iy_h5,
         (double) iz_h5,
         conc_h5,
-        loadScheme_id,  // load scheme (0) not applicable, (1) discrete or (2) continuous
-        0,0,0,0,0,0     // field to specify the number of times it has been used aleady
-        };              // in the case of and "all" element (YYYY, MM, DD, HH, MIN, SEC)
-                        // it starts with 0 (zero), meaning that has not been used
-                        // if not an "all" element, then it's set to -1
+        loadSink_scheme_id, // load scheme (0) not applicable, (1) discrete or (2) continuous
+        0,0,0,0,0,0         // field to specify the number of times it has been used aleady
+        };                  // in the case of and "all" element (YYYY, MM, DD, HH, MIN, SEC)
+                            // it starts with 0 (zero), meaning that has not been used
+                            // if not an "all" element, then it's set to -1
 
     return row_data_col;
 }

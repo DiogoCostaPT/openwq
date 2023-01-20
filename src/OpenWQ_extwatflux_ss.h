@@ -64,7 +64,7 @@ class OpenWQ_extwatflux_ss{
         bool foundflag);
 
     // if DATA_FORMAT = HDF5
-    void Set_EWFandSS_h5(
+    void Set_EWF_h5(
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_utils& OpenWQ_utils,
@@ -182,10 +182,10 @@ class OpenWQ_extwatflux_ss{
         OpenWQ_units& OpenWQ_units,
         std::vector<double> unit_multiplers,
         time_t timestamp_time_t,
+        double ewf_id,
         int x_externModel, 
         int y_externModel, 
         int z_externModel,
-        double cmp_recipient,
         arma::mat dataEWF_h5, 
         int rowi,
         int chem_ssi);

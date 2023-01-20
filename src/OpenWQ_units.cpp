@@ -467,6 +467,11 @@ time_t OpenWQ_units::convertTime_str2time_t(
     // Convert String to Date/Time
     strptime(datetime_char, "%Y%b%d-%H:%M:%S", &tm);
 
+    // Fix year
+    // For some reason, the year is not being 
+    // picked up correctly
+    tm.tm_year = stoi(datetime_str.substr(0,4));
+
     // Convert time to time_t  
     sim_time = mktime(&tm);
 
