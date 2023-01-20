@@ -2315,7 +2315,8 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
         unit_multiplers);       // units
 
     // Mapping model interfaces, x, y and z
-    ix_h5 = 1;
+    // Using x_externModel, y_externModel, z_externModel
+    ix_h5 = 1; 
     iy_h5 = 1;
     iz_h5 = 1;
 
