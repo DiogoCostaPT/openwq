@@ -2314,7 +2314,7 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
         conc_h5,               // value passed by reference so that it can be changed
         unit_multiplers);       // units
 
-    // TO ASSIGN PROPERLY
+    // Mapping model interfaces, x, y and z
     ix_h5 = 1;
     iy_h5 = 1;
     iz_h5 = 1;
