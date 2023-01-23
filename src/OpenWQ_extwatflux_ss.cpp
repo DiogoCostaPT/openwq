@@ -219,11 +219,11 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     if (inputType.compare("ewf")==0)    elm_list = OpenWQ_hostModelconfig.ewf_names;
 
     // Element names: Compartment or External Flux
-    if (inputType.compare("ss")==0)       main_keyName = "RECIPIENT_COMPARTMENT_NAME"; // SS
+    if (inputType.compare("ss")==0)       main_keyName = "COMPARTMENT_NAME"; // SS
     else if (inputType.compare("ewf")==0) main_keyName = "EXTERNAL_INPUTFLUX_NAME";    // EWF
 
     // Get mainKeyName
-    // "RECIPIENT_COMPARTMENT_NAME" in the case of "ss"
+    // "COMPARTMENT_NAME" in the case of "ss"
     // "EXTERNAL_INPUTFLUX_NAME" in the case of "ewf"
     // Needs try-catch because there may be other irrelevant entries e.g. COMMENTS
     try{
@@ -1323,7 +1323,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
             tSamp_valid_i_time_t = OpenWQ_units.convertTime_str2time_t(
                 tSamp_valid[tSamp]);
 
-            for (int rowi=0;rowi<(int)xyzEWF_h5.n_cols;rowi++){
+            for (int rowi=0;rowi<(int)xyzEWF_h5.n_rows;rowi++){
 
                 // Get element x,y,z indexes of external model
                 // Using convention of external model
@@ -2369,7 +2369,6 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
         0,0,0,0,0,0         // field to specify the number of times it has been used aleady
         };                  // in the case of and "all" element (YYYY, MM, DD, HH, MIN, SEC)
                             // it starts with 0 (zero), meaning that has not been used
-                            // if not an "all" element, then it's set to -1
 
     return row_data_col;
 }
