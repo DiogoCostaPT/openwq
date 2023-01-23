@@ -645,10 +645,9 @@ void OpenWQ_initiate::setIC_h5(
         return;
     }
 
-
     // Saving IC in state variable 
     #pragma omp parallel for private (irow, ic_x, ic_y, ic_z) num_threads(OpenWQ_wqconfig.num_threads_requested)
-    for (irow=0;irow<xyzIC_h5.n_rows-1;irow++){
+    for (irow=0;irow<(int)xyzIC_h5.n_rows-1;irow++){
 
         // Get ix, iy, iz IC locations
         // Output data starts at 1, but openwq (c++) starts at 0

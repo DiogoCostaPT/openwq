@@ -1,7 +1,7 @@
 Source/Sink & External Fluxes
 =====================================
 
-``Source/Sink`` loads and ``External Fluxes`` use a similar data input structure. The differences are minimal and highlighted below.
+``Source/Sink`` loads and ``External Fluxes`` use a similar data input structure. The differences are highlighted below.
 
 The chemical sink and source files used by OpenWQ are defined in the master configuration file.
 Each sink/source is defined in an individual ``json-block``, and you can add as many ``json`` files as desired.
@@ -17,28 +17,33 @@ Each sink/source is defined in an individual ``json-block``, and you can add as 
 **Principal Key 2**: ``(i#)`` (input number in sequential order)
 
 +--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| ``CHEMICAL_NAME``                    | - Chemical species names                                                                                                |
-|                                      | - As defined in `Biogeochemical cycling configuration file <https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#>`_   |
+| ``DATA_FORMAT``                      | Data format: ``"JSON"`` or ``"ASCII"``                                                                                  |
++--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| ``UNITS``                            | Units of input, e.g, ``"mg/l"``                                                                                         |
 +--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | - ``COMPARTMENT_NAME``               | - Compartment name                                                                                                      |
 | - *if Sink/Source*                   | - As defined in the interface-hydrolink.                                                                                |
 +--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| - ``External_InputFlux_name``        | - External Water Source name                                                                                            |
+| - ``EXTERNAL_INPUTFLUX_NAME``        | - External Water Source name                                                                                            |
 | - *else-if External Water Source*    | - As defined in the interface-hydrolink.                                                                                |
++--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+
+**OPTION SPECIFIC KEYS**
+
+**-> If** ``DATA_FORMAT``: ``"JSON"`` or ``"ASCII"``
+
++--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| ``CHEMICAL_NAME``                    | - Chemical species names                                                                                                |
+|                                      | - As defined in `Biogeochemical cycling configuration file <https://openwq.readthedocs.io/en/latest/4_1_3BGC.html#>`_   |
 +--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | - ``TYPE``                           | Type of input,                                                                                                          |
 | - *if Sink/Source only*              | Options: ``"source"`` or ``"sink"``                                                                                     |
-+--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| ``UNITS``                            | Units of input, e.g, ``"mg/l"``                                                                                         |
-+--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
-| ``DATA_FORMAT``                      | Data format: ``"JSON"`` or ``"ASCII"``                                                                                  |
 +--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
 | ``DATA``                             | - Input data.                                                                                                           |
 |                                      | - Format will depend on the ``DATA_FORMAT``                                                                             |
 |                                      | - See details below.                                                                                                    |
 +--------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
 
-**ADDITIONAL KEYS**
 
 **-> If** ``DATA_FORMAT``: ``"JSON"``
 
@@ -92,15 +97,9 @@ Then ``DATA`` with the time series of load has the same format above but it's pr
 +-------------------------------+-------------------------------------------------------------------------+
 
 
-The JSON file supports C/C++ syntax for comments: single-line comment (``//``) or comment blocks (``/*`` and ``*/``).
+Example of input ``JSON`` file:
 
-The symbol ``(i#)`` refers to a integer number sequence.. The symbol ``(s#)`` refers to a string input. The symbol ``<f#>`` refers to a float input value.
-
-
-Example:
-
-
-.. code-block:: json 
+.. code-block:: json
 
     {
         "METADATA": {
@@ -139,3 +138,59 @@ Example:
 File: SS_speciesA_ScalarAquifer_test.csv
 
 .. image:: ss_ascii.png
+
+**-> If** ``DATA_FORMAT``: ``"HD5F"`` (only applicable to ``External Fluxes``)
+
+This is used in the cases where we want to use the output of another host_model-OpenWQ model for the ``"External Fluxes"`` concentrations.
+This is useful when we use two externally coupled models, such as a hydrological model using precipitation data from an atmospheric model.
+In these cases, we need to have both models coupled to OpenWQ, such as shown in the diagram.
+
+.. image:: coupled_host_models.PNG
+    :width: 300
+    :alt: Coupling two host_model-OpenWQ coupled models
+
+
+These are the general steps to run both host_model-OpenWQ models:
+
+1. Run the upstream host_model-OpenWQ coupled model. Make sure to export data for the upstream model compartment from where the inter-model fluxes originate.
+2. Run the upstream host_model-OpenWQ coupled model. Make sure to sep up the EWF json with the additional key:values listed below.
+
++---------------------------------+-----------------------------------------------------------------------------------------------------------------+
+| ``"EXTERNAL_COMPARTMENT_NAME"`` | - Name of the compartment in the upstream model from where the inter-model fluxes originate                     |
+|                                 | - Example: "ATMOSPHERE_LAYER"                                                                                   |
++---------------------------------+-----------------------------------------------------------------------------------------------------------------+
+| ``"INTERACTION_INTERFACE"``     | - Array specifying the interface elements between the upstream and downstream models                            |
+|                                 | - Format: [``"(i#)"`` or "all, ``"(i#)"`` or "all", ``"(i#)"`` or "all"]                                        |
+|                                 | - Example: ["all", "all", 1] (for interaction along the x-y plane) (see diagrams below)                         |
++---------------------------------+-----------------------------------------------------------------------------------------------------------------+
+| ``"FOLDERPATH"``                | Path to ``"HD5F"`` file that contains the compartment ``"EXTERNAL_COMPARTMENT_NAME"`` from the upstream model.  |
++---------------------------------+-----------------------------------------------------------------------------------------------------------------+
+
+**Diagrams showing examples of how to set up ``"INTERACTION_INTERFACE"`` for different upstream-downstream host-model configuration:**:
+
+.. image:: ewf_h5_loading_interface_convention.PNG
+    :width: 500
+    :alt: Interface characterization for two host_model-OpenWQ coupled models
+
+Example of input ``JSON`` file:
+
+.. code-block:: json
+
+    {
+        "METADATA": {
+            "Comment": "synthetic loading",
+            "Source": "test_1"
+        },
+        "1": {
+            "DATA_FORMAT": "HDF5",
+            "UNITS": "mg/l",
+            "EXTERNAL_COMPARTMENT_NAME": "ATMOSPHERE_LAYER",
+            "EXTERNAL_INPUTFLUX_NAME": "PRECIP",
+            "INTERACTION_INTERFACE": ["all", 1, 1],
+            "FOLDERPATH": "openwq_ewf_h5"
+	    }
+    }
+
+The JSON file supports C/C++ syntax for comments: single-line comment (``//``) or comment blocks (``/*`` and ``*/``).
+
+The symbol ``(i#)`` refers to a integer number sequence.. The symbol ``(s#)`` refers to a string input. The symbol ``<f#>`` refers to a float input value.

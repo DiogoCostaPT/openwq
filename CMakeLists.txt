@@ -438,7 +438,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         ${DRIVER_DIR}/summa_forcing.f90
                         ${DRIVER_DIR}/summa_modelRun.f90
                         ${DRIVER_DIR}/summa_writeOutput.f90
-                        ${DRIVER_DIR}/summa_openWQ.f90
+                        ${PARENT_DIR}/summa_openWQ.f90
                         ${DRIVER_DIR}/summa_driver.f90)
 
                 SET(CMAKE_CXX_STANDARD 17)

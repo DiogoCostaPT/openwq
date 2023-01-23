@@ -39,7 +39,8 @@ class OpenWQ_extwatflux_ss{
     public:
 
     // Save Sink and Source data to tuple (more efficient than allways calling jnlohmann)
-    void Set_EWFandSS(
+    // Driver function
+    void Set_EWFandSS_drive(
         json &EWF_SS_json,
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -49,11 +50,36 @@ class OpenWQ_extwatflux_ss{
         OpenWQ_output& OpenWQ_output,
         std::string inputType);
 
+    // if DATA_FORMAT = JSON or ASCII
+    void Set_EWFandSS_jsonAscii(
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
+        OpenWQ_units& OpenWQ_units,
+        OpenWQ_output& OpenWQ_output,
+        unsigned int ssf, unsigned int ssi,   // file-structure and substructure indexes
+        std::string DataFormat,         // (JSON or ASCII)
+        json EWF_SS_json_sub,           // relevant sub-json
+        std::string inputType,
+        bool foundflag);
+
+    // if DATA_FORMAT = HDF5
+    void Set_EWF_h5(
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
+        OpenWQ_units& OpenWQ_units,
+        OpenWQ_output& OpenWQ_output,
+        json EWF_SS_json_sub,  // relevant sub-json
+        std::string inputType,
+        bool foundflag);
+
     // Check if sink or sources needs to be applied
     void CheckApply_EWFandSS(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
         OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output,
         const unsigned int YYYY,                            // current model step: Year
@@ -93,16 +119,16 @@ class OpenWQ_extwatflux_ss{
 
     // Update EWF concentrations
     void Update_EWFconc(
-    OpenWQ_vars& OpenWQ_vars,
-    OpenWQ_wqconfig& OpenWQ_wqconfig,
-    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-    OpenWQ_output& OpenWQ_output,
-    const unsigned int ewfi,            // compartment model index
-    const unsigned int chemi,           // chemical model index    
-    int ix,                             // compartment model ix
-    int iy,                             // compartment model iy
-    int iz,                             // compartment model iz
-    const double new_concVal);          // new EWF conc value
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_output& OpenWQ_output,
+        const unsigned int ewfi,            // compartment model index
+        const unsigned int chemi,           // chemical model index    
+        int ix,                             // compartment model ix
+        int iy,                             // compartment model iy
+        int iz,                             // compartment model iz
+        const double new_concVal);          // new EWF conc value
 
     void Convert_Mass_Units(
         double &ss_value,     // SS value
@@ -138,6 +164,7 @@ class OpenWQ_extwatflux_ss{
 
     void UpdateAllElemTimeIncremts(
         std::unique_ptr<arma::Mat<double>>& array_FORC,
+        OpenWQ_utils& OpenWQ_utils,
         OpenWQ_units& OpenWQ_units,
         const int YYYY,             // current model step: Year
         const int MM,               // current model step: month
@@ -146,9 +173,22 @@ class OpenWQ_extwatflux_ss{
         const int MIN,              // current model step: min
         const int SEC);             // current model step: sec
 
-    int getNumberOfDays(
-        const unsigned int YYYY_check,          // json: Year 
-        const unsigned int MM_check);           // json: Month
+    void AppendRow_SS_EWF_FORC(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        std::string inputType,
+        arma::vec row_data_col);
+
+    arma::vec ConvertH5row2ArmaVec(
+        OpenWQ_units& OpenWQ_units,
+        std::vector<double> unit_multiplers,
+        time_t timestamp_time_t,
+        double ewf_id,
+        int x_externModel, 
+        int y_externModel, 
+        int z_externModel,
+        arma::mat dataEWF_h5, 
+        int rowi,
+        int chem_ssi);
 
 };
 

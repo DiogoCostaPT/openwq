@@ -219,7 +219,7 @@ int OpenWQ_output::writeResults(
                 // chem and transport
 
                 // Var: d_chemass_dt_chem
-                output_file_label.assign("d_output_dt_chemisry");
+                output_file_label.assign("d_output_dt_chemistry");
                 OpenWQ_output::writeHDF5(
                     OpenWQ_json,
                     OpenWQ_hostModelconfig,
@@ -308,12 +308,11 @@ int OpenWQ_output::writeResults(
         true);       // reset cumulative derivatives
 
     // Print it (Console and/or Log file)
-    OpenWQ_output::ConsoleLog(
+    ConsoleLog(
         OpenWQ_wqconfig,    // for Log file name
         msg_string,         // message
         true,               // print in console
         true);              // print in log file
-
 
     // Completed succesfully 
     return EXIT_SUCCESS;
@@ -463,7 +462,7 @@ int OpenWQ_output::writeHDF5(
     unsigned ix, iy, iz;                    // iteractive x, y, z values for cell elemebts to print 
     unsigned int num_chem2print;            // number of chemical species to print
     std::string CompName_icmp;              // compartment name (iteractive)
-    const char * chem_name  ;               // chemical name pointer (iteractive)
+    const char * chem_name;                 // chemical name pointer (iteractive)
     std::string filename;                   // iteractive output file name 
     std::string internal_database_name;     // iteractive database name
     unsigned int num_cells2print;           // iteractive number of cells to print
@@ -501,7 +500,7 @@ int OpenWQ_output::writeHDF5(
     it = (int) units_string.find("/");
     if (it <= units_string.size()){
         units_string.replace(it,1, "|");
-     }
+    }
 
     // ########################################
     // Save ix, iy and iz in dataset (the first time)
@@ -617,12 +616,13 @@ int OpenWQ_output::writeHDF5(
 
         }
         
-        // Save
+        // Save results
         data2print
             .save(arma::hdf5_name(
                 filename,                           // file name
                 timestr,                            // database name: chem name + time
                 arma::hdf5_opts::append));          // options
+
     }
 
     return EXIT_SUCCESS;
@@ -814,7 +814,7 @@ void OpenWQ_output::ConsoleLog(
 
         // Append line with error or warnning message
         std::ofstream log(
-            OpenWQ_wqconfig.LogFile_name, 
+            OpenWQ_wqconfig.LogFile_name_fullpath, 
             std::ios_base::app | std::ios_base::out);
 
         log << msg_string.append("\n");

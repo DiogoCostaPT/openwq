@@ -428,7 +428,7 @@ bool OpenWQ_units::Check_Time_Units(
 /* #################################################
 // Convert discreted date info into time_t
 ################################################# */
-time_t OpenWQ_units::convert_time(
+time_t OpenWQ_units::convertTime_ints2time_t(
     int YYYY, 
     int MM, 
     int DD, 
@@ -448,4 +448,33 @@ time_t OpenWQ_units::convert_time(
     sim_time = timegm(&tm);
 
     return sim_time;
+}
+
+/* #################################################
+// Convert date string info into time_t
+################################################# */
+time_t OpenWQ_units::convertTime_str2time_t(
+    std::string datetime_str) {
+    
+    // Local variables
+    std::time_t sim_time;
+    struct tm tm;
+
+    // Convert string to const char* 
+    // Needed for input into strptime
+    const char* datetime_char = datetime_str.c_str();
+
+    // Convert String to Date/Time
+    strptime(datetime_char, "%Y%b%d-%H:%M:%S", &tm);
+
+    // Fix year
+    // For some reason, the year is not being 
+    // picked up correctly
+    tm.tm_year = stoi(datetime_str.substr(0,4));
+
+    // Convert time to time_t  
+    sim_time = mktime(&tm);
+
+    return sim_time;
+    
 }

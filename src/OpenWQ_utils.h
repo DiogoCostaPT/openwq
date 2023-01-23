@@ -21,6 +21,7 @@
 
 #include "OpenWQ_global.h"
 #include "OpenWQ_solver.h"
+#include "OpenWQ_output.h"
 
 class OpenWQ_utils{
 
@@ -37,7 +38,7 @@ class OpenWQ_utils{
         std::string delimiter);
 
     // Find index of string in vector::string
-    unsigned int FindStrIndexInVectStr(
+    int FindStrIndexInVectStr(
         std::vector<std::string> VectString,
         std::string Str2Find);
 
@@ -48,6 +49,27 @@ class OpenWQ_utils{
     // Convert string to upper case
     std::string ConvertStringToUpperCase(
         const std::string StrEntry);
+
+    int getNumberOfDaysInMonthYear(
+        const unsigned int YYYY_check,          // json: Year 
+        const unsigned int MM_check);           // json: Month
+
+    // Get timestamps from logFile
+    bool GetTimeStampsFromLogFile(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
+        std::string logFile_folderPath,
+        std::string preOutputRow_substring,
+        std::vector<std::string>& timeStamps_vec,
+        std::string errMsg_LofFileIdentifier); 
+
+    bool Convert2NegativeOneIfAll_inputInt(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
+        std::string errMsg_LofFileIdentifier,
+        json json_array,
+        int index_of_json_array,
+        int & returnValue);
 
 };
 

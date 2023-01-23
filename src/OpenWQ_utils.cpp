@@ -84,12 +84,12 @@ std::vector<std::string> OpenWQ_utils::StringSplit (
 // ########################################
 // Find index of string in vector::string
 // ########################################
-unsigned int OpenWQ_utils::FindStrIndexInVectStr(
+int OpenWQ_utils::FindStrIndexInVectStr(
     std::vector<std::string> VectString,
     std::string Str2Find){
 
     // Local variables
-    unsigned int strIndex; // index of the Str2Find in VectString
+    int strIndex; // index of the Str2Find in VectString
 
     std::vector<std::string>::iterator strInter = std::find(
         VectString.begin(), 
@@ -98,6 +98,10 @@ unsigned int OpenWQ_utils::FindStrIndexInVectStr(
         
     // determine index
     strIndex = distance(VectString.begin(), strInter);
+    
+    // if not found, return -1
+    if(strIndex==(int)VectString.size()) strIndex=-1;
+
     return strIndex;
 }
 
@@ -148,5 +152,162 @@ std::string OpenWQ_utils::ConvertStringToUpperCase(
     }catch (...){}
 
     return NewStr;
+
+}
+
+// Function to return total number of days in a given year and month
+int  OpenWQ_utils::getNumberOfDaysInMonthYear(
+        const unsigned int YYYY_check,          // json: Year 
+        const unsigned int MM_check)            // json: Month
+{
+	//leap year condition, if month is 2
+	if(MM_check == 2)
+	{
+		if((YYYY_check%400==0) || (YYYY_check%4==0 && YYYY_check%100!=0))	
+			return 29;
+		else	
+			return 28;
+	}
+	//months which has 31 days
+	else if(MM_check == 1 || MM_check == 3 || MM_check == 5 || MM_check == 7 || MM_check == 8
+	||MM_check == 10 || MM_check==12)	
+		return 31;
+	else 		
+		return 30;
+
+} 
+
+// Get valid time stamps
+bool OpenWQ_utils::GetTimeStampsFromLogFile(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output,
+    std::string logFile_folderPath,             // Path where LogFile is location
+    std::string preOutputRow_substring,         // Substring of the output to search
+    std::vector<std::string>& timeStamps_vec,   // Vector with timestamps
+    std::string errMsg_LofFileIdentifier){      // Logfile errMsg identifier
+
+    // Local variables
+    std::string rowEntryLogfile;
+    std::string ewf_sim_logFile_path;
+    std::string output_str;
+    std::string msg_string;
+    int pos;
+    bool foundTimeStmps = true;
+
+    // Full path to LogFile of EWF source
+    ewf_sim_logFile_path = logFile_folderPath;
+    ewf_sim_logFile_path.append("/");
+    ewf_sim_logFile_path.append(OpenWQ_wqconfig.LogFile_name);
+
+    // Open LogFile_name_fullpath file to read timestamps (read mode only)
+    std::ifstream logFile_ewf (ewf_sim_logFile_path, std::ios::in);
+
+    // Read and skip irrelevant lines
+    if (logFile_ewf.is_open()){
+
+        while(std::getline(logFile_ewf, rowEntryLogfile)){
+            // Check if row contains output info
+            if (rowEntryLogfile.find(preOutputRow_substring) != std::string::npos) {
+                pos = preOutputRow_substring.size();
+                timeStamps_vec.push_back(rowEntryLogfile.substr(pos));
+            }
+        }
+        logFile_ewf.close();
+
+        // If output info in supporting "logFile_folderPath" file not found, 
+        // through warning message (entry skipped)
+        if (timeStamps_vec.empty()){
+
+            msg_string = 
+                "<OpenWQ> WARNING: '"
+                + errMsg_LofFileIdentifier 
+                + " =" + ewf_sim_logFile_path
+                + " found, but it contains no output/print info."
+                " Make sure this is the correct log file (entry skipped).";
+            // Print it (Console and/or Log file)
+            OpenWQ_output.ConsoleLog(
+                OpenWQ_wqconfig,    // for Log file name
+                msg_string,         // message
+                true,               // print in console
+                true);              // print in log file
+
+            foundTimeStmps = false;
+
+        }
+
+    }else{
+
+        // If supporting "logFile_folderPath" not found, 
+        // through warning message (entry skipped)
+        msg_string = 
+            "<OpenWQ> WARNING: SS/EWF '" 
+                + errMsg_LofFileIdentifier 
+                + " =" + ewf_sim_logFile_path
+                + " not found. Make sure to include it in the same path "
+                "as the SS/EWF h5 files (entry skipped).";
+        // Print it (Console and/or Log file)
+        OpenWQ_output.ConsoleLog(
+            OpenWQ_wqconfig,    // for Log file name
+            msg_string,         // message
+            true,               // print in console
+            true);              // print in log file
+        
+        foundTimeStmps = false;
+
+    }
+
+    return foundTimeStmps;
+    
+}
+
+// Read JSON array element and return -1 if "all"
+bool OpenWQ_utils::Convert2NegativeOneIfAll_inputInt(
+    OpenWQ_wqconfig & OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output,
+    std::string errMsg_LofFileIdentifier,
+    json json_array,
+    int index_of_json_array,
+    int & returnValue){
+
+    // Valid entry
+    bool validEntryFlag = false;
+    std::string msg_string;
+
+    try{
+        // try entry as double
+        returnValue = json_array.at(index_of_json_array);
+        validEntryFlag = true;
+    }catch(...){
+
+        try{
+            // try as string for the cases where entry is "all"
+            std::string entryVal = json_array.at(index_of_json_array);
+            // Check if "all" entry
+            if (entryVal.compare("ALL")==0){
+                returnValue = -1.0f;
+                validEntryFlag = true;
+            }
+        }catch(...){
+            validEntryFlag = false;
+        }
+    }
+
+    // Warning message if needed
+    if(!validEntryFlag){
+
+        msg_string = 
+            "<OpenWQ> WARNING:'" 
+                + errMsg_LofFileIdentifier 
+                + " (entry skipped).";
+
+        // Print it (Console and/or Log file)
+        OpenWQ_output.ConsoleLog(
+            OpenWQ_wqconfig,    // for Log file name
+            msg_string,         // message
+            true,               // print in console
+            true);              // print in log file
+    }
+
+    return validEntryFlag;
 
 }
