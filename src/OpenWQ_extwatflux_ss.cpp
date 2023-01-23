@@ -1138,8 +1138,12 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     time_t tSamp_valid_i_time_t; 
     arma::vec row_data_col;                     // new row data (initially as col data)
     int x_externModel, y_externModel, z_externModel;
+    int x_interface, y_interface, z_interface;
     std::string ss_cmp_recipient_name;
     bool foundTimeStmps;                 // flag to record (un)success in finding timestamps
+    json interaction_interface_json;
+    bool validEntryFlag;
+    int index_i;
    
     // h5 IC folder path
     ewf_h5_folderPath = EWF_SS_json_sub["FOLDERPATH"];
@@ -1151,6 +1155,35 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     // get external compartment name (needed for both ss and ewf)
     external_compartName = EWF_SS_json_sub["EXTERNAL_COMPARTMENT_NAME"];
 
+    // Get interface between openwq models
+    interaction_interface_json = EWF_SS_json_sub["INTERACTION_INTERFACE"];
+
+    // Check if entries of INTERACTION_INTERFACE are valid
+    // Return if not a valid interface
+    // Error messages are provided insie Convert2NegativeOneIfAll_inputInt()
+    // x
+    index_i = 0;
+    msg_string = "EWF Invalid 'INTERACTION_INTERFACE' array element" 
+                + std::to_string(index_i) 
+                + "for HDF5. It only accepts integers or 'all'";
+    validEntryFlag = OpenWQ_utils.Convert2NegativeOneIfAll_inputInt(
+        OpenWQ_wqconfig, OpenWQ_output, msg_string,
+        interaction_interface_json, index_i, x_interface);
+    if (!validEntryFlag) return;
+    // y
+    index_i = 1;
+    validEntryFlag = OpenWQ_utils.Convert2NegativeOneIfAll_inputInt(
+        OpenWQ_wqconfig, OpenWQ_output, msg_string,
+        interaction_interface_json, index_i, y_interface);
+    if (!validEntryFlag) return;
+    // z
+    index_i = 2;
+    validEntryFlag = OpenWQ_utils.Convert2NegativeOneIfAll_inputInt(
+        OpenWQ_wqconfig, OpenWQ_output, msg_string,
+        interaction_interface_json, index_i, z_interface);
+    if (!validEntryFlag) return;
+    
+    
     // replace "/" by "|" is needed because "/" is not compatible with directory full paths
     it = (int) ewf_h5_units_file.find("/");
     if (it <= ewf_h5_units_file.size()){
@@ -1299,32 +1332,35 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                 y_externModel = xyzEWF_h5(rowi, 1);
                 z_externModel = xyzEWF_h5(rowi, 2);
 
-                // Extract H5 row to row_data_col
-                // Unit conversion performed inside this function
-                row_data_col = ConvertH5row2ArmaVec(
-                    OpenWQ_units,
-                    unit_multiplers,
-                    tSamp_valid_i_time_t,
-                    external_waterFluxName_id,
-                    x_externModel, 
-                    y_externModel, 
-                    z_externModel,
-                    dataEWF_h5, 
-                    rowi,
-                    chemi);
+                // Save ewf conc data if at the interface
+                if ((x_externModel == x_interface || x_interface == -1)
+                    && (y_externModel == y_interface || y_interface == -1)
+                    && (z_externModel == z_interface || z_interface == -1)){
+                    
+                    // Extract H5 row to row_data_col
+                    // Unit conversion performed inside this function
+                    row_data_col = ConvertH5row2ArmaVec(
+                        OpenWQ_units,
+                        unit_multiplers,
+                        tSamp_valid_i_time_t,
+                        external_waterFluxName_id,
+                        x_externModel, 
+                        y_externModel, 
+                        z_externModel,
+                        dataEWF_h5, 
+                        rowi,
+                        chemi);
 
-                // Add new row to SinkSource_FORC or ExtFlux_FORC
-                AppendRow_SS_EWF_FORC(
-                    OpenWQ_wqconfig,
-                    inputType,
-                    row_data_col);
+                    // Add new row to SinkSource_FORC or ExtFlux_FORC
+                    AppendRow_SS_EWF_FORC(
+                        OpenWQ_wqconfig,
+                        inputType,
+                        row_data_col);
 
+                }
             }
-
         }
-
     }
-
 }
 
 /* #################################################
@@ -2314,12 +2350,6 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
         conc_h5,               // value passed by reference so that it can be changed
         unit_multiplers);       // units
 
-    // Mapping model interfaces, x, y and z
-    // Using x_externModel, y_externModel, z_externModel
-    ix_h5 = 1; 
-    iy_h5 = 1;
-    iz_h5 = 1;
-
     // Generate the arma::vec row_data_col
     row_data_col = {
         (double) chemi,
@@ -2331,9 +2361,9 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
         (double) (timeStructure_tm->tm_hour),
         (double) (timeStructure_tm->tm_min),
         (double) (timeStructure_tm->tm_sec),
-        (double) ix_h5,
-        (double) iy_h5,
-        (double) iz_h5,
+        (double) x_externModel - 1,
+        (double) y_externModel - 1,
+        (double) z_externModel - 1,
         conc_h5,
         loadSink_scheme_id, // load scheme (0) not applicable, (1) discrete or (2) continuous
         0,0,0,0,0,0         // field to specify the number of times it has been used aleady

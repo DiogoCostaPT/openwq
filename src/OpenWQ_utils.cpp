@@ -259,3 +259,55 @@ bool OpenWQ_utils::GetTimeStampsFromLogFile(
     return foundTimeStmps;
     
 }
+
+// Read JSON array element and return -1 if "all"
+bool OpenWQ_utils::Convert2NegativeOneIfAll_inputInt(
+    OpenWQ_wqconfig & OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output,
+    std::string errMsg_LofFileIdentifier,
+    json json_array,
+    int index_of_json_array,
+    int & returnValue){
+
+    // Valid entry
+    bool validEntryFlag = false;
+    std::string msg_string;
+
+    try{
+        // try entry as double
+        returnValue = json_array.at(index_of_json_array);
+        validEntryFlag = true;
+    }catch(...){
+
+        try{
+            // try as string for the cases where entry is "all"
+            std::string entryVal = json_array.at(index_of_json_array);
+            // Check if "all" entry
+            if (entryVal.compare("ALL")==0){
+                returnValue = -1.0f;
+                validEntryFlag = true;
+            }
+        }catch(...){
+            validEntryFlag = false;
+        }
+    }
+
+    // Warning message if needed
+    if(!validEntryFlag){
+
+        msg_string = 
+            "<OpenWQ> WARNING:'" 
+                + errMsg_LofFileIdentifier 
+                + " (entry skipped).";
+
+        // Print it (Console and/or Log file)
+        OpenWQ_output.ConsoleLog(
+            OpenWQ_wqconfig,    // for Log file name
+            msg_string,         // message
+            true,               // print in console
+            true);              // print in log file
+    }
+
+    return validEntryFlag;
+
+}

@@ -63,6 +63,14 @@ class OpenWQ_utils{
         std::vector<std::string>& timeStamps_vec,
         std::string errMsg_LofFileIdentifier); 
 
+    bool Convert2NegativeOneIfAll_inputInt(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
+        std::string errMsg_LofFileIdentifier,
+        json json_array,
+        int index_of_json_array,
+        int & returnValue);
+
 };
 
 #endif
