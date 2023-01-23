@@ -267,7 +267,8 @@ bool OpenWQ_utils::Convert2NegativeOneIfAll_inputInt(
     std::string errMsg_LofFileIdentifier,
     json json_array,
     int index_of_json_array,
-    int & returnValue){
+    int & returnValue,
+    int nDomain){
 
     // Valid entry
     bool validEntryFlag = false;
@@ -286,7 +287,11 @@ bool OpenWQ_utils::Convert2NegativeOneIfAll_inputInt(
             if (entryVal.compare("ALL")==0){
                 returnValue = -1.0f;
                 validEntryFlag = true;
-            }
+            }else if (entryVal.compare("END")==0){
+                returnValue = nDomain;
+                validEntryFlag = true;       
+            }else {validEntryFlag = false;}
+            
         }catch(...){
             validEntryFlag = false;
         }

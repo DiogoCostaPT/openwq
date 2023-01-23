@@ -1132,6 +1132,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     double external_waterFluxName_id;
     std::string chemname;
     arma::mat xyzEWF_h5;
+    arma::mat domain_EWF_h5;
     arma::mat dataEWF_h5;
     std::vector<double> unit_multiplers;  // multiplers (numerator and denominator)
     std::vector<std::string> tSamp_valid; // save valid time stamps
@@ -1157,32 +1158,6 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
 
     // Get interface between openwq models
     interaction_interface_json = EWF_SS_json_sub["INTERACTION_INTERFACE"];
-
-    // Check if entries of INTERACTION_INTERFACE are valid
-    // Return if not a valid interface
-    // Error messages are provided insie Convert2NegativeOneIfAll_inputInt()
-    // x
-    index_i = 0;
-    msg_string = "EWF Invalid 'INTERACTION_INTERFACE' array element" 
-                + std::to_string(index_i) 
-                + "for HDF5. It only accepts integers or 'all'";
-    validEntryFlag = OpenWQ_utils.Convert2NegativeOneIfAll_inputInt(
-        OpenWQ_wqconfig, OpenWQ_output, msg_string,
-        interaction_interface_json, index_i, x_interface);
-    if (!validEntryFlag) return;
-    // y
-    index_i = 1;
-    validEntryFlag = OpenWQ_utils.Convert2NegativeOneIfAll_inputInt(
-        OpenWQ_wqconfig, OpenWQ_output, msg_string,
-        interaction_interface_json, index_i, y_interface);
-    if (!validEntryFlag) return;
-    // z
-    index_i = 2;
-    validEntryFlag = OpenWQ_utils.Convert2NegativeOneIfAll_inputInt(
-        OpenWQ_wqconfig, OpenWQ_output, msg_string,
-        interaction_interface_json, index_i, z_interface);
-    if (!validEntryFlag) return;
-    
     
     // replace "/" by "|" is needed because "/" is not compatible with directory full paths
     it = (int) ewf_h5_units_file.find("/");
@@ -1281,11 +1256,45 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         ewf_filenamePath.append(ewf_h5_units_file); // units
         ewf_filenamePath.append("-main.h5"); 
 
-        // Get x,y,z elements in h5 ic data
+        // Get x,y,z elements in h5 ewf data
         xyzEWF_h5
             .load(arma::hdf5_name(
                 ewf_filenamePath,          // file name
                 "xyz_elements"));          // options
+
+        // Get domain nx, ny, nz from the h5 ewf data
+        domain_EWF_h5
+            .load(arma::hdf5_name(
+                ewf_filenamePath,          // file name
+                "xyz_elements_total"));          // options
+
+        // Check if entries of INTERACTION_INTERFACE are valid
+        // Return if not a valid interface
+        // Error messages are provided insie Convert2NegativeOneIfAll_inputInt()
+        // x
+        index_i = 0;
+        msg_string = "EWF Invalid 'INTERACTION_INTERFACE' array element" 
+                    + std::to_string(index_i) 
+                    + "for HDF5. It only accepts integers or 'all'";
+        validEntryFlag = OpenWQ_utils.Convert2NegativeOneIfAll_inputInt(
+            OpenWQ_wqconfig, OpenWQ_output, msg_string,
+            interaction_interface_json, index_i, x_interface, 
+            domain_EWF_h5(0,0));    // nx
+        if (!validEntryFlag) return;
+        // y
+        index_i = 1;
+        validEntryFlag = OpenWQ_utils.Convert2NegativeOneIfAll_inputInt(
+            OpenWQ_wqconfig, OpenWQ_output, msg_string,
+            interaction_interface_json, index_i, y_interface,
+            domain_EWF_h5(0,1));    // ny
+        if (!validEntryFlag) return;
+        // z
+        index_i = 2;
+        validEntryFlag = OpenWQ_utils.Convert2NegativeOneIfAll_inputInt(
+            OpenWQ_wqconfig, OpenWQ_output, msg_string,
+            interaction_interface_json, index_i, z_interface,  
+            domain_EWF_h5(0,2));    // nz
+        if (!validEntryFlag) return;
 
         // xyzEWF_h5 is empty, 
         // it means that the h5 file requested was not found

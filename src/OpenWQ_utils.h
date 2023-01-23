@@ -69,7 +69,8 @@ class OpenWQ_utils{
         std::string errMsg_LofFileIdentifier,
         json json_array,
         int index_of_json_array,
-        int & returnValue);
+        int & returnValue,
+        int nDomain);
 
 };
 
