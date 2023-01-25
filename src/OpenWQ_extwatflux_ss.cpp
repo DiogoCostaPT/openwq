@@ -71,7 +71,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
                     [std::to_string(ssf+1)]
                     [std::to_string(ssi+1)]
                     ["DATA_FORMAT"];
-            }catch(...){}
+            }catch(...){continue;}
 
             /* ########
             // Call appropriate function depending on data format
@@ -1140,11 +1140,13 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     arma::vec row_data_col;                     // new row data (initially as col data)
     int x_externModel, y_externModel, z_externModel;
     int x_interface, y_interface, z_interface;
+    int nx_interface, ny_interface, nz_interface;
     std::string ss_cmp_recipient_name;
-    bool foundTimeStmps;                 // flag to record (un)success in finding timestamps
     json interaction_interface_json;
-    bool validEntryFlag;
     int index_i;
+    bool validEntryFlag;
+    bool foundTimeStmps;                 // flag to record (un)success in finding timestamps
+    bool h5_entry_found;
    
     // h5 IC folder path
     ewf_h5_folderPath = EWF_SS_json_sub["FOLDERPATH"];
@@ -1262,6 +1264,29 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                 ewf_filenamePath,          // file name
                 "xyz_elements"));          // options
 
+        // xyzEWF_h5 is empty, 
+        // it means that the h5 file requested was not found
+        if(xyzEWF_h5.is_empty()){
+
+            // Throw warning and skip
+            msg_string = 
+                "<OpenWQ> WARNNING "
+                + inputType
+                + " h5 file requested="
+                + ewf_filenamePath
+                + " was not found. Revise the json inputs and "
+                "corresponding h5 files (entry skipped).";
+
+            // Print it (Console and/or Log file)
+            OpenWQ_output.ConsoleLog(
+                OpenWQ_wqconfig,    // for Log file name
+                msg_string,         // message
+                true,               // print in console
+                true);              // print in log file
+
+            continue;
+        }
+
         // Get domain nx, ny, nz from the h5 ewf data
         domain_EWF_h5
             .load(arma::hdf5_name(
@@ -1296,29 +1321,6 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
             domain_EWF_h5(0,2));    // nz
         if (!validEntryFlag) return;
 
-        // xyzEWF_h5 is empty, 
-        // it means that the h5 file requested was not found
-        if(xyzEWF_h5.is_empty()){
-
-            // Throw warning and skip
-            msg_string = 
-                "<OpenWQ> WARNNING "
-                + inputType
-                + " h5 file requested="
-                + ewf_filenamePath
-                + " was not found. Revise the json inputs and "
-                "corresponding h5 files (entry skipped).";
-
-            // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
-
-            continue;
-        }
-
         // Get valid timestamps
         for (long unsigned int tSamp=0;tSamp<tSamp_valid.size();tSamp++){
 
@@ -1332,40 +1334,88 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
             tSamp_valid_i_time_t = OpenWQ_units.convertTime_str2time_t(
                 tSamp_valid[tSamp]);
 
-            for (int rowi=0;rowi<(int)xyzEWF_h5.n_rows;rowi++){
+            // Loop through the interface elements
+            // Through warning message if elements are not found in the ewf h5 file
+            // First, get the number of elements in all directions
+            if(x_interface==-1) nx_interface=domain_EWF_h5(0,0);
+            else nx_interface=x_interface;
+            if(y_interface==-1) ny_interface=domain_EWF_h5(0,1);
+            else ny_interface=y_interface;
+            if(z_interface==-1) nz_interface=domain_EWF_h5(0,2);
+            else nz_interface=z_interface;
 
-                // Get element x,y,z indexes of external model
-                // Using convention of external model
-                // Needs to be converted into local openwq implementation
-                x_externModel = xyzEWF_h5(rowi, 0);
-                y_externModel = xyzEWF_h5(rowi, 1);
-                z_externModel = xyzEWF_h5(rowi, 2);
+            // Search loop
+            for (int x_intrf=0;x_intrf<nx_interface;x_intrf++){
+                for (int y_intrf=0;y_intrf<ny_interface;y_intrf++){
+                    for (int z_intrf=0;z_intrf<nz_interface;z_intrf++){
 
-                // Save ewf conc data if at the interface
-                if ((x_externModel == x_interface || x_interface == -1)
-                    && (y_externModel == y_interface || y_interface == -1)
-                    && (z_externModel == z_interface || z_interface == -1)){
-                    
-                    // Extract H5 row to row_data_col
-                    // Unit conversion performed inside this function
-                    row_data_col = ConvertH5row2ArmaVec(
-                        OpenWQ_units,
-                        unit_multiplers,
-                        tSamp_valid_i_time_t,
-                        external_waterFluxName_id,
-                        x_externModel, 
-                        y_externModel, 
-                        z_externModel,
-                        dataEWF_h5, 
-                        rowi,
-                        chemi);
+                        h5_entry_found = false;
+                        
+                        // Seach for interface element entry row by row
+                        for (int rowi=0;rowi<(int)xyzEWF_h5.n_rows;rowi++){
 
-                    // Add new row to SinkSource_FORC or ExtFlux_FORC
-                    AppendRow_SS_EWF_FORC(
-                        OpenWQ_wqconfig,
-                        inputType,
-                        row_data_col);
+                            // Get element x,y,z indexes of external model
+                            // Using convention of external model
+                            // Needs to be converted into local openwq implementation
+                            x_externModel = xyzEWF_h5(rowi, 0);
+                            y_externModel = xyzEWF_h5(rowi, 1);
+                            z_externModel = xyzEWF_h5(rowi, 2);
 
+                            // Save ewf conc data if at the interface
+                            if ((x_externModel == x_intrf + 1)
+                                && (y_externModel == y_intrf + 1)
+                                && (z_externModel == z_intrf + 1)){
+                                
+                                // Extract H5 row to row_data_col
+                                // Unit conversion performed inside this function
+                                row_data_col = ConvertH5row2ArmaVec(
+                                    OpenWQ_units,
+                                    unit_multiplers,
+                                    tSamp_valid_i_time_t,
+                                    external_waterFluxName_id,
+                                    x_externModel, 
+                                    y_externModel, 
+                                    z_externModel,
+                                    dataEWF_h5, 
+                                    rowi,
+                                    chemi);
+
+                                // Add new row to SinkSource_FORC or ExtFlux_FORC
+                                AppendRow_SS_EWF_FORC(
+                                    OpenWQ_wqconfig,
+                                    inputType,
+                                    row_data_col);
+
+                                h5_entry_found = true;
+                                break;
+                            }
+                        }
+
+                         // Through warning message if the interface element 
+                        // is not available in the ewf h5 file
+                        if (h5_entry_found==false){
+
+                            // Throw warning and skip
+                            msg_string = 
+                                "<OpenWQ> WARNNING "
+                                + inputType
+                                + " h5 file requested="
+                                + ewf_filenamePath
+                                + " has been found, but it does not contain the interface element ("
+                                + std::to_string(x_intrf) + ","
+                                + std::to_string(y_intrf) + ","
+                                + std::to_string(z_intrf) + "). Make sure to load an EWF h5 file that has all the"
+                                " interface elements. This element has been defaulted to zero (entry skipped).";
+
+                            // Print it (Console and/or Log file)
+                            OpenWQ_output.ConsoleLog(
+                                OpenWQ_wqconfig,    // for Log file name
+                                msg_string,         // message
+                                true,               // print in console
+                                true);              // print in log file
+
+                        }
+                    }
                 }
             }
         }
@@ -2342,7 +2392,6 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
     // Local variables
     arma::vec row_data_col;              // new row data (initially as col data)
     double conc_h5;
-    double ix_h5, iy_h5, iz_h5;
     std::tm* timeStructure_tm;           // time stucture
     // Because this is EWF only
     double sourcSink_type_id = 0.0f; // 0=source (see ExtFlux_FORC structure)

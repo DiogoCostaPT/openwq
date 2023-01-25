@@ -551,7 +551,8 @@ int OpenWQ_output::writeHDF5(
             cells2print_xyzElements_total
                 .save(arma::hdf5_name(
                     filename,
-                    internal_database_name));                  // no append (to clean old file if existant)
+                    internal_database_name,
+                    arma::hdf5_opts::append));                  // no append (to clean old file if existant)
 
         }
     }
