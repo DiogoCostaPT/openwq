@@ -176,6 +176,10 @@ class OpenWQ_wqconfig
 
     size_t num_coldata;
 
+    // General JSON key null error
+    std::string jsonKeyNull_msg_start = "<OpenWQ> Execution ABORTED!\nExpected json value for key=";
+    std::string jsonKeyNull_msg_end = " but not found! Revise the JSON files.";
+    
     // Master file location
     std::string OpenWQ_masterjson;
 

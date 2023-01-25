@@ -30,13 +30,18 @@ void OpenWQ_readjson::read_all(
     OpenWQ_output& OpenWQ_output)
 {
 
+    // Local
+    std::string input_filepath;
+    json jsonMaster_SubStruct;
+    std::string errorMsgIdentifier;
+
     /* ################################################
     // Read JSON files
     // Master, Config, ExtWatFlux, and SinkSource
     ################################################ */
 
     // ########################
-    // Maste file (read)
+    // Master file (read)
     OpenWQ_readjson::read_JSON_2class(
         OpenWQ_wqconfig,
         OpenWQ_output,
@@ -46,8 +51,21 @@ void OpenWQ_readjson::read_all(
         "",                                 // if above true, provide name of subfield
         OpenWQ_wqconfig.OpenWQ_masterjson); // Name of JSON file
 
+    // Get json substructure
+    errorMsgIdentifier = "Master file";
+    jsonMaster_SubStruct = OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Master, "OPENWQ_INPUT",
+        errorMsgIdentifier);
+
     // ########################
     // Main confirguration json (read)
+    errorMsgIdentifier = "Master file inside OPENWQ_INPUT";
+    input_filepath = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        jsonMaster_SubStruct, "CONFIG_FILEPATH",
+        errorMsgIdentifier);
+
     OpenWQ_readjson::read_JSON_2class(
         OpenWQ_wqconfig,
         OpenWQ_output,
@@ -55,13 +73,33 @@ void OpenWQ_readjson::read_all(
         OpenWQ_json.Config,
         false,
         "",
-        OpenWQ_json.Master["OPENWQ_INPUT"]["CONFIG_FILEPATH"]);
+        input_filepath);
 
     // ########################
     // External fluxes json (read)
-    unsigned int num_eff = OpenWQ_json.Master["OPENWQ_INPUT"]["EXTERNAL_WATER_FLUXES"].size();
+    // if not found, throw message and abort
+    OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        jsonMaster_SubStruct, "EXTERNAL_WATER_FLUXES",
+        errorMsgIdentifier);
+    unsigned int num_eff = jsonMaster_SubStruct["EXTERNAL_WATER_FLUXES"].size();
+
+    errorMsgIdentifier = "Master file inside OPENWQ_INPUT > EXTERNAL_WATER_FLUXES";
     for (unsigned int eff = 0; eff < num_eff; eff++)
-    {
+    {   
+        
+        // Check if row eff field exists
+        OpenWQ_utils.RequestJsonKeyVal_json(
+            OpenWQ_wqconfig, OpenWQ_output,
+            jsonMaster_SubStruct["EXTERNAL_WATER_FLUXES"], std::to_string(eff + 1),
+            errorMsgIdentifier);
+
+        // Check if row eff field exists
+       input_filepath = OpenWQ_utils.RequestJsonKeyVal_json(
+            OpenWQ_wqconfig, OpenWQ_output,
+            jsonMaster_SubStruct["EXTERNAL_WATER_FLUXES"][std::to_string(eff + 1)],"FILEPATH",
+            errorMsgIdentifier);
+
         OpenWQ_readjson::read_JSON_2class(
             OpenWQ_wqconfig,
             OpenWQ_output,
@@ -69,14 +107,34 @@ void OpenWQ_readjson::read_all(
             OpenWQ_json.ExtWatFlux,
             true,
             std::to_string(eff + 1),
-            OpenWQ_json.Master["OPENWQ_INPUT"]["EXTERNAL_WATER_FLUXES"][std::to_string(eff + 1)]["FILEPATH"]);
+            input_filepath);
     }
 
     // ########################
     // SinkSource json (read)
-    unsigned int num_ssf = OpenWQ_json.Master["OPENWQ_INPUT"]["SINK_SOURCE"].size();
+    // if not found, throw message and abort
+    errorMsgIdentifier = "Master file inside OPENWQ_INPUT";
+    OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        jsonMaster_SubStruct, "SINK_SOURCE",
+        errorMsgIdentifier);
+    unsigned int num_ssf = jsonMaster_SubStruct["SINK_SOURCE"].size();
+
+    errorMsgIdentifier = "Master file inside OPENWQ_INPUT > SINK_SOURCE";
     for (unsigned int ssf = 0; ssf < num_ssf; ssf++)
     {
+        // Check if row eff field exists
+        OpenWQ_utils.RequestJsonKeyVal_json(
+            OpenWQ_wqconfig, OpenWQ_output,
+            jsonMaster_SubStruct["SINK_SOURCE"], std::to_string(ssf + 1),
+            errorMsgIdentifier);
+
+        // Check if row eff field exists
+       input_filepath = OpenWQ_utils.RequestJsonKeyVal_json(
+            OpenWQ_wqconfig, OpenWQ_output,
+            jsonMaster_SubStruct["SINK_SOURCE"][std::to_string(ssf + 1)],"FILEPATH",
+            errorMsgIdentifier);
+
         OpenWQ_readjson::read_JSON_2class(
             OpenWQ_wqconfig,
             OpenWQ_output,
@@ -84,7 +142,7 @@ void OpenWQ_readjson::read_all(
             OpenWQ_json.SinkSource,
             true,
             std::to_string(ssf + 1),
-            OpenWQ_json.Master["OPENWQ_INPUT"]["SINK_SOURCE"][std::to_string(ssf + 1)]["FILEPATH"]);
+            input_filepath);
     }
 
     /* ########################
@@ -92,8 +150,29 @@ void OpenWQ_readjson::read_all(
     // MODULES
     ########################### */
 
+    errorMsgIdentifier = "Master file inside OPENWQ_INPUT";
+    // check if field MODULES exist
+    jsonMaster_SubStruct = OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Master, "MODULES",
+        errorMsgIdentifier);
+
     // ########################
     // BGC_module cycling json (read)
+
+    // check if field BIOGEOCHEMISTRY exist
+    errorMsgIdentifier = "Master file inside OPENWQ_INPUT > MODULES";
+    OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        jsonMaster_SubStruct, "BIOGEOCHEMISTRY",
+        errorMsgIdentifier);
+
+    errorMsgIdentifier = "Master file inside OPENWQ_INPUT > MODULES > BIOGEOCHEMISTRY";
+    input_filepath = OpenWQ_utils.RequestJsonKeyVal_json(
+            OpenWQ_wqconfig, OpenWQ_output,
+            jsonMaster_SubStruct["BIOGEOCHEMISTRY"],"MODULE_CONFIG_FILEPATH",
+            errorMsgIdentifier);
+
     OpenWQ_readjson::read_JSON_2class(
         OpenWQ_wqconfig,
         OpenWQ_output,
@@ -101,11 +180,25 @@ void OpenWQ_readjson::read_all(
         OpenWQ_json.BGC_module,
         false,
         "",
-        OpenWQ_json.Master["MODULES"]["BIOGEOCHEMISTRY"]["MODULE_CONFIG_FILEPATH"]);
+        input_filepath);
 
 
     // ########################
     // TE_module cycling json (read)
+
+    // check if field TRANSPORT_EROSION exist
+    errorMsgIdentifier = "Master file inside OPENWQ_INPUT > MODULES";
+    OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        jsonMaster_SubStruct, "TRANSPORT_EROSION",
+        errorMsgIdentifier);
+
+    errorMsgIdentifier = "Master file inside OPENWQ_INPUT > MODULES > TRANSPORT_EROSION";
+    input_filepath = OpenWQ_utils.RequestJsonKeyVal_json(
+            OpenWQ_wqconfig, OpenWQ_output,
+            jsonMaster_SubStruct["TRANSPORT_EROSION"],"MODULE_CONFIG_FILEPATH",
+            errorMsgIdentifier);
+
     OpenWQ_readjson::read_JSON_2class(
         OpenWQ_wqconfig,
         OpenWQ_output,
@@ -113,17 +206,18 @@ void OpenWQ_readjson::read_all(
         OpenWQ_json.TE_module,
         false,
         "",
-        OpenWQ_json.Master["MODULES"]["TRANSPORT_EROSION"]["MODULE_CONFIG_FILEPATH"]);
+        input_filepath);
 
     
     /* ################################################
     // Data Preparation
     // Process some of the openWQ config info
     ################################################ */
-    OpenWQ_readjson::SetConfigInfo(
+    OpenWQ_readjson::SetConfigInfo_driver(
         OpenWQ_json,
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
+        OpenWQ_utils,
         OpenWQ_units,
         OpenWQ_output);
 
@@ -571,123 +665,102 @@ void OpenWQ_readjson::change_JSON_value_to_upper_case(
 // ########################################
 // Extract model configuration info from JSON files
 // ########################################
-void OpenWQ_readjson::SetConfigInfo(
+void OpenWQ_readjson::SetConfigInfo_driver(
     OpenWQ_json &OpenWQ_json,
     OpenWQ_hostModelconfig & OpenWQ_hostModelconfig,
     OpenWQ_wqconfig &OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
     OpenWQ_units &OpenWQ_units,
     OpenWQ_output& OpenWQ_output){
 
-    // Local Variables
-    std::tuple<unsigned int, std::string> time_tuple;       // IC information in config file
-    std::string output_format;                              // format of output (CSV, VTK)
-    long num_chem2print;                                    // number of chemicals to print based on openWQ_OUTPUT               
-    long num_compt2print;                                   // number of compartments to print
-    long num_cells2print;                                   // iteractive number of cells to print for each compartment
-    std::vector<std::string> compt_names_vec;               // compartment names to print
-    std::string chem_name2print;                            // iteractive chem name from openWQ_OUTPUT
-    std::string chem_namelist;                              // iteractive chem name from BGC list
-    std::string CompName_icmp;                              // iteractive compartment name from list
-    std::string compt_name2print;                           // iteractive compartment name to print
-    std::string cells_input;                                // interactive string for cells input for each compartment
-    arma::mat cells2print_cmpt;                             // cumulative vector with all cells to print for each compartment
-    arma::mat cells2print_row(1,3,arma::fill::zeros);       // iteractive vector with cell x, y and z indexes
-    bool noValPrintRequest_flag;                            // flag to through message if no valid compartments/cells have been selected for printing
-    int ix_json;                                            // iteractive ix info for COMPARTMENTS_AND_CELLS cell data 
-    int iy_json;                                            // iteractive iy info for COMPARTMENTS_AND_CELLS cell data  
-    int iz_json;                                            // iteractive iz info for COMPARTMENTS_AND_CELLS cell data  
-    int nx;                                                 // interactive nx inforationfor each compartment
-    int ny;                                                 // interactive ny inforationfor each compartment
-    int nz;                                                 // interactive nz inforationfor each compartment
-    int spX_min, spX_max, spY_min, spY_max, spZ_min, spZ_max; // range of ix, iy, iz of cells to print (if selected "all")
-    std::vector<int>::iterator it;                          // iteractor for flagging if compartment i has been selected for printing
-    std::vector<double> unit_multiplers;                    // multiplers (numerator and denominator)
-    bool volume_unit_flag;                                  // flag to note if denominator is a volume (needed for calculation of concentration in output)
-    std::string num_cores_input;                            // input of threads info as string
-    bool threads_input_err_flag = false;                    // flag for error in threads input (initiate a false, no error)
-    std::string msg_string;                                 // error/warning message string
+    // Set metadata
+    SetConfigInfo_meta(
+        OpenWQ_json, OpenWQ_wqconfig,OpenWQ_output);
+
+    // Set computation settings
+    SetConfigInfo_compute(
+        OpenWQ_json, OpenWQ_wqconfig,OpenWQ_output);
+
+    // Set computation settings
+    SetConfigInfo_hostmodel(
+        OpenWQ_hostModelconfig);
+
+    // Set chem module settings
+    SetConfigInfo_chemModule(
+        OpenWQ_json, OpenWQ_wqconfig, OpenWQ_utils, OpenWQ_output);
+
+    // Set TE module settings
+    SetConfigInfo_TEModule(
+        OpenWQ_json, OpenWQ_hostModelconfig, OpenWQ_wqconfig, 
+        OpenWQ_utils, OpenWQ_output);
+
+    // Set output options
+    SetConfigInfo_output_driver(
+        OpenWQ_json, OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig, OpenWQ_utils,
+        OpenWQ_units, OpenWQ_output);
+
+
+}
+
+// Set metadata
+void OpenWQ_readjson::SetConfigInfo_meta(
+    OpenWQ_json &OpenWQ_json,
+    OpenWQ_wqconfig &OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output){
     
-    // ########################################
-    // Log file
-    // ########################################
-
-    // Create Log file name with full or relative path
-     OpenWQ_wqconfig.LogFile_name_fullpath =  OpenWQ_wqconfig.LogFile_name;
-    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0,"/");
-     OpenWQ_wqconfig.LogFile_name_fullpath.insert(0,
-        OpenWQ_json.Master["OPENWQ_OUTPUT"]["FORMAT"]);
-    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0,"/");
-    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0,
-        OpenWQ_json.Master["OPENWQ_OUTPUT"]["RESULTS_FOLDERPATH"]);
-
-    // Create log file
-    std::ofstream outfile (OpenWQ_wqconfig.LogFile_name_fullpath);
-
-    // ###############
-    // Write header in log file
-
-    // Separator
-    msg_string.clear();
-    msg_string = "\n ############################## \n";
-    OpenWQ_output.ConsoleLog(
-        OpenWQ_wqconfig,    // for Log file name
-        msg_string, // message
-        false,              // print in console
-        true);              // print in log file
+    // Local variables
+    std::string msg_string;
 
     // PROJECT_NAME
     msg_string.clear();
     msg_string = "PROJECT_NAME: ";
-    msg_string.append(OpenWQ_json.Master["PROJECT_NAME"]);
-    OpenWQ_output.ConsoleLog(
-        OpenWQ_wqconfig,    // for Log file name
-        msg_string, // message
-        false,              // print in console
-        true);              // print in log file
+    try{ msg_string.append(OpenWQ_json.Master["PROJECT_NAME"]);
+    }catch(...){ msg_string.append("unkown (not provided in Master file)");};
+    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string,false, true);
 
     // GEOGRAPHICAL_LOCATION
     msg_string.clear();
     msg_string = "GEOGRAPHICAL_LOCATION: ";
-    msg_string.append(OpenWQ_json.Master["GEOGRAPHICAL_LOCATION"]);
-    OpenWQ_output.ConsoleLog(
-        OpenWQ_wqconfig,    // for Log file name
-        msg_string, // message
-        false,              // print in console
-        true);              // print in log file
+    try{ msg_string.append(OpenWQ_json.Master["GEOGRAPHICAL_LOCATION"]);
+    }catch(...){ msg_string.append("unkown (not provided in Master file)");};
+    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string,false, true);
     
     // AUTHORS
     msg_string.clear();
     msg_string = "AUTHORS: ";
-    msg_string.append(OpenWQ_json.Master["AUTHORS"]);
-    OpenWQ_output.ConsoleLog(
-        OpenWQ_wqconfig,    // for Log file name
-        msg_string, // message
-        false,              // print in console
-        true);              // print in log file
+    try{ msg_string.append(OpenWQ_json.Master["AUTHORS"]);
+    }catch(...){ msg_string.append("unkown (not provided in Master file)");};
+    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string,false, true);
 
     // DATE
     msg_string.clear();
     msg_string = "DATE: ";
-    msg_string.append(OpenWQ_json.Master["DATE"]);
-    OpenWQ_output.ConsoleLog(
-        OpenWQ_wqconfig,    // for Log file name
-        msg_string, // message
-        false,              // print in console
-        true);              // print in log file
+    try{ msg_string.append(OpenWQ_json.Master["DATE"]);
+    }catch(...){ msg_string.append("unkown (not provided in Master file)");};
+    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string,false, true);
 
     // Separator
     msg_string.clear();
     msg_string = "\n ##############################\n ";
-    OpenWQ_output.ConsoleLog(
-        OpenWQ_wqconfig,    // for Log file name
-        msg_string, // message
-        false,              // print in console
-        true);              // print in log file
+    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string,false, true);
 
+}
 
-    // ########################################
-    // COMPUTATION SETTINGS
-    // ########################################
+// Set computation options
+void OpenWQ_readjson::SetConfigInfo_compute(
+    OpenWQ_json &OpenWQ_json,
+    OpenWQ_wqconfig &OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output){
+    
+    // Local variables
+    std::string num_cores_input;                            // input of threads info as string
+    bool threads_input_err_flag = false;                    // flag for error in threads input (initiate a false, no error)
+    std::string msg_string;             // error/warning message string
+
+    // Run model: check if DEBUG model has been requested
+    // The model will print all the derivatives
+    OpenWQ_wqconfig.debug_mode = OpenWQ_json.Master["COMPUTATIONAL_SETTINGS"]["RUN_MODE_DEBUG"];
 
     // Get number of threads in the system
     OpenWQ_wqconfig.num_threads_system = sysconf(_SC_NPROCESSORS_ONLN);
@@ -729,13 +802,7 @@ void OpenWQ_readjson::SetConfigInfo(
                  "<OpenWQ> ERROR: Unrecognized input for COMPUTATIONAL_SETTINGS > USE_NUM_THREADS: "
                 + num_cores_input
                 + "(Only allowed \"all\" or integer).";
-
-            // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
+            OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string,false, true);
 
             // Abort 
             exit (EXIT_FAILURE);
@@ -752,14 +819,8 @@ void OpenWQ_readjson::SetConfigInfo(
             + std::to_string(OpenWQ_wqconfig.num_threads_system)
             + ") is lower than requested ("
             + std::to_string(OpenWQ_wqconfig.num_threads_requested)
-            + "). All system threads have been engaged.";
-
-        // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+            + "). All system threads available have been engaged.";
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string,false, true);
         
         // Overwrite OpenWQ_wqconfig.num_threads_requested to max number in the system
         OpenWQ_wqconfig.num_threads_requested = OpenWQ_wqconfig.num_threads_system;
@@ -770,19 +831,15 @@ void OpenWQ_readjson::SetConfigInfo(
         msg_string = 
             "<OpenWQ> INFO: Number of threads requested and used: " 
             + std::to_string(OpenWQ_wqconfig.num_threads_requested);
-
-        // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string,false, true);
 
     }
-    
-    // ########################################
-    // HOST MODEL
-    // ########################################
+
+}
+
+// Set input data and options
+void OpenWQ_readjson::SetConfigInfo_hostmodel(
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig){
 
     // Number of hydrological compartments, EWF or dependency variables in host model
     OpenWQ_hostModelconfig.num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); 
@@ -805,17 +862,99 @@ void OpenWQ_readjson::SetConfigInfo(
         OpenWQ_hostModelconfig.depend_names.push_back(
             std::get<1>(
                 OpenWQ_hostModelconfig.HydroDepend[depi]));}
-    
-    // ###########################################
-    // MODULES
-    // ###########################################
 
-    // ###########################
-    // TRANSPORT / INTERNAL MOBILIZATION / INTERNAL EROSION
-    // Mobilization of immobile species (turning them into suspended)
+}
+
+
+// Set chem info
+void OpenWQ_readjson::SetConfigInfo_chemModule(
+    OpenWQ_json &OpenWQ_json,
+    OpenWQ_wqconfig &OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
+    OpenWQ_output& OpenWQ_output){
+    
+    // Local variables
+    std::string BGC_method_local;
 
     // Get method
-    std::string TE_method_local = (OpenWQ_json.Master["MODULES"]["TRANSPORT_EROSION"]["MODULE_NAME"]);
+    BGC_method_local = (OpenWQ_json.Master["MODULES"]["BIOGEOCHEMISTRY"]["MODULE_NAME"]);
+    (OpenWQ_wqconfig.BGC_module).append(BGC_method_local);
+
+    // Load information fo the method
+    // Native module
+    if ((OpenWQ_wqconfig.BGC_module).compare("OPENWQ_NATIVE_BGC") == 0){
+    
+        // Get number of chemical species from BGC_json
+        (OpenWQ_wqconfig.BGC_general_num_chem) = OpenWQ_json.BGC_module
+            ["CHEMICAL_SPECIES"]["LIST"].size();
+
+        // Get mobile species 
+        // reset index to start on zero
+        std::vector<unsigned int> mobile_species_local = 
+            OpenWQ_json.BGC_module["CHEMICAL_SPECIES"]["BGC_GENERAL_MOBILE_SPECIES"];
+
+        for (unsigned int chemi = 0; chemi < mobile_species_local.size(); chemi++){
+        
+            OpenWQ_wqconfig.BGC_general_mobile_species.push_back(mobile_species_local[chemi] - 1);
+
+        }
+
+        // Get chemical species list from BGC_json
+        for (unsigned int chemi = 0; chemi < (OpenWQ_wqconfig.BGC_general_num_chem); chemi++)
+        {
+            (OpenWQ_wqconfig.BGC_general_chem_species_list).push_back(OpenWQ_json.BGC_module
+                ["CHEMICAL_SPECIES"]["LIST"][std::to_string(chemi + 1)]);
+        }
+    }
+
+}
+
+// Set module options
+void OpenWQ_readjson::SetConfigInfo_TEModule(
+    OpenWQ_json &OpenWQ_json,
+    OpenWQ_hostModelconfig & OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig &OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
+    OpenWQ_output& OpenWQ_output){
+    
+    // Local variables
+    std::string errorMsgIdentifier;
+    std::string msg_string;
+    std::string TE_method_local;    // module name
+    unsigned int num_entries;
+    // Strings for inputs
+    std::string input_direction;    // user input
+    std::string input_upper_compartment;    // user input
+    std::string input_lower_compartment;    // user input
+    double input_k_val;                     // user input
+    // iteractive variables
+    std::string icmp_i_name;
+    unsigned int input_direction_index;
+    unsigned int input_upper_compartment_index;
+    unsigned int input_lower_compartment_index;
+    bool input_upper_compartment_index_exist;
+    bool input_lower_compartment_index_exist;
+
+    // check if field MODULES exist
+    errorMsgIdentifier = "Master file";
+    OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Master, "MODULES",
+        errorMsgIdentifier);
+
+    // check if field MODULES > TRANSPORT_EROSION exist
+    errorMsgIdentifier = "Master file in MODULES";
+    OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Master["MODULES"], "TRANSPORT_EROSION",
+        errorMsgIdentifier);
+
+    // Get TRANSPORT_EROSION module name
+    errorMsgIdentifier = "Master file in MODULES > TRANSPORT_EROSION";
+    TE_method_local = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Master["MODULES"]["TRANSPORT_EROSION"], "MODULE_NAME",
+        errorMsgIdentifier);
     (OpenWQ_wqconfig.TE_module).append(TE_method_local);
 
     // Load information fo the method
@@ -823,30 +962,22 @@ void OpenWQ_readjson::SetConfigInfo(
         || (OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_ADVP") == 0 
         || (OpenWQ_wqconfig.TE_module).compare("OPENWQ_NATIVE_TE_NO_ADVDISP") == 0){
         
-        // Get Erodibility coeficients for native IntMob function 
+        // Check if requested module exists: OpenWQ_wqconfig.TE_module
+        errorMsgIdentifier = "Master file in MODULES > TRANSPORT_EROSION > " + OpenWQ_wqconfig.TE_module;
+        OpenWQ_utils.RequestJsonKeyVal_json(
+            OpenWQ_wqconfig, OpenWQ_output,
+            OpenWQ_json.Master["MODULES"]["TRANSPORT_EROSION"], OpenWQ_wqconfig.TE_module,
+            errorMsgIdentifier);
+
+        // Get Erodibility coeficients for native IntMob function
         std::vector<double> K_Erodib_K_local = OpenWQ_json.TE_module["INTMOB_CONFIGURATION"]["K_VAL"];
         OpenWQ_wqconfig.OpenWQ_TE_native_IntMob_Erodib_K.insert( OpenWQ_wqconfig.OpenWQ_TE_native_IntMob_Erodib_K.end(), K_Erodib_K_local.begin(), K_Erodib_K_local.end());
     
         // Get info for BoundMix function
         // Get number of entries
-        unsigned int num_entries = OpenWQ_json.TE_module["BOUNDMIX_CONFIGURATION"].size();
-
+        num_entries = OpenWQ_json.TE_module["BOUNDMIX_CONFIGURATION"].size();
 
         for (unsigned int entry_i = 0; entry_i < num_entries; entry_i++){
-
-            // Strings for inputs
-            std::string input_direction;    // user input
-            std::string input_upper_compartment;    // user input
-            std::string input_lower_compartment;    // user input
-            double input_k_val;                     // user input
-
-            // iteractive variables
-            std::string icmp_i_name;
-            unsigned int input_direction_index;
-            unsigned int input_upper_compartment_index;
-            unsigned int input_lower_compartment_index;
-            bool input_upper_compartment_index_exist;
-            bool input_lower_compartment_index_exist;
 
             // Get entries
             input_direction = OpenWQ_json.TE_module["BOUNDMIX_CONFIGURATION"][std::to_string(entry_i + 1)]["DIRECTION"];
@@ -935,48 +1066,104 @@ void OpenWQ_readjson::SetConfigInfo(
 
         }
     }
-
-
-    // #############################
-    // CHEMISTRY
-
-    // Get method
-    std::string BGC_method_local = (OpenWQ_json.Master["MODULES"]["BIOGEOCHEMISTRY"]["MODULE_NAME"]);
-    (OpenWQ_wqconfig.BGC_module).append(BGC_method_local);
-
-    // Load information fo the method
-    // Native module
-    if ((OpenWQ_wqconfig.BGC_module).compare("OPENWQ_NATIVE_BGC") == 0){
     
-        // Get number of chemical species from BGC_json
-        (OpenWQ_wqconfig.BGC_general_num_chem) = OpenWQ_json.BGC_module
-            ["CHEMICAL_SPECIES"]["LIST"].size();
+}
 
-        // Get mobile species 
-        // reset index to start on zero
-        std::vector<unsigned int> mobile_species_local = 
-            OpenWQ_json.BGC_module["CHEMICAL_SPECIES"]["BGC_GENERAL_MOBILE_SPECIES"];
+// Set output options
+void OpenWQ_readjson::SetConfigInfo_output_driver(
+    OpenWQ_json &OpenWQ_json,
+    OpenWQ_hostModelconfig & OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig &OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
+    OpenWQ_units &OpenWQ_units,
+    OpenWQ_output& OpenWQ_output){
 
-        for (unsigned int chemi = 0; chemi < mobile_species_local.size(); chemi++){
-        
-            OpenWQ_wqconfig.BGC_general_mobile_species.push_back(mobile_species_local[chemi] - 1);
+    // Set logFile
+    SetConfigInfo_output_logFile(
+        OpenWQ_json, OpenWQ_wqconfig, OpenWQ_utils, OpenWQ_output);
 
-        }
+    // Set options and unit conversions
+    SetConfigInfo_output_options(
+        OpenWQ_json, OpenWQ_wqconfig, OpenWQ_utils, OpenWQ_units,
+        OpenWQ_output);
 
-        // Get chemical species list from BGC_json
-        for (unsigned int chemi = 0; chemi < (OpenWQ_wqconfig.BGC_general_num_chem); chemi++)
-        {
-            (OpenWQ_wqconfig.BGC_general_chem_species_list).push_back(OpenWQ_json.BGC_module
-                ["CHEMICAL_SPECIES"]["LIST"][std::to_string(chemi + 1)]);
-        }
-    }
+    // Get compartments and chemicals to print
+    SetConfigInfo_output_what2print(OpenWQ_json,
+        OpenWQ_hostModelconfig, OpenWQ_wqconfig, OpenWQ_utils,
+        OpenWQ_units,  OpenWQ_output);
     
+}
+
+// Set up logFile
+void OpenWQ_readjson::SetConfigInfo_output_logFile(
+    OpenWQ_json &OpenWQ_json,
+    OpenWQ_wqconfig &OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
+    OpenWQ_output& OpenWQ_output){
+
+    // Local variables
+    std::string errorMsgIdentifier;
+    std::string output_format;
+    std::string output_folder;
+    std::string msg_string;
+
+    // Check if OPENWQ_OUTPUT field exists
+    errorMsgIdentifier = "Master file";
+    OpenWQ_utils.RequestJsonKeyVal_json(
+            OpenWQ_wqconfig, OpenWQ_output,
+            OpenWQ_json.Master, "OPENWQ_OUTPUT",
+            errorMsgIdentifier);
+
+    errorMsgIdentifier = "Master file > OPENWQ_OUTPUT";
+    output_format = OpenWQ_utils.RequestJsonKeyVal_str(
+            OpenWQ_wqconfig, OpenWQ_output,
+            OpenWQ_json.Master["OPENWQ_OUTPUT"],"FORMAT",
+            errorMsgIdentifier);
+
+    output_folder = OpenWQ_utils.RequestJsonKeyVal_str(
+            OpenWQ_wqconfig, OpenWQ_output,
+            OpenWQ_json.Master["OPENWQ_OUTPUT"],"RESULTS_FOLDERPATH",
+            errorMsgIdentifier);
+
+    // Create Log file name with full or relative path
+    OpenWQ_wqconfig.LogFile_name_fullpath =  OpenWQ_wqconfig.LogFile_name;
+    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0,"/");
+    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0, output_format);
+    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0,"/");
+    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0, output_folder);
+
+    // Create log file
+    std::ofstream outfile (OpenWQ_wqconfig.LogFile_name_fullpath);
+
+    // ###############
+    // Write header in log file
+
+    // Separator
+    msg_string.clear();
+    msg_string = "\n ############################## \n";
+    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, false, true); 
+
+}
+
+// Set output options
+void OpenWQ_readjson::SetConfigInfo_output_options(
+    OpenWQ_json &OpenWQ_json,
+    OpenWQ_wqconfig &OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
+    OpenWQ_units &OpenWQ_units,
+    OpenWQ_output& OpenWQ_output){
     
-    
-    // ########################################
-    // Set Output options
-    // ########################################
-    
+    // Local variables
+    std::string output_format;                              // format of output (CSV, VTK)
+    std::string output_folder;
+    std::tuple<unsigned int, std::string> time_tuple;       // IC information in config file
+    std::vector<std::string> units;                         // units (numerator and denominator)
+    std::vector<double> unit_multiplers;                    // multiplers (numerator and denominator)
+    bool volume_unit_flag;                                  // flag to note if denominator is a volume (needed for calculation of concentration in output)
+    std::string num_cores_input;                            // input of threads info as string
+    std::string msg_string;                                 // error/warning message string
+    std::string errorMsgIdentifier;
+
     // Output folder
     OpenWQ_wqconfig.output_dir = OpenWQ_json.Master
         ["OPENWQ_OUTPUT"]
@@ -991,14 +1178,9 @@ void OpenWQ_readjson::SetConfigInfo(
     OpenWQ_wqconfig.noWaterConc = OpenWQ_json.Master
         ["OPENWQ_OUTPUT"]
         ["NO_WATER_CONC_FLAG"];
-
-    // Run model: check if DEBUG model has been requested
-    // The model will print all the derivatives
-    OpenWQ_wqconfig.debug_mode = OpenWQ_json.Master["COMPUTATIONAL_SETTINGS"]["RUN_MODE_DEBUG"];
     
      // Convert time units from host model units to seconds (OpenWQ time units)
     // 1) Calculate unit multiplers
-    std::vector<std::string> units;                         // units (numerator and denominator)
     volume_unit_flag = OpenWQ_units.Calc_Unit_Multipliers(
                 OpenWQ_wqconfig,
                 OpenWQ_output,
@@ -1035,16 +1217,6 @@ void OpenWQ_readjson::SetConfigInfo(
         OpenWQ_readjson::check_mkdir_openWQ(
             OpenWQ_wqconfig.output_dir);
 
-    // VTK format
-    //}else if (output_format.compare("VTU") == 0){
-    //
-    //    OpenWQ_wqconfig.output_type = 1;
-    //
-        // create dir if needed
-    //    OpenWQ_wqconfig.output_dir.append("/VTU");
-    //    OpenWQ_readjson::check_mkdir_openWQ(
-    //        OpenWQ_wqconfig.output_dir);
-
     // HDF5 format
     }else if (output_format.compare("HDF5") == 0){
 
@@ -1056,18 +1228,11 @@ void OpenWQ_readjson::SetConfigInfo(
             OpenWQ_wqconfig.output_dir); 
 
     } else {
-        
         // Create Message (Error Message)
         msg_string = 
             "<OpenWQ> ERROR: Output type unkown: " 
             + output_format;
-
-        // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, false, true); 
     }
 
     // ########################################
@@ -1078,7 +1243,6 @@ void OpenWQ_readjson::SetConfigInfo(
     (OpenWQ_wqconfig.timetep_out) = std::get<0>(time_tuple);       // Get value
     (OpenWQ_wqconfig.timestep_out_unit) = std::get<1>(time_tuple); // Get units
 
-    
     // Convert time units from host model units to seconds (OpenWQ time units)
     // 1) Calculate unit multiplers
     units.clear();                           // units (numerator and denominator)
@@ -1097,7 +1261,42 @@ void OpenWQ_readjson::SetConfigInfo(
         OpenWQ_wqconfig.timetep_out,    // value passed by reference so that it can be changed
         unit_multiplers);               // units
 
-    // ########################################
+}
+
+// Set what to print
+void OpenWQ_readjson::SetConfigInfo_output_what2print(
+    OpenWQ_json &OpenWQ_json,
+    OpenWQ_hostModelconfig & OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig &OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
+    OpenWQ_units &OpenWQ_units,
+    OpenWQ_output& OpenWQ_output){
+    
+    // Local variables
+    int nx;                                                 // interactive nx inforationfor each compartment
+    int ny;                                                 // interactive ny inforationfor each compartment
+    int nz;                                                 // interactive nz inforationfor each compartment
+    int ix_json;                                            // iteractive ix info for COMPARTMENTS_AND_CELLS cell data 
+    int iy_json;                                            // iteractive iy info for COMPARTMENTS_AND_CELLS cell data  
+    int iz_json;                                            // iteractive iz info for COMPARTMENTS_AND_CELLS cell data  
+    int spX_min, spX_max, spY_min, spY_max, spZ_min, spZ_max; // range of ix, iy, iz of cells to print (if selected "all")
+
+    long num_compt2print;                                   // number of compartments to print
+    std::string chem_name2print;                            // iteractive chem name from openWQ_OUTPUT
+    std::string chem_namelist;                              // iteractive chem name from BGC list
+    long num_chem2print;                                    // number of chemicals to print based on openWQ_OUTPUT               
+    long num_cells2print;                                   // iteractive number of cells to print for each compartment
+    std::vector<std::string> compt_names_vec;               // compartment names to print
+    
+    std::string CompName_icmp;                              // iteractive compartment name from list
+    std::string compt_name2print;                           // iteractive compartment name to print
+    std::string cells_input;                                // interactive string for cells input for each compartment
+    arma::mat cells2print_cmpt;                             // cumulative vector with all cells to print for each compartment
+    arma::mat cells2print_row(1,3,arma::fill::zeros);       // iteractive vector with cell x, y and z indexes
+    bool noValPrintRequest_flag;                            // flag to through message if no valid compartments/cells have been selected for printing
+    std::vector<int>::iterator it;                          // iteractor for flagging if compartment i has been selected for printing
+    std::string msg_string;
+
     // Chemicals to print
     // num of chem to print
     num_chem2print = OpenWQ_json.Master
@@ -1484,6 +1683,7 @@ void OpenWQ_readjson::SetConfigInfo(
     }
 
 }
+
 
 // Check if directory exists and create it
 void OpenWQ_readjson::check_mkdir_openWQ(

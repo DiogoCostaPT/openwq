@@ -29,8 +29,7 @@ class OpenWQ_utils{
 
     // Get number of lines in file
     unsigned int getNumLinesfromASCIIFile(
-        std::string ascii_FilePath // path to file
-    );
+        std::string ascii_FilePath); // path to file
 
     // Split string into vector of strings based on string-delimiter
     std::vector<std::string> StringSplit (
@@ -71,6 +70,34 @@ class OpenWQ_utils{
         int index_of_json_array,
         int & returnValue,
         int nDomain);
+
+    std::string RequestJsonKeyVal_str(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
+        json json_struct,
+        std::string jsonKey,
+        std::string msgIndetifier);
+
+    int RequestJsonKeyVal_int(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
+        json json_struct,
+        std::string jsonKey,
+        std::string msgIndetifier);
+
+    json RequestJsonKeyVal_json(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
+        json json_struct,
+        std::string jsonKey,
+        std::string msgIndetifier);
+
+    void RequestJsonKeyVal_errorAbort(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
+        std::string jsonKey,
+        std::string msgIndetifier,
+        std::string varType);
 
 };
 

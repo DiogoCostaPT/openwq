@@ -78,10 +78,66 @@ class OpenWQ_readjson{
         json &object,
         std::string new_jsonkey_layer_1);
 
-    void SetConfigInfo(
+    void SetConfigInfo_driver(
         OpenWQ_json &OpenWQ_json,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
+        OpenWQ_units &OpenWQ_units,
+        OpenWQ_output& OpenWQ_output);
+
+    void SetConfigInfo_meta(
+        OpenWQ_json &OpenWQ_json,
+        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output);
+
+    void SetConfigInfo_compute(
+        OpenWQ_json &OpenWQ_json,
+        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output);
+
+    void SetConfigInfo_hostmodel(
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig);
+
+    void SetConfigInfo_chemModule(
+        OpenWQ_json &OpenWQ_json,
+        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
+        OpenWQ_output& OpenWQ_output);
+
+    void SetConfigInfo_TEModule(
+        OpenWQ_json &OpenWQ_json,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
+        OpenWQ_output& OpenWQ_output);
+
+    void SetConfigInfo_output_driver(
+        OpenWQ_json &OpenWQ_json,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
+        OpenWQ_units &OpenWQ_units,
+        OpenWQ_output& OpenWQ_output);
+
+    void SetConfigInfo_output_logFile(
+        OpenWQ_json &OpenWQ_json,
+        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
+        OpenWQ_output& OpenWQ_output);
+
+    void SetConfigInfo_output_options(
+        OpenWQ_json &OpenWQ_json,
+        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
+        OpenWQ_units &OpenWQ_units,
+        OpenWQ_output& OpenWQ_output);
+
+    void SetConfigInfo_output_what2print(
+        OpenWQ_json &OpenWQ_json,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
         OpenWQ_units &OpenWQ_units,
         OpenWQ_output& OpenWQ_output);
 

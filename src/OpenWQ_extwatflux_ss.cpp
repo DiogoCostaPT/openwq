@@ -172,11 +172,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     unsigned long cmpi_ssi;                     // model index for compartment Compartment_name_name
     unsigned long chem_ssi;                     // model index for compartment Compartment_name_name
     unsigned long sinksource_ssi;               // = 0 (source), = 1 (sink)
-
     unsigned int num_rowdata;                   // number of rows of data in JSON (YYYY, MM, DD, HH,...)
-    
     std::string Type;                           // from JSON filec (only used in SS)
-
     std::string ascii_FilePath;                 // additional information for ASCII data input
     std::string ascii_delimiter;                // additional information for ASCII data input
     unsigned int ascii_numHeaderRows;           // additional information for ASCII data input
@@ -188,8 +185,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     std::vector<std::string> ASCIIRowElemEntry; // vector with header keys
     std::vector<std::string> headerKeys;        // vector with header keys
     std::string headerWord;                     // interactive header words
-
     std::string elemName;                       // temporary element name
+    json EWF_SS_json_sub_rowi;                  // json row of json-substructure EWF_SS_json_sub 
     int YYYY_json;                              // Year in JSON-sink_source (interactive)
     int MM_json;                                // Month in JSON-sink_source (interactive)
     int DD_json;                                // Day in JSON-sink_source (interactive)
@@ -199,16 +196,13 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     int ix_json;                                // iteractive ix info for sink-source row data 
     int iy_json;                                // iteractive iy info for sink-source row data 
     int iz_json;                                // iteractive iz info for sink-source row data
-
     double ss_data_json;                        // data (sink or source) from row data
     std::string ss_units_json;                  // units of row data
     std::vector<double> unit_multiplers;        // multiplers (numerator and denominator)
-   
     arma::vec row_data_col;                     // new row data (initially as col data)
-
     std::string msg_string;                     // error/warning message string
+    std::string errorMsgIdentifier;             // error message section identifier
     bool validEntryFlag;                        // valid entry flag to skip problematic row data
-
     std::string loadScheme_str;                 // Load scheme string: (1) discrete or (2) continuous
     double loadScheme_id;                       // Load scheme id number: (1) discrete or (2) continuous
     std::string contDt_str;                     // time units of continuous load
@@ -236,13 +230,20 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     // Get chemical name and compartment/external-flux name 
     // if SS, then get also SS_type (source or sink)
     ###########*/
-
-    Chemical_name = EWF_SS_json_sub["CHEMICAL_NAME"]; // chemical name
+    errorMsgIdentifier = inputType + " json block";
+    Chemical_name = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        EWF_SS_json_sub, "CHEMICAL_NAME",
+        errorMsgIdentifier);
             
     // Type (sink or source) (only used in SS)
     if (inputType.compare("ss")==0) {
-        Type = EWF_SS_json_sub["TYPE"];}
-    else if (inputType.compare("ewf")==0){
+        errorMsgIdentifier = inputType + " json block";
+        Type = OpenWQ_utils.RequestJsonKeyVal_str(
+            OpenWQ_wqconfig, OpenWQ_output,
+            EWF_SS_json_sub, "TYPE",
+            errorMsgIdentifier);
+    }else if (inputType.compare("ewf")==0){
         Type = "SOURCE";}
 
     /* ########
@@ -261,7 +262,11 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
         chem_ssi);
 
     // Get Units
-    ss_units_json = EWF_SS_json_sub ["UNITS"]; 
+    errorMsgIdentifier = inputType + " json block";
+    ss_units_json= OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        EWF_SS_json_sub, "UNITS",
+        errorMsgIdentifier);
 
     if (foundflag == false) return; // skip if chem not found
 
@@ -293,15 +298,41 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     // Get additional info for ASCII
     if (DataFormat.compare("ASCII")==0){
 
+        // Check if substructure DATA exists
+        errorMsgIdentifier = inputType + " json block with DataFormat=" + DataFormat;
+        OpenWQ_utils.RequestJsonKeyVal_json(
+            OpenWQ_wqconfig, OpenWQ_output,
+            EWF_SS_json_sub, "DATA",
+            errorMsgIdentifier);
+
         try{
+
+            // Error msg identifier in case json key not found
+            errorMsgIdentifier = inputType + " json block 'DATA' with DataFormat=" + DataFormat;
+
             // file path
-            ascii_FilePath = EWF_SS_json_sub["DATA"]["FILEPATH"];
+            ascii_FilePath = OpenWQ_utils.RequestJsonKeyVal_str(
+                OpenWQ_wqconfig, OpenWQ_output,
+                EWF_SS_json_sub["DATA"], "FILEPATH",
+                errorMsgIdentifier);
+
             // delimiter
-            ascii_delimiter = EWF_SS_json_sub["DATA"]["DELIMITER"];
+            ascii_delimiter = OpenWQ_utils.RequestJsonKeyVal_str(
+                OpenWQ_wqconfig, OpenWQ_output,
+                EWF_SS_json_sub["DATA"], "DELIMITER",
+                errorMsgIdentifier);
+
             // number of header rows
-            ascii_numHeaderRows = EWF_SS_json_sub["DATA"]["NUMBER_OF_HEADER_ROWS"];
+            ascii_numHeaderRows = OpenWQ_utils.RequestJsonKeyVal_int(
+                OpenWQ_wqconfig, OpenWQ_output,
+                EWF_SS_json_sub["DATA"], "NUMBER_OF_HEADER_ROWS",
+                errorMsgIdentifier);            
+
             // position of key header
-            ascii_headerKeyRow = EWF_SS_json_sub["DATA"]["HEADER_KEY_ROW"];
+            ascii_headerKeyRow = OpenWQ_utils.RequestJsonKeyVal_int(
+                OpenWQ_wqconfig, OpenWQ_output,
+                EWF_SS_json_sub["DATA"], "HEADER_KEY_ROW",
+                errorMsgIdentifier);  
 
             // Get number of rows in ASCII file
             num_rowdata = OpenWQ_utils.getNumLinesfromASCIIFile(ascii_FilePath)
@@ -369,17 +400,34 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     // If JSON
     }else if (DataFormat.compare("JSON")==0){
         // Get number of rows of data in JSON (YYYY, MM, DD, HH,...)
+        errorMsgIdentifier = inputType + " json block 'DATA' with DataFormat=" + DataFormat;
+        // check if field exists, return if not with error message
+        OpenWQ_utils.RequestJsonKeyVal_json(
+            OpenWQ_wqconfig, OpenWQ_output,
+            EWF_SS_json_sub, "DATA",
+            errorMsgIdentifier);
+        // get number of rows
         num_rowdata = EWF_SS_json_sub["DATA"].size();
     }
 
     /* ########################################
-        // Loop over row data in sink-source file
+    // Loop over row data in sink-source file
     ######################################## */
 
     for (unsigned int di=0;di<num_rowdata;di++){
         
         // Reset the size to zero (the object will have no elements)
         row_data_col.reset(); 
+
+        // Get row-json di from EWF_SS_json_sub ["DATA"]
+        // Abort if not found
+        errorMsgIdentifier = inputType + " json block 'DATA', row " 
+                            + std::to_string(di) + " with DataFormat=" 
+                            + DataFormat;
+        EWF_SS_json_sub_rowi = OpenWQ_utils.RequestJsonKeyVal_json(
+            OpenWQ_wqconfig, OpenWQ_output,
+            EWF_SS_json_sub["DATA"], std::to_string(di+1),
+            errorMsgIdentifier);
 
         // If DataFormat=ASCII, then get row data 
         // and convert-to-upper-case and split it by element entry
@@ -399,8 +447,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             int entryVal = 0; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub 
-                ["DATA"][std::to_string(di+1)].at(0);}
+                entryVal = EWF_SS_json_sub_rowi.at(0);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = std::stoi(ASCIIRowElemEntry[ 
@@ -414,8 +461,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             std::string entryVal = ""; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(0);}
+                entryVal = EWF_SS_json_sub_rowi.at(0);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = ASCIIRowElemEntry[ 
@@ -443,8 +489,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             int entryVal = 0; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(1);}
+                entryVal = EWF_SS_json_sub_rowi.at(1);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = std::stoi(ASCIIRowElemEntry[ 
@@ -458,8 +503,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             std::string entryVal = ""; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(1);}
+                entryVal = EWF_SS_json_sub_rowi.at(1);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = ASCIIRowElemEntry[ 
@@ -488,8 +532,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             int entryVal = 0; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(2);}
+                entryVal = EWF_SS_json_sub_rowi.at(2);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = std::stoi(ASCIIRowElemEntry[ 
@@ -503,8 +546,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             std::string entryVal = ""; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(2);}
+                entryVal = EWF_SS_json_sub_rowi.at(2);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = ASCIIRowElemEntry[ 
@@ -533,8 +575,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             int entryVal = 0; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(3);}
+                entryVal = EWF_SS_json_sub_rowi.at(3);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = std::stoi(ASCIIRowElemEntry[ 
@@ -548,8 +589,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             std::string entryVal = ""; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(3);}
+                entryVal = EWF_SS_json_sub_rowi.at(3);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = ASCIIRowElemEntry[ 
@@ -578,8 +618,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             int entryVal = 0; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(4);}
+                entryVal = EWF_SS_json_sub_rowi.at(4);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = std::stoi(ASCIIRowElemEntry[ 
@@ -593,8 +632,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             std::string entryVal = ""; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(4);}
+                entryVal = EWF_SS_json_sub_rowi.at(4);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = ASCIIRowElemEntry[ 
@@ -623,8 +661,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             int entryVal = 0; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(5);}
+                entryVal = EWF_SS_json_sub_rowi.at(5);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = std::stoi(ASCIIRowElemEntry[ 
@@ -638,8 +675,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             std::string entryVal = ""; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(5);}
+                entryVal = EWF_SS_json_sub_rowi.at(5);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = ASCIIRowElemEntry[ 
@@ -670,8 +706,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             int entryVal = 0; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(6);}
+                entryVal = EWF_SS_json_sub_rowi.at(6);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = std::stoi(ASCIIRowElemEntry[ 
@@ -710,8 +745,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             std::string entryVal = ""; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(6);}
+                entryVal = EWF_SS_json_sub_rowi.at(6);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = ASCIIRowElemEntry[ 
@@ -740,8 +774,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             int entryVal = 0; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(7);}
+                entryVal = EWF_SS_json_sub_rowi.at(7);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = std::stoi(ASCIIRowElemEntry[ 
@@ -780,8 +813,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             std::string entryVal = ""; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(7);}
+                entryVal = EWF_SS_json_sub_rowi.at(7);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = ASCIIRowElemEntry[ 
@@ -810,8 +842,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             int entryVal = 0; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(8);}
+                entryVal = EWF_SS_json_sub_rowi.at(8);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = std::stoi(ASCIIRowElemEntry[ 
@@ -850,8 +881,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             std::string entryVal = ""; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(8);}
+                entryVal = EWF_SS_json_sub_rowi.at(8);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = ASCIIRowElemEntry[ 
@@ -878,8 +908,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
         double entryVal = 0.0f; // dummy variable
         // if JSON
         if (DataFormat.compare("JSON")==0){
-            entryVal = EWF_SS_json_sub
-            ["DATA"][std::to_string(di+1)].at(9);}
+            entryVal = EWF_SS_json_sub_rowi.at(9);}
         // if ASCII
         else if (DataFormat.compare("ASCII")==0){
             entryVal = std::stod(ASCIIRowElemEntry[ 
@@ -919,8 +948,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             std::string entryVal = ""; // dummy variable
             // if JSON
             if (DataFormat.compare("JSON")==0){
-                entryVal = EWF_SS_json_sub
-                ["DATA"][std::to_string(di+1)].at(10);}
+                entryVal = EWF_SS_json_sub_rowi.at(10);}
             // if ASCII
             else if (DataFormat.compare("ASCII")==0){
                 entryVal = ASCIIRowElemEntry[ 
@@ -963,8 +991,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                         std::string entryVal = ""; // dummy variable
                         // if JSON
                         if (DataFormat.compare("JSON")==0){
-                            entryVal = EWF_SS_json_sub
-                            ["DATA"][std::to_string(di+1)].at(11);}
+                            entryVal = EWF_SS_json_sub_rowi.at(11);}
                         // if ASCII
                         else if (DataFormat.compare("ASCII")==0){
                             entryVal = ASCIIRowElemEntry[ 
@@ -1147,19 +1174,35 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     bool validEntryFlag;
     bool foundTimeStmps;                 // flag to record (un)success in finding timestamps
     bool h5_entry_found;
+    std::string errorMsgIdentifier;
    
+    errorMsgIdentifier = inputType + " json block with DataFormat=HDF5" ;
+
     // h5 IC folder path
-    ewf_h5_folderPath = EWF_SS_json_sub["FOLDERPATH"];
+    ewf_h5_folderPath = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        EWF_SS_json_sub, "FOLDERPATH",
+        errorMsgIdentifier);
     
     // h5 ic units
-    ewf_h5_units = EWF_SS_json_sub["UNITS"];
+    ewf_h5_units = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        EWF_SS_json_sub, "UNITS",
+        errorMsgIdentifier);
+
     ewf_h5_units_file = ewf_h5_units;
 
     // get external compartment name (needed for both ss and ewf)
-    external_compartName = EWF_SS_json_sub["EXTERNAL_COMPARTMENT_NAME"];
+    external_compartName = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        EWF_SS_json_sub, "EXTERNAL_COMPARTMENT_NAME",
+        errorMsgIdentifier);
 
     // Get interface between openwq models
-    interaction_interface_json = EWF_SS_json_sub["INTERACTION_INTERFACE"];
+    interaction_interface_json = OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        EWF_SS_json_sub, "INTERACTION_INTERFACE",
+        errorMsgIdentifier);
     
     // replace "/" by "|" is needed because "/" is not compatible with directory full paths
     it = (int) ewf_h5_units_file.find("/");
@@ -1178,46 +1221,28 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                             // to native (true) or 
                             // from native to desired output units (false)
 
-    // Try to find the key EXTERNAL_INPUTFLUX_NAME entry
-    try{
+    // Get external flux name
+    errorMsgIdentifier = inputType + " json block with DataFormat=HDF5" ;
+    external_waterFluxName = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        EWF_SS_json_sub, "EXTERNAL_INPUTFLUX_NAME",
+        errorMsgIdentifier);
 
-        // get external flux name
-        external_waterFluxName = EWF_SS_json_sub["EXTERNAL_INPUTFLUX_NAME"];
+    // Get corresponding id
+    external_waterFluxName_id = 
+        (double)OpenWQ_utils.FindStrIndexInVectStr(
+            OpenWQ_hostModelconfig.ewf_names,
+            external_waterFluxName);
 
-        // get corresponding id
-        external_waterFluxName_id = 
-            (double)OpenWQ_utils.FindStrIndexInVectStr(
-                OpenWQ_hostModelconfig.ewf_names,
-                external_waterFluxName);
-
-        // if not found in internal list of EWF, then
-        // throw warning msg and skip entry
-        if(external_waterFluxName_id==-1.0f){
-
-            // If key not found, throw warning and skip
-            msg_string = 
-                "<OpenWQ> WARNNING SS json key EXTERNAL_INPUTFLUX_NAME= "
-                + external_waterFluxName
-                + " not valid for this host-model coupling (entry ignored).";
-
-            // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
-
-            return;
-        }
-        
-
-    }catch(...){
+    // If external compartment not found in internal list of EWF, then
+    // throw warning msg and skip entry
+    if(external_waterFluxName_id==-1.0f){
 
         // If key not found, throw warning and skip
         msg_string = 
-            "<OpenWQ> WARNNING json key 'EXTERNAL_COMPARTMENT_NAME' is needed "
-            "for EWF requests when using HDF5 input. This is needed to identify the file name"
-            "Check all your EWF json files and try again (entry skipped).";
+            "<OpenWQ> WARNNING SS json key EXTERNAL_INPUTFLUX_NAME= "
+            + external_waterFluxName
+            + " not valid for this host-model coupling (entry ignored).";
 
         // Print it (Console and/or Log file)
         OpenWQ_output.ConsoleLog(
