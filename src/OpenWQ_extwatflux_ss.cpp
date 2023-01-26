@@ -117,11 +117,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
                         "ASCII format (entry skipped).";
 
                     // Print it (Console and/or Log file)
-                    OpenWQ_output.ConsoleLog(
-                        OpenWQ_wqconfig,    // for Log file name
-                        msg_string,         // message
-                        true,               // print in console
-                        true);              // print in log file
+                    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true); 
 
                 }
 
@@ -136,11 +132,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
                     + "(entry skipped)";
 
                 // Print it (Console and/or Log file)
-                OpenWQ_output.ConsoleLog(
-                    OpenWQ_wqconfig,    // for Log file name
-                    msg_string,         // message
-                    true,               // print in console
-                    true);              // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true); 
 
             }
         }
@@ -1396,9 +1388,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                                     unit_multiplers,
                                     tSamp_valid_i_time_t,
                                     external_waterFluxName_id,
-                                    x_externModel, 
-                                    y_externModel, 
-                                    z_externModel,
+                                    x_externModel, y_externModel,z_externModel,
                                     dataEWF_h5, 
                                     rowi,
                                     chemi);
