@@ -385,6 +385,40 @@ int OpenWQ_utils::RequestJsonKeyVal_int(
 
 }
 
+// Read JSON keyVal with type: Int
+double OpenWQ_utils::RequestJsonKeyVal_double(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output,
+    json json_struct,
+    std::string jsonKey,
+    std::string msgIndetifier){
+
+    // Local variables
+    double jsonVal_double;
+    std::string varType = "integer";
+
+    try{
+
+        // Try to access json key
+        jsonVal_double = json_struct[jsonKey]; 
+
+    }catch(...){
+
+        // Abort and through error message
+        RequestJsonKeyVal_errorAbort(
+            OpenWQ_wqconfig, 
+            OpenWQ_output,
+            jsonKey,
+            msgIndetifier,
+            varType);
+        
+    } 
+
+    // If jsonVal found, return it
+    return jsonVal_double;
+
+}
+
 // Read JSON keyVal with type: json
 json OpenWQ_utils::RequestJsonKeyVal_json(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
@@ -410,7 +444,7 @@ json OpenWQ_utils::RequestJsonKeyVal_json(
             jsonKey,
             msgIndetifier,
             varType);
-            
+
     }
 
     // If jsonVal found, return it
@@ -439,12 +473,25 @@ void OpenWQ_utils::RequestJsonKeyVal_errorAbort(
                     + "\n####################";
 
     // Print in console and logFile
-    OpenWQ_output.ConsoleLog(
-        OpenWQ_wqconfig,
-        jsonKeyNull_msg, 
-        true,true); 
+    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, jsonKeyNull_msg, true,true); 
     
     // Abort program
     exit(EXIT_FAILURE);
+
+}
+
+// Check if directory exists and create it
+void OpenWQ_utils::check_mkdir(
+    std::string &dirname){
+    
+    struct stat st = {0};
+    
+    // convert to *char
+    const char *cstr = dirname.c_str();
+
+    // mkdir
+    if (stat(cstr, &st) == -1) {
+        mkdir(cstr, 0700);
+    }
 
 }

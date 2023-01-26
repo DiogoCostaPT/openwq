@@ -19,6 +19,8 @@
 #ifndef OPENWQ_UTILS_INCLUDED
 #define OPENWQ_UTILS_INCLUDED
 
+#include <sys/stat.h>
+
 #include "OpenWQ_global.h"
 #include "OpenWQ_solver.h"
 #include "OpenWQ_output.h"
@@ -85,6 +87,13 @@ class OpenWQ_utils{
         std::string jsonKey,
         std::string msgIndetifier);
 
+    double RequestJsonKeyVal_double(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_output& OpenWQ_output,
+        json json_struct,
+        std::string jsonKey,
+        std::string msgIndetifier);
+
     json RequestJsonKeyVal_json(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_output& OpenWQ_output,
@@ -98,6 +107,9 @@ class OpenWQ_utils{
         std::string jsonKey,
         std::string msgIndetifier,
         std::string varType);
+
+    void check_mkdir(
+        std::string &dirname);
 
 };
 

@@ -402,12 +402,10 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
         // Get number of rows of data in JSON (YYYY, MM, DD, HH,...)
         errorMsgIdentifier = inputType + " json block 'DATA' with DataFormat=" + DataFormat;
         // check if field exists, return if not with error message
-        OpenWQ_utils.RequestJsonKeyVal_json(
+        num_rowdata = OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             EWF_SS_json_sub, "DATA",
-            errorMsgIdentifier);
-        // get number of rows
-        num_rowdata = EWF_SS_json_sub["DATA"].size();
+            errorMsgIdentifier).size();
     }
 
     /* ########################################

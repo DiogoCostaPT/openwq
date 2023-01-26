@@ -24,7 +24,6 @@
 
 // Linux only (I think)
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <unistd.h>
 #include <vector>
 
@@ -51,7 +50,7 @@ class OpenWQ_readjson{
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units,
-        OpenWQ_utils & OpenWQ_utils,
+        OpenWQ_utils&  OpenWQ_utils,
         OpenWQ_output& OpenWQ_output);
 
     void read_JSON_2class(
@@ -64,85 +63,86 @@ class OpenWQ_readjson{
         const std::string jsonfile);            // Name of JSON file
 
     void ConvertJSONtext_2upperCase(
-        OpenWQ_utils &OpenWQ_utils,
-        json &jsondata);
+        OpenWQ_utils& OpenWQ_utils,
+        json& jsondata);
 
     void change_JSON_key_to_upper_case(
-        OpenWQ_utils &OpenWQ_utils,
-        json &object, 
+        OpenWQ_utils& OpenWQ_utils,
+        json& object, 
         const std::string& old_key,
         std::string& new_key);
 
     void change_JSON_value_to_upper_case(
-        OpenWQ_utils &OpenWQ_utils,
-        json &object,
+        OpenWQ_utils& OpenWQ_utils,
+        json& object,
         std::string new_jsonkey_layer_1);
 
     void SetConfigInfo_driver(
-        OpenWQ_json &OpenWQ_json,
+        OpenWQ_json& OpenWQ_json,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_utils& OpenWQ_utils,
-        OpenWQ_units &OpenWQ_units,
+        OpenWQ_units& OpenWQ_units,
+        OpenWQ_output& OpenWQ_output);
+
+    void SetConfigInfo_output_logFile(
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
         OpenWQ_output& OpenWQ_output);
 
     void SetConfigInfo_meta(
-        OpenWQ_json &OpenWQ_json,
-        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_output& OpenWQ_output);
 
     void SetConfigInfo_compute(
-        OpenWQ_json &OpenWQ_json,
-        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
         OpenWQ_output& OpenWQ_output);
 
     void SetConfigInfo_hostmodel(
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig);
 
     void SetConfigInfo_chemModule(
-        OpenWQ_json &OpenWQ_json,
-        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_utils& OpenWQ_utils,
         OpenWQ_output& OpenWQ_output);
 
     void SetConfigInfo_TEModule(
-        OpenWQ_json &OpenWQ_json,
+        OpenWQ_json& OpenWQ_json,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_utils& OpenWQ_utils,
         OpenWQ_output& OpenWQ_output);
 
     void SetConfigInfo_output_driver(
-        OpenWQ_json &OpenWQ_json,
+        OpenWQ_json& OpenWQ_json,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_utils& OpenWQ_utils,
-        OpenWQ_units &OpenWQ_units,
-        OpenWQ_output& OpenWQ_output);
-
-    void SetConfigInfo_output_logFile(
-        OpenWQ_json &OpenWQ_json,
-        OpenWQ_wqconfig &OpenWQ_wqconfig,
-        OpenWQ_utils& OpenWQ_utils,
+        OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output);
 
     void SetConfigInfo_output_options(
-        OpenWQ_json &OpenWQ_json,
-        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_json& OpenWQ_json,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_utils& OpenWQ_utils,
-        OpenWQ_units &OpenWQ_units,
+        OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output);
 
     void SetConfigInfo_output_what2print(
-        OpenWQ_json &OpenWQ_json,
+        OpenWQ_json& OpenWQ_json,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        OpenWQ_wqconfig &OpenWQ_wqconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_utils& OpenWQ_utils,
-        OpenWQ_units &OpenWQ_units,
+        OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output);
 
     void check_mkdir_openWQ(
-        std::string &dirname);
+        std::string& dirname);
 };
 
 #endif
