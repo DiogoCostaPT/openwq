@@ -102,7 +102,7 @@ function output_tscollect = Read_h5_save_tscollection(...
         ['Extracting requested data from OpenWQ *.h5 files for (-',...
         file_extensions_i,'): ',num2str(num_valid_info2print),' file(s)']);
 
-    parfor i = 1:num_valid_info2print
+    for i = 1:num_valid_info2print
 
         filename_i = extractElm_info_valid{i,1};
         filepath_i = [folderpath,filename_i,'.h5'];
@@ -120,7 +120,7 @@ function output_tscollect = Read_h5_save_tscollection(...
         
         % Get time samples and model elements
         timestamps = datasets(1:end-2);         % time steps
-        xyz_elements_name = datasets{end};        % z elements
+        xyz_elements_name = datasets{end-1};        % z elements
 
         % x, y, z elements
         xyz_elements_source = h5read(filepath_i,['/',xyz_elements_name]);
