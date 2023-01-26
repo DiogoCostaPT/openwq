@@ -176,6 +176,8 @@ class OpenWQ_extwatflux_ss{
     void AppendRow_SS_EWF_FORC(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         std::string inputType,
+        std::string DataFormat,
+        bool newTimeStamp,
         arma::vec row_data_col);
 
     arma::vec ConvertH5row2ArmaVec(

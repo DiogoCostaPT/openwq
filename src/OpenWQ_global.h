@@ -166,11 +166,23 @@ class OpenWQ_wqconfig
                 arma::Mat<double>>
             ( new  arma::mat(0,num_coldata));
 
-        // External fluxes forcing
+        // External fluxes forcing (JSON or ASCII datatypes)
         ExtFlux_FORC = 
             std::unique_ptr<
                 arma::Mat<double>>
             ( new  arma::mat(0,num_coldata));
+        
+        // External fluxes forcing (HDF5)
+        ExtFlux_FORC_timeStep = 
+            std::unique_ptr<
+                arma::Mat<double>>
+            ( new  arma::mat(0,num_coldata));
+
+        ExtFlux_FORC_HDF5vec = 
+            std::unique_ptr<
+                std::vector<
+                arma::Mat<double>>>
+            ( new  std::vector<arma::mat>);
 
     }
 
@@ -202,7 +214,14 @@ class OpenWQ_wqconfig
         > SinkSource_FORC;              // SS
     std::unique_ptr<            
         arma::Mat<double>
-        > ExtFlux_FORC;                 // External fluxes
+        > ExtFlux_FORC;                 // External fluxes (JSON and ASCII)
+    std::unique_ptr<            
+        arma::Mat<double>
+        > ExtFlux_FORC_timeStep;         // External fluxes HDF5 vector (one timestep)
+    std::unique_ptr<            
+        std::vector<
+        arma::Mat<double>
+        >> ExtFlux_FORC_HDF5vec;        // External fluxes HDF5 vector (all timesteps)
 
     int allSS_flag = -1;                // number to replace in SinkSource_FORC to denote "all"
     bool tstep1_flag = true;            // flag to note that it's the first time step, so need to exclude loads prior to that

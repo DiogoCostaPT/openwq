@@ -1071,6 +1071,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
         AppendRow_SS_EWF_FORC(
             OpenWQ_wqconfig,
             inputType,
+            DataFormat,
+            false,
             row_data_col);
 
     }
@@ -1124,6 +1126,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     std::string errorMsgIdentifier;
     std::vector<int> valid_interfaceH5rows;
     int rowi_val;
+    bool newTimeStamp;
    
     errorMsgIdentifier = inputType + " json block with DataFormat=HDF5" ;
 
@@ -1222,7 +1225,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi];
 
         // Throw consolde update
-        msg_string = "         " + chemname;
+        msg_string = "         " + chemname + " .";
         std::cout << msg_string << std::flush;
 
         // Generate full ic filename
@@ -1368,6 +1371,8 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
             tSamp_valid_i_time_t = OpenWQ_units.convertTime_str2time_t(
                 tSamp_valid[tSamp]);
 
+            newTimeStamp = true;
+
             // Seach for interface element entry row by row
             for (int rowi=0;rowi<(int)valid_interfaceH5rows.size();rowi++){
 
@@ -1402,14 +1407,19 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                 AppendRow_SS_EWF_FORC(
                     OpenWQ_wqconfig,
                     inputType,
+                    "HDF5",
+                    newTimeStamp,
                     row_data_col);
 
-            }
+                newTimeStamp = false;
 
+            }
+            
             // Throw a point in console to show progress
             // One point per timeStep
             std::cout << "." << std::flush;
         }
+        std::cout << "(TimeSteps processed:" + std::to_string(tSamp_valid.size()) + ")\n" << std::flush;
     }
 }
 
@@ -2325,6 +2335,8 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
 void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     std::string inputType,
+    std::string DataFormat,
+    bool newTimeStamp,          // only needed for H5 EWF
     arma::vec row_data_col){
 
     // Local variables            
@@ -2334,18 +2346,42 @@ void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC(
     // Transpose vector for adding to SinkSource_FORC as a new row
     row_data_row = row_data_col.t();
 
-    // Add new row_data_row to SinkSource_FORC   
-    if (inputType.compare("ss")==0)     int_n_elem = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows;
-    if (inputType.compare("ewf")==0)    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC).n_rows;
-    
-    if (inputType.compare("ss")==0){ 
-        (*OpenWQ_wqconfig.SinkSource_FORC).insert_rows(
-            std::max(int_n_elem-1,0),
-            row_data_row);}
-    else if (inputType.compare("ewf")==0){
-        (*OpenWQ_wqconfig.ExtFlux_FORC).insert_rows(
-            std::max(int_n_elem-1,0),
-            row_data_row);}
+    // If JSON or ASCII
+    if(DataFormat.compare("JSON")==0 || DataFormat.compare("ASCII")==0){
+        // Add new row_data_row to SinkSource_FORC   
+        if (inputType.compare("ss")==0)     int_n_elem = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows;
+        if (inputType.compare("ewf")==0)    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC).n_rows;
+        
+        if (inputType.compare("ss")==0){ 
+            (*OpenWQ_wqconfig.SinkSource_FORC).insert_rows(
+                std::max(int_n_elem-1,0),
+                row_data_row);}
+        else if (inputType.compare("ewf")==0){
+            (*OpenWQ_wqconfig.ExtFlux_FORC).insert_rows(
+                std::max(int_n_elem-1,0),
+                row_data_row);}
+    }
+    // if HDF5
+    else if(DataFormat.compare("HDF5")==0){
+
+        int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC_timeStep).n_rows;
+
+        (*OpenWQ_wqconfig.ExtFlux_FORC_timeStep).insert_rows(
+                std::max(int_n_elem-1,0),
+                row_data_row);
+
+        // if new timestep, add to vector and reset ExtFlux_FORC_timeStep
+        if (newTimeStamp==true){
+            
+            // add timestep data to vector
+            (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec).push_back(
+                *OpenWQ_wqconfig.ExtFlux_FORC_timeStep);
+
+            // Reset ExtFlux_FORC_timeStep
+            (*OpenWQ_wqconfig.ExtFlux_FORC_timeStep).reset();
+        }
+
+    }
 }
 
 // Extract H5 row to row_data_col
