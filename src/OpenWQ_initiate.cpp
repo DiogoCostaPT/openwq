@@ -169,6 +169,7 @@ void OpenWQ_initiate::readSet(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
     OpenWQ_units& OpenWQ_units,
     OpenWQ_output& OpenWQ_output){    // volume (water or soil), all calculations assume unit = m3
         
@@ -183,6 +184,7 @@ void OpenWQ_initiate::readSet(
             OpenWQ_vars,
             OpenWQ_hostModelconfig,
             OpenWQ_wqconfig,
+            OpenWQ_utils,
             OpenWQ_units,
             OpenWQ_output,
             icmp); 
@@ -199,17 +201,27 @@ void OpenWQ_initiate::setIC_driver(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
     OpenWQ_units& OpenWQ_units,
     OpenWQ_output& OpenWQ_output,
     const int icmp){
 
     // Local variables
+    std::string chemname;
     std::string ic_data_format;        // interactive data format string
     std::string msg_string;                     // error/warning message string
+    std::string errorMsgIdentifier;
 
     // Find compartment icmp name from code (host hydrological model)
     std::string CompName_icmp = std::get<1>(
         OpenWQ_hostModelconfig.HydroComp.at(icmp)); // Compartment icomp name
+
+    // Check if BIOGEOCHEMISTRY_CONFIGURATION key exists
+    errorMsgIdentifier = " Config file";
+    OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Config, "BIOGEOCHEMISTRY_CONFIGURATION",
+        errorMsgIdentifier);
 
     /* ########################################
     // Loop over chemical species
@@ -218,7 +230,7 @@ void OpenWQ_initiate::setIC_driver(
     for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){
 
         // Get chem name
-        std::string chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi]; // chemical name in BGC-json list
+        chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi]; // chemical name in BGC-json list
 
         // First default all IC chemical mass to zero, 
         // so that then we just need to change the ic entries requested
@@ -238,9 +250,9 @@ void OpenWQ_initiate::setIC_driver(
             if(ic_data_format.compare("JSON")==0){
 
                 setIC_json(OpenWQ_json,
-                    OpenWQ_vars,
-                    OpenWQ_hostModelconfig,
+                    OpenWQ_vars, OpenWQ_hostModelconfig,
                     OpenWQ_wqconfig,
+                    OpenWQ_utils,
                     OpenWQ_units,
                     OpenWQ_output,
                     icmp,
@@ -252,6 +264,7 @@ void OpenWQ_initiate::setIC_driver(
                     OpenWQ_vars,
                     OpenWQ_hostModelconfig,
                     OpenWQ_wqconfig,
+                    OpenWQ_utils,
                     OpenWQ_units,
                     OpenWQ_output,
                     icmp,
@@ -268,11 +281,7 @@ void OpenWQ_initiate::setIC_driver(
                     + "(entry skipped)";
 
                 // Print it (Console and/or Log file)
-                OpenWQ_output.ConsoleLog(
-                    OpenWQ_wqconfig,    // for Log file name
-                    msg_string,         // message
-                    true,               // print in console
-                    true);              // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                 // not a valid entry
                 continue;
@@ -291,11 +300,7 @@ void OpenWQ_initiate::setIC_driver(
                 + chemname + " (set to zero)";
 
             // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
+            OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
         }  
     }
 }
@@ -308,6 +313,7 @@ void OpenWQ_initiate::setIC_json(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
     OpenWQ_units& OpenWQ_units,
     OpenWQ_output& OpenWQ_output,
     const int icmp,
@@ -329,6 +335,7 @@ void OpenWQ_initiate::setIC_json(
     int num_icData;                             // interactive number of ic entries for each chemi within each icm
     json ic_info_i;                             // all IC info for a chemi within a icmp
     std::string msg_string;                     // error/warning message string
+    std::string errorMsgIdentifier; 
 
     // Find compartment icmp name from code (host hydrological model)
     std::string CompName_icmp = std::get<1>(
@@ -342,9 +349,36 @@ void OpenWQ_initiate::setIC_json(
     ny = std::get<3>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // num of y elements
     nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // num of z elements
 
-    ic_info_i = 
-        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
-        ["INITIAL_CONDITIONS"]["DATA"][chemname];
+    // Check if BIOGEOCHEMISTRY_CONFIGURATION key exists
+    errorMsgIdentifier = "Config file";
+    OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Config, "BIOGEOCHEMISTRY_CONFIGURATION",
+        errorMsgIdentifier);
+
+    errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION";
+    OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"], CompName_icmp,
+        errorMsgIdentifier);
+
+    errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION > " + CompName_icmp;
+    OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp], "INITIAL_CONDITIONS",
+        errorMsgIdentifier);
+
+    errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION > " + CompName_icmp + "INITIAL_CONDITIONS";
+    OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]["INITIAL_CONDITIONS"], "DATA",
+        errorMsgIdentifier);
+
+    errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION > " + CompName_icmp + "INITIAL_CONDITIONS > DATA";
+    ic_info_i = OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]["INITIAL_CONDITIONS"]["DATA"],chemname,
+        errorMsgIdentifier);
 
     num_icData = ic_info_i.size();
     
@@ -536,6 +570,7 @@ void OpenWQ_initiate::setIC_h5(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
     OpenWQ_units& OpenWQ_units,
     OpenWQ_output& OpenWQ_output,
     const int icmp,
@@ -555,6 +590,8 @@ void OpenWQ_initiate::setIC_h5(
     std::size_t it;
     arma::mat xyzIC_h5;
     arma::mat dataIC_h5;
+    std::string errorMsgIdentifier;
+    json json_ic_h5_icmp_SubStruct;
 
     // Find compartment icmp name from code (host hydrological model)
     std::string CompName_icmp = std::get<1>(
@@ -568,20 +605,43 @@ void OpenWQ_initiate::setIC_h5(
     // Get chem name
     std::string chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi]; // chemical name in BGC-json list
 
+    // Check BIOGEOCHEMISTRY_CONFIGURATION keys exists
+    errorMsgIdentifier = "Config file";
+    OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Config, "BIOGEOCHEMISTRY_CONFIGURATION",
+        errorMsgIdentifier);
+
+    errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION";
+    OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"], CompName_icmp,
+        errorMsgIdentifier);
+
+    errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION > " + CompName_icmp;
+    json_ic_h5_icmp_SubStruct = OpenWQ_utils.RequestJsonKeyVal_json(
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp], "INITIAL_CONDITIONS",
+        errorMsgIdentifier);
+
     // h5 IC folder path
-    ic_h5_folderPath = 
-        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
-        ["INITIAL_CONDITIONS"]["FOLDERPATH"];
+    errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION > " + CompName_icmp + "INITIAL_CONDITIONS";
+    ic_h5_folderPath = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        json_ic_h5_icmp_SubStruct,"FOLDERPATH",
+        errorMsgIdentifier);
 
     // h5 ic timestamp
-    ic_h5_timestamp = 
-        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
-        ["INITIAL_CONDITIONS"]["TIMESTAMP"];
+    ic_h5_timestamp = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        json_ic_h5_icmp_SubStruct ,"TIMESTAMP",
+        errorMsgIdentifier);
 
     // h5 ic units
-    ic_h5_units = 
-        OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]
-        ["INITIAL_CONDITIONS"]["UNITS"];
+    ic_h5_units = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        json_ic_h5_icmp_SubStruct ,"UNITS",
+        errorMsgIdentifier);
 
     // replace "/" by "|" is needed because "/" is not compatible with directory full paths
     it = (int) ic_h5_units.find("/");
@@ -636,11 +696,7 @@ void OpenWQ_initiate::setIC_h5(
             "compartment=" + OpenWQ_hostModelconfig.cmpt_names[icmp];
 
         // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig,msg_string,true,true);
 
         return;
     }
@@ -694,11 +750,7 @@ void OpenWQ_initiate::setIC_h5(
                 + ", iz=" + std::to_string(ic_z);
 
             // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
+             OpenWQ_output.ConsoleLog(OpenWQ_wqconfig,msg_string,true,true);
 
         }
     }

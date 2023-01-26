@@ -27,6 +27,7 @@ using json = nlohmann::json;
 #include "OpenWQ_global.h"
 #include "OpenWQ_units.h"
 #include "OpenWQ_output.h"
+#include "OpenWQ_utils.h"
 
 
 class OpenWQ_initiate{
@@ -47,6 +48,7 @@ class OpenWQ_initiate{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
         OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output);
 
@@ -56,6 +58,7 @@ class OpenWQ_initiate{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
         OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output,
         const int icmp);
@@ -65,6 +68,7 @@ class OpenWQ_initiate{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
         OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output,
         const int icmp,
@@ -75,6 +79,7 @@ class OpenWQ_initiate{
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils&nOpenWQ_utils,
         OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output,
         const int icmp,

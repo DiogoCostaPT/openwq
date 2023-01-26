@@ -193,6 +193,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
             OpenWQ_vars,
             OpenWQ_hostModelconfig,
             OpenWQ_wqconfig,
+            OpenWQ_utils,
             OpenWQ_units,
             OpenWQ_output);
 
