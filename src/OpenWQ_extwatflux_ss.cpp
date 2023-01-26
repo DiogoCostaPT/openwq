@@ -364,11 +364,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + std::to_string(ssf+1)
                     + ", Sub_structure=" + std::to_string(ssi+1);
                 // Print it (Console and/or Log file)
-                OpenWQ_output.ConsoleLog(
-                    OpenWQ_wqconfig,    // for Log file name
-                    msg_string,         // message
-                    true,               // print in console
-                    true);              // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
                 return;
             }
     
@@ -381,11 +377,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                 + std::to_string(ssf+1)
                 + ", Sub_structure=" + std::to_string(ssi+1);
             // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
+            OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
             return;
         }
         
@@ -720,11 +712,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + ", Sub_structure=" + std::to_string(ssi+1)
                     + ", Data_row=" + std::to_string(di + 1);   
 
-                OpenWQ_output.ConsoleLog(   // Print it (Console and/or Log file)
-                    OpenWQ_wqconfig,        // for Log file name
-                    msg_string,             // message
-                    true,                   // print in console
-                    true);                  // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                 continue; // skip entry
             }
@@ -788,11 +776,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + ", Sub_structure=" + std::to_string(ssi+1)
                     + ", Data_row=" + std::to_string(di + 1);   
 
-                OpenWQ_output.ConsoleLog(   // Print it (Console and/or Log file)
-                    OpenWQ_wqconfig,        // for Log file name
-                    msg_string,             // message
-                    true,                   // print in console
-                    true);                  // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                 continue; // skip entry
             }
@@ -856,11 +840,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + ", Sub_structure=" + std::to_string(ssi+1)
                     + ", Data_row=" + std::to_string(di + 1); 
 
-                OpenWQ_output.ConsoleLog(   // Print it (Console and/or Log file)
-                    OpenWQ_wqconfig,        // for Log file name
-                    msg_string,             // message
-                    true,                   // print in console
-                    true);                  // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                 continue; // skip entry
             }
@@ -917,11 +897,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + ", Sub_structure=" + std::to_string(ssi+1)
                     + ", Data_row=" + std::to_string(di + 1);  
             // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
+            OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
             validEntryFlag = false;
             if (!validEntryFlag){continue;}
         }
@@ -966,11 +942,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                             + ", Sub_structure=" + std::to_string(ssi+1)
                             + ", Data_row=" + std::to_string(di + 1);  
                     // Print it (Console and/or Log file)
-                    OpenWQ_output.ConsoleLog(
-                        OpenWQ_wqconfig,    // for Log file name
-                        msg_string,         // message
-                        true,               // print in console
-                        true);              // print in log file
+                    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                 }else if (loadScheme_str.compare("CONTINUOUS") == 0 && MM_json == -1){
                     // continuous option needs MIN = 'all' (otherwise it's discrete input)
@@ -1003,21 +975,13 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                             + ", Sub_structure=" + std::to_string(ssi+1)
                             + ", Data_row=" + std::to_string(di + 1); 
                         // Print it (Console and/or Log file)
-                        OpenWQ_output.ConsoleLog(
-                            OpenWQ_wqconfig,    // for Log file name
-                            msg_string,         // message
-                            true,               // print in console
-                            true);              // print in log file
+                        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
                         continue; // skip entry
                     }
                 }else{
 
                     // Print it (Console and/or Log file)
-                    OpenWQ_output.ConsoleLog(
-                        OpenWQ_wqconfig,    // for Log file name
-                        msg_string,         // message
-                        true,               // print in console
-                        true);              // print in log file
+                    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                     continue;
                 }
@@ -1037,11 +1001,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + ", Data_row=" + std::to_string(di + 1); 
 
                 // Print it (Console and/or Log file)
-                OpenWQ_output.ConsoleLog(
-                    OpenWQ_wqconfig,    // for Log file name
-                    msg_string,         // message
-                    true,               // print in console
-                    true);              // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
             }
 
@@ -1061,11 +1021,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + ", Data_row=" + std::to_string(di + 1); 
 
                 // Print it (Console and/or Log file)
-                OpenWQ_output.ConsoleLog(
-                    OpenWQ_wqconfig,    // for Log file name
-                    msg_string,         // message
-                    true,               // print in console
-                    true);              // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                 continue;
             }
@@ -1235,11 +1191,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
             + " not valid for this host-model coupling (entry ignored).";
 
         // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
         return;
     }
@@ -1293,11 +1245,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                 "corresponding h5 files (entry skipped).";
 
             // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
+            OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
             continue;
         }
@@ -1421,11 +1369,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                                 " interface elements. This element has been defaulted to zero (entry skipped).";
 
                             // Print it (Console and/or Log file)
-                            OpenWQ_output.ConsoleLog(
-                                OpenWQ_wqconfig,    // for Log file name
-                                msg_string,         // message
-                                true,               // print in console
-                                true);              // print in log file
+                            OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                         }
                     }
@@ -1786,11 +1730,7 @@ void OpenWQ_extwatflux_ss::Apply_Source(
             + "";
 
         // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
                         
     }
 
@@ -1856,11 +1796,7 @@ void OpenWQ_extwatflux_ss::Apply_Sink(
             + ", iz=" + std::to_string(iz);
 
         // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
     }
 }
@@ -1931,11 +1867,7 @@ void OpenWQ_extwatflux_ss::Update_EWFconc(
             + ", iz=" + std::to_string(iz);
 
         // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
     }
 }
@@ -1978,11 +1910,7 @@ bool OpenWQ_extwatflux_ss::getModIndex(
             + obj_name;
 
         // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
     }
     return foundflag;
@@ -2024,11 +1952,7 @@ bool OpenWQ_extwatflux_ss::getModIndex(
                             + ", Sub_structure=" + std::to_string(struc_i+1)
                             + ", Data_row=" + std::to_string(row_i + 1);   
 
-        OpenWQ_output.ConsoleLog(   // Print it (Console and/or Log file)
-            OpenWQ_wqconfig,        // for Log file name
-            msg_string,             // message
-            true,                   // print in console
-            true);                  // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
         validEntryFlag = false;
     }
