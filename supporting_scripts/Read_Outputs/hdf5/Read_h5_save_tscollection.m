@@ -119,7 +119,7 @@ function output_tscollect = Read_h5_save_tscollection(...
         end
         
         % Get time samples and model elements
-        timestamps = datasets(1:end-1);         % time steps
+        timestamps = datasets(1:end-2);         % time steps
         xyz_elements_name = datasets{end};        % z elements
 
         % x, y, z elements
@@ -138,7 +138,7 @@ function output_tscollect = Read_h5_save_tscollection(...
         
         % if "all", then need to change the request to actual elem,ents
         if strcmp(xyz_elements_requested,"all") 
-            xyz_elements_requested = xyz_elements_source 
+            xyz_elements_requested = xyz_elements_source;
         end
         
         % Look for cells to print

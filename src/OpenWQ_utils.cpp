@@ -267,7 +267,8 @@ bool OpenWQ_utils::Convert2NegativeOneIfAll_inputInt(
     std::string errMsg_LofFileIdentifier,
     json json_array,
     int index_of_json_array,
-    int & returnValue){
+    int & returnValue,
+    int nDomain){
 
     // Valid entry
     bool validEntryFlag = false;
@@ -286,7 +287,11 @@ bool OpenWQ_utils::Convert2NegativeOneIfAll_inputInt(
             if (entryVal.compare("ALL")==0){
                 returnValue = -1.0f;
                 validEntryFlag = true;
-            }
+            }else if (entryVal.compare("END")==0){
+                returnValue = nDomain;
+                validEntryFlag = true;       
+            }else {validEntryFlag = false;}
+            
         }catch(...){
             validEntryFlag = false;
         }
@@ -309,5 +314,184 @@ bool OpenWQ_utils::Convert2NegativeOneIfAll_inputInt(
     }
 
     return validEntryFlag;
+
+}
+
+// Read JSON keyVal with type: String
+std::string OpenWQ_utils::RequestJsonKeyVal_str(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output,
+    json json_struct,
+    std::string jsonKey,
+    std::string msgIndetifier){
+
+    // Local variables
+    std::string jsonVal_str;
+    std::string varType = "string";
+
+    try{
+
+        // Try to access json key
+        jsonVal_str = json_struct[jsonKey]; 
+
+    }catch(...){
+
+        // Abort and through error message
+        RequestJsonKeyVal_errorAbort(
+            OpenWQ_wqconfig, 
+            OpenWQ_output,
+            jsonKey,
+            msgIndetifier,
+            varType);
+        
+    } 
+
+    // If jsonVal found, return it
+    return jsonVal_str;
+
+}
+
+// Read JSON keyVal with type: Int
+int OpenWQ_utils::RequestJsonKeyVal_int(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output,
+    json json_struct,
+    std::string jsonKey,
+    std::string msgIndetifier){
+
+    // Local variables
+    int jsonVal_int;
+    std::string varType = "integer";
+
+    try{
+
+        // Try to access json key
+        jsonVal_int = json_struct[jsonKey]; 
+
+    }catch(...){
+
+        // Abort and through error message
+        RequestJsonKeyVal_errorAbort(
+            OpenWQ_wqconfig, 
+            OpenWQ_output,
+            jsonKey,
+            msgIndetifier,
+            varType);
+        
+    } 
+
+    // If jsonVal found, return it
+    return jsonVal_int;
+
+}
+
+// Read JSON keyVal with type: Int
+double OpenWQ_utils::RequestJsonKeyVal_double(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output,
+    json json_struct,
+    std::string jsonKey,
+    std::string msgIndetifier){
+
+    // Local variables
+    double jsonVal_double;
+    std::string varType = "integer";
+
+    try{
+
+        // Try to access json key
+        jsonVal_double = json_struct[jsonKey]; 
+
+    }catch(...){
+
+        // Abort and through error message
+        RequestJsonKeyVal_errorAbort(
+            OpenWQ_wqconfig, 
+            OpenWQ_output,
+            jsonKey,
+            msgIndetifier,
+            varType);
+        
+    } 
+
+    // If jsonVal found, return it
+    return jsonVal_double;
+
+}
+
+// Read JSON keyVal with type: json
+json OpenWQ_utils::RequestJsonKeyVal_json(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output,
+    json json_struct,
+    std::string jsonKey,
+    std::string msgIndetifier){
+
+    // Local variables
+    json jsonVal_json;
+    std::string varType = "json/sub-json structure";
+
+    // Try to access json key
+    jsonVal_json = json_struct[jsonKey]; 
+        
+    // If json empty,
+    // abort and through error message
+    if(jsonVal_json.empty()){
+        
+        RequestJsonKeyVal_errorAbort(
+            OpenWQ_wqconfig, 
+            OpenWQ_output,
+            jsonKey,
+            msgIndetifier,
+            varType);
+
+    }
+
+    // If jsonVal found, return it
+    return jsonVal_json;
+
+}
+
+// Abort program if JSON key not found
+void OpenWQ_utils::RequestJsonKeyVal_errorAbort(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_output& OpenWQ_output,
+    std::string jsonKey,
+    std::string msgIndetifier,
+    std::string varType){
+
+    // Local variables
+    std::string jsonKeyNull_msg;
+
+    // If results is NULL, throw error message and abort 
+    jsonKeyNull_msg = "####################\n"
+                    + OpenWQ_wqconfig.jsonKeyNull_msg_start 
+                    + jsonKey
+                    + " of type=" + varType
+                    + " at " + msgIndetifier
+                    + OpenWQ_wqconfig.jsonKeyNull_msg_end
+                    + "\n####################";
+
+    // Print in console and logFile
+    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, jsonKeyNull_msg, true,true); 
+    
+    // Abort program
+    exit(EXIT_FAILURE);
+
+}
+
+// Check if directory exists and create it
+void OpenWQ_utils::check_mkdir(
+    std::string &dirname){
+    
+    struct stat st = {0};
+    
+    // convert to *char
+    const char *cstr = dirname.c_str();
+
+    // mkdir
+    if (stat(cstr, &st) == -1) {
+        mkdir(cstr, 0700);
+    }
 
 }

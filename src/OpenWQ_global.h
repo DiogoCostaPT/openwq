@@ -176,6 +176,10 @@ class OpenWQ_wqconfig
 
     size_t num_coldata;
 
+    // General JSON key null error
+    std::string jsonKeyNull_msg_start = "<OpenWQ> Execution ABORTED!\nExpected json value for key=";
+    std::string jsonKeyNull_msg_end = " but not found! Revise the JSON files.";
+    
     // Master file location
     std::string OpenWQ_masterjson;
 
@@ -187,8 +191,9 @@ class OpenWQ_wqconfig
     std::string LogFile_name_fullpath;
     // #################################################
     // Computation settings
-    int num_threads_system;       // number of threads in the system
-    int num_threads_requested;    // number of threads requested by user
+    int num_threads_system;         // number of threads in the system
+    int num_threads_requested;      // number of threads requested by user
+    int num_threads_default = 4;    // if requested num threads is invalid, defaults to this value 
 
     // #################################################
     // Sink and Source AND External fluxes

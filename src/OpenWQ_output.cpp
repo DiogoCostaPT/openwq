@@ -466,14 +466,16 @@ int OpenWQ_output::writeHDF5(
     std::string filename;                   // iteractive output file name 
     std::string internal_database_name;     // iteractive database name
     unsigned int num_cells2print;           // iteractive number of cells to print
-    arma::mat cells2print_oneStep;          // matrix with the x,y,z combinations for printing
+    arma::mat cells2print_xyzElements;          // matrix with the x,y,z combinations for printing
                                             // it will be equatl to OpenWQ_wqconfig.cells2print_vec[icmp] + 1;
+    arma::mat cells2print_xyzElements_total(1,3); // nx, ny and nz (entire domain)
     std::vector<double> unit_multiplers;    // multipliers to convert units
     std::string units_string;               // units of output
     std::size_t it;                         // Iterator used to locate "/" symbol in units
     double water_vol_i;                    // interactive water volume for calc of concentrationsdouble water_vol_i;                 
     bool printflag;                         // flag for printing
-    
+
+
     // Get number of cells to print for compartment icmp
     num_cells2print = OpenWQ_wqconfig.cells2print_vec.at(icmp).n_rows;
     printflag = OpenWQ_wqconfig.cells2print_bool.at(icmp);
@@ -486,6 +488,11 @@ int OpenWQ_output::writeHDF5(
     // Compartment info
     CompName_icmp = std::get<1>(
         OpenWQ_hostModelconfig.HydroComp.at(icmp));  // name
+    
+    // Get compartment nx, ny, nz
+    cells2print_xyzElements_total(0,0) = std::get<2>(OpenWQ_hostModelconfig.HydroComp[icmp]);
+    cells2print_xyzElements_total(0,1) =  std::get<3>(OpenWQ_hostModelconfig.HydroComp[icmp]);
+    cells2print_xyzElements_total(0,2) =  std::get<4>(OpenWQ_hostModelconfig.HydroComp[icmp]);
 
     // num of chemicals to print
     num_chem2print = OpenWQ_wqconfig.chem2print.size();
@@ -508,8 +515,8 @@ int OpenWQ_output::writeHDF5(
 
         // Get x,y,z to print, which will be +1 to local 
         // indexes of OpenWQ_wqconfig.cells2print_vec[icmp] 
-        cells2print_oneStep = OpenWQ_wqconfig.cells2print_vec[icmp];      
-        cells2print_oneStep.for_each( [](arma::mat::elem_type& val) { val += 1.0; } );
+        cells2print_xyzElements = OpenWQ_wqconfig.cells2print_vec[icmp];      
+        cells2print_xyzElements.for_each( [](arma::mat::elem_type& val) { val += 1.0; } );
 
 
         for (unsigned int ichem=0;ichem<num_chem2print;ichem++){
@@ -532,12 +539,20 @@ int OpenWQ_output::writeHDF5(
             filename.append(".h5");
 
             // x,y,z elements
-            internal_database_name = "xyz_elements";            // name for internal HDF5 database name
-            
-            cells2print_oneStep
+            internal_database_name = "xyz_elements";      
+            cells2print_xyzElements
                 .save(arma::hdf5_name(
                     filename,
-                    internal_database_name));                  // no append (to clean old file if existant)
+                    internal_database_name)); 
+
+            // nx, ny, nz
+            // x,y,z elements
+            internal_database_name = "xyz_elements_total"; 
+            cells2print_xyzElements_total
+                .save(arma::hdf5_name(
+                    filename,
+                    internal_database_name,
+                    arma::hdf5_opts::append));                  // no append (to clean old file if existant)
 
         }
     }
