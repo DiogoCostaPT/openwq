@@ -1125,6 +1125,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     std::vector<int> valid_interfaceH5rows;
     int rowi_val;
     bool newTimeStamp;
+    int point_print_n;
    
     errorMsgIdentifier = inputType + " json block with DataFormat=HDF5" ;
 
@@ -1222,7 +1223,8 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi];
 
         // Throw consolde update
-        msg_string = "         " + chemname + " .";
+        msg_string = "         " + external_waterFluxName + " => " + chemname + " .";
+        std::string whiteSpacing(msg_string.size()-1,' ');
         std::cout << msg_string << std::flush;
 
         // Generate full ic filename
@@ -1358,6 +1360,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         // Loop over H5 timeSteps data
 
         newTimeStamp = false;
+        point_print_n = 0;
 
         for (long unsigned int tSamp=0;tSamp<tSamp_valid.size();tSamp++){
 
@@ -1418,9 +1421,15 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
 
             // Throw a point in console to show progress
             // One point per timeStep
+            point_print_n++;
+            if (point_print_n==80){
+                point_print_n=0; 
+                std::cout << "\n" + whiteSpacing << std::flush;
+            }
             std::cout << "." << std::flush;
+            
         }
-        std::cout << "(TimeSteps processed:" + std::to_string(tSamp_valid.size()) + ")\n" << std::flush;
+        std::cout << " => TimeSteps processed:" + std::to_string(tSamp_valid.size()) + ")\n" << std::flush;
     }
 }
 
