@@ -1124,7 +1124,8 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     std::string errorMsgIdentifier;         // Start/head of error message of json key not found
     std::vector<int> valid_interfaceH5rows; // vector with indexes of relevant h5 rows that contain interface data
     int rowi_val;                           // iteractive row number from valid_interfaceH5rows 
-    bool newTimeStamp;                      // bool to flag new timestep, which will save data into ExtFlux_FORC_HDF5vec_data and ExtFlux_FORC_HDF5vec_time
+    bool flag_newChem;                      // bool to flag new chem, which will create new vector row in ExtFlux_FORC_HDF5vec_data
+    bool flag_newTimeStamp;                 // bool to flag new timestep, which will save data into ExtFlux_FORC_HDF5vec_data and ExtFlux_FORC_HDF5vec_time
     int point_print_n;                      // iterative trackking of "." console prints (each timeStamp) for asthetics
    
 
@@ -1228,6 +1229,9 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
 
         // Get chem name
         chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi];
+
+        // Set flag to push_back new vector row for chemi ewf data
+        flag_newChem = true;
 
         // Throw consolde update
         msg_string = "         " + external_waterFluxName + " => " + chemname + " .";
@@ -1370,7 +1374,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         // Loop over H5 timeSteps data and save interface cells conc
         // in ExtFlux_FORC_HDF5vec_data and ExtFlux_FORC_HDF5vec_time
         // ############################
-        newTimeStamp = false;
+        flag_newTimeStamp = false;
         point_print_n = 0;
 
         for (long unsigned int tSamp=0;tSamp<tSamp_valid.size();tSamp++){
@@ -1418,15 +1422,18 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                 // into ExtFlux_FORC_HDF5vec
 
                 if (rowi==(int)valid_interfaceH5rows.size()-1){
-                     newTimeStamp = true;}
+                     flag_newTimeStamp = true;}
 
                 AppendRow_SS_EWF_FORC_h5(
                     OpenWQ_wqconfig,
-                    newTimeStamp,
+                    chemi,
+                    flag_newChem,
+                    flag_newTimeStamp,
                     tSamp_valid_i_time_t,
                     row_data_col);
 
-                newTimeStamp = false;
+                flag_newTimeStamp = false;
+                flag_newChem = false;
 
             }
 
@@ -2162,7 +2169,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_jsonAscii(
 // Same as above but for EWF H5 entries
 void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
     OpenWQ_units& OpenWQ_units,
-    std::unique_ptr<std::vector<arma::Mat<double>>>& FORC_vec_data, // H5 interface data
+    std::unique_ptr<std::vector<std::vector<arma::Mat<double>>>>& FORC_vec_data, // H5 interface data
     std::unique_ptr<std::vector<time_t>>& FORC_vec_time_t,          // H5 interface timestamps
     const int YYYY,         // current model step: Year
     const int MM,           // current model step: month
@@ -2172,28 +2179,58 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
     const int SEC){         // current model step: sec
 
     // Local variables
-    time_t simTime;         // current simulation time in time_t
-    time_t h5EWF_time;      // iteractive time extraction from FORC_vec_time_t
-    long long num_timeStamps;
+    time_t simTime;                         // current simulation time in time_t
+    time_t h5EWF_time;                      // iteractive time extraction from FORC_vec_time_t
+    long long num_timeStamps;               // number of timesteps in h5 stucture
+    long long num_chems;                    // number of timesteps in h5 stucture
+    unsigned long long n_rows2remove;       // number of rows to remove
+    std::vector<int> timStampsIndex2Remove; // List of rows indexes to remove  
+    long long ri2remove;                    // index of row to remove   
 
     // Convert sim time to time_t
     simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
 
     // Number of timestamps
+    num_chems = (*FORC_vec_data).size();
     num_timeStamps = (*FORC_vec_time_t).size();
 
     /* ########################################
     // Loop over timeStamps
-    // to remove those occuring before simulation start
+    // to find the rows with timestamps before simTime
     ######################################## */
 
     for (unsigned long long tStamp=0;tStamp<num_timeStamps;tStamp++){
-
+        // Get timestamp tStamp
         h5EWF_time = (*FORC_vec_time_t)[tStamp];
-
+        // Add to rows2Remove if the h5-time is before simTime
+        if (h5EWF_time < simTime){
+            timStampsIndex2Remove.push_back(tStamp);}
     }
 
+     /* ########################################
+    // Loop over rows2Remove
+    // to remove the rows corresponding to timestamps
+    // occuring before simulation start
+    ######################################## */
 
+    // Number of rows to remove
+    n_rows2remove = timStampsIndex2Remove.size();
+
+    // Loop over number of to-remove indexes (timestamps)
+    for (unsigned long long tstep=0;tstep<n_rows2remove;tstep++){
+
+        // Index of row to remove
+        ri2remove = timStampsIndex2Remove[tstep];
+        // Remove row from FORC_vec_data and 
+        (*FORC_vec_time_t).erase((*FORC_vec_time_t).begin()+(ri2remove-1));
+
+        // Loop over all chemical species
+        for (unsigned long long chemi=0;chemi<num_chems;chemi++){
+
+            (*FORC_vec_data)[chemi].erase((*FORC_vec_data)[chemi].begin()+(ri2remove-1));
+
+        }
+    }
 }
 
 /* #################################################
@@ -2463,32 +2500,42 @@ void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_jsonAscii(
 // Add new row to SinkSource_FORC or ExtFlux_FORC_jsonAscii
 void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_h5(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    bool newTimeStamp,          // only needed for H5 EWF
-    time_t timestamp_time_t,
+    int chemi,                  // chem index
+    bool flag_newChem,          // flag for new timestep, push back new vector row [i]
+    bool flag_newTimeStamp,     // flag for new chem, push_back new vector row [i][j]
+    time_t timestamp_time_t,    // timestamp in time_t
     arma::vec row_data_col){
 
     // Local variables        
-    arma::Mat<double> row_data_row;  // new row data (initially as col data)
-    int int_n_elem;                  // number of elements/timesteps
+    arma::Mat<double> row_data_row;             // new row data (initially as col data)
+    int int_n_elem;                             // number of elements/timesteps
+    std::vector<arma::Mat<double>> newChemArma; // create vector<arma> for every new chem
+
+    // Push_back/Create vector<arma> for every new chem 
+    if(flag_newChem==true){
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data).push_back(newChemArma);}
+
 
     // Transpose vector for adding to SinkSource_FORC as a new row
     row_data_row = row_data_col.t();
 
-    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC_timeStep).n_rows;
-
     // Append row
+    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC_timeStep).n_rows;
     (*OpenWQ_wqconfig.ExtFlux_FORC_timeStep).insert_rows(
         std::max(int_n_elem-1,0),
         row_data_row);
 
     // if new timestep, add to vector and reset ExtFlux_FORC_timeStep
-    if (newTimeStamp==true){
+    if (flag_newTimeStamp==true){
 
+        // Add new timestamp to ExtFlux_FORC_HDF5vec_time
+        // But only needed on first chemi pass
+        if (chemi==0){
         (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).push_back(
-            timestamp_time_t);
+            timestamp_time_t);}
     
-        // add timestep data to vector
-        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data).push_back(
+        // add timestep data to vector ExtFlux_FORC_HDF5vec_data[chemi]
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[chemi].push_back(
             *OpenWQ_wqconfig.ExtFlux_FORC_timeStep);
 
         // Reset ExtFlux_FORC_timeStep

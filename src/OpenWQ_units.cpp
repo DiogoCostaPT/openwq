@@ -462,7 +462,7 @@ time_t OpenWQ_units::convertTime_str2time_t(
     struct tm tm_month;
 
     // Get date
-    tm.tm_year = stoi(datetime_str.substr(0,4));
+    tm.tm_year = stoi(datetime_str.substr(0,4)) - 1900;  // -1900 is needed to get the conversion to produce the correct output
     tm.tm_mday = stoi(datetime_str.substr(7,2));
     tm.tm_hour = stoi(datetime_str.substr(10,2));
     tm.tm_min = stoi(datetime_str.substr(13,2));
@@ -475,7 +475,7 @@ time_t OpenWQ_units::convertTime_str2time_t(
     tm.tm_mon = tm_month.tm_mon;
 
     // Convert time to time_t  
-    sim_time = mktime(&tm);
+    sim_time = timegm(&tm);
 
     return sim_time;
     
