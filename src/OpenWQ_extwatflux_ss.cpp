@@ -396,7 +396,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     // Loop over row data in sink-source file
     ######################################## */
 
-    for (unsigned int di=0;di<num_rowdata;di++){
+    for (unsigned long di=0;di<num_rowdata;di++){
         
         // Reset the size to zero (the object will have no elements)
         row_data_col.reset(); 
@@ -1067,7 +1067,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                             // it starts with 0 (zero), meaning that has not been used
                             // if not an "all" element, then it's set to -1
 
-        // Add new row to SinkSource_FORC or ExtFlux_FORC
+        // Add new row to SinkSource_FORC or ExtFlux_FORC_jsonAscii
         AppendRow_SS_EWF_FORC_jsonAscii(
             OpenWQ_wqconfig,
             inputType,
@@ -1446,8 +1446,9 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
 }
 
 /* #################################################
- // Check Sources and Sinks and Apply
- ################################################# */
+// Check Sources/Sinks and EWF and Apply
+// only for JSON and ASCII input
+################################################# */
 void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -1492,9 +1493,9 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
     if (OpenWQ_wqconfig.tstep1_flag){
 
         // Remove requested loads that are prior to the simulation start datetime
-        RemoveLoadBeforeSimStart(
-            array_FORC,
+        RemoveLoadBeforeSimStart_jsonAscii(
             OpenWQ_units,
+            array_FORC,
             YYYY,           // current model step: Year
             MM,             // current model step: month
             DD,             // current model step: day
@@ -1739,6 +1740,44 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
 
 }
 
+/* #################################################
+// Check EWF and apply
+// only H5 input
+################################################# */
+void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
+        OpenWQ_units& OpenWQ_units,
+        OpenWQ_output& OpenWQ_output,
+        const unsigned int YYYY,                            // current model step: Year
+        const unsigned int MM,                              // current model step: month
+        const unsigned int DD,                              // current model step: day
+        const unsigned int HH,                              // current model step: hour
+        const unsigned int MIN,                             // current model step: min
+        const unsigned int SEC){                            // current model step: sec
+
+     /* ########################################
+    // Data update/clean-up at 1st timestep
+    ######################################## */
+    if (OpenWQ_wqconfig.tstep1_flag){
+
+        RemoveLoadBeforeSimStart_h5(
+            OpenWQ_units,
+            OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data,  // vec with h5 interface data
+            OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time,  // vec with h5 interface timestamps
+            YYYY,           // current model step: Year
+            MM,             // current model step: month
+            DD,             // current model step: day
+            HH,             // current model step: hour
+            MIN,            // current model step: min
+            SEC             // current model step: sec
+        );
+
+    }
+
+}
 
 /* #################################################
  // Apply Source
@@ -2032,9 +2071,10 @@ bool OpenWQ_extwatflux_ss::getModIndex(
 // remove requested loads that are prior to the simulation start datetime
 // only do this for rows that don't have any "all" elements
 #################################################*/
-void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
-    std::unique_ptr<arma::Mat<double>>& array_FORC,
+// JSON and ASCII entries
+void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_jsonAscii(
     OpenWQ_units& OpenWQ_units,
+    std::unique_ptr<arma::Mat<double>>& array_FORC,
     const int YYYY,         // current model step: Year
     const int MM,           // current model step: month
     const int DD,           // current model step: day
@@ -2115,6 +2155,43 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
 
     // Remove the identified past row data 
     (*array_FORC).shed_rows(rows2Remove_uvec); 
+
+}
+
+// Same as above but for EWF H5 entries
+void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
+    OpenWQ_units& OpenWQ_units,
+    std::unique_ptr<std::vector<arma::Mat<double>>>& FORC_vec_data, // H5 interface data
+    std::unique_ptr<std::vector<time_t>>& FORC_vec_time_t,          // H5 interface timestamps
+    const int YYYY,         // current model step: Year
+    const int MM,           // current model step: month
+    const int DD,           // current model step: day
+    const int HH,           // current model step: hour
+    const int MIN,          // current model step: min
+    const int SEC){         // current model step: sec
+
+    // Local variables
+    time_t simTime;         // current simulation time in time_t
+    time_t h5EWF_time;      // iteractive time extraction from FORC_vec_time_t
+    long long num_timeStamps;
+
+    // Convert sim time to time_t
+    simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
+
+    // Number of timestamps
+    num_timeStamps = (*FORC_vec_time_t).size();
+
+    /* ########################################
+    // Loop over timeStamps
+    // to remove those occuring before simulation start
+    ######################################## */
+
+    for (unsigned long long tStamp=0;tStamp<num_timeStamps;tStamp++){
+
+        h5EWF_time = (*FORC_vec_time_t)[tStamp];
+
+    }
+
 
 }
 
@@ -2353,7 +2430,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
 
 }
 
-// Add new row to SinkSource_FORC or ExtFlux_FORC
+// Add new row to SinkSource_FORC or ExtFlux_FORC_jsonAscii
 void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_jsonAscii(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     std::string inputType,
@@ -2368,7 +2445,7 @@ void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_jsonAscii(
 
     // Get index of last element
     if (inputType.compare("ss")==0)     int_n_elem = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows;
-    if (inputType.compare("ewf")==0)    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC).n_rows;
+    if (inputType.compare("ewf")==0)    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC_jsonAscii).n_rows;
     
     // Add new row_data_row to SinkSource_FORC
     if (inputType.compare("ss")==0){ 
@@ -2376,13 +2453,13 @@ void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_jsonAscii(
             std::max(int_n_elem-1,0),
             row_data_row);}
     else if (inputType.compare("ewf")==0){
-        (*OpenWQ_wqconfig.ExtFlux_FORC).insert_rows(
+        (*OpenWQ_wqconfig.ExtFlux_FORC_jsonAscii).insert_rows(
             std::max(int_n_elem-1,0),
             row_data_row);}
    
 }
 
-// Add new row to SinkSource_FORC or ExtFlux_FORC
+// Add new row to SinkSource_FORC or ExtFlux_FORC_jsonAscii
 void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_h5(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     bool newTimeStamp,          // only needed for H5 EWF

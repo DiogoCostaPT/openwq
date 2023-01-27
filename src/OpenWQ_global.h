@@ -138,7 +138,7 @@ class OpenWQ_wqconfig
         // Compiling and re-structuring of input data for quicker access during runtime
         // Source and source forcing (SinkSource_FORC)
         // AND
-        // External fluxes (ExtFlux_FORC)
+        // External fluxes (ExtFlux_FORC_jsonAscii)
 
         // num_coldata_jsonAscii is, the moment, equal to 20
         // 0 - chemical
@@ -168,7 +168,7 @@ class OpenWQ_wqconfig
             (new  arma::mat(0,num_coldata_jsonAscii));
 
         // External fluxes forcing (JSON or ASCII datatypes)
-        ExtFlux_FORC = 
+        ExtFlux_FORC_jsonAscii = 
             std::unique_ptr<
             arma::Mat<double>>
             (new  arma::mat(0,num_coldata_jsonAscii));
@@ -222,7 +222,7 @@ class OpenWQ_wqconfig
         > SinkSource_FORC;              // SS
     std::unique_ptr<            
         arma::Mat<double>
-        > ExtFlux_FORC;                 // External fluxes (JSON and ASCII)
+        > ExtFlux_FORC_jsonAscii;                 // External fluxes (JSON and ASCII)
     std::unique_ptr<            
         arma::Mat<double>
         > ExtFlux_FORC_timeStep;         // External fluxes HDF5 vector (one timestep)

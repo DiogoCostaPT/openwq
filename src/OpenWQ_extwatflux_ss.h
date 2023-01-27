@@ -75,6 +75,7 @@ class OpenWQ_extwatflux_ss{
         bool foundflag);
 
     // Check if sink or sources needs to be applied
+    // if JSON or ASCII
     void CheckApply_EWFandSS_jsonAscii(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -90,6 +91,21 @@ class OpenWQ_extwatflux_ss{
         const unsigned int SEC,                             // current model step: sec
         std::string inputType,                              // flag for SS or EWF
         std::unique_ptr<arma::Mat<double>>& array_FORC);    // array FORC arma (SS or EWF)
+
+    // if JSON
+    void CheckApply_EWF_h5(
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
+        OpenWQ_units& OpenWQ_units,
+        OpenWQ_output& OpenWQ_output,
+        const unsigned int YYYY,                            // current model step: Year
+        const unsigned int MM,                              // current model step: month
+        const unsigned int DD,                              // current model step: day
+        const unsigned int HH,                              // current model step: hour
+        const unsigned int MIN,                             // current model step: min
+        const unsigned int SEC);                            // current model step: sec
 
     // Apply SS Source
     void Apply_Source(
@@ -152,15 +168,26 @@ class OpenWQ_extwatflux_ss{
         unsigned int& struc_i,
         unsigned int& row_i);
 
-    void RemoveLoadBeforeSimStart(
-        std::unique_ptr<arma::Mat<double>>& array_FORC,
+    void RemoveLoadBeforeSimStart_jsonAscii(
         OpenWQ_units& OpenWQ_units,
+        std::unique_ptr<arma::Mat<double>>& array_FORC,
         const int YYYY,             // current model step: Year
         const int MM,               // current model step: month
         const int DD,               // current model step: day
         const int HH,               // current model step: hour
         const int MIN,              // current model step: min
         const int SEC);             // current model step: sec
+
+    void RemoveLoadBeforeSimStart_h5(
+        OpenWQ_units& OpenWQ_units,
+        std::unique_ptr<std::vector<arma::Mat<double>>>& FORC_vec_data, // H5 interface data
+        std::unique_ptr<std::vector<time_t>>& FORC_vec_time_t,          // H5 interface timestamps
+        const int YYYY,         // current model step: Year
+        const int MM,           // current model step: month
+        const int DD,           // current model step: day
+        const int HH,           // current model step: hour
+        const int MIN,          // current model step: min
+        const int SEC);         // current model step: sec
 
     void UpdateAllElemTimeIncremts(
         std::unique_ptr<arma::Mat<double>>& array_FORC,

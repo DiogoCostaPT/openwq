@@ -225,12 +225,8 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
         OpenWQ_utils,
         OpenWQ_units,
         OpenWQ_output,
-        year_sim_now,
-        month_sim_now,
-        day_sim_now,
-        hour_sim_now,
-        min_sim_now,
-        sec_sim_now,
+        year_sim_now, month_sim_now, day_sim_now,
+        hour_sim_now, min_sim_now, sec_sim_now,
         (std::string) "ss",
         OpenWQ_wqconfig.SinkSource_FORC);
 
@@ -242,14 +238,21 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
         OpenWQ_utils,
         OpenWQ_units,
         OpenWQ_output,
-        year_sim_now,
-        month_sim_now,
-        day_sim_now,
-        hour_sim_now,
-        min_sim_now,
-        sec_sim_now,
+        year_sim_now, month_sim_now, day_sim_now,
+        hour_sim_now, min_sim_now, sec_sim_now,
         (std::string) "ewf",
-        OpenWQ_wqconfig.ExtFlux_FORC); 
+        OpenWQ_wqconfig.ExtFlux_FORC_jsonAscii);
+
+    // EWF  (find and update ewf_conc for use with EWF) - H5
+    OpenWQ_extwatflux_ss.CheckApply_EWF_h5(
+        OpenWQ_vars,
+        OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig,
+        OpenWQ_utils,
+        OpenWQ_units,
+        OpenWQ_output,
+        year_sim_now, month_sim_now, day_sim_now,
+        hour_sim_now, min_sim_now, sec_sim_now); 
 
     // Flag to note that 1st time step has been completed
     OpenWQ_wqconfig.tstep1_flag = false;
