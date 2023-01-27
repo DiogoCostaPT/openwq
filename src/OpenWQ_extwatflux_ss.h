@@ -75,7 +75,7 @@ class OpenWQ_extwatflux_ss{
         bool foundflag);
 
     // Check if sink or sources needs to be applied
-    void CheckApply_EWFandSS(
+    void CheckApply_EWFandSS_jsonAscii(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,

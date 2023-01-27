@@ -217,8 +217,8 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     int min_sim_now = tm_simtime->tm_min;
     int sec_sim_now = tm_simtime->tm_sec;
 
-    // SS (find and apply)
-    OpenWQ_extwatflux_ss.CheckApply_EWFandSS(
+    // SS (find and apply) - JSON or ASCII input
+    OpenWQ_extwatflux_ss.CheckApply_EWFandSS_jsonAscii(
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
@@ -234,8 +234,8 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
         (std::string) "ss",
         OpenWQ_wqconfig.SinkSource_FORC);
 
-    // EWF (find and update ewf_conc for use with EWF)
-    OpenWQ_extwatflux_ss.CheckApply_EWFandSS(
+    // EWF (find and update ewf_conc for use with EWF) - JSON or ASCII input
+    OpenWQ_extwatflux_ss.CheckApply_EWFandSS_jsonAscii(
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,

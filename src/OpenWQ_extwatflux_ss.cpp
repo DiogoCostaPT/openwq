@@ -1092,41 +1092,46 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     bool foundflag){
     
     // Local variables
-    std::string msg_string;
-    std::size_t it;
-    std::string ewf_h5_folderPath;
-    std::string ewf_filenamePath;
-    std::string ewf_h5_units;
-    std::string ewf_h5_units_file;
-    double conc_h5_rowi;
-    bool volume_unit_flag;
-    std::vector<std::string> units;
-    std::string external_compartName;
-    std::string external_waterFluxName;
-    double external_waterFluxName_id;
-    std::string chemname;
-    arma::mat xyzEWF_h5;
-    arma::mat domain_EWF_h5;
-    arma::mat dataEWF_h5;
-    std::vector<double> unit_multiplers;  // multiplers (numerator and denominator)
-    std::vector<std::string> tSamp_valid; // save valid time stamps
-    time_t tSamp_valid_i_time_t; 
-    arma::vec row_data_col;                     // new row data (initially as col data)
-    int x_externModel, y_externModel, z_externModel;
-    int x_interface_h5, y_interface_h5, z_interface_h5;
-    int nx_interface_h5, ny_interface_h5, nz_interface_h5;
-    std::string ss_cmp_recipient_name;
-    json interaction_interface_json;
+    std::string msg_string;                 // console/logFile message
+    std::size_t it;                         // interactor
+    std::string ewf_h5_folderPath;          // json input: folder with EWF input *.h5 files
+    std::string ewf_filenamePath;           // full path for *.h5 files
+    std::string ewf_h5_units;               // json input: units of EWF h5 files
+    std::string ewf_h5_units_file;          // Same as above, but "\" replaced by "|" for file search
+    double conc_h5_rowi;                    // iteractive concentration extracted for h5 files
+    bool volume_unit_flag;                  // flag to identify the existence of volume in units, i.e., concentration
+    std::vector<std::string> units;         // Vector with units information
+    std::string external_compartName;       // json input: External compartment name
+    std::string external_waterFluxName;     // EWF name (needs to match name hard coded in hydrolink)
+    double external_waterFluxName_id;       // index of external_waterFluxName
+    std::string chemname;                   // iteractive chemical name during h5 search
+    arma::mat xyzEWF_h5;                    // h5 xyz field 
+    arma::mat domain_EWF_h5;                // h5 information about external compartment domain (nx,ny,nz)
+    arma::mat dataEWF_h5;                   // h5 data
+    std::vector<double> unit_multiplers;    // multiplers (numerator and denominator)
+    std::vector<std::string> tSamp_valid;   // save valid time stamps
+    time_t tSamp_valid_i_time_t;            // iteractive time_t from h5 timestamp
+    arma::vec row_data_col;                                 // new row data (initially as col data)
+    int x_externModel, y_externModel, z_externModel;        // iteractive x,y,z info from h5 files
+    int x_interface_h5, y_interface_h5, z_interface_h5;     // iteractive x,y,z from interface
+    int nx_interface_h5, ny_interface_h5, nz_interface_h5;  // nx,ny,nz of external compartment
+    std::string ss_cmp_recipient_name;                      // name of EWF recipient
+    json interaction_interface_json;                        // json substructure for interface info
     int index_i;
-    bool validEntryFlag;
-    bool foundTimeStmps;                 // flag to record (un)success in finding timestamps
-    bool h5_entry_found;
-    std::string errorMsgIdentifier;
-    std::vector<int> valid_interfaceH5rows;
-    int rowi_val;
-    bool newTimeStamp;
-    int point_print_n;
+    bool validEntryFlag;                    // flag for valid entries
+    bool foundTimeStmps;                    // flag to record (un)success in finding timestamps
+    bool h5_entry_found;                    // flag for successful finding of ewf h5 file
+    std::string errorMsgIdentifier;         // Start/head of error message of json key not found
+    std::vector<int> valid_interfaceH5rows; // vector with indexes of relevant h5 rows that contain interface data
+    int rowi_val;                           // iteractive row number from valid_interfaceH5rows 
+    bool newTimeStamp;                      // bool to flag new timestep, which will save data into ExtFlux_FORC_HDF5vec_data and ExtFlux_FORC_HDF5vec_time
+    int point_print_n;                      // iterative trackking of "." console prints (each timeStamp) for asthetics
    
+
+    // ################################
+    // Get JSON info
+    // ################################
+
     errorMsgIdentifier = inputType + " json block with DataFormat=HDF5" ;
 
     // h5 IC folder path
@@ -1134,32 +1139,37 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "FOLDERPATH",
         errorMsgIdentifier);
-    
     // h5 ic units
     ewf_h5_units = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "UNITS",
         errorMsgIdentifier);
-
-    ewf_h5_units_file = ewf_h5_units;
-
     // get external compartment name (needed for both ss and ewf)
     external_compartName = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "EXTERNAL_COMPARTMENT_NAME",
         errorMsgIdentifier);
-
     // Get interface between openwq models
     interaction_interface_json = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "INTERACTION_INTERFACE",
         errorMsgIdentifier);
+    // Get external flux name
+    external_waterFluxName = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        EWF_SS_json_sub, "EXTERNAL_INPUTFLUX_NAME",
+        errorMsgIdentifier);
     
     // replace "/" by "|" is needed because "/" is not compatible with directory full paths
+    ewf_h5_units_file = ewf_h5_units;
     it = (int) ewf_h5_units_file.find("/");
     if (it <= ewf_h5_units_file.size()){
         ewf_h5_units_file.replace(it,1, "|");
     }
+
+    // ################################
+    // Some pre-processing
+    // ################################
 
     // Get unit conversion multipliers
     volume_unit_flag = OpenWQ_units.Calc_Unit_Multipliers(
@@ -1171,13 +1181,6 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         true);              // direction of the conversion: 
                             // to native (true) or 
                             // from native to desired output units (false)
-
-    // Get external flux name
-    errorMsgIdentifier = inputType + " json block with DataFormat=HDF5" ;
-    external_waterFluxName = OpenWQ_utils.RequestJsonKeyVal_str(
-        OpenWQ_wqconfig, OpenWQ_output,
-        EWF_SS_json_sub, "EXTERNAL_INPUTFLUX_NAME",
-        errorMsgIdentifier);
 
     // Get corresponding id
     external_waterFluxName_id = 
@@ -1213,7 +1216,10 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                  "         Processing and checking interface...";
     OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, false);
 
-    // Loop over chemical species, which are in different files
+    // ################################
+    // Loop over EWF h5 files
+    // ################################
+    // Each chemical species is in different files
     for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_num_chem;chemi++){
 
         // ############################
@@ -1301,9 +1307,12 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         if(z_interface_h5==-1) nz_interface_h5 = domain_EWF_h5(0,2);
         else nz_interface_h5 = z_interface_h5;
 
-        // ############################
+
+        // ################################
         // Check if necessary external compartment elements exists in EWF h5 file
         // Check is carried out for the first timestamp
+        // Interface h5 rows saved in: valid_interfaceH5rows
+        // ################################
 
         // Get the corresponding data
         dataEWF_h5
@@ -1357,8 +1366,9 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         }
 
         // ############################
-        // Loop over H5 timeSteps data
-
+        // Loop over H5 timeSteps data and save interface cells conc
+        // in ExtFlux_FORC_HDF5vec_data and ExtFlux_FORC_HDF5vec_time
+        // ############################
         newTimeStamp = false;
         point_print_n = 0;
 
@@ -1429,14 +1439,16 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
             std::cout << "." << std::flush;
             
         }
-        std::cout << " => TimeSteps processed:" + std::to_string(tSamp_valid.size()) + ")\n" << std::flush;
+
+        // Print the number of timesteps in the console
+        std::cout << " => TimeSteps processed: " + std::to_string(tSamp_valid.size()) + "\n" << std::flush;
     }
 }
 
 /* #################################################
  // Check Sources and Sinks and Apply
  ################################################# */
-void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
+void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
