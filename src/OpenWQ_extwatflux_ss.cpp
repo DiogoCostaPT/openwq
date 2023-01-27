@@ -1404,8 +1404,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                 // into ExtFlux_FORC_HDF5vec
 
                 if (rowi==(int)valid_interfaceH5rows.size()-1){
-                     newTimeStamp = true;
-                }
+                     newTimeStamp = true;}
 
                 AppendRow_SS_EWF_FORC_h5(
                     OpenWQ_wqconfig,
@@ -2387,13 +2386,11 @@ void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_h5(
     // if new timestep, add to vector and reset ExtFlux_FORC_timeStep
     if (newTimeStamp==true){
 
-        timestamp_time_t_arma(0) = (double) timestamp_time_t;
-
-        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec)[0].push_back(
-            timestamp_time_t_arma);
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).push_back(
+            timestamp_time_t);
     
         // add timestep data to vector
-        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec)[1].push_back(
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data).push_back(
             *OpenWQ_wqconfig.ExtFlux_FORC_timeStep);
 
         // Reset ExtFlux_FORC_timeStep

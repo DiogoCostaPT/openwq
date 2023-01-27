@@ -165,26 +165,31 @@ class OpenWQ_wqconfig
         SinkSource_FORC = 
             std::unique_ptr<
             arma::Mat<double>>
-            ( new  arma::mat(0,num_coldata_jsonAscii));
+            (new  arma::mat(0,num_coldata_jsonAscii));
 
         // External fluxes forcing (JSON or ASCII datatypes)
         ExtFlux_FORC = 
             std::unique_ptr<
             arma::Mat<double>>
-            ( new  arma::mat(0,num_coldata_jsonAscii));
+            (new  arma::mat(0,num_coldata_jsonAscii));
         
-        // External fluxes forcing (HDF5)
+        // External fluxes forcing (HDF5) 
+        // Saving 1 timestep
         ExtFlux_FORC_timeStep = 
             std::unique_ptr<
             arma::Mat<double>>
-            ( new  arma::mat(0,num_coldata_h5));
-
-        ExtFlux_FORC_HDF5vec = 
+            (new  arma::mat(0,num_coldata_h5));
+        // Storing all timesteps
+        ExtFlux_FORC_HDF5vec_data = 
             std::unique_ptr<
             std::vector<
-            std::vector<
-            arma::Mat<double>>>>
-            ( new  std::vector<std::vector<arma::mat>>);
+            arma::Mat<double>>>
+            (new  std::vector<arma::mat>);
+        // Storing timestamps as time_t
+        ExtFlux_FORC_HDF5vec_time =
+            std::unique_ptr<
+            std::vector<time_t>>
+            (new  std::vector<time_t>);
 
     }
 
@@ -221,11 +226,13 @@ class OpenWQ_wqconfig
     std::unique_ptr<            
         arma::Mat<double>
         > ExtFlux_FORC_timeStep;         // External fluxes HDF5 vector (one timestep)
-    std::unique_ptr<
-        std::vector<            
+    std::unique_ptr<       
         std::vector<
         arma::Mat<double>
-        >>> ExtFlux_FORC_HDF5vec;        // External fluxes HDF5 vector (all timesteps)
+        >> ExtFlux_FORC_HDF5vec_data;   // External fluxes HDF5 vector (data)
+    std::unique_ptr<       
+        std::vector<time_t>
+        > ExtFlux_FORC_HDF5vec_time;   // External fluxes HDF5 vector (timestamps as time_t)
 
     int allSS_flag = -1;                // number to replace in SinkSource_FORC to denote "all"
     bool tstep1_flag = true;            // flag to note that it's the first time step, so need to exclude loads prior to that
