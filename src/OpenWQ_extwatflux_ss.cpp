@@ -1068,11 +1068,9 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                             // if not an "all" element, then it's set to -1
 
         // Add new row to SinkSource_FORC or ExtFlux_FORC
-        AppendRow_SS_EWF_FORC(
+        AppendRow_SS_EWF_FORC_jsonAscii(
             OpenWQ_wqconfig,
             inputType,
-            DataFormat,
-            false,
             row_data_col);
 
     }
@@ -1210,9 +1208,8 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     if (foundTimeStmps==false) return;
 
     // Throw console message to say it's processing the h5 interface data
-    msg_string = 
-                "<OpenWQ> EWF HDF5 interface requested.\n"
-                "         Processing and checking interface...";
+    msg_string = "<OpenWQ> EWF HDF5 interface requested.\n"
+                 "         Processing and checking interface...";
     OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, false);
 
     // Loop over chemical species, which are in different files
@@ -1359,6 +1356,9 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
 
         // ############################
         // Loop over H5 timeSteps data
+
+        newTimeStamp = false;
+
         for (long unsigned int tSamp=0;tSamp<tSamp_valid.size();tSamp++){
 
             // Get the corresponding data
@@ -1371,9 +1371,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
             tSamp_valid_i_time_t = OpenWQ_units.convertTime_str2time_t(
                 tSamp_valid[tSamp]);
 
-            newTimeStamp = true;
-
-            // Seach for interface element entry row by row
+            // Loop over HDF5 row data referring to the interface
             for (int rowi=0;rowi<(int)valid_interfaceH5rows.size();rowi++){
 
                 // Get valid row
@@ -1395,26 +1393,30 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                     unit_multiplers);           // units
                 
                 // Extract H5 row to row_data_col
-                // Unit conversion performed inside this function
                 row_data_col = ConvertH5row2ArmaVec(
-                    tSamp_valid_i_time_t,
                     external_waterFluxName_id,
                     x_externModel, y_externModel,z_externModel,
                     conc_h5_rowi,
                     chemi);
 
-                // Add new row to SinkSource_FORC or ExtFlux_FORC
-                AppendRow_SS_EWF_FORC(
+                // Add new row to ExtFlux_FORC_timeStep
+                // if last row, then append ExtFlux_FORC_timeStep
+                // into ExtFlux_FORC_HDF5vec
+
+                if (rowi==(int)valid_interfaceH5rows.size()-1){
+                     newTimeStamp = true;
+                }
+
+                AppendRow_SS_EWF_FORC_h5(
                     OpenWQ_wqconfig,
-                    inputType,
-                    "HDF5",
                     newTimeStamp,
+                    tSamp_valid_i_time_t,
                     row_data_col);
 
                 newTimeStamp = false;
 
             }
-            
+
             // Throw a point in console to show progress
             // One point per timeStep
             std::cout << "." << std::flush;
@@ -2332,11 +2334,9 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
 }
 
 // Add new row to SinkSource_FORC or ExtFlux_FORC
-void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC(
+void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_jsonAscii(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     std::string inputType,
-    std::string DataFormat,
-    bool newTimeStamp,          // only needed for H5 EWF
     arma::vec row_data_col){
 
     // Local variables            
@@ -2346,47 +2346,65 @@ void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC(
     // Transpose vector for adding to SinkSource_FORC as a new row
     row_data_row = row_data_col.t();
 
-    // If JSON or ASCII
-    if(DataFormat.compare("JSON")==0 || DataFormat.compare("ASCII")==0){
-        // Add new row_data_row to SinkSource_FORC   
-        if (inputType.compare("ss")==0)     int_n_elem = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows;
-        if (inputType.compare("ewf")==0)    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC).n_rows;
-        
-        if (inputType.compare("ss")==0){ 
-            (*OpenWQ_wqconfig.SinkSource_FORC).insert_rows(
-                std::max(int_n_elem-1,0),
-                row_data_row);}
-        else if (inputType.compare("ewf")==0){
-            (*OpenWQ_wqconfig.ExtFlux_FORC).insert_rows(
-                std::max(int_n_elem-1,0),
-                row_data_row);}
+    // Get index of last element
+    if (inputType.compare("ss")==0)     int_n_elem = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows;
+    if (inputType.compare("ewf")==0)    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC).n_rows;
+    
+    // Add new row_data_row to SinkSource_FORC
+    if (inputType.compare("ss")==0){ 
+        (*OpenWQ_wqconfig.SinkSource_FORC).insert_rows(
+            std::max(int_n_elem-1,0),
+            row_data_row);}
+    else if (inputType.compare("ewf")==0){
+        (*OpenWQ_wqconfig.ExtFlux_FORC).insert_rows(
+            std::max(int_n_elem-1,0),
+            row_data_row);}
+   
+}
+
+// Add new row to SinkSource_FORC or ExtFlux_FORC
+void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_h5(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    bool newTimeStamp,          // only needed for H5 EWF
+    time_t timestamp_time_t,
+    arma::vec row_data_col){
+
+    // Local variables        
+    arma::Mat<double> row_data_row;  // new row data (initially as col data)
+    arma::Mat<double> timestamp_time_t_arma(1,1);
+    int int_n_elem;
+
+    // Transpose vector for adding to SinkSource_FORC as a new row
+    row_data_row = row_data_col.t();
+
+    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC_timeStep).n_rows;
+
+    // Append row
+    (*OpenWQ_wqconfig.ExtFlux_FORC_timeStep).insert_rows(
+        std::max(int_n_elem-1,0),
+        row_data_row);
+
+    // if new timestep, add to vector and reset ExtFlux_FORC_timeStep
+    if (newTimeStamp==true){
+
+        timestamp_time_t_arma(0) = (double) timestamp_time_t;
+
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec)[0].push_back(
+            timestamp_time_t_arma);
+    
+        // add timestep data to vector
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec)[1].push_back(
+            *OpenWQ_wqconfig.ExtFlux_FORC_timeStep);
+
+        // Reset ExtFlux_FORC_timeStep
+        (*OpenWQ_wqconfig.ExtFlux_FORC_timeStep).reset();
+
     }
-    // if HDF5
-    else if(DataFormat.compare("HDF5")==0){
 
-        int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC_timeStep).n_rows;
-
-        (*OpenWQ_wqconfig.ExtFlux_FORC_timeStep).insert_rows(
-                std::max(int_n_elem-1,0),
-                row_data_row);
-
-        // if new timestep, add to vector and reset ExtFlux_FORC_timeStep
-        if (newTimeStamp==true){
-            
-            // add timestep data to vector
-            (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec).push_back(
-                *OpenWQ_wqconfig.ExtFlux_FORC_timeStep);
-
-            // Reset ExtFlux_FORC_timeStep
-            (*OpenWQ_wqconfig.ExtFlux_FORC_timeStep).reset();
-        }
-
-    }
 }
 
 // Extract H5 row to row_data_col
 arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
-    time_t timestamp_time_t,
     double ewf_id,
     int x_externModel, 
     int y_externModel, 
@@ -2396,31 +2414,15 @@ arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
 
     // Local variables
     arma::vec row_data_col;              // new row data (initially as col data)
-    std::tm* timeStructure_tm;           // time stucture
-    // Because this is EWF only
-    double sourcSink_type_id = 0.0f; // 0=source (see ExtFlux_FORC structure)
-    double loadSink_scheme_id = 0.0f; // 0=loading scheme not applicable (see ExtFlux_FORC structure)
-
-    // Generate time structure from time_t
-    timeStructure_tm = gmtime(&timestamp_time_t);
 
     // Generate the arma::vec row_data_col
     row_data_col = {
         (double) chemi,
         (double) ewf_id,
-        (double) sourcSink_type_id,
-        (double) (timeStructure_tm->tm_year),
-        (double) (timeStructure_tm->tm_mon),
-        (double) (timeStructure_tm->tm_mday),
-        (double) (timeStructure_tm->tm_hour),
-        (double) (timeStructure_tm->tm_min),
-        (double) (timeStructure_tm->tm_sec),
         (double) x_externModel - 1,
         (double) y_externModel - 1,
         (double) z_externModel - 1,
         conc_h5_rowi,
-        loadSink_scheme_id, // load scheme (0) not applicable, (1) discrete or (2) continuous
-        0,0,0,0,0,0         // field to specify the number of times it has been used aleady
         };                  // in the case of and "all" element (YYYY, MM, DD, HH, MIN, SEC)
                             // it starts with 0 (zero), meaning that has not been used
 

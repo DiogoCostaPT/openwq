@@ -173,15 +173,18 @@ class OpenWQ_extwatflux_ss{
         const int MIN,              // current model step: min
         const int SEC);             // current model step: sec
 
-    void AppendRow_SS_EWF_FORC(
+    void AppendRow_SS_EWF_FORC_jsonAscii(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         std::string inputType,
-        std::string DataFormat,
-        bool newTimeStamp,
+        arma::vec row_data_col);
+
+    void AppendRow_SS_EWF_FORC_h5(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        bool newTimeStamp,          // only needed for H5 EWF
+        time_t timestamp_time_t,
         arma::vec row_data_col);
 
     arma::vec ConvertH5row2ArmaVec(
-        time_t timestamp_time_t,
         double ewf_id,
         int x_externModel, 
         int y_externModel, 

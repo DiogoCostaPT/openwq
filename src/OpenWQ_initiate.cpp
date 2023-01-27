@@ -132,6 +132,15 @@ void OpenWQ_initiate::initmemory(
         // OpenWQ state variable
         (*OpenWQ_vars.ewf_conc)(ewfi) = domain_field;
 
+        /* ########################################
+        // EWF H5DF ExtFlux_FORC_HDF5vec
+        ######################################## */
+        std::vector<arma::Mat<double>> placeholder_timeStamps;
+        std::vector<arma::Mat<double>> placeholder_ConcXYZ;
+
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec).push_back(placeholder_timeStamps);
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec).push_back(placeholder_ConcXYZ);
+
     }
 
     // Hydro model variables used as BGC dependencies
@@ -158,6 +167,7 @@ void OpenWQ_initiate::initmemory(
         (*OpenWQ_hostModelconfig.dependVar_scalar).push_back(0.0f);
 
     }
+    
 
 }
 
