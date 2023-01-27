@@ -396,7 +396,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     // Loop over row data in sink-source file
     ######################################## */
 
-    for (unsigned long di=0;di<num_rowdata;di++){
+    for (unsigned int di=0;di<num_rowdata;di++){
         
         // Reset the size to zero (the object will have no elements)
         row_data_col.reset(); 
@@ -1215,6 +1215,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     msg_string = "<OpenWQ> EWF HDF5 interface requested.\n"
                  "         Processing and checking interface...";
     OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, false);
+
 
     // ################################
     // Loop over EWF h5 files
@@ -2468,8 +2469,7 @@ void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_h5(
 
     // Local variables        
     arma::Mat<double> row_data_row;  // new row data (initially as col data)
-    arma::Mat<double> timestamp_time_t_arma(1,1);
-    int int_n_elem;
+    int int_n_elem;                  // number of elements/timesteps
 
     // Transpose vector for adding to SinkSource_FORC as a new row
     row_data_row = row_data_col.t();

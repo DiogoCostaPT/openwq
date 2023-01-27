@@ -459,18 +459,20 @@ time_t OpenWQ_units::convertTime_str2time_t(
     // Local variables
     std::time_t sim_time;
     struct tm tm;
+    struct tm tm_month;
 
-    // Convert string to const char* 
-    // Needed for input into strptime
-    const char* datetime_char = datetime_str.c_str();
-
-    // Convert String to Date/Time
-    strptime(datetime_char, "%Y%b%d-%H:%M:%S", &tm);
-
-    // Fix year
-    // For some reason, the year is not being 
-    // picked up correctly
+    // Get date
     tm.tm_year = stoi(datetime_str.substr(0,4));
+    tm.tm_mday = stoi(datetime_str.substr(7,2));
+    tm.tm_hour = stoi(datetime_str.substr(10,2));
+    tm.tm_min = stoi(datetime_str.substr(13,2));
+    tm.tm_sec = stoi(datetime_str.substr(16,2));
+
+    // ######################
+    // Processing month that is in char
+    const char* month_char = datetime_str.substr(4,3).c_str();
+    strptime(month_char, "%b", &tm_month);
+    tm.tm_mon = tm_month.tm_mon;
 
     // Convert time to time_t  
     sim_time = mktime(&tm);
