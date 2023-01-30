@@ -1818,14 +1818,15 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
 
     // Local variables
     time_t simTime;                         // current simulation time in time_t
-    time_t h5EWF_time;                      // iteractive time extraction from FORC_vec_time_t
+    time_t h5EWF_time_before;               // iteractive time extraction from FORC_vec_time_t (before simtime)
+    time_t h5EWF_time_after;                // iteractive time extraction from FORC_vec_time_t (after simtime)
     unsigned long long num_ewfh5_requests;  // number of json ewf-h5 requests
     unsigned long long num_chems;           // number of chems in h5 stucture
     unsigned long long num_timeStamps;      // number of timesteps in h5 stucture
     arma::cube h5Conc_chemi_before;         // iteractive h5-chemi concentration at previous timestep 
-    arma::cube h5Conc_chemi_next;           // iteractive h5-chemi concentration at current or next timestep 
+    arma::cube h5Conc_chemi_after;          // iteractive h5-chemi concentration at current or next timestep 
     arma::cube h5Conc_chemi_interp;         // iteractive h5-chemi concentration at interpolated timestep 
-
+    std::string msg_string;                 // error message
 
     // Get number of json ewf-h5 requests
     num_ewfh5_requests = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).size();
@@ -1870,11 +1871,11 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
         for (unsigned long long tStamp=0;tStamp<num_timeStamps;tStamp++){
 
             // Get timestamp tStamp
-            h5EWF_time =  (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[reqi][tStamp];
+            h5EWF_time_after =  (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[reqi][tStamp];
             
             // if at next timestep
             // this will then get upper and lower timesteps
-            if (h5EWF_time > simTime){
+            if (h5EWF_time_after > simTime){
                 
                 // Loop over all chemical species
                 for (unsigned long long chemi=0;chemi<num_chems;chemi++){
@@ -1883,8 +1884,10 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
                     // if at tStamp==0, then need to get the next step
                     if(tStamp!=0){
                         h5Conc_chemi_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[reqi][chemi][tStamp-1];
+                        h5EWF_time_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[reqi][tStamp-1];
                     }else{
                         h5Conc_chemi_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[reqi][chemi][tStamp];
+                        h5EWF_time_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[reqi][tStamp];
                     }
 
                     // ########################################
@@ -1892,19 +1895,43 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
 
                     // Option: "STEP"
                     if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("STEP")==0){
-                        h5Conc_chemi_interp = h5Conc_chemi_before;}
 
-                    // Option: "Linear"
-                    /*
-                    if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("LINEAR")){
-                        
+                        h5Conc_chemi_interp = h5Conc_chemi_before;
+
+                    }else{
+
                         // Get h5-ewf for chemical chemi at tStamp+1 timestep
-                        h5Conc_chemi_next = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[reqi][chemi][tStamp];
-                        h5Conc_chemi_interp = (h5Conc_chemi_before % h5Conc_chemi_next)
+                            h5Conc_chemi_after = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[reqi][chemi][tStamp];
+                        // Option: "LINEAR"
+                        if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("LINEAR")==0){
+                            h5Conc_chemi_interp = h5Conc_chemi_before 
+                                                + (
+                                                    (h5Conc_chemi_after - h5Conc_chemi_before) 
+                                                    * (simTime - h5EWF_time_before) 
+                                                    / (h5EWF_time_after - h5EWF_time_before)
+                                                );
+                        }
+                        // Option: "NEAREST"
+                        else if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("NEAREST")==0){
+                            if( (simTime - h5EWF_time_before) 
+                                > (h5EWF_time_after - h5EWF_time_before)/2){
+                                h5Conc_chemi_interp = h5Conc_chemi_after;
+                            }else{
+                                h5Conc_chemi_interp = h5Conc_chemi_after;}
+                        }else {
+                            // Defaulting to STEP and throw warning message
+                            OpenWQ_wqconfig.h5EWF_interpMethod = "STEP";
+                            h5Conc_chemi_interp = h5Conc_chemi_before;
 
+                            //Create message
+                            msg_string = 
+                                "<OpenWQ> WARNING: EWF load using HDF5 file 'INTERPOLATION' unkown:"
+                                + OpenWQ_wqconfig.h5EWF_interpMethod
+                                + ". 'INTERPOLATION' defaulted to 'STEP'";
+                            // Print it (Console and/or Log file)
+                            OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
+                        }
                     }
-                    */
-                    
 
                 // Update h5Conc_chemi_interp for all elements
                     Update_EWFconc_h5(
