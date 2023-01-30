@@ -131,15 +131,16 @@ class OpenWQ_wqconfig
     public:
     OpenWQ_wqconfig(){
 
-        this -> num_coldata = 20;
+        
 
         // #################################################
         // Compiling and re-structuring of input data for quicker access during runtime
         // Source and source forcing (SinkSource_FORC)
         // AND
-        // External fluxes (ExtFlux_FORC)
+        // External fluxes (ExtFlux_FORC_jsonAscii)
 
-        // num_coldata is, the moment, equal to 11
+        this -> num_coldata_jsonAscii = 20;
+        // num_coldata_jsonAscii is, the moment, equal to 20
         // 0 - chemical
         // 1 - compartment id (from HydroComp) / external flux id (from HydroExtFlux)
         // 2 - source(=0) or sink(=1)
@@ -160,21 +161,54 @@ class OpenWQ_wqconfig
             // otherwise, it gets updated everytime the load is added
             // and it provides the time increment for the next load
 
+        this -> num_coldata_h5 = 4;
+        // 1 - ix
+        // 2 - iy
+        // 3 - iz
+        // 4 - value (already converted to mg/l (concentration) or g(mass))
+
         // Sink and source forcing
         SinkSource_FORC = 
             std::unique_ptr<
-                arma::Mat<double>>
-            ( new  arma::mat(0,num_coldata));
+            arma::Mat<double>>
+            (new  arma::mat(0,num_coldata_jsonAscii));
 
-        // External fluxes forcing
-        ExtFlux_FORC = 
+        // External fluxes forcing (JSON or ASCII datatypes)
+        ExtFlux_FORC_jsonAscii = 
             std::unique_ptr<
-                arma::Mat<double>>
-            ( new  arma::mat(0,num_coldata));
+            arma::Mat<double>>
+            (new  arma::mat(0,num_coldata_jsonAscii));
+        
+        // External fluxes forcing (HDF5) 
+        // Storing timestamps as time_t
+        ExtFlux_FORC_HDF5vec_time =
+            std::unique_ptr<        // EWF-h5 json block/request
+            std::vector<            
+            std::vector<time_t>>>
+            (new  std::vector<std::vector<time_t>>);
+        // Storing external_flux id
+        ExtFlux_FORC_HDF5vec_ewfCompID =
+            std::unique_ptr<
+            std::vector<unsigned int>>
+            (new  std::vector<unsigned int>);
+        // Saving 1 timestep
+        ExtFlux_FORC_data_tStep = 
+            std::unique_ptr<
+            arma::Cube<double>>
+            (new  arma::cube);
+        // Storing all timesteps
+        ExtFlux_FORC_HDF5vec_data = 
+            std::unique_ptr<
+            std::vector<           // EWF-h5 json block/request
+            std::vector<           // ChemSpecies 
+            std::vector<           // timestamps
+            arma::Cube<double>>>>>
+            (new  std::vector<std::vector<std::vector<arma::cube>>>);
 
     }
 
-    size_t num_coldata;
+    size_t num_coldata_jsonAscii;
+    size_t num_coldata_h5;
 
     // General JSON key null error
     std::string jsonKeyNull_msg_start = "<OpenWQ> Execution ABORTED!\nExpected json value for key=";
@@ -202,8 +236,25 @@ class OpenWQ_wqconfig
         > SinkSource_FORC;              // SS
     std::unique_ptr<            
         arma::Mat<double>
-        > ExtFlux_FORC;                 // External fluxes
+        > ExtFlux_FORC_jsonAscii;       // External fluxes (JSON and ASCII)
+    std::unique_ptr<
+        std::vector<       
+        std::vector<time_t>
+        >> ExtFlux_FORC_HDF5vec_time;   // External fluxes HDF5 vector (timestamps as time_t)
+    std::unique_ptr<                    // EWF compartment id
+        std::vector<unsigned int>
+        > ExtFlux_FORC_HDF5vec_ewfCompID;
+    std::unique_ptr<            
+        arma::Cube<double>
+        > ExtFlux_FORC_data_tStep;      // External fluxes HDF5 vector (one timestep)
+    std::unique_ptr<
+        std::vector<                    // JSON-h5-EWF request (blocks)   
+        std::vector<                    // Chemical species
+        std::vector<                    // Time steps
+        arma::Cube<double>
+        >>>> ExtFlux_FORC_HDF5vec_data;   // External fluxes HDF5 vector (data)
 
+    std::string h5EWF_interpMethod;     // interpolation method for h5 EWF 
     int allSS_flag = -1;                // number to replace in SinkSource_FORC to denote "all"
     bool tstep1_flag = true;            // flag to note that it's the first time step, so need to exclude loads prior to that
 

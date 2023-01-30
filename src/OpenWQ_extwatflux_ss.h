@@ -75,7 +75,8 @@ class OpenWQ_extwatflux_ss{
         bool foundflag);
 
     // Check if sink or sources needs to be applied
-    void CheckApply_EWFandSS(
+    // if JSON or ASCII
+    void CheckApply_EWFandSS_jsonAscii(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
@@ -90,6 +91,21 @@ class OpenWQ_extwatflux_ss{
         const unsigned int SEC,                             // current model step: sec
         std::string inputType,                              // flag for SS or EWF
         std::unique_ptr<arma::Mat<double>>& array_FORC);    // array FORC arma (SS or EWF)
+
+    // if JSON
+    void CheckApply_EWF_h5(
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_utils& OpenWQ_utils,
+        OpenWQ_units& OpenWQ_units,
+        OpenWQ_output& OpenWQ_output,
+        const unsigned int YYYY,                            // current model step: Year
+        const unsigned int MM,                              // current model step: month
+        const unsigned int DD,                              // current model step: day
+        const unsigned int HH,                              // current model step: hour
+        const unsigned int MIN,                             // current model step: min
+        const unsigned int SEC);                            // current model step: sec
 
     // Apply SS Source
     void Apply_Source(
@@ -118,7 +134,7 @@ class OpenWQ_extwatflux_ss{
         const double ss_data_json);                     // source load
 
     // Update EWF concentrations
-    void Update_EWFconc(
+    void Update_EWFconc_jsonAscii(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -129,6 +145,15 @@ class OpenWQ_extwatflux_ss{
         int iy,                             // compartment model iy
         int iz,                             // compartment model iz
         const double new_concVal);          // new EWF conc value
+
+    void Update_EWFconc_h5(
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_output& OpenWQ_output,
+        const unsigned int reqi,            // request index
+        const unsigned int chemi,           // chemical model index    
+        arma::cube& h5Conc_chemi_interp);
 
     void Convert_Mass_Units(
         double &ss_value,     // SS value
@@ -152,15 +177,27 @@ class OpenWQ_extwatflux_ss{
         unsigned int& struc_i,
         unsigned int& row_i);
 
-    void RemoveLoadBeforeSimStart(
-        std::unique_ptr<arma::Mat<double>>& array_FORC,
+    void RemoveLoadBeforeSimStart_jsonAscii(
         OpenWQ_units& OpenWQ_units,
+        std::unique_ptr<arma::Mat<double>>& array_FORC,
         const int YYYY,             // current model step: Year
         const int MM,               // current model step: month
         const int DD,               // current model step: day
         const int HH,               // current model step: hour
         const int MIN,              // current model step: min
         const int SEC);             // current model step: sec
+
+    void RemoveLoadBeforeSimStart_h5(
+        OpenWQ_units& OpenWQ_units,
+        std::unique_ptr<std::vector<std::vector<std::vector<arma::Cube<double>>>>>& FORC_vec_data, // H5 interface data
+        std::unique_ptr<std::vector<std::vector<time_t>>>& FORC_vec_time_t,          // H5 interface timestamps
+        const int reqi,
+        const int YYYY,         // current model step: Year
+        const int MM,           // current model step: month
+        const int DD,           // current model step: day
+        const int HH,           // current model step: hour
+        const int MIN,          // current model step: min
+        const int SEC);         // current model step: sec
 
     void UpdateAllElemTimeIncremts(
         std::unique_ptr<arma::Mat<double>>& array_FORC,
@@ -173,22 +210,18 @@ class OpenWQ_extwatflux_ss{
         const int MIN,              // current model step: min
         const int SEC);             // current model step: sec
 
-    void AppendRow_SS_EWF_FORC(
+    void AppendRow_SS_EWF_FORC_jsonAscii(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         std::string inputType,
         arma::vec row_data_col);
 
-    arma::vec ConvertH5row2ArmaVec(
-        OpenWQ_units& OpenWQ_units,
-        std::vector<double> unit_multiplers,
-        time_t timestamp_time_t,
-        double ewf_id,
-        int x_externModel, 
-        int y_externModel, 
-        int z_externModel,
-        arma::mat dataEWF_h5, 
-        int rowi,
-        int chem_ssi);
+    void AppendCube_SS_EWF_FORC_h5(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        int h5EWF_request_index,        // get request index
+        int chemi,                      // chem index
+        bool flag_newChem,              // flag for new timestep, push back new vector row [i]
+        bool flag_newJSON_h5Request,     // new json-h5-ewf request
+        time_t timestamp_time_t);   // timestamp in time_t
 
 };
 

@@ -117,11 +117,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
                         "ASCII format (entry skipped).";
 
                     // Print it (Console and/or Log file)
-                    OpenWQ_output.ConsoleLog(
-                        OpenWQ_wqconfig,    // for Log file name
-                        msg_string,         // message
-                        true,               // print in console
-                        true);              // print in log file
+                    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true); 
 
                 }
 
@@ -136,11 +132,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_drive(
                     + "(entry skipped)";
 
                 // Print it (Console and/or Log file)
-                OpenWQ_output.ConsoleLog(
-                    OpenWQ_wqconfig,    // for Log file name
-                    msg_string,         // message
-                    true,               // print in console
-                    true);              // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true); 
 
             }
         }
@@ -372,11 +364,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + std::to_string(ssf+1)
                     + ", Sub_structure=" + std::to_string(ssi+1);
                 // Print it (Console and/or Log file)
-                OpenWQ_output.ConsoleLog(
-                    OpenWQ_wqconfig,    // for Log file name
-                    msg_string,         // message
-                    true,               // print in console
-                    true);              // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
                 return;
             }
     
@@ -389,11 +377,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                 + std::to_string(ssf+1)
                 + ", Sub_structure=" + std::to_string(ssi+1);
             // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
+            OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
             return;
         }
         
@@ -728,11 +712,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + ", Sub_structure=" + std::to_string(ssi+1)
                     + ", Data_row=" + std::to_string(di + 1);   
 
-                OpenWQ_output.ConsoleLog(   // Print it (Console and/or Log file)
-                    OpenWQ_wqconfig,        // for Log file name
-                    msg_string,             // message
-                    true,                   // print in console
-                    true);                  // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                 continue; // skip entry
             }
@@ -796,11 +776,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + ", Sub_structure=" + std::to_string(ssi+1)
                     + ", Data_row=" + std::to_string(di + 1);   
 
-                OpenWQ_output.ConsoleLog(   // Print it (Console and/or Log file)
-                    OpenWQ_wqconfig,        // for Log file name
-                    msg_string,             // message
-                    true,                   // print in console
-                    true);                  // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                 continue; // skip entry
             }
@@ -864,11 +840,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + ", Sub_structure=" + std::to_string(ssi+1)
                     + ", Data_row=" + std::to_string(di + 1); 
 
-                OpenWQ_output.ConsoleLog(   // Print it (Console and/or Log file)
-                    OpenWQ_wqconfig,        // for Log file name
-                    msg_string,             // message
-                    true,                   // print in console
-                    true);                  // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                 continue; // skip entry
             }
@@ -925,11 +897,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + ", Sub_structure=" + std::to_string(ssi+1)
                     + ", Data_row=" + std::to_string(di + 1);  
             // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
+            OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
             validEntryFlag = false;
             if (!validEntryFlag){continue;}
         }
@@ -974,11 +942,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                             + ", Sub_structure=" + std::to_string(ssi+1)
                             + ", Data_row=" + std::to_string(di + 1);  
                     // Print it (Console and/or Log file)
-                    OpenWQ_output.ConsoleLog(
-                        OpenWQ_wqconfig,    // for Log file name
-                        msg_string,         // message
-                        true,               // print in console
-                        true);              // print in log file
+                    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                 }else if (loadScheme_str.compare("CONTINUOUS") == 0 && MM_json == -1){
                     // continuous option needs MIN = 'all' (otherwise it's discrete input)
@@ -1011,21 +975,13 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                             + ", Sub_structure=" + std::to_string(ssi+1)
                             + ", Data_row=" + std::to_string(di + 1); 
                         // Print it (Console and/or Log file)
-                        OpenWQ_output.ConsoleLog(
-                            OpenWQ_wqconfig,    // for Log file name
-                            msg_string,         // message
-                            true,               // print in console
-                            true);              // print in log file
+                        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
                         continue; // skip entry
                     }
                 }else{
 
                     // Print it (Console and/or Log file)
-                    OpenWQ_output.ConsoleLog(
-                        OpenWQ_wqconfig,    // for Log file name
-                        msg_string,         // message
-                        true,               // print in console
-                        true);              // print in log file
+                    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                     continue;
                 }
@@ -1045,11 +1001,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + ", Data_row=" + std::to_string(di + 1); 
 
                 // Print it (Console and/or Log file)
-                OpenWQ_output.ConsoleLog(
-                    OpenWQ_wqconfig,    // for Log file name
-                    msg_string,         // message
-                    true,               // print in console
-                    true);              // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
             }
 
@@ -1069,11 +1021,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                     + ", Data_row=" + std::to_string(di + 1); 
 
                 // Print it (Console and/or Log file)
-                OpenWQ_output.ConsoleLog(
-                    OpenWQ_wqconfig,    // for Log file name
-                    msg_string,         // message
-                    true,               // print in console
-                    true);              // print in log file
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
                 continue;
             }
@@ -1119,8 +1067,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
                             // it starts with 0 (zero), meaning that has not been used
                             // if not an "all" element, then it's set to -1
 
-        // Add new row to SinkSource_FORC or ExtFlux_FORC
-        AppendRow_SS_EWF_FORC(
+        // Add new row to SinkSource_FORC or ExtFlux_FORC_jsonAscii
+        AppendRow_SS_EWF_FORC_jsonAscii(
             OpenWQ_wqconfig,
             inputType,
             row_data_col);
@@ -1144,36 +1092,50 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     bool foundflag){
     
     // Local variables
-    std::string msg_string;
-    std::size_t it;
-    std::string ewf_h5_folderPath;
-    std::string ewf_filenamePath;
-    std::string ewf_h5_units;
-    std::string ewf_h5_units_file;
-    bool volume_unit_flag;
-    std::vector<std::string> units;
-    std::string external_compartName;
-    std::string external_waterFluxName;
-    double external_waterFluxName_id;
-    std::string chemname;
-    arma::mat xyzEWF_h5;
-    arma::mat domain_EWF_h5;
-    arma::mat dataEWF_h5;
-    std::vector<double> unit_multiplers;  // multiplers (numerator and denominator)
-    std::vector<std::string> tSamp_valid; // save valid time stamps
-    time_t tSamp_valid_i_time_t; 
-    arma::vec row_data_col;                     // new row data (initially as col data)
-    int x_externModel, y_externModel, z_externModel;
-    int x_interface, y_interface, z_interface;
-    int nx_interface, ny_interface, nz_interface;
-    std::string ss_cmp_recipient_name;
-    json interaction_interface_json;
+    std::string msg_string;                 // console/logFile message
+    std::size_t it;                         // interactor
+    std::string ewf_h5_folderPath;          // json input: folder with EWF input *.h5 files
+    std::string ewf_filenamePath;           // full path for *.h5 files
+    std::string ewf_h5_units;               // json input: units of EWF h5 files
+    std::string ewf_h5_units_file;          // Same as above, but "\" replaced by "|" for file search
+    double conc_h5_rowi;                    // iteractive concentration extracted for h5 files
+    bool volume_unit_flag;                  // flag to identify the existence of volume in units, i.e., concentration
+    std::vector<std::string> units;         // Vector with units information
+    std::string external_compartName;       // json input: External compartment name
+    std::string external_waterFluxName;     // EWF name (needs to match name hard coded in hydrolink)
+    double external_waterFluxName_id;       // index of external_waterFluxName
+    std::string chemname;                   // iteractive chemical name during h5 search
+    arma::mat xyzEWF_h5;                    // h5 xyz field 
+    arma::mat domain_EWF_h5;                // h5 information about external compartment domain (nx,ny,nz)
+    arma::mat dataEWF_h5;                   // h5 data
+    std::vector<double> unit_multiplers;    // multiplers (numerator and denominator)
+    std::vector<std::string> tSamp_valid;   // save valid time stamps
+    time_t tSamp_valid_i_time_t;            // iteractive time_t from h5 timestamp
+    int x_externModel, y_externModel, z_externModel;        // iteractive x,y,z info from h5 files
+    int x_interface_h5, y_interface_h5, z_interface_h5;     // iteractive x,y,z from interface requested in h5 ewf files
+    int nx_interface_h5, ny_interface_h5, nz_interface_h5;  // nx,ny,nz of external compartment from h5 ewf file
+    int ewfName_nx, ewfName_ny, ewfName_nz;                 // nx, ny and nz of EWF associated
+    std::string ss_cmp_recipient_name;                      // name of EWF recipient
+    json interaction_interface_json;                        // json substructure for interface info
     int index_i;
-    bool validEntryFlag;
-    bool foundTimeStmps;                 // flag to record (un)success in finding timestamps
-    bool h5_entry_found;
-    std::string errorMsgIdentifier;
-   
+    bool validEntryFlag;                    // flag for valid entries
+    bool foundTimeStmps;                    // flag to record (un)success in finding timestamps
+    bool h5_entry_found;                    // flag for successful finding of ewf h5 file
+    std::string errorMsgIdentifier;         // Start/head of error message of json key not found
+    std::vector<int> valid_interfaceH5rows; // vector with indexes of relevant h5 rows that contain interface data
+    int rowi_val;                           // iteractive row number from valid_interfaceH5rows 
+    int point_print_n;                      // iterative trackking of "." console prints (each timeStamp) for asthetics
+    bool flag_newJSON_h5Request = true;      // flag for new json block for ewf-h5
+    bool flag_newChem = true;               // flag for new chem from json ewf-h5 clock
+    int h5EWF_request_index;                // Index of ewf-h5 index
+
+    // Get request index
+    h5EWF_request_index = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).size();
+
+    // ################################
+    // Get JSON info
+    // ################################
+
     errorMsgIdentifier = inputType + " json block with DataFormat=HDF5" ;
 
     // h5 IC folder path
@@ -1181,28 +1143,38 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "FOLDERPATH",
         errorMsgIdentifier);
-    
     // h5 ic units
     ewf_h5_units = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "UNITS",
         errorMsgIdentifier);
-
-    ewf_h5_units_file = ewf_h5_units;
-
     // get external compartment name (needed for both ss and ewf)
     external_compartName = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "EXTERNAL_COMPARTMENT_NAME",
         errorMsgIdentifier);
-
     // Get interface between openwq models
     interaction_interface_json = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "INTERACTION_INTERFACE",
         errorMsgIdentifier);
-    
+    // Get external flux name
+    external_waterFluxName = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        EWF_SS_json_sub, "EXTERNAL_INPUTFLUX_NAME",
+        errorMsgIdentifier);
+    // Get interpolation method
+    (OpenWQ_wqconfig.h5EWF_interpMethod) = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        EWF_SS_json_sub, "INTERPOLATION",
+        errorMsgIdentifier);
+
+    // ################################
+    // Some pre-processing
+    // ################################
+
     // replace "/" by "|" is needed because "/" is not compatible with directory full paths
+    ewf_h5_units_file = ewf_h5_units;
     it = (int) ewf_h5_units_file.find("/");
     if (it <= ewf_h5_units_file.size()){
         ewf_h5_units_file.replace(it,1, "|");
@@ -1219,13 +1191,6 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                             // to native (true) or 
                             // from native to desired output units (false)
 
-    // Get external flux name
-    errorMsgIdentifier = inputType + " json block with DataFormat=HDF5" ;
-    external_waterFluxName = OpenWQ_utils.RequestJsonKeyVal_str(
-        OpenWQ_wqconfig, OpenWQ_output,
-        EWF_SS_json_sub, "EXTERNAL_INPUTFLUX_NAME",
-        errorMsgIdentifier);
-
     // Get corresponding id
     external_waterFluxName_id = 
         (double)OpenWQ_utils.FindStrIndexInVectStr(
@@ -1234,25 +1199,32 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
 
     // If external compartment not found in internal list of EWF, then
     // throw warning msg and skip entry
+    // Otherwise save it in (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_ewfCompID)
     if(external_waterFluxName_id==-1.0f){
-
-        // If key not found, throw warning and skip
         msg_string = 
             "<OpenWQ> WARNNING SS json key EXTERNAL_INPUTFLUX_NAME= "
             + external_waterFluxName
             + " not valid for this host-model coupling (entry ignored).";
-
-        // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
-
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
         return;
+    }else{
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_ewfCompID).push_back(external_waterFluxName_id);
     }
 
+    // Get num of interface elements
+    ewfName_nx = std::get<2>(OpenWQ_hostModelconfig.HydroExtFlux[external_waterFluxName_id]);
+    ewfName_ny = std::get<3>(OpenWQ_hostModelconfig.HydroExtFlux[external_waterFluxName_id]);
+    ewfName_nz = std::get<4>(OpenWQ_hostModelconfig.HydroExtFlux[external_waterFluxName_id]);
+    
+    // Generate arma::cube of compartment ewfi size
+    // And reset ExtFlux_FORC_data_tStep for dimensions of 
+    // ewf of index external_waterFluxName_id
+    arma::Cube<double> ewfi_domain_xyz(ewfName_nx, ewfName_ny, ewfName_nz);
+    (*OpenWQ_wqconfig.ExtFlux_FORC_data_tStep) = ewfi_domain_xyz;
+
     // Get valid time steps from the logFile of EWF simulation
+    // if timeStamps not found, then return 
+    // warning message alerady printed in GetTimeStampsFromLogFile
     foundTimeStmps = OpenWQ_utils.GetTimeStampsFromLogFile(
         OpenWQ_wqconfig,
         OpenWQ_output,
@@ -1260,19 +1232,36 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         "<OpenWQ> Output export successful (HDF5): ", // Substring of the output to search
         tSamp_valid,
         "SS/EWF load/sink/conc H5 supporting logFile"); // Logfile errMsg identifier
-
-    // if timeStamps not found, then return 
-    // warning message alerady printed in GetTimeStampsFromLogFile
     if (foundTimeStmps==false) return;
 
-    // Loop over chemical species 
+    // Throw console message to say it's processing the h5 interface data
+    msg_string = "<OpenWQ> EWF HDF5 interface requested.\n"
+                 "         Processing and checking interface...";
+    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, false);
+
+
+    // ################################
+    // Loop over EWF h5 files
+    // ################################
+    // Each chemical species is in different files
     for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_num_chem;chemi++){
-        
+
+        // Set new chem flag true
+        flag_newChem = true;
+
+        // ############################
+        // Get and process interface H5 data 
+
+        // Get chem name
         chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi];
+
+        // Throw consolde update
+        msg_string = "         " + external_waterFluxName + " => " + chemname + " .";
+        std::string whiteSpacing(msg_string.size()-1,' ');
+        std::cout << msg_string << std::flush;
 
         // Generate full ic filename
         ewf_filenamePath = ewf_h5_folderPath;
-
         ewf_filenamePath.append("/");
         ewf_filenamePath.append(external_compartName); // compartment
         ewf_filenamePath.append("@");
@@ -1289,166 +1278,230 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
 
         // xyzEWF_h5 is empty, 
         // it means that the h5 file requested was not found
+        // Throw warning and skip
         if(xyzEWF_h5.is_empty()){
-
-            // Throw warning and skip
             msg_string = 
-                "<OpenWQ> WARNNING "
-                + inputType
-                + " h5 file requested="
-                + ewf_filenamePath
+                "<OpenWQ> WARNNING " + inputType
+                + " h5 file requested=" + ewf_filenamePath
                 + " was not found. Revise the json inputs and "
                 "corresponding h5 files (entry skipped).";
-
-            // Print it (Console and/or Log file)
-            OpenWQ_output.ConsoleLog(
-                OpenWQ_wqconfig,    // for Log file name
-                msg_string,         // message
-                true,               // print in console
-                true);              // print in log file
-
+            OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
             continue;
         }
 
-        // Get domain nx, ny, nz from the h5 ewf data
+        // Get entire entire domain nx, ny, nz from the h5 ewf data
+        // This corresponds to the EWF external compartment
         domain_EWF_h5
             .load(arma::hdf5_name(
                 ewf_filenamePath,          // file name
                 "xyz_elements_total"));          // options
 
         // Check if entries of INTERACTION_INTERFACE are valid
-        // Return if not a valid interface
-        // Error messages are provided insie Convert2NegativeOneIfAll_inputInt()
+        // Returns if not a valid interface
+        // Error messages are provided inside Convert2NegativeOneIfAll_inputInt()
+        // "all" entry is converted into -1, "end" is converted into nx, iy o nz provided in domain_EWF_h5
+        // x_interface_h5, y_interface_h5, and z_interface_h5 passed by reference and updated inside function
         // x
         index_i = 0;
-        msg_string = "EWF Invalid 'INTERACTION_INTERFACE' array element" 
-                    + std::to_string(index_i) 
-                    + "for HDF5. It only accepts integers or 'all'";
+        msg_string = "EWF Invalid 'INTERACTION_INTERFACE' array element " 
+                    + std::to_string(index_i) + "for HDF5. It only accepts integers or 'all'";
         validEntryFlag = OpenWQ_utils.Convert2NegativeOneIfAll_inputInt(
             OpenWQ_wqconfig, OpenWQ_output, msg_string,
-            interaction_interface_json, index_i, x_interface, 
-            domain_EWF_h5(0,0));    // nx
+            interaction_interface_json, 0, x_interface_h5, domain_EWF_h5(0,0));
         if (!validEntryFlag) return;
         // y
         index_i = 1;
+        msg_string = "EWF Invalid 'INTERACTION_INTERFACE' array element " 
+                    + std::to_string(index_i) + "for HDF5. It only accepts integers or 'all'";
         validEntryFlag = OpenWQ_utils.Convert2NegativeOneIfAll_inputInt(
             OpenWQ_wqconfig, OpenWQ_output, msg_string,
-            interaction_interface_json, index_i, y_interface,
-            domain_EWF_h5(0,1));    // ny
+            interaction_interface_json, 1, y_interface_h5, domain_EWF_h5(0,1));
         if (!validEntryFlag) return;
         // z
         index_i = 2;
+        msg_string = "EWF Invalid 'INTERACTION_INTERFACE' array element " 
+                    + std::to_string(index_i) + "for HDF5. It only accepts integers or 'all'";
         validEntryFlag = OpenWQ_utils.Convert2NegativeOneIfAll_inputInt(
             OpenWQ_wqconfig, OpenWQ_output, msg_string,
-            interaction_interface_json, index_i, z_interface,  
-            domain_EWF_h5(0,2));    // nz
+            interaction_interface_json, 2, z_interface_h5, domain_EWF_h5(0,2));
         if (!validEntryFlag) return;
 
-        // Get valid timestamps
+        // Get the domain of interface external compartment
+        if(x_interface_h5==-1) nx_interface_h5 = domain_EWF_h5(0,0);
+        else nx_interface_h5 = x_interface_h5;
+        if(y_interface_h5==-1) ny_interface_h5 = domain_EWF_h5(0,1);
+        else ny_interface_h5 = y_interface_h5;
+        if(z_interface_h5==-1) nz_interface_h5 = domain_EWF_h5(0,2);
+        else nz_interface_h5 = z_interface_h5;
+
+        // ################################
+        // Check if requested interface elements match
+        // the dimensions of 
+        // ################################
+
+        if(nx_interface_h5!=ewfName_nx 
+          || ny_interface_h5!=ewfName_ny 
+          || nz_interface_h5!=ewfName_nz){
+
+             msg_string = 
+                "<OpenWQ> WARNNING " + inputType
+                + " h5 file requested=" + ewf_filenamePath
+                + " has been found, but the internal dimensions of the interface flux elements ("
+                + std::to_string(ewfName_nx) + "," + std::to_string(ewfName_ny) + ","
+                + std::to_string(ewfName_nz) + ") do not match those requested in 'INTERACTION_INTERFACE': ("
+                + std::to_string(nx_interface_h5) + "," + std::to_string(ny_interface_h5) + ","
+                + std::to_string(nz_interface_h5)
+                + "). Make sure to load an EWF h5 file that has all the"
+                " interface elements and the 'INTERACTION_INTERFACE' specifies all (and only) the interface elements."
+                " This element has been defaulted to zero (entry skipped).";
+            OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
+
+            // Skip entry
+            continue;
+
+        }
+
+        // ################################
+        // Check if necessary external compartment elements exists in EWF h5 file
+        // Check is carried out for the first timestamp
+        // Interface h5 rows saved in: valid_interfaceH5rows
+        // ################################
+
+        // Get the corresponding data
+        dataEWF_h5
+            .load(arma::hdf5_name(
+                ewf_filenamePath,              // file name
+                tSamp_valid[0]));          // options
+
+        // Loop over domain 
+        // and check if the h5 file contains the interface elements
+        for (int x_intrf=0;x_intrf<nx_interface_h5;x_intrf++){
+            for (int y_intrf=0;y_intrf<ny_interface_h5;y_intrf++){
+                for (int z_intrf=0;z_intrf<nz_interface_h5;z_intrf++){
+                    
+                    h5_entry_found = false;
+                        
+                    // Seach for interface element entry row by row
+                    for (int rowi=0;rowi<(int)xyzEWF_h5.n_rows;rowi++){
+
+                        // Get element x,y,z indexes of external model
+                        // Using convention of external model
+                        // Needs to be converted into local openwq implementation
+                        x_externModel = xyzEWF_h5(rowi, 0);
+                        y_externModel = xyzEWF_h5(rowi, 1);
+                        z_externModel = xyzEWF_h5(rowi, 2);
+
+                        // Save ewf conc data if at the interface
+                        if ((x_externModel == x_intrf + 1)
+                            && (y_externModel == y_intrf + 1)
+                            && (z_externModel == z_intrf + 1)){
+                            
+                            // Save valid row index
+                            valid_interfaceH5rows.push_back(rowi);
+                            h5_entry_found = true;
+                            break;
+                        }
+                    }
+
+                    // Through warning message if the interface element 
+                    // is not available in the ewf h5 file
+                    if (h5_entry_found==false){
+                        msg_string = 
+                            "<OpenWQ> WARNNING " + inputType
+                            + " h5 file requested=" + ewf_filenamePath
+                            + " has been found, but it does not contain the interface element ("
+                            + std::to_string(x_intrf) + "," + std::to_string(y_intrf) + ","
+                            + std::to_string(z_intrf) + "). Make sure to load an EWF h5 file that has all the"
+                            " interface elements. This element has been defaulted to zero (entry skipped).";
+                        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
+                    }
+                }
+            }
+        }
+
+        // ############################
+        // Loop over H5 timeSteps data and save interface cells conc
+        // in ExtFlux_FORC_HDF5vec_data and ExtFlux_FORC_HDF5vec_time
+        // ############################
+        point_print_n = 0;
+
         for (long unsigned int tSamp=0;tSamp<tSamp_valid.size();tSamp++){
 
             // Get the corresponding data
             dataEWF_h5
                 .load(arma::hdf5_name(
-                    ewf_filenamePath,            // file name
+                    ewf_filenamePath,              // file name
                     tSamp_valid[tSamp]));          // options
 
             // Get timestamp sting into time_t
             tSamp_valid_i_time_t = OpenWQ_units.convertTime_str2time_t(
                 tSamp_valid[tSamp]);
 
-            // Loop through the interface elements
-            // Through warning message if elements are not found in the ewf h5 file
-            // First, get the number of elements in all directions
-            if(x_interface==-1) nx_interface=domain_EWF_h5(0,0);
-            else nx_interface=x_interface;
-            if(y_interface==-1) ny_interface=domain_EWF_h5(0,1);
-            else ny_interface=y_interface;
-            if(z_interface==-1) nz_interface=domain_EWF_h5(0,2);
-            else nz_interface=z_interface;
+            // Reset ExtFlux_FORC_data_tStep to save next timestep
+            (*OpenWQ_wqconfig.ExtFlux_FORC_data_tStep).zeros();
 
-            // Search loop
-            for (int x_intrf=0;x_intrf<nx_interface;x_intrf++){
-                for (int y_intrf=0;y_intrf<ny_interface;y_intrf++){
-                    for (int z_intrf=0;z_intrf<nz_interface;z_intrf++){
+            // Loop over HDF5 row data referring to the interface
+            // Update ExtFlux_FORC_data_tStep with new time step ewf concentrations
+            for (int rowi=0;rowi<(int)valid_interfaceH5rows.size();rowi++){
 
-                        h5_entry_found = false;
-                        
-                        // Seach for interface element entry row by row
-                        for (int rowi=0;rowi<(int)xyzEWF_h5.n_rows;rowi++){
+                // Get valid row
+                rowi_val = valid_interfaceH5rows[rowi];
 
-                            // Get element x,y,z indexes of external model
-                            // Using convention of external model
-                            // Needs to be converted into local openwq implementation
-                            x_externModel = xyzEWF_h5(rowi, 0);
-                            y_externModel = xyzEWF_h5(rowi, 1);
-                            z_externModel = xyzEWF_h5(rowi, 2);
+                // Get element x,y,z indexes of external model
+                // Using convention of external model
+                // Needs to be converted into local openwq implementation
+                x_externModel = xyzEWF_h5(rowi_val, 0) - 1;
+                y_externModel = xyzEWF_h5(rowi_val, 1) - 1;
+                z_externModel = xyzEWF_h5(rowi_val, 2) - 1;
 
-                            // Save ewf conc data if at the interface
-                            if ((x_externModel == x_intrf + 1)
-                                && (y_externModel == y_intrf + 1)
-                                && (z_externModel == z_intrf + 1)){
-                                
-                                // Extract H5 row to row_data_col
-                                // Unit conversion performed inside this function
-                                row_data_col = ConvertH5row2ArmaVec(
-                                    OpenWQ_units,
-                                    unit_multiplers,
-                                    tSamp_valid_i_time_t,
-                                    external_waterFluxName_id,
-                                    x_externModel, 
-                                    y_externModel, 
-                                    z_externModel,
-                                    dataEWF_h5, 
-                                    rowi,
-                                    chemi);
+                // Get concentration
+                conc_h5_rowi = dataEWF_h5(rowi_val);
 
-                                // Add new row to SinkSource_FORC or ExtFlux_FORC
-                                AppendRow_SS_EWF_FORC(
-                                    OpenWQ_wqconfig,
-                                    inputType,
-                                    row_data_col);
+                // Convert conc to local units
+                OpenWQ_units.Convert_Units(
+                    conc_h5_rowi,               // value passed by reference so that it can be changed
+                    unit_multiplers);           // units
 
-                                h5_entry_found = true;
-                                break;
-                            }
-                        }
+                // Update ExtFlux_FORC_data_tStep
+                (*OpenWQ_wqconfig.ExtFlux_FORC_data_tStep)
+                    (x_externModel,y_externModel,z_externModel) 
+                        = conc_h5_rowi;
 
-                         // Through warning message if the interface element 
-                        // is not available in the ewf h5 file
-                        if (h5_entry_found==false){
-
-                            // Throw warning and skip
-                            msg_string = 
-                                "<OpenWQ> WARNNING "
-                                + inputType
-                                + " h5 file requested="
-                                + ewf_filenamePath
-                                + " has been found, but it does not contain the interface element ("
-                                + std::to_string(x_intrf) + ","
-                                + std::to_string(y_intrf) + ","
-                                + std::to_string(z_intrf) + "). Make sure to load an EWF h5 file that has all the"
-                                " interface elements. This element has been defaulted to zero (entry skipped).";
-
-                            // Print it (Console and/or Log file)
-                            OpenWQ_output.ConsoleLog(
-                                OpenWQ_wqconfig,    // for Log file name
-                                msg_string,         // message
-                                true,               // print in console
-                                true);              // print in log file
-
-                        }
-                    }
-                }
             }
+
+            AppendCube_SS_EWF_FORC_h5(
+                OpenWQ_wqconfig,
+                h5EWF_request_index,
+                chemi,
+                flag_newChem,
+                flag_newJSON_h5Request,
+                tSamp_valid_i_time_t);
+
+            // Reset flags
+            flag_newJSON_h5Request = false;
+            flag_newChem = false;
+
+            // Throw a point in console to show progress
+            // One point per timeStep
+            point_print_n++;
+            if (point_print_n==80){
+                point_print_n=0; 
+                std::cout << "\n" + whiteSpacing << std::flush;
+            }
+            std::cout << "." << std::flush;
+            
         }
+
+        // Print the number of timesteps in the console
+        std::cout << " => TimeSteps processed: " + std::to_string(tSamp_valid.size()) + "\n" << std::flush;
     }
 }
 
 /* #################################################
- // Check Sources and Sinks and Apply
- ################################################# */
-void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
+// Check Sources/Sinks and EWF and Apply
+// only for JSON and ASCII input
+################################################# */
+void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
@@ -1492,9 +1545,9 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
     if (OpenWQ_wqconfig.tstep1_flag){
 
         // Remove requested loads that are prior to the simulation start datetime
-        RemoveLoadBeforeSimStart(
-            array_FORC,
+        RemoveLoadBeforeSimStart_jsonAscii(
             OpenWQ_units,
+            array_FORC,
             YYYY,           // current model step: Year
             MM,             // current model step: month
             DD,             // current model step: day
@@ -1523,6 +1576,12 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
 
     // Get number of rows in SinkSource_FORC
     num_rowdata = (*array_FORC).n_rows; 
+
+    // First reset all values of ewf_conc to ZERO for new time step
+    #pragma omp parallel for collapse(2) num_threads(OpenWQ_wqconfig.num_threads_requested)
+    for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.num_EWF;ewfi++){ // 
+        for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){
+            (*OpenWQ_vars.ewf_conc)(ewfi)(chemi).zeros();}}
 
     /* ########################################
     // Loop over row data in sink-source file
@@ -1628,7 +1687,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
         else if (inputType.compare("ewf") == 0){
 
             // Update ewf_conc
-            Update_EWFconc(
+            Update_EWFconc_jsonAscii(
                 OpenWQ_vars,
                 OpenWQ_wqconfig,
                 OpenWQ_hostModelconfig,
@@ -1638,7 +1697,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
                 (*array_FORC)(ri,9),       // compartment model ix
                 (*array_FORC)(ri,10),      // compartment model iy
                 (*array_FORC)(ri,11),      // compartment model iz
-                value_adjust);             // source load
+                value_adjust);             // new concentration
 
         }
 
@@ -1739,6 +1798,164 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS(
 
 }
 
+/* #################################################
+// Check EWF and apply
+// only H5 input
+################################################# */
+void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
+    OpenWQ_units& OpenWQ_units,
+    OpenWQ_output& OpenWQ_output,
+    const unsigned int YYYY,                            // current model step: Year
+    const unsigned int MM,                              // current model step: month
+    const unsigned int DD,                              // current model step: day
+    const unsigned int HH,                              // current model step: hour
+    const unsigned int MIN,                             // current model step: min
+    const unsigned int SEC){                            // current model step: sec
+
+    // Local variables
+    time_t simTime;                         // current simulation time in time_t
+    time_t h5EWF_time_before;               // iteractive time extraction from FORC_vec_time_t (before simtime)
+    time_t h5EWF_time_after;                // iteractive time extraction from FORC_vec_time_t (after simtime)
+    unsigned long long num_ewfh5_requests;  // number of json ewf-h5 requests
+    unsigned long long num_chems;           // number of chems in h5 stucture
+    unsigned long long num_timeStamps;      // number of timesteps in h5 stucture
+    arma::cube h5Conc_chemi_before;         // iteractive h5-chemi concentration at previous timestep 
+    arma::cube h5Conc_chemi_after;          // iteractive h5-chemi concentration at current or next timestep 
+    arma::cube h5Conc_chemi_interp;         // iteractive h5-chemi concentration at interpolated timestep 
+    std::string msg_string;                 // error message
+
+    // Get number of json ewf-h5 requests
+    num_ewfh5_requests = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).size();
+
+    // Convert sim time to time_t
+    simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
+
+    /* ########################################
+    // Data update/clean-up at 1st timestep
+    ######################################## */
+    if (OpenWQ_wqconfig.tstep1_flag){
+
+        // Loop over all requests
+        for (unsigned int reqi=0;reqi<num_ewfh5_requests;reqi++){
+            // Loop over all of them to removee load before simtime
+            RemoveLoadBeforeSimStart_h5(
+                OpenWQ_units,
+                OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data,  // vec with h5 interface data
+                OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time,  // vec with h5 interface timestamps
+                reqi,           // index of json request for ewf-h5
+                YYYY,           // current model step: Year
+                MM,             // current model step: month
+                DD,             // current model step: day
+                HH,             // current model step: hour
+                MIN,            // current model step: min
+                SEC);           // current model step: sec
+        }
+    }
+
+    // Loop over all requests
+    for (unsigned int reqi=0;reqi<num_ewfh5_requests;reqi++){
+
+        // Number of timestamps
+        num_chems = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[reqi].size();
+        num_timeStamps = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[reqi].size();
+
+        /* ########################################
+        // Loop over timeStamps
+        // to find the row at (or above) the current simTime timeStamp
+        ######################################## */
+
+        for (unsigned long long tStamp=0;tStamp<num_timeStamps;tStamp++){
+
+            // Get timestamp tStamp
+            h5EWF_time_after =  (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[reqi][tStamp];
+            
+            // if at next timestep
+            // this will then get upper and lower timesteps
+            if (h5EWF_time_after > simTime){
+                
+                // Loop over all chemical species
+                for (unsigned long long chemi=0;chemi<num_chems;chemi++){
+                    
+                    // Get h5-ewf for chemical chemi at tStamp-1 timestep
+                    // if at tStamp==0, then need to get the next step
+                    if(tStamp!=0){
+                        h5Conc_chemi_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[reqi][chemi][tStamp-1];
+                        h5EWF_time_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[reqi][tStamp-1];
+                    }else{
+                        h5Conc_chemi_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[reqi][chemi][tStamp];
+                        h5EWF_time_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[reqi][tStamp];
+                    }
+
+                    // ########################################
+                    // Interpolation options
+
+                    // Option: "STEP"
+                    if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("STEP")==0){
+
+                        h5Conc_chemi_interp = h5Conc_chemi_before;
+
+                    }else{
+
+                        // Get h5-ewf for chemical chemi at tStamp+1 timestep
+                            h5Conc_chemi_after = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[reqi][chemi][tStamp];
+                        // Option: "LINEAR"
+                        if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("LINEAR")==0){
+                            h5Conc_chemi_interp = h5Conc_chemi_before 
+                                                + (
+                                                    (h5Conc_chemi_after - h5Conc_chemi_before) 
+                                                    * (simTime - h5EWF_time_before) 
+                                                    / (h5EWF_time_after - h5EWF_time_before)
+                                                );
+                        }
+                        // Option: "NEAREST"
+                        else if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("NEAREST")==0){
+                            if( (simTime - h5EWF_time_before) 
+                                > (h5EWF_time_after - h5EWF_time_before)/2){
+                                h5Conc_chemi_interp = h5Conc_chemi_after;
+                            }else{
+                                h5Conc_chemi_interp = h5Conc_chemi_after;}
+                        }else {
+                            // Defaulting to STEP and throw warning message
+                            OpenWQ_wqconfig.h5EWF_interpMethod = "STEP";
+                            h5Conc_chemi_interp = h5Conc_chemi_before;
+
+                            //Create message
+                            msg_string = 
+                                "<OpenWQ> WARNING: EWF load using HDF5 file 'INTERPOLATION' unkown:"
+                                + OpenWQ_wqconfig.h5EWF_interpMethod
+                                + ". 'INTERPOLATION' defaulted to 'STEP'";
+                            // Print it (Console and/or Log file)
+                            OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
+                        }
+                    }
+
+                // Update h5Conc_chemi_interp for all elements
+                    Update_EWFconc_h5(
+                        OpenWQ_vars,
+                        OpenWQ_wqconfig,
+                        OpenWQ_hostModelconfig,
+                        OpenWQ_output,
+                        reqi,
+                        chemi,
+                        h5Conc_chemi_interp); 
+
+                }
+
+                // if founded step and updated results
+                // then break loop
+                break;
+                
+            }
+
+        }
+
+    }
+    
+}
 
 /* #################################################
  // Apply Source
@@ -1796,11 +2013,7 @@ void OpenWQ_extwatflux_ss::Apply_Source(
             + "";
 
         // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
                         
     }
 
@@ -1866,19 +2079,16 @@ void OpenWQ_extwatflux_ss::Apply_Sink(
             + ", iz=" + std::to_string(iz);
 
         // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
     }
 }
 
 /* #################################################
- // Apply Sink
+ // Update concentration if EWF: 
+ // input type: JSON and ASCII input
  ################################################# */
-void OpenWQ_extwatflux_ss::Update_EWFconc(
+void OpenWQ_extwatflux_ss::Update_EWFconc_jsonAscii(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -1910,12 +2120,6 @@ void OpenWQ_extwatflux_ss::Update_EWFconc(
     else{spZ_min = 0; spZ_max = nz - 1;}
 
     try{
-
-        // First reset all values of ewf_conc to ZERO for new time step
-        #pragma omp parallel for collapse(2) num_threads(OpenWQ_wqconfig.num_threads_requested)
-        for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.num_EWF;ewfi++){ // 
-            for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){
-                (*OpenWQ_vars.ewf_conc)(ewfi)(chemi).zeros();}}
         
         // Now update the elements with information in the EWF file
         (*OpenWQ_vars.ewf_conc)(ewfi)(chemi)(
@@ -1933,7 +2137,7 @@ void OpenWQ_extwatflux_ss::Update_EWFconc(
         // Create Message
         msg_string = 
             "<OpenWQ> WARNING: EWF conc out of boundaries."
-            "Requested EWF concentration update ignored and set to zero: "
+            "Requested EWF concentration update using JSON/ASCII input ignored and set to zero: "
             "EWF=" + OpenWQ_hostModelconfig.cmpt_names[ewfi]
             + ", Chemical=" + OpenWQ_wqconfig.BGC_general_chem_species_list[chemi]
             + ", ix=" + std::to_string(ix)
@@ -1941,13 +2145,70 @@ void OpenWQ_extwatflux_ss::Update_EWFconc(
             + ", iz=" + std::to_string(iz);
 
         // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
     }
+}
+
+/* #################################################
+ // Update concentration if EWF: 
+ // input type: H5
+ ################################################# */
+void OpenWQ_extwatflux_ss::Update_EWFconc_h5(
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_output& OpenWQ_output,
+    const unsigned int reqi,            // request index
+    const unsigned int chemi,           // chemical model index    
+    arma::cube& h5Conc_chemi_interp){    // arma_mat with concentrations
+
+    // Local Variables
+    std::string msg_string;             // error/warning message string
+    unsigned ewfi;                    // EWF input
+    unsigned int spX_min, spX_max, spY_min, spY_max, spZ_min, spZ_max;
+    unsigned int nx_interf, ny_interf, nz_interf;
+    
+    // Get external water flux id
+    ewfi = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_ewfCompID)[reqi];
+
+    // Get num of interface elements
+    nx_interf = std::get<2>(OpenWQ_hostModelconfig.HydroExtFlux[ewfi]) - 1;
+    ny_interf = std::get<3>(OpenWQ_hostModelconfig.HydroExtFlux[ewfi]) - 1;
+    nz_interf = std::get<4>(OpenWQ_hostModelconfig.HydroExtFlux[ewfi]) - 1;
+
+    // Set range of cells to replace
+    spX_min = 0; spX_max = nx_interf;
+    spY_min = 0; spY_max = ny_interf;
+    spZ_min = 0; spZ_max = nz_interf;
+
+    try{
+        
+        // Now update the elements with information in the EWF file
+        (*OpenWQ_vars.ewf_conc)(ewfi)(chemi)(
+            arma::span(spX_min, spX_max), 
+            arma::span(spY_min, spY_max),
+            arma::span(spZ_min, spZ_max)) = h5Conc_chemi_interp;
+
+        // Replace all negative values by zero
+        // Needed because can have negative values
+        (*OpenWQ_vars.ewf_conc)(ewfi)(chemi).transform( [](double val) { return (val < 0.0) ? 0.0 : val; });
+
+    }catch (...){
+
+        // Through a warning if request out of boundaries
+        // Create Message
+        msg_string = 
+            "<OpenWQ> WARNING: EWF conc out of boundaries."
+            "Requested EWF concentration update using HDF5 input ignored and set to zero: "
+            "EWF=" + OpenWQ_hostModelconfig.cmpt_names[ewfi]
+            + ", Chemical=" + OpenWQ_wqconfig.BGC_general_chem_species_list[chemi];
+
+        // Print it (Console and/or Log file)
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
+
+    }
+
 }
 
 /* #################################################
@@ -1988,11 +2249,7 @@ bool OpenWQ_extwatflux_ss::getModIndex(
             + obj_name;
 
         // Print it (Console and/or Log file)
-        OpenWQ_output.ConsoleLog(
-            OpenWQ_wqconfig,    // for Log file name
-            msg_string,         // message
-            true,               // print in console
-            true);              // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
     }
     return foundflag;
@@ -2034,11 +2291,7 @@ bool OpenWQ_extwatflux_ss::getModIndex(
                             + ", Sub_structure=" + std::to_string(struc_i+1)
                             + ", Data_row=" + std::to_string(row_i + 1);   
 
-        OpenWQ_output.ConsoleLog(   // Print it (Console and/or Log file)
-            OpenWQ_wqconfig,        // for Log file name
-            msg_string,             // message
-            true,                   // print in console
-            true);                  // print in log file
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
 
         validEntryFlag = false;
     }
@@ -2052,9 +2305,10 @@ bool OpenWQ_extwatflux_ss::getModIndex(
 // remove requested loads that are prior to the simulation start datetime
 // only do this for rows that don't have any "all" elements
 #################################################*/
-void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
-    std::unique_ptr<arma::Mat<double>>& array_FORC,
+// JSON and ASCII entries
+void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_jsonAscii(
     OpenWQ_units& OpenWQ_units,
+    std::unique_ptr<arma::Mat<double>>& array_FORC,
     const int YYYY,         // current model step: Year
     const int MM,           // current model step: month
     const int DD,           // current model step: day
@@ -2136,6 +2390,74 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart(
     // Remove the identified past row data 
     (*array_FORC).shed_rows(rows2Remove_uvec); 
 
+}
+
+// Same as above but for EWF H5 entries
+void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
+    OpenWQ_units& OpenWQ_units,
+    std::unique_ptr<std::vector<std::vector<std::vector<arma::Cube<double>>>>>& FORC_vec_data, // H5 interface data
+    std::unique_ptr<std::vector<std::vector<time_t>>>& FORC_vec_time_t,          // H5 interface timestamps
+    const int reqi,
+    const int YYYY,         // current model step: Year
+    const int MM,           // current model step: month
+    const int DD,           // current model step: day
+    const int HH,           // current model step: hour
+    const int MIN,          // current model step: min
+    const int SEC){         // current model step: sec
+
+    // Local variables
+    time_t simTime;                         // current simulation time in time_t
+    time_t h5EWF_time;                      // iteractive time extraction from FORC_vec_time_t
+    unsigned long long num_timeStamps;               // number of timesteps in h5 stucture
+    unsigned long long num_chems;                    // number of timesteps in h5 stucture
+    unsigned long long n_rows2remove;       // number of rows to remove
+    std::vector<int> timStampsIndex2Remove; // List of rows indexes to remove  
+    long long ri2remove;                    // index of row to remove   
+
+    // Convert sim time to time_t
+    simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
+
+    // Number of timestamps
+    num_chems = (*FORC_vec_data)[reqi].size();
+    num_timeStamps = (*FORC_vec_time_t)[reqi].size();
+
+    /* ########################################
+    // Loop over timeStamps
+    // to find the rows with timestamps before simTime
+    ######################################## */
+
+    for (unsigned long long tStamp=0;tStamp<num_timeStamps;tStamp++){
+        // Get timestamp tStamp
+        h5EWF_time = (*FORC_vec_time_t)[reqi][tStamp];
+        // Add to rows2Remove if the h5-time is before simTime
+        if (h5EWF_time < simTime){
+            timStampsIndex2Remove.push_back(tStamp);}
+    }
+
+     /* ########################################
+    // Loop over rows2Remove
+    // to remove the rows corresponding to timestamps
+    // occuring before simulation start
+    ######################################## */
+
+    // Number of rows to remove
+    n_rows2remove = timStampsIndex2Remove.size();
+
+    // Loop over number of to-remove indexes (timestamps)
+    for (unsigned long long tstep=0;tstep<n_rows2remove;tstep++){
+
+        // Index of row to remove
+        ri2remove = timStampsIndex2Remove[tstep];
+        // Remove row from FORC_vec_data and 
+        (*FORC_vec_time_t)[reqi].erase((*FORC_vec_time_t)[reqi].begin()+(ri2remove-1));
+
+        // Loop over all chemical species
+        for (unsigned long long chemi=0;chemi<num_chems;chemi++){
+
+            (*FORC_vec_data)[reqi][chemi].erase((*FORC_vec_data)[reqi][chemi].begin()+(ri2remove-1));
+
+        }
+    }
 }
 
 /* #################################################
@@ -2373,8 +2695,8 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
 
 }
 
-// Add new row to SinkSource_FORC or ExtFlux_FORC
-void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC(
+// Add new row to SinkSource_FORC or ExtFlux_FORC_jsonAscii
+void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_jsonAscii(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     std::string inputType,
     arma::vec row_data_col){
@@ -2386,70 +2708,63 @@ void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC(
     // Transpose vector for adding to SinkSource_FORC as a new row
     row_data_row = row_data_col.t();
 
-    // Add new row_data_row to SinkSource_FORC   
+    // Get index of last element
     if (inputType.compare("ss")==0)     int_n_elem = (*OpenWQ_wqconfig.SinkSource_FORC).n_rows;
-    if (inputType.compare("ewf")==0)    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC).n_rows;
+    if (inputType.compare("ewf")==0)    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC_jsonAscii).n_rows;
     
-    if (inputType.compare("ss")==0){ (*OpenWQ_wqconfig.SinkSource_FORC).insert_rows(
-        std::max(int_n_elem-1,0),
-        row_data_row);}
-    else if (inputType.compare("ewf")==0){ (*OpenWQ_wqconfig.ExtFlux_FORC).insert_rows(
-        std::max(int_n_elem-1,0),
-        row_data_row);}
-
+    // Add new row_data_row to SinkSource_FORC
+    if (inputType.compare("ss")==0){ 
+        (*OpenWQ_wqconfig.SinkSource_FORC).insert_rows(
+            std::max(int_n_elem-1,0),
+            row_data_row);}
+    else if (inputType.compare("ewf")==0){
+        (*OpenWQ_wqconfig.ExtFlux_FORC_jsonAscii).insert_rows(
+            std::max(int_n_elem-1,0),
+            row_data_row);}
+   
 }
 
-// Extract H5 row to row_data_col
-arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
-    OpenWQ_units& OpenWQ_units,
-    std::vector<double> unit_multiplers,
-    time_t timestamp_time_t,
-    double ewf_id,
-    int x_externModel, 
-    int y_externModel, 
-    int z_externModel,
-    arma::mat dataEWF_h5, 
-    int rowi,
-    int chemi){
+// Add new row to SinkSource_FORC or ExtFlux_FORC_jsonAscii
+void OpenWQ_extwatflux_ss::AppendCube_SS_EWF_FORC_h5(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    int h5EWF_request_index,        // get request index
+    int chemi,                      // chem index
+    bool flag_newChem,              // flag for new timestep, push back new vector row [i]
+    bool flag_newJSON_h5Request,     // new json-h5-ewf request
+    time_t timestamp_time_t){        // timestamp in time_t
 
-    // Local variables
-    arma::vec row_data_col;              // new row data (initially as col data)
-    double conc_h5;
-    std::tm* timeStructure_tm;           // time stucture
-    // Because this is EWF only
-    double sourcSink_type_id = 0.0f; // 0=source (see ExtFlux_FORC structure)
-    double loadSink_scheme_id = 0.0f; // 0=loading scheme not applicable (see ExtFlux_FORC structure)
+    
+    // Push_back/Create vector<vector<arma>> for every new request (ewf-h5) 
+    if(flag_newJSON_h5Request==true){
+        // Time
+        std::vector<time_t> newEntryArma_time; 
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).push_back(newEntryArma_time);
+        // Data
+        std::vector<std::vector<arma::Cube<double>>> newEntryArma_data; 
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data).push_back(newEntryArma_data);
+    }
 
-    // Generate time structure from time_t
-    timeStructure_tm = gmtime(&timestamp_time_t);
+    // Push_back/Create vector<arma> for every new chem 
+    if(flag_newChem==true){
+        std::vector<arma::Cube<double>> newChemArma; // create vector<arma> for every new chem
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[h5EWF_request_index].push_back(newChemArma);
 
-    // Get concentration
-    conc_h5 = dataEWF_h5(rowi);
+        
+    }
 
-    // Convert conc to local units
-    OpenWQ_units.Convert_Units(
-        conc_h5,               // value passed by reference so that it can be changed
-        unit_multiplers);       // units
+    // Add new timestamp to ExtFlux_FORC_HDF5vec_time
+    // But only needed on first chemi pass
+    if(chemi==0){
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[h5EWF_request_index].push_back(
+            timestamp_time_t);
+    }
 
-    // Generate the arma::vec row_data_col
-    row_data_col = {
-        (double) chemi,
-        (double) ewf_id,
-        (double) sourcSink_type_id,
-        (double) (timeStructure_tm->tm_year),
-        (double) (timeStructure_tm->tm_mon),
-        (double) (timeStructure_tm->tm_mday),
-        (double) (timeStructure_tm->tm_hour),
-        (double) (timeStructure_tm->tm_min),
-        (double) (timeStructure_tm->tm_sec),
-        (double) x_externModel - 1,
-        (double) y_externModel - 1,
-        (double) z_externModel - 1,
-        conc_h5,
-        loadSink_scheme_id, // load scheme (0) not applicable, (1) discrete or (2) continuous
-        0,0,0,0,0,0         // field to specify the number of times it has been used aleady
-        };                  // in the case of and "all" element (YYYY, MM, DD, HH, MIN, SEC)
-                            // it starts with 0 (zero), meaning that has not been used
+    // add timestep data to vector ExtFlux_FORC_HDF5vec_data[chemi]
+    (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[h5EWF_request_index][chemi].push_back(
+        *OpenWQ_wqconfig.ExtFlux_FORC_data_tStep);
 
-    return row_data_col;
+    // Reset ExtFlux_FORC_data_tStep
+    (*OpenWQ_wqconfig.ExtFlux_FORC_data_tStep).zeros();
+
+
 }

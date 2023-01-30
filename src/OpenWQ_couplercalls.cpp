@@ -193,6 +193,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
             OpenWQ_vars,
             OpenWQ_hostModelconfig,
             OpenWQ_wqconfig,
+            OpenWQ_utils,
             OpenWQ_units,
             OpenWQ_output);
 
@@ -216,39 +217,42 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     int min_sim_now = tm_simtime->tm_min;
     int sec_sim_now = tm_simtime->tm_sec;
 
-    // SS (find and apply)
-    OpenWQ_extwatflux_ss.CheckApply_EWFandSS(
+    // SS (find and apply) - JSON or ASCII input
+    OpenWQ_extwatflux_ss.CheckApply_EWFandSS_jsonAscii(
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
         OpenWQ_utils,
         OpenWQ_units,
         OpenWQ_output,
-        year_sim_now,
-        month_sim_now,
-        day_sim_now,
-        hour_sim_now,
-        min_sim_now,
-        sec_sim_now,
+        year_sim_now, month_sim_now, day_sim_now,
+        hour_sim_now, min_sim_now, sec_sim_now,
         (std::string) "ss",
         OpenWQ_wqconfig.SinkSource_FORC);
 
-    // EWF (find and update ewf_conc for use with EWF)
-    OpenWQ_extwatflux_ss.CheckApply_EWFandSS(
+    // EWF (find and update ewf_conc for use with EWF) - JSON or ASCII input
+    OpenWQ_extwatflux_ss.CheckApply_EWFandSS_jsonAscii(
         OpenWQ_vars,
         OpenWQ_hostModelconfig,
         OpenWQ_wqconfig,
         OpenWQ_utils,
         OpenWQ_units,
         OpenWQ_output,
-        year_sim_now,
-        month_sim_now,
-        day_sim_now,
-        hour_sim_now,
-        min_sim_now,
-        sec_sim_now,
+        year_sim_now, month_sim_now, day_sim_now,
+        hour_sim_now, min_sim_now, sec_sim_now,
         (std::string) "ewf",
-        OpenWQ_wqconfig.ExtFlux_FORC); 
+        OpenWQ_wqconfig.ExtFlux_FORC_jsonAscii);
+
+    // EWF  (find and update ewf_conc for use with EWF) - H5
+    OpenWQ_extwatflux_ss.CheckApply_EWF_h5(
+        OpenWQ_vars,
+        OpenWQ_hostModelconfig,
+        OpenWQ_wqconfig,
+        OpenWQ_utils,
+        OpenWQ_units,
+        OpenWQ_output,
+        year_sim_now, month_sim_now, day_sim_now,
+        hour_sim_now, min_sim_now, sec_sim_now); 
 
     // Flag to note that 1st time step has been completed
     OpenWQ_wqconfig.tstep1_flag = false;
