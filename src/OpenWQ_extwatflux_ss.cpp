@@ -1111,7 +1111,6 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     std::vector<double> unit_multiplers;    // multiplers (numerator and denominator)
     std::vector<std::string> tSamp_valid;   // save valid time stamps
     time_t tSamp_valid_i_time_t;            // iteractive time_t from h5 timestamp
-    arma::vec row_data_col;                                 // new row data (initially as col data)
     int x_externModel, y_externModel, z_externModel;        // iteractive x,y,z info from h5 files
     int x_interface_h5, y_interface_h5, z_interface_h5;     // iteractive x,y,z from interface requested in h5 ewf files
     int nx_interface_h5, ny_interface_h5, nz_interface_h5;  // nx,ny,nz of external compartment from h5 ewf file
@@ -1125,10 +1124,9 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     std::string errorMsgIdentifier;         // Start/head of error message of json key not found
     std::vector<int> valid_interfaceH5rows; // vector with indexes of relevant h5 rows that contain interface data
     int rowi_val;                           // iteractive row number from valid_interfaceH5rows 
-    bool flag_newChem;                      // bool to flag new chem, which will create new vector row in ExtFlux_FORC_HDF5vec_data
-    bool flag_newTimeStamp;                 // bool to flag new timestep, which will save data into ExtFlux_FORC_HDF5vec_data and ExtFlux_FORC_HDF5vec_time
     int point_print_n;                      // iterative trackking of "." console prints (each timeStamp) for asthetics
-    bool flg_newJSON_h5Request = true;      // flag for new json block for ewf-h5
+    bool flag_newJSON_h5Request = true;      // flag for new json block for ewf-h5
+    bool flag_newChem = true;               // flag for new chem from json ewf-h5 clock
     int h5EWF_request_index;                // Index of ewf-h5 index
 
     // Get request index
@@ -1217,6 +1215,12 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     ewfName_nx = std::get<2>(OpenWQ_hostModelconfig.HydroExtFlux[external_waterFluxName_id]);
     ewfName_ny = std::get<3>(OpenWQ_hostModelconfig.HydroExtFlux[external_waterFluxName_id]);
     ewfName_nz = std::get<4>(OpenWQ_hostModelconfig.HydroExtFlux[external_waterFluxName_id]);
+    
+    // Generate arma::cube of compartment ewfi size
+    // And reset ExtFlux_FORC_data_tStep for dimensions of 
+    // ewf of index external_waterFluxName_id
+    arma::Cube<double> ewfi_domain_xyz(ewfName_nx, ewfName_ny, ewfName_nz);
+    (*OpenWQ_wqconfig.ExtFlux_FORC_data_tStep) = ewfi_domain_xyz;
 
     // Get valid time steps from the logFile of EWF simulation
     // if timeStamps not found, then return 
@@ -1242,14 +1246,14 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     // Each chemical species is in different files
     for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_num_chem;chemi++){
 
+        // Set new chem flag true
+        flag_newChem = true;
+
         // ############################
         // Get and process interface H5 data 
 
         // Get chem name
         chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi];
-
-        // Set flag to push_back new vector row for chemi ewf data
-        flag_newChem = true;
 
         // Throw consolde update
         msg_string = "         " + external_waterFluxName + " => " + chemname + " .";
@@ -1419,7 +1423,6 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         // Loop over H5 timeSteps data and save interface cells conc
         // in ExtFlux_FORC_HDF5vec_data and ExtFlux_FORC_HDF5vec_time
         // ############################
-        flag_newTimeStamp = false;
         point_print_n = 0;
 
         for (long unsigned int tSamp=0;tSamp<tSamp_valid.size();tSamp++){
@@ -1434,7 +1437,11 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
             tSamp_valid_i_time_t = OpenWQ_units.convertTime_str2time_t(
                 tSamp_valid[tSamp]);
 
+            // Reset ExtFlux_FORC_data_tStep to save next timestep
+            (*OpenWQ_wqconfig.ExtFlux_FORC_data_tStep).zeros();
+
             // Loop over HDF5 row data referring to the interface
+            // Update ExtFlux_FORC_data_tStep with new time step ewf concentrations
             for (int rowi=0;rowi<(int)valid_interfaceH5rows.size();rowi++){
 
                 // Get valid row
@@ -1443,9 +1450,9 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                 // Get element x,y,z indexes of external model
                 // Using convention of external model
                 // Needs to be converted into local openwq implementation
-                x_externModel = xyzEWF_h5(rowi_val, 0);
-                y_externModel = xyzEWF_h5(rowi_val, 1);
-                z_externModel = xyzEWF_h5(rowi_val, 2);
+                x_externModel = xyzEWF_h5(rowi_val, 0) - 1;
+                y_externModel = xyzEWF_h5(rowi_val, 1) - 1;
+                z_externModel = xyzEWF_h5(rowi_val, 2) - 1;
 
                 // Get concentration
                 conc_h5_rowi = dataEWF_h5(rowi_val);
@@ -1454,35 +1461,25 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
                 OpenWQ_units.Convert_Units(
                     conc_h5_rowi,               // value passed by reference so that it can be changed
                     unit_multiplers);           // units
-                
-                // Extract H5 row to row_data_col
-                row_data_col = ConvertH5row2ArmaVec(
-                    x_externModel, y_externModel,z_externModel,
-                    conc_h5_rowi);
 
-                // Add new row to ExtFlux_FORC_data_tStep
-                // if last row, then append ExtFlux_FORC_data_tStep
-                // into ExtFlux_FORC_HDF5vec
-
-                if (rowi==(int)valid_interfaceH5rows.size()-1){
-                     flag_newTimeStamp = true;}
-
-                AppendRow_SS_EWF_FORC_h5(
-                    OpenWQ_wqconfig,
-                    h5EWF_request_index,
-                    chemi,
-                    flg_newJSON_h5Request,
-                    flag_newChem,
-                    flag_newTimeStamp,
-                    tSamp_valid_i_time_t,
-                    row_data_col);
-
-                // Reset flags
-                flg_newJSON_h5Request = false;
-                flag_newTimeStamp = false;
-                flag_newChem = false;
+                // Update ExtFlux_FORC_data_tStep
+                (*OpenWQ_wqconfig.ExtFlux_FORC_data_tStep)
+                    (x_externModel,y_externModel,z_externModel) 
+                        = conc_h5_rowi;
 
             }
+
+            AppendCube_SS_EWF_FORC_h5(
+                OpenWQ_wqconfig,
+                h5EWF_request_index,
+                chemi,
+                flag_newChem,
+                flag_newJSON_h5Request,
+                tSamp_valid_i_time_t);
+
+            // Reset flags
+            flag_newJSON_h5Request = false;
+            flag_newChem = false;
 
             // Throw a point in console to show progress
             // One point per timeStep
@@ -2371,7 +2368,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_jsonAscii(
 // Same as above but for EWF H5 entries
 void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
     OpenWQ_units& OpenWQ_units,
-    std::unique_ptr<std::vector<std::vector<std::vector<arma::Mat<double>>>>>& FORC_vec_data, // H5 interface data
+    std::unique_ptr<std::vector<std::vector<std::vector<arma::Cube<double>>>>>& FORC_vec_data, // H5 interface data
     std::unique_ptr<std::vector<std::vector<time_t>>>& FORC_vec_time_t,          // H5 interface timestamps
     const int reqi,
     const int YYYY,         // current model step: Year
@@ -2701,83 +2698,46 @@ void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_jsonAscii(
 }
 
 // Add new row to SinkSource_FORC or ExtFlux_FORC_jsonAscii
-void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_h5(
+void OpenWQ_extwatflux_ss::AppendCube_SS_EWF_FORC_h5(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     int h5EWF_request_index,        // get request index
     int chemi,                      // chem index
-    bool flg_newJSON_h5Request,     // new json-h5-ewf request
     bool flag_newChem,              // flag for new timestep, push back new vector row [i]
-    bool flag_newTimeStamp,         // flag for new chem, push_back new vector row [i][j]
-    time_t timestamp_time_t,        // timestamp in time_t
-    arma::vec row_data_col){
+    bool flag_newJSON_h5Request,     // new json-h5-ewf request
+    time_t timestamp_time_t){        // timestamp in time_t
 
-    // Local variables        
-    arma::Mat<double> row_data_row;             // new row data (initially as col data)
-    int int_n_elem;                             // number of elements/timesteps
     
-     // Push_back/Create vector<vector<arma>> for every new request (ewf-h5) 
-    if(flg_newJSON_h5Request==true){
+    // Push_back/Create vector<vector<arma>> for every new request (ewf-h5) 
+    if(flag_newJSON_h5Request==true){
         // Time
         std::vector<time_t> newEntryArma_time; 
         (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).push_back(newEntryArma_time);
         // Data
-        std::vector<std::vector<arma::Mat<double>>> newEntryArma_data; 
+        std::vector<std::vector<arma::Cube<double>>> newEntryArma_data; 
         (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data).push_back(newEntryArma_data);
     }
 
     // Push_back/Create vector<arma> for every new chem 
     if(flag_newChem==true){
-        std::vector<arma::Mat<double>> newChemArma; // create vector<arma> for every new chem
-        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[h5EWF_request_index].push_back(newChemArma);}
+        std::vector<arma::Cube<double>> newChemArma; // create vector<arma> for every new chem
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[h5EWF_request_index].push_back(newChemArma);
 
-
-    // Transpose vector for adding to SinkSource_FORC as a new row
-    row_data_row = row_data_col.t();
-
-    // Append row
-    int_n_elem = (*OpenWQ_wqconfig.ExtFlux_FORC_data_tStep).n_rows;
-    (*OpenWQ_wqconfig.ExtFlux_FORC_data_tStep).insert_rows(
-        std::max(int_n_elem-1,0),
-        row_data_row);
-
-    // if new timestep, add to vector and reset ExtFlux_FORC_data_tStep
-    if (flag_newTimeStamp==true){
-
-        // Add new timestamp to ExtFlux_FORC_HDF5vec_time
-        // But only needed on first chemi pass
-        if (chemi==0){
-        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[h5EWF_request_index].push_back(
-            timestamp_time_t);}
-    
-        // add timestep data to vector ExtFlux_FORC_HDF5vec_data[chemi]
-        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[h5EWF_request_index][chemi].push_back(
-            *OpenWQ_wqconfig.ExtFlux_FORC_data_tStep);
-
-        // Reset ExtFlux_FORC_data_tStep
-        (*OpenWQ_wqconfig.ExtFlux_FORC_data_tStep).reset();
-
+        
     }
 
-}
+    // Add new timestamp to ExtFlux_FORC_HDF5vec_time
+    // But only needed on first chemi pass
+    if(chemi==0){
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[h5EWF_request_index].push_back(
+            timestamp_time_t);
+    }
+    
+    // add timestep data to vector ExtFlux_FORC_HDF5vec_data[chemi]
+    (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[h5EWF_request_index][chemi].push_back(
+        *OpenWQ_wqconfig.ExtFlux_FORC_data_tStep);
 
-// Extract H5 row to row_data_col
-arma::vec OpenWQ_extwatflux_ss::ConvertH5row2ArmaVec(
-    int x_externModel, 
-    int y_externModel, 
-    int z_externModel,
-    double conc_h5_rowi){
+    // Reset ExtFlux_FORC_data_tStep
+    (*OpenWQ_wqconfig.ExtFlux_FORC_data_tStep).zeros();
 
-    // Local variables
-    arma::vec row_data_col;              // new row data (initially as col data)
 
-    // Generate the arma::vec row_data_col
-    row_data_col = {
-        (double) x_externModel - 1,
-        (double) y_externModel - 1,
-        (double) z_externModel - 1,
-        conc_h5_rowi,
-        };                  // in the case of and "all" element (YYYY, MM, DD, HH, MIN, SEC)
-                            // it starts with 0 (zero), meaning that has not been used
-
-    return row_data_col;
 }

@@ -194,16 +194,16 @@ class OpenWQ_wqconfig
         // Saving 1 timestep
         ExtFlux_FORC_data_tStep = 
             std::unique_ptr<
-            arma::Mat<double>>
-            (new  arma::mat(0,num_coldata_h5));
+            arma::Cube<double>>
+            (new  arma::cube);
         // Storing all timesteps
         ExtFlux_FORC_HDF5vec_data = 
             std::unique_ptr<
             std::vector<           // EWF-h5 json block/request
             std::vector<           // ChemSpecies 
             std::vector<           // timestamps
-            arma::Mat<double>>>>>
-            (new  std::vector<std::vector<std::vector<arma::mat>>>);
+            arma::Cube<double>>>>>
+            (new  std::vector<std::vector<std::vector<arma::cube>>>);
 
     }
 
@@ -245,13 +245,13 @@ class OpenWQ_wqconfig
         std::vector<unsigned int>
         > ExtFlux_FORC_HDF5vec_ewfCompID;
     std::unique_ptr<            
-        arma::Mat<double>
+        arma::Cube<double>
         > ExtFlux_FORC_data_tStep;      // External fluxes HDF5 vector (one timestep)
     std::unique_ptr<
         std::vector<                    // JSON-h5-EWF request (blocks)   
         std::vector<                    // Chemical species
         std::vector<                    // Time steps
-        arma::Mat<double>
+        arma::Cube<double>
         >>>> ExtFlux_FORC_HDF5vec_data;   // External fluxes HDF5 vector (data)
 
     std::string h5EWF_interpMethod;     // interpolation method for h5 EWF 
