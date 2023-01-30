@@ -180,8 +180,9 @@ class OpenWQ_extwatflux_ss{
 
     void RemoveLoadBeforeSimStart_h5(
         OpenWQ_units& OpenWQ_units,
-        std::unique_ptr<std::vector<std::vector<arma::Mat<double>>>>& FORC_vec_data, // H5 interface data
-        std::unique_ptr<std::vector<time_t>>& FORC_vec_time_t,          // H5 interface timestamps
+        std::unique_ptr<std::vector<std::vector<std::vector<arma::Mat<double>>>>>& FORC_vec_data, // H5 interface data
+        std::unique_ptr<std::vector<std::vector<time_t>>>& FORC_vec_time_t,          // H5 interface timestamps
+        const int reqi,
         const int YYYY,         // current model step: Year
         const int MM,           // current model step: month
         const int DD,           // current model step: day
@@ -207,10 +208,12 @@ class OpenWQ_extwatflux_ss{
 
     void AppendRow_SS_EWF_FORC_h5(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
+        int h5EWF_request_index,    // get request index
         int chemi,                  // chem index
-        bool flag_newChem,           // flag for new timestep, push back new vector row [i]
-        bool flag_newTimeStamp,      // flag for new chem, push_back new vector row [i][j]
-        time_t timestamp_time_t,     // timestamp in time_t
+        bool flg_newJSON_h5Request, // new json-h5-ewf request
+        bool flag_newChem,          // flag for new timestep, push back new vector row [i]
+        bool flag_newTimeStamp,     // flag for new chem, push_back new vector row [i][j]
+        time_t timestamp_time_t,    // timestamp in time_t
         arma::vec row_data_col);
 
     arma::vec ConvertH5row2ArmaVec(

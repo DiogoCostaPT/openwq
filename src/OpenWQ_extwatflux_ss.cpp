@@ -1127,7 +1127,11 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     bool flag_newChem;                      // bool to flag new chem, which will create new vector row in ExtFlux_FORC_HDF5vec_data
     bool flag_newTimeStamp;                 // bool to flag new timestep, which will save data into ExtFlux_FORC_HDF5vec_data and ExtFlux_FORC_HDF5vec_time
     int point_print_n;                      // iterative trackking of "." console prints (each timeStamp) for asthetics
-   
+    bool flg_newJSON_h5Request = true;      // flag for new json block for ewf-h5
+    int h5EWF_request_index;                // Index of ewf-h5 index
+
+    // Get request index
+    h5EWF_request_index = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).size();
 
     // ################################
     // Get JSON info
@@ -1431,12 +1435,16 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
 
                 AppendRow_SS_EWF_FORC_h5(
                     OpenWQ_wqconfig,
+                    h5EWF_request_index,
                     chemi,
+                    flg_newJSON_h5Request,
                     flag_newChem,
                     flag_newTimeStamp,
                     tSamp_valid_i_time_t,
                     row_data_col);
 
+                // Reset flags
+                flg_newJSON_h5Request = false;
                 flag_newTimeStamp = false;
                 flag_newChem = false;
 
@@ -1758,113 +1766,128 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
 // only H5 input
 ################################################# */
 void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
-        OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_utils& OpenWQ_utils,
-        OpenWQ_units& OpenWQ_units,
-        OpenWQ_output& OpenWQ_output,
-        const unsigned int YYYY,                            // current model step: Year
-        const unsigned int MM,                              // current model step: month
-        const unsigned int DD,                              // current model step: day
-        const unsigned int HH,                              // current model step: hour
-        const unsigned int MIN,                             // current model step: min
-        const unsigned int SEC){                            // current model step: sec
+    OpenWQ_vars& OpenWQ_vars,
+    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
+    OpenWQ_utils& OpenWQ_utils,
+    OpenWQ_units& OpenWQ_units,
+    OpenWQ_output& OpenWQ_output,
+    const unsigned int YYYY,                            // current model step: Year
+    const unsigned int MM,                              // current model step: month
+    const unsigned int DD,                              // current model step: day
+    const unsigned int HH,                              // current model step: hour
+    const unsigned int MIN,                             // current model step: min
+    const unsigned int SEC){                            // current model step: sec
 
     // Local variables
     time_t simTime;                         // current simulation time in time_t
     time_t h5EWF_time;                      // iteractive time extraction from FORC_vec_time_t
+    unsigned long long num_ewfh5_requests;  // number of json ewf-h5 requests
+    unsigned long long num_chems;           // number of chems in h5 stucture
     unsigned long long num_timeStamps;      // number of timesteps in h5 stucture
-    unsigned long long num_chems;           // number of timesteps in h5 stucture
     arma::dmat h5Conc_chemi_before;         // iteractive h5-chemi concentration at previous timestep 
     arma::dmat h5Conc_chemi_next;           // iteractive h5-chemi concentration at current or next timestep 
     arma::dmat h5Conc_chemi_interp;         // iteractive h5-chemi concentration at interpolated timestep 
 
-     /* ########################################
-    // Data update/clean-up at 1st timestep
-    ######################################## */
-    if (OpenWQ_wqconfig.tstep1_flag){
 
-        RemoveLoadBeforeSimStart_h5(
-            OpenWQ_units,
-            OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data,  // vec with h5 interface data
-            OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time,  // vec with h5 interface timestamps
-            YYYY,           // current model step: Year
-            MM,             // current model step: month
-            DD,             // current model step: day
-            HH,             // current model step: hour
-            MIN,            // current model step: min
-            SEC);           // current model step: sec
-
-    }
+    // Get number of json ewf-h5 requests
+    num_ewfh5_requests = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).size();
 
     // Convert sim time to time_t
     simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
 
-    // Number of timestamps
-    num_chems = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data).size();
-    num_timeStamps = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).size();
-
     /* ########################################
-    // Loop over timeStamps
-    // to find the row at (or above) the current simTime timeStamp
+    // Data update/clean-up at 1st timestep
     ######################################## */
+    if (OpenWQ_wqconfig.tstep1_flag){
 
-    for (unsigned long long tStamp=0;tStamp<num_timeStamps;tStamp++){
-        // Get timestamp tStamp
-        h5EWF_time =  (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[tStamp];
-        
-        // if at next timestep
-        // this will then get upper and lower timesteps
-        if (h5EWF_time > simTime){
+        // Loop over all requests
+        for (int reqi=0;reqi<num_ewfh5_requests;reqi++){
+            // Loop over all of them to removee load before simtime
+            RemoveLoadBeforeSimStart_h5(
+                OpenWQ_units,
+                OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data,  // vec with h5 interface data
+                OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time,  // vec with h5 interface timestamps
+                reqi,           // index of json request for ewf-h5
+                YYYY,           // current model step: Year
+                MM,             // current model step: month
+                DD,             // current model step: day
+                HH,             // current model step: hour
+                MIN,            // current model step: min
+                SEC);           // current model step: sec
+        }
+    }
+
+    // Loop over all requests
+    for (int reqi=0;reqi<num_ewfh5_requests;reqi++){
+
+        // Number of timestamps
+        num_chems = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[reqi].size();
+        num_timeStamps = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[reqi].size();
+
+        /* ########################################
+        // Loop over timeStamps
+        // to find the row at (or above) the current simTime timeStamp
+        ######################################## */
+
+        for (unsigned long long tStamp=0;tStamp<num_timeStamps;tStamp++){
+
+            // Get timestamp tStamp
+            h5EWF_time =  (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[reqi][tStamp];
             
-            // Loop over all chemical species
-            for (unsigned long long chemi=0;chemi<num_chems;chemi++){
+            // if at next timestep
+            // this will then get upper and lower timesteps
+            if (h5EWF_time > simTime){
                 
-                // Get h5-ewf for chemical chemi at tStamp-1 timestep
-                // if at tStamp==0, then need to get the next step
-                if(tStamp!=0){
-                    h5Conc_chemi_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[chemi][tStamp-1];
-                }else{
-                    h5Conc_chemi_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[chemi][tStamp];
-                }
-
-                // ########################################
-                // Interpolation options
-
-                // Option: "STEP"
-                if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("STEP")==0){
-                    h5Conc_chemi_interp = h5Conc_chemi_before;}
-
-                // Option: "Linear"
-                /*
-                if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("LINEAR")){
+                // Loop over all chemical species
+                for (unsigned long long chemi=0;chemi<num_chems;chemi++){
                     
-                    // Get h5-ewf for chemical chemi at tStamp+1 timestep
-                    h5Conc_chemi_next = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[chemi][tStamp];
-                    h5Conc_chemi_interp = (h5Conc_chemi_before % h5Conc_chemi_next)
+                    // Get h5-ewf for chemical chemi at tStamp-1 timestep
+                    // if at tStamp==0, then need to get the next step
+                    if(tStamp!=0){
+                        h5Conc_chemi_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[reqi][chemi][tStamp-1];
+                    }else{
+                        h5Conc_chemi_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[reqi][chemi][tStamp];
+                    }
+
+                    // ########################################
+                    // Interpolation options
+
+                    // Option: "STEP"
+                    if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("STEP")==0){
+                        h5Conc_chemi_interp = h5Conc_chemi_before;}
+
+                    // Option: "Linear"
+                    /*
+                    if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("LINEAR")){
+                        
+                        // Get h5-ewf for chemical chemi at tStamp+1 timestep
+                        h5Conc_chemi_next = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[reqi][chemi][tStamp];
+                        h5Conc_chemi_interp = (h5Conc_chemi_before % h5Conc_chemi_next)
+
+                    }
+                    
+
+                // Update h5Conc_chemi_interp for all elements
+                    Update_EWFconc_h5(          <==== this function still doesnt exist
+                        OpenWQ_vars,
+                        OpenWQ_wqconfig,
+                        OpenWQ_hostModelconfig,
+                        OpenWQ_output,
+                        ewf_id, <====================== currently this is not saved in ExtFlux_FORC_HDF5vec_data => need to extend the stucture to another outter vector to include multiple EWFs
+                        chemi
+                        h5Conc_chemi_interp); 
+
+                        */
 
                 }
+
+                // if founded step and updated results
+                // then break loop
+                break;
                 
-
-               // Update h5Conc_chemi_interp for all elements
-                Update_EWFconc_h5(          <==== this function still doesnt exist
-                    OpenWQ_vars,
-                    OpenWQ_wqconfig,
-                    OpenWQ_hostModelconfig,
-                    OpenWQ_output,
-                    ewf_id, <====================== currently this is not saved in ExtFlux_FORC_HDF5vec_data => need to extend the stucture to another outter vector to include multiple EWFs
-                    chemi
-                    h5Conc_chemi_interp); 
-
-                    */
-
             }
 
-            // if founded step and updated results
-            // then break loop
-            break;
-            
         }
 
     }
@@ -2253,8 +2276,9 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_jsonAscii(
 // Same as above but for EWF H5 entries
 void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
     OpenWQ_units& OpenWQ_units,
-    std::unique_ptr<std::vector<std::vector<arma::Mat<double>>>>& FORC_vec_data, // H5 interface data
-    std::unique_ptr<std::vector<time_t>>& FORC_vec_time_t,          // H5 interface timestamps
+    std::unique_ptr<std::vector<std::vector<std::vector<arma::Mat<double>>>>>& FORC_vec_data, // H5 interface data
+    std::unique_ptr<std::vector<std::vector<time_t>>>& FORC_vec_time_t,          // H5 interface timestamps
+    const int reqi,
     const int YYYY,         // current model step: Year
     const int MM,           // current model step: month
     const int DD,           // current model step: day
@@ -2275,8 +2299,8 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
     simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
 
     // Number of timestamps
-    num_chems = (*FORC_vec_data).size();
-    num_timeStamps = (*FORC_vec_time_t).size();
+    num_chems = (*FORC_vec_data)[reqi].size();
+    num_timeStamps = (*FORC_vec_time_t)[reqi].size();
 
     /* ########################################
     // Loop over timeStamps
@@ -2285,7 +2309,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
 
     for (unsigned long long tStamp=0;tStamp<num_timeStamps;tStamp++){
         // Get timestamp tStamp
-        h5EWF_time = (*FORC_vec_time_t)[tStamp];
+        h5EWF_time = (*FORC_vec_time_t)[reqi][tStamp];
         // Add to rows2Remove if the h5-time is before simTime
         if (h5EWF_time < simTime){
             timStampsIndex2Remove.push_back(tStamp);}
@@ -2306,12 +2330,12 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
         // Index of row to remove
         ri2remove = timStampsIndex2Remove[tstep];
         // Remove row from FORC_vec_data and 
-        (*FORC_vec_time_t).erase((*FORC_vec_time_t).begin()+(ri2remove-1));
+        (*FORC_vec_time_t)[reqi].erase((*FORC_vec_time_t)[reqi].begin()+(ri2remove-1));
 
         // Loop over all chemical species
         for (unsigned long long chemi=0;chemi<num_chems;chemi++){
 
-            (*FORC_vec_data)[chemi].erase((*FORC_vec_data)[chemi].begin()+(ri2remove-1));
+            (*FORC_vec_data)[reqi][chemi].erase((*FORC_vec_data)[reqi][chemi].begin()+(ri2remove-1));
 
         }
     }
@@ -2584,20 +2608,32 @@ void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_jsonAscii(
 // Add new row to SinkSource_FORC or ExtFlux_FORC_jsonAscii
 void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_h5(
     OpenWQ_wqconfig& OpenWQ_wqconfig,
-    int chemi,                  // chem index
-    bool flag_newChem,          // flag for new timestep, push back new vector row [i]
-    bool flag_newTimeStamp,     // flag for new chem, push_back new vector row [i][j]
-    time_t timestamp_time_t,    // timestamp in time_t
+    int h5EWF_request_index,        // get request index
+    int chemi,                      // chem index
+    bool flg_newJSON_h5Request,     // new json-h5-ewf request
+    bool flag_newChem,              // flag for new timestep, push back new vector row [i]
+    bool flag_newTimeStamp,         // flag for new chem, push_back new vector row [i][j]
+    time_t timestamp_time_t,        // timestamp in time_t
     arma::vec row_data_col){
 
     // Local variables        
     arma::Mat<double> row_data_row;             // new row data (initially as col data)
     int int_n_elem;                             // number of elements/timesteps
-    std::vector<arma::Mat<double>> newChemArma; // create vector<arma> for every new chem
+    
+     // Push_back/Create vector<vector<arma>> for every new request (ewf-h5) 
+    if(flg_newJSON_h5Request==true){
+        // Time
+        std::vector<time_t> newEntryArma_time; 
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).push_back(newEntryArma_time);
+        // Data
+        std::vector<std::vector<arma::Mat<double>>> newEntryArma_data; 
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data).push_back(newEntryArma_data);
+    }
 
     // Push_back/Create vector<arma> for every new chem 
     if(flag_newChem==true){
-        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data).push_back(newChemArma);}
+        std::vector<arma::Mat<double>> newChemArma; // create vector<arma> for every new chem
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[h5EWF_request_index].push_back(newChemArma);}
 
 
     // Transpose vector for adding to SinkSource_FORC as a new row
@@ -2615,11 +2651,11 @@ void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_h5(
         // Add new timestamp to ExtFlux_FORC_HDF5vec_time
         // But only needed on first chemi pass
         if (chemi==0){
-        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).push_back(
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[h5EWF_request_index].push_back(
             timestamp_time_t);}
     
         // add timestep data to vector ExtFlux_FORC_HDF5vec_data[chemi]
-        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[chemi].push_back(
+        (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[h5EWF_request_index][chemi].push_back(
             *OpenWQ_wqconfig.ExtFlux_FORC_data_tStep);
 
         // Reset ExtFlux_FORC_data_tStep

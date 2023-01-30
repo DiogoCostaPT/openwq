@@ -182,15 +182,17 @@ class OpenWQ_wqconfig
         // Storing all timesteps
         ExtFlux_FORC_HDF5vec_data = 
             std::unique_ptr<
+            std::vector<           // EWF-h5 json block/request
             std::vector<           // ChemSpecies 
             std::vector<           // timestamps
-            arma::Mat<double>>>>
-            (new  std::vector<std::vector<arma::mat>>);
+            arma::Mat<double>>>>>
+            (new  std::vector<std::vector<std::vector<arma::mat>>>);
         // Storing timestamps as time_t
         ExtFlux_FORC_HDF5vec_time =
-            std::unique_ptr<
-            std::vector<time_t>>
-            (new  std::vector<time_t>);
+            std::unique_ptr<        // EWF-h5 json block/request
+            std::vector<            
+            std::vector<time_t>>>
+            (new  std::vector<std::vector<time_t>>);
 
     }
 
@@ -223,18 +225,20 @@ class OpenWQ_wqconfig
         > SinkSource_FORC;              // SS
     std::unique_ptr<            
         arma::Mat<double>
-        > ExtFlux_FORC_jsonAscii;                 // External fluxes (JSON and ASCII)
+        > ExtFlux_FORC_jsonAscii;       // External fluxes (JSON and ASCII)
     std::unique_ptr<            
         arma::Mat<double>
-        > ExtFlux_FORC_data_tStep;         // External fluxes HDF5 vector (one timestep)
-    std::unique_ptr<       
-        std::vector<
-        std::vector<
+        > ExtFlux_FORC_data_tStep;      // External fluxes HDF5 vector (one timestep)
+    std::unique_ptr<
+        std::vector<                    // JSON-h5-EWF request (blocks)   
+        std::vector<                    // Chemical species
+        std::vector<                    // Time steps
         arma::Mat<double>
-        >>> ExtFlux_FORC_HDF5vec_data;   // External fluxes HDF5 vector (data)
-    std::unique_ptr<       
+        >>>> ExtFlux_FORC_HDF5vec_data;   // External fluxes HDF5 vector (data)
+    std::unique_ptr<
+        std::vector<       
         std::vector<time_t>
-        > ExtFlux_FORC_HDF5vec_time;   // External fluxes HDF5 vector (timestamps as time_t)
+        >> ExtFlux_FORC_HDF5vec_time;   // External fluxes HDF5 vector (timestamps as time_t)
 
     std::string h5EWF_interpMethod;     // interpolation method for h5 EWF 
     int allSS_flag = -1;                // number to replace in SinkSource_FORC to denote "all"
