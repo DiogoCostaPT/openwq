@@ -175,7 +175,7 @@ class OpenWQ_wqconfig
         
         // External fluxes forcing (HDF5) 
         // Saving 1 timestep
-        ExtFlux_FORC_timeStep = 
+        ExtFlux_FORC_data_tStep = 
             std::unique_ptr<
             arma::Mat<double>>
             (new  arma::mat(0,num_coldata_h5));
@@ -226,7 +226,7 @@ class OpenWQ_wqconfig
         > ExtFlux_FORC_jsonAscii;                 // External fluxes (JSON and ASCII)
     std::unique_ptr<            
         arma::Mat<double>
-        > ExtFlux_FORC_timeStep;         // External fluxes HDF5 vector (one timestep)
+        > ExtFlux_FORC_data_tStep;         // External fluxes HDF5 vector (one timestep)
     std::unique_ptr<       
         std::vector<
         std::vector<
