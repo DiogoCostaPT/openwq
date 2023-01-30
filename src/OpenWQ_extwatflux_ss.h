@@ -134,7 +134,7 @@ class OpenWQ_extwatflux_ss{
         const double ss_data_json);                     // source load
 
     // Update EWF concentrations
-    void Update_EWFconc(
+    void Update_EWFconc_jsonAscii(
         OpenWQ_vars& OpenWQ_vars,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
@@ -180,7 +180,7 @@ class OpenWQ_extwatflux_ss{
 
     void RemoveLoadBeforeSimStart_h5(
         OpenWQ_units& OpenWQ_units,
-        std::unique_ptr<std::vector<arma::Mat<double>>>& FORC_vec_data, // H5 interface data
+        std::unique_ptr<std::vector<std::vector<arma::Mat<double>>>>& FORC_vec_data, // H5 interface data
         std::unique_ptr<std::vector<time_t>>& FORC_vec_time_t,          // H5 interface timestamps
         const int YYYY,         // current model step: Year
         const int MM,           // current model step: month
@@ -207,8 +207,10 @@ class OpenWQ_extwatflux_ss{
 
     void AppendRow_SS_EWF_FORC_h5(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
-        bool newTimeStamp,          // only needed for H5 EWF
-        time_t timestamp_time_t,
+        int chemi,                  // chem index
+        bool flag_newChem,           // flag for new timestep, push back new vector row [i]
+        bool flag_newTimeStamp,      // flag for new chem, push_back new vector row [i][j]
+        time_t timestamp_time_t,     // timestamp in time_t
         arma::vec row_data_col);
 
     arma::vec ConvertH5row2ArmaVec(

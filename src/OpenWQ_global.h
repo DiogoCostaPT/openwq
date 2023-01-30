@@ -182,9 +182,10 @@ class OpenWQ_wqconfig
         // Storing all timesteps
         ExtFlux_FORC_HDF5vec_data = 
             std::unique_ptr<
-            std::vector<
-            arma::Mat<double>>>
-            (new  std::vector<arma::mat>);
+            std::vector<           // ChemSpecies 
+            std::vector<           // timestamps
+            arma::Mat<double>>>>
+            (new  std::vector<std::vector<arma::mat>>);
         // Storing timestamps as time_t
         ExtFlux_FORC_HDF5vec_time =
             std::unique_ptr<
@@ -228,12 +229,14 @@ class OpenWQ_wqconfig
         > ExtFlux_FORC_timeStep;         // External fluxes HDF5 vector (one timestep)
     std::unique_ptr<       
         std::vector<
+        std::vector<
         arma::Mat<double>
-        >> ExtFlux_FORC_HDF5vec_data;   // External fluxes HDF5 vector (data)
+        >>> ExtFlux_FORC_HDF5vec_data;   // External fluxes HDF5 vector (data)
     std::unique_ptr<       
         std::vector<time_t>
         > ExtFlux_FORC_HDF5vec_time;   // External fluxes HDF5 vector (timestamps as time_t)
 
+    std::string h5EWF_interpMethod;     // interpolation method for h5 EWF 
     int allSS_flag = -1;                // number to replace in SinkSource_FORC to denote "all"
     bool tstep1_flag = true;            // flag to note that it's the first time step, so need to exclude loads prior to that
 

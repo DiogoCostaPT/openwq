@@ -1160,6 +1160,11 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "EXTERNAL_INPUTFLUX_NAME",
         errorMsgIdentifier);
+    // Get interpolation method
+    (OpenWQ_wqconfig.h5EWF_interpMethod) = OpenWQ_utils.RequestJsonKeyVal_str(
+        OpenWQ_wqconfig, OpenWQ_output,
+        EWF_SS_json_sub, "INTERPOLATION",
+        errorMsgIdentifier);
     
     // replace "/" by "|" is needed because "/" is not compatible with directory full paths
     ewf_h5_units_file = ewf_h5_units;
@@ -1637,7 +1642,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
         else if (inputType.compare("ewf") == 0){
 
             // Update ewf_conc
-            Update_EWFconc(
+            Update_EWFconc_jsonAscii(
                 OpenWQ_vars,
                 OpenWQ_wqconfig,
                 OpenWQ_hostModelconfig,
@@ -1647,7 +1652,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
                 (*array_FORC)(ri,9),       // compartment model ix
                 (*array_FORC)(ri,10),      // compartment model iy
                 (*array_FORC)(ri,11),      // compartment model iz
-                value_adjust);             // source load
+                value_adjust);             // new concentration
 
         }
 
@@ -1766,6 +1771,15 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
         const unsigned int MIN,                             // current model step: min
         const unsigned int SEC){                            // current model step: sec
 
+    // Local variables
+    time_t simTime;                         // current simulation time in time_t
+    time_t h5EWF_time;                      // iteractive time extraction from FORC_vec_time_t
+    unsigned long long num_timeStamps;      // number of timesteps in h5 stucture
+    unsigned long long num_chems;           // number of timesteps in h5 stucture
+    arma::dmat h5Conc_chemi_before;         // iteractive h5-chemi concentration at previous timestep 
+    arma::dmat h5Conc_chemi_next;           // iteractive h5-chemi concentration at current or next timestep 
+    arma::dmat h5Conc_chemi_interp;         // iteractive h5-chemi concentration at interpolated timestep 
+
      /* ########################################
     // Data update/clean-up at 1st timestep
     ######################################## */
@@ -1780,11 +1794,81 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
             DD,             // current model step: day
             HH,             // current model step: hour
             MIN,            // current model step: min
-            SEC             // current model step: sec
-        );
+            SEC);           // current model step: sec
 
     }
 
+    // Convert sim time to time_t
+    simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
+
+    // Number of timestamps
+    num_chems = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data).size();
+    num_timeStamps = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).size();
+
+    /* ########################################
+    // Loop over timeStamps
+    // to find the row at (or above) the current simTime timeStamp
+    ######################################## */
+
+    for (unsigned long long tStamp=0;tStamp<num_timeStamps;tStamp++){
+        // Get timestamp tStamp
+        h5EWF_time =  (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[tStamp];
+        
+        // if at next timestep
+        // this will then get upper and lower timesteps
+        if (h5EWF_time > simTime){
+            
+            // Loop over all chemical species
+            for (unsigned long long chemi=0;chemi<num_chems;chemi++){
+                
+                // Get h5-ewf for chemical chemi at tStamp-1 timestep
+                // if at tStamp==0, then need to get the next step
+                if(tStamp!=0){
+                    h5Conc_chemi_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[chemi][tStamp-1];
+                }else{
+                    h5Conc_chemi_before = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[chemi][tStamp];
+                }
+
+                // ########################################
+                // Interpolation options
+
+                // Option: "STEP"
+                if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("STEP")==0){
+                    h5Conc_chemi_interp = h5Conc_chemi_before;}
+
+                // Option: "Linear"
+                /*
+                if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("LINEAR")){
+                    
+                    // Get h5-ewf for chemical chemi at tStamp+1 timestep
+                    h5Conc_chemi_next = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[chemi][tStamp];
+                    h5Conc_chemi_interp = (h5Conc_chemi_before % h5Conc_chemi_next)
+
+                }
+                
+
+               // Update h5Conc_chemi_interp for all elements
+                Update_EWFconc_h5(          <==== this function still doesnt exist
+                    OpenWQ_vars,
+                    OpenWQ_wqconfig,
+                    OpenWQ_hostModelconfig,
+                    OpenWQ_output,
+                    ewf_id, <====================== currently this is not saved in ExtFlux_FORC_HDF5vec_data => need to extend the stucture to another outter vector to include multiple EWFs
+                    chemi
+                    h5Conc_chemi_interp); 
+
+                    */
+
+            }
+
+            // if founded step and updated results
+            // then break loop
+            break;
+            
+        }
+
+    }
+    
 }
 
 /* #################################################
@@ -1917,7 +2001,7 @@ void OpenWQ_extwatflux_ss::Apply_Sink(
 /* #################################################
  // Apply Sink
  ################################################# */
-void OpenWQ_extwatflux_ss::Update_EWFconc(
+void OpenWQ_extwatflux_ss::Update_EWFconc_jsonAscii(
     OpenWQ_vars& OpenWQ_vars,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
