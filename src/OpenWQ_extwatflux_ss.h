@@ -153,7 +153,7 @@ class OpenWQ_extwatflux_ss{
         OpenWQ_output& OpenWQ_output,
         const unsigned int reqi,            // request index
         const unsigned int chemi,           // chemical model index    
-        arma::dmat& h5Conc_chemi_interp);
+        arma::cube& h5Conc_chemi_interp);
 
     void Convert_Mass_Units(
         double &ss_value,     // SS value

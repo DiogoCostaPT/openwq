@@ -1822,9 +1822,9 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
     unsigned long long num_ewfh5_requests;  // number of json ewf-h5 requests
     unsigned long long num_chems;           // number of chems in h5 stucture
     unsigned long long num_timeStamps;      // number of timesteps in h5 stucture
-    arma::dmat h5Conc_chemi_before;         // iteractive h5-chemi concentration at previous timestep 
-    arma::dmat h5Conc_chemi_next;           // iteractive h5-chemi concentration at current or next timestep 
-    arma::dmat h5Conc_chemi_interp;         // iteractive h5-chemi concentration at interpolated timestep 
+    arma::cube h5Conc_chemi_before;         // iteractive h5-chemi concentration at previous timestep 
+    arma::cube h5Conc_chemi_next;           // iteractive h5-chemi concentration at current or next timestep 
+    arma::cube h5Conc_chemi_interp;         // iteractive h5-chemi concentration at interpolated timestep 
 
 
     // Get number of json ewf-h5 requests
@@ -2134,7 +2134,7 @@ void OpenWQ_extwatflux_ss::Update_EWFconc_h5(
     OpenWQ_output& OpenWQ_output,
     const unsigned int reqi,            // request index
     const unsigned int chemi,           // chemical model index    
-    arma::dmat& h5Conc_chemi_interp){    // arma_mat with concentrations
+    arma::cube& h5Conc_chemi_interp){    // arma_mat with concentrations
 
     // Local Variables
     std::string msg_string;             // error/warning message string
@@ -2731,7 +2731,7 @@ void OpenWQ_extwatflux_ss::AppendCube_SS_EWF_FORC_h5(
         (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time)[h5EWF_request_index].push_back(
             timestamp_time_t);
     }
-    
+
     // add timestep data to vector ExtFlux_FORC_HDF5vec_data[chemi]
     (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[h5EWF_request_index][chemi].push_back(
         *OpenWQ_wqconfig.ExtFlux_FORC_data_tStep);
