@@ -146,6 +146,15 @@ class OpenWQ_extwatflux_ss{
         int iz,                             // compartment model iz
         const double new_concVal);          // new EWF conc value
 
+    void Update_EWFconc_h5(
+        OpenWQ_vars& OpenWQ_vars,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
+        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+        OpenWQ_output& OpenWQ_output,
+        const unsigned int reqi,            // request index
+        const unsigned int chemi,           // chemical model index    
+        arma::dmat& h5Conc_chemi_interp);
+
     void Convert_Mass_Units(
         double &ss_value,     // SS value
         std::string ss_unit);  // SS unit
@@ -217,12 +226,10 @@ class OpenWQ_extwatflux_ss{
         arma::vec row_data_col);
 
     arma::vec ConvertH5row2ArmaVec(
-        double ewf_id,
         int x_externModel, 
         int y_externModel, 
         int z_externModel,
-        double conc_h5_rowi,
-        int chemi);
+        double conc_h5_rowi);
 
 };
 

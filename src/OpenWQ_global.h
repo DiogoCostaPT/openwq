@@ -131,8 +131,7 @@ class OpenWQ_wqconfig
     public:
     OpenWQ_wqconfig(){
 
-        this -> num_coldata_jsonAscii = 20;
-        this -> num_coldata_h5 = 6;
+        
 
         // #################################################
         // Compiling and re-structuring of input data for quicker access during runtime
@@ -140,6 +139,7 @@ class OpenWQ_wqconfig
         // AND
         // External fluxes (ExtFlux_FORC_jsonAscii)
 
+        this -> num_coldata_jsonAscii = 20;
         // num_coldata_jsonAscii is, the moment, equal to 20
         // 0 - chemical
         // 1 - compartment id (from HydroComp) / external flux id (from HydroExtFlux)
@@ -161,6 +161,12 @@ class OpenWQ_wqconfig
             // otherwise, it gets updated everytime the load is added
             // and it provides the time increment for the next load
 
+        this -> num_coldata_h5 = 4;
+        // 1 - ix
+        // 2 - iy
+        // 3 - iz
+        // 4 - value (already converted to mg/l (concentration) or g(mass))
+
         // Sink and source forcing
         SinkSource_FORC = 
             std::unique_ptr<
@@ -174,6 +180,17 @@ class OpenWQ_wqconfig
             (new  arma::mat(0,num_coldata_jsonAscii));
         
         // External fluxes forcing (HDF5) 
+        // Storing timestamps as time_t
+        ExtFlux_FORC_HDF5vec_time =
+            std::unique_ptr<        // EWF-h5 json block/request
+            std::vector<            
+            std::vector<time_t>>>
+            (new  std::vector<std::vector<time_t>>);
+        // Storing external_flux id
+        ExtFlux_FORC_HDF5vec_ewfCompID =
+            std::unique_ptr<
+            std::vector<unsigned int>>
+            (new  std::vector<unsigned int>);
         // Saving 1 timestep
         ExtFlux_FORC_data_tStep = 
             std::unique_ptr<
@@ -187,12 +204,6 @@ class OpenWQ_wqconfig
             std::vector<           // timestamps
             arma::Mat<double>>>>>
             (new  std::vector<std::vector<std::vector<arma::mat>>>);
-        // Storing timestamps as time_t
-        ExtFlux_FORC_HDF5vec_time =
-            std::unique_ptr<        // EWF-h5 json block/request
-            std::vector<            
-            std::vector<time_t>>>
-            (new  std::vector<std::vector<time_t>>);
 
     }
 
@@ -226,6 +237,13 @@ class OpenWQ_wqconfig
     std::unique_ptr<            
         arma::Mat<double>
         > ExtFlux_FORC_jsonAscii;       // External fluxes (JSON and ASCII)
+    std::unique_ptr<
+        std::vector<       
+        std::vector<time_t>
+        >> ExtFlux_FORC_HDF5vec_time;   // External fluxes HDF5 vector (timestamps as time_t)
+    std::unique_ptr<                    // EWF compartment id
+        std::vector<unsigned int>
+        > ExtFlux_FORC_HDF5vec_ewfCompID;
     std::unique_ptr<            
         arma::Mat<double>
         > ExtFlux_FORC_data_tStep;      // External fluxes HDF5 vector (one timestep)
@@ -235,10 +253,6 @@ class OpenWQ_wqconfig
         std::vector<                    // Time steps
         arma::Mat<double>
         >>>> ExtFlux_FORC_HDF5vec_data;   // External fluxes HDF5 vector (data)
-    std::unique_ptr<
-        std::vector<       
-        std::vector<time_t>
-        >> ExtFlux_FORC_HDF5vec_time;   // External fluxes HDF5 vector (timestamps as time_t)
 
     std::string h5EWF_interpMethod;     // interpolation method for h5 EWF 
     int allSS_flag = -1;                // number to replace in SinkSource_FORC to denote "all"
