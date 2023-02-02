@@ -1917,9 +1917,10 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
                                 > (h5EWF_time_after - h5EWF_time_before)/2){
                                 h5Conc_chemi_interp = h5Conc_chemi_after;
                             }else{
-                                h5Conc_chemi_interp = h5Conc_chemi_after;}
+                                h5Conc_chemi_interp = h5Conc_chemi_before;}
+                        // Option: unkown 
+                        // (defaulting to STEP and throw warning message)
                         }else {
-                            // Defaulting to STEP and throw warning message
                             OpenWQ_wqconfig.h5EWF_interpMethod = "STEP";
                             h5Conc_chemi_interp = h5Conc_chemi_before;
 
