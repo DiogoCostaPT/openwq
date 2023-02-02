@@ -166,7 +166,8 @@ These are the general steps to run both host_model-OpenWQ models:
 | ``"INTERPOLATION"``             | - Method to time-interpolate the timestamp-concentrations provided in the ``"HD5F"`` files                      |
 |                                 | - Options: ``STEP``, ``NEAREST``, and ``LINEAR``                                                                |
 +---------------------------------+-----------------------------------------------------------------------------------------------------------------+
-| ``"FOLDERPATH"``                | Path to ``"HD5F"`` file that contains the compartment ``"EXTERNAL_COMPARTMENT_NAME"`` from the upstream model.  |
+| ``"FOLDERPATH"``                | - Path to ``"HD5F"`` file that contains the compartment ``"EXTERNAL_COMPARTMENT_NAME"`` from the upstream model.|
+|                                 | - NOTE: Make sure that the ``"Log_OpenWQ.txt"`` produced by the upstream-OpenWQ instance is also in this folder.|
 +---------------------------------+-----------------------------------------------------------------------------------------------------------------+
 
 **Diagrams showing examples of how to set up ``"INTERACTION_INTERFACE"`` for different upstream-downstream host-model configuration:**:
