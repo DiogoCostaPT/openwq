@@ -163,6 +163,9 @@ These are the general steps to run both host_model-OpenWQ models:
 |                                 | - Format: [``"(i#)"`` or "all, ``"(i#)"`` or "all", ``"(i#)"`` or "all"]                                        |
 |                                 | - Example: ["all", "all", 1] (for interaction along the x-y plane) (see diagrams below)                         |
 +---------------------------------+-----------------------------------------------------------------------------------------------------------------+
+| ``"INTERPOLATION"``             | - Method to time-interpolate the timestamp-concentrations provided in the ``"HD5F"`` files                      |
+|                                 | - Options: ``STEP``, ``NEAREST``, and ``LINEAR``                                                                |
++---------------------------------+-----------------------------------------------------------------------------------------------------------------+
 | ``"FOLDERPATH"``                | Path to ``"HD5F"`` file that contains the compartment ``"EXTERNAL_COMPARTMENT_NAME"`` from the upstream model.  |
 +---------------------------------+-----------------------------------------------------------------------------------------------------------------+
 
@@ -187,6 +190,7 @@ Example of input ``JSON`` file:
             "EXTERNAL_COMPARTMENT_NAME": "ATMOSPHERE_LAYER",
             "EXTERNAL_INPUTFLUX_NAME": "PRECIP",
             "INTERACTION_INTERFACE": ["all", 1, 1],
+            "INTERPOLATION": "LINEAR",
             "FOLDERPATH": "openwq_ewf_h5"
 	    }
     }

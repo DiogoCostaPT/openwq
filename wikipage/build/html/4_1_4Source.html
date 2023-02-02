@@ -415,7 +415,14 @@ In these cases, we need to have both models coupled to OpenWQ, such as shown in 
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;FOLDERPATH&quot;</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;INTERPOLATION&quot;</span></code></p></td>
+<td><ul class="simple">
+<li><p>Method to time-interpolate the timestamp-concentrations provided in the <code class="docutils literal notranslate"><span class="pre">&quot;HD5F&quot;</span></code> files</p></li>
+<li><p>Options: <code class="docutils literal notranslate"><span class="pre">STEP</span></code>, <code class="docutils literal notranslate"><span class="pre">NEAREST</span></code>, and <code class="docutils literal notranslate"><span class="pre">LINEAR</span></code></p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;FOLDERPATH&quot;</span></code></p></td>
 <td><p>Path to <code class="docutils literal notranslate"><span class="pre">&quot;HD5F&quot;</span></code> file that contains the compartment <code class="docutils literal notranslate"><span class="pre">&quot;EXTERNAL_COMPARTMENT_NAME&quot;</span></code> from the upstream model.</p></td>
 </tr>
 </tbody>
@@ -434,6 +441,7 @@ In these cases, we need to have both models coupled to OpenWQ, such as shown in 
         <span class="nt">&quot;EXTERNAL_COMPARTMENT_NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;ATMOSPHERE_LAYER&quot;</span><span class="p">,</span>
         <span class="nt">&quot;EXTERNAL_INPUTFLUX_NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;PRECIP&quot;</span><span class="p">,</span>
         <span class="nt">&quot;INTERACTION_INTERFACE&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="nt">&quot;INTERPOLATION&quot;</span><span class="p">:</span> <span class="s2">&quot;LINEAR&quot;</span><span class="p">,</span>
         <span class="nt">&quot;FOLDERPATH&quot;</span><span class="p">:</span> <span class="s2">&quot;openwq_ewf_h5&quot;</span>
         <span class="p">}</span>
 <span class="p">}</span>
