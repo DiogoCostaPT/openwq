@@ -58,8 +58,8 @@ class OpenWQ_extwatflux_ss{
         OpenWQ_units& OpenWQ_units,
         OpenWQ_output& OpenWQ_output,
         unsigned int ssf, unsigned int ssi,   // file-structure and substructure indexes
-        std::string DataFormat,         // (JSON or ASCII)
-        json EWF_SS_json_sub,           // relevant sub-json
+        std::string DataFormat,               // (JSON or ASCII)
+        json EWF_SS_json_sub,                 // relevant sub-json
         std::string inputType,
         bool foundflag);
 
