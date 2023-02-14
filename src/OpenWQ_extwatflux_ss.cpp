@@ -2132,13 +2132,19 @@ void OpenWQ_extwatflux_ss::Update_EWFconc_jsonAscii(
     if(iz != -1){spZ_min = iz; spZ_max = iz;}
     else{spZ_min = 0; spZ_max = nz - 1;}
 
+    std::cout << "size of A: " << size((*OpenWQ_vars.ewf_conc)(ewfi)(chemi)) << std::endl;
+
     try{
         
         // Now update the elements with information in the EWF file
+        // It has to be "+="" and not ""="" because of missmatch between
+        // left and right variables. 
+        // Since (*OpenWQ_vars.ewf_conc)(ewfi)(chemi) is reset in solver,
+        // this works just fine
         (*OpenWQ_vars.ewf_conc)(ewfi)(chemi)(
             arma::span(spX_min, spX_max), 
             arma::span(spY_min, spY_max),
-            arma::span(spZ_min, spZ_max)) = new_concVal;
+            arma::span(spZ_min, spZ_max)) += new_concVal;
 
         // Replace all negative values by zero
         // Needed because can have negative values
