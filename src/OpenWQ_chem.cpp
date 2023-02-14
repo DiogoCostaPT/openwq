@@ -427,11 +427,10 @@ void OpenWQ_chem::BGC_Transform(
                             if (OpenWQ_hostModelconfig.time_step != 0){
                                 transf_mass = std::fmin(
                                         (*OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz),
-                                        transf_mass * OpenWQ_hostModelconfig.time_step) / 
-                                        OpenWQ_hostModelconfig.time_step;   // need to multiply by the time step
-                                                                            // because that's the total mass that is 
-                                                                            // going to be added/substracted in the 
-                                                                            // solver
+                                        transf_mass * OpenWQ_hostModelconfig.time_step);    // need to multiply by the time step
+                                                                                            // because that's the total mass that is 
+                                                                                            // going to be added/substracted in the 
+                                                                                            // solver
                             }else{
                                 transf_mass = 0.0f;
                             }
