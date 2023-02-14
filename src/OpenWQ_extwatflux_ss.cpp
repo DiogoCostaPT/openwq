@@ -634,7 +634,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
         }
 
         // ###################
-        // Year
+        // Second
         // ###################
         elemName = "Second";
         try{
