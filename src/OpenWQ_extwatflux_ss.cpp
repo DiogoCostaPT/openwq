@@ -1435,6 +1435,7 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
 
             // Get timestamp sting into time_t
             tSamp_valid_i_time_t = OpenWQ_units.convertTime_str2time_t(
+                OpenWQ_wqconfig,
                 tSamp_valid[tSamp]);
 
             // Reset ExtFlux_FORC_data_tStep to save next timestep
@@ -1546,6 +1547,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
 
         // Remove requested loads that are prior to the simulation start datetime
         RemoveLoadBeforeSimStart_jsonAscii(
+            OpenWQ_wqconfig,
             OpenWQ_units,
             array_FORC,
             YYYY,           // current model step: Year
@@ -1559,6 +1561,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
         // Update time increments for rows with "all" elements
         UpdateAllElemTimeIncremts(
             array_FORC,
+            OpenWQ_wqconfig,
             OpenWQ_utils,
             OpenWQ_units,
             YYYY,         // current model step: Year
@@ -1572,7 +1575,9 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
     }
 
     // Convert sim time to time_t
-    simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
+    simTime = OpenWQ_units.convertTime_ints2time_t(
+        OpenWQ_wqconfig,
+        YYYY, MM, DD, HH, MIN, SEC);
 
     // Get number of rows in SinkSource_FORC
     num_rowdata = (*array_FORC).n_rows; 
@@ -1621,7 +1626,9 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
         if (SEC_json == -1){SEC_json    += (*array_FORC)(ri,19); anyAll_flag = true; SECall_flag = true;}
 
         // jsonTime in time_t
-        jsonTime = OpenWQ_units.convertTime_ints2time_t(YYYY_json, MM_json, DD_json, HH_json, MIN_json, SEC_json);
+        jsonTime = OpenWQ_units.convertTime_ints2time_t(
+            OpenWQ_wqconfig,
+            YYYY_json, MM_json, DD_json, HH_json, MIN_json, SEC_json);
 
         // Skip if not time to load yet
         if (simTime < jsonTime) continue;
@@ -1774,7 +1781,9 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
             if(addAnyIncrem_flag) break;
 
             // Determine new jsonTime for checking in while loop
-            jsonTime = OpenWQ_units.convertTime_ints2time_t(YYYY_json, MM_json, DD_json, HH_json, MIN_json, SEC_json);
+            jsonTime = OpenWQ_units.convertTime_ints2time_t(
+                OpenWQ_wqconfig,
+                YYYY_json, MM_json, DD_json, HH_json, MIN_json, SEC_json);
 
         }
 
@@ -1832,7 +1841,9 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
     num_ewfh5_requests = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time).size();
 
     // Convert sim time to time_t
-    simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
+    simTime = OpenWQ_units.convertTime_ints2time_t(
+        OpenWQ_wqconfig,
+        YYYY, MM, DD, HH, MIN, SEC);
 
     /* ########################################
     // Data update/clean-up at 1st timestep
@@ -1843,6 +1854,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
         for (unsigned int reqi=0;reqi<num_ewfh5_requests;reqi++){
             // Loop over all of them to removee load before simtime
             RemoveLoadBeforeSimStart_h5(
+                OpenWQ_wqconfig,
                 OpenWQ_units,
                 OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data,  // vec with h5 interface data
                 OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_time,  // vec with h5 interface timestamps
@@ -2308,6 +2320,7 @@ bool OpenWQ_extwatflux_ss::getModIndex(
 #################################################*/
 // JSON and ASCII entries
 void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_jsonAscii(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_units& OpenWQ_units,
     std::unique_ptr<arma::Mat<double>>& array_FORC,
     const int YYYY,         // current model step: Year
@@ -2325,7 +2338,9 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_jsonAscii(
     std::vector<int> rows2Remove;  // List of rows indexes to remove     
 
     // Convert sim time to time_t
-    simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
+    simTime = OpenWQ_units.convertTime_ints2time_t(
+        OpenWQ_wqconfig,
+        YYYY, MM, DD, HH, MIN, SEC);
 
     // Get number of rows in SinkSource_FORC
     num_rowdata = (*array_FORC).n_rows; 
@@ -2359,6 +2374,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_jsonAscii(
 
         // jsonTime in time_t
         jsonTime = OpenWQ_units.convertTime_ints2time_t(
+            OpenWQ_wqconfig,
             YYYY_json, 
             MM_json, 
             DD_json, 
@@ -2395,6 +2411,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_jsonAscii(
 
 // Same as above but for EWF H5 entries
 void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_units& OpenWQ_units,
     std::unique_ptr<std::vector<std::vector<std::vector<arma::Cube<double>>>>>& FORC_vec_data, // H5 interface data
     std::unique_ptr<std::vector<std::vector<time_t>>>& FORC_vec_time_t,          // H5 interface timestamps
@@ -2416,7 +2433,9 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
     long long ri2remove;                    // index of row to remove   
 
     // Convert sim time to time_t
-    simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
+    simTime = OpenWQ_units.convertTime_ints2time_t(
+        OpenWQ_wqconfig,
+        YYYY, MM, DD, HH, MIN, SEC);
 
     // Number of timestamps
     num_chems = (*FORC_vec_data)[reqi].size();
@@ -2467,6 +2486,7 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
 #################################################*/
 void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
     std::unique_ptr<arma::Mat<double>>& array_FORC,
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_utils& OpenWQ_utils,
     OpenWQ_units& OpenWQ_units,
     const int YYYY,         // current model step: Year
@@ -2487,7 +2507,9 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
     unsigned int DD_max;                                                // max number of days for a given month and year
     
     // Convert sim time to time_t
-    simTime = OpenWQ_units.convertTime_ints2time_t(YYYY, MM, DD, HH, MIN, SEC);
+    simTime = OpenWQ_units.convertTime_ints2time_t(
+        OpenWQ_wqconfig,
+        YYYY, MM, DD, HH, MIN, SEC);
 
     // Get number of rows in SinkSource_FORC
     num_rowdata = (*array_FORC).n_rows; 
@@ -2577,6 +2599,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
 
         // Determine new jsonTime if using the first guess for the increment
         jsonTime = OpenWQ_units.convertTime_ints2time_t(
+            OpenWQ_wqconfig,
             YYYY_json + increm1, 
             MM_json + increm2, 
             DD_json + increm3, 
@@ -2596,6 +2619,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
                 while(jsonTime < simTime && (SEC_json + increm6) < 59){
                     increm6++;
                     jsonTime = OpenWQ_units.convertTime_ints2time_t(
+                        OpenWQ_wqconfig,
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2612,6 +2636,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
                 while(jsonTime < simTime && (MIN_json + increm5) < 59){
                     increm5++;
                     jsonTime = OpenWQ_units.convertTime_ints2time_t(
+                        OpenWQ_wqconfig,
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2628,6 +2653,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
                 while(jsonTime < simTime && (HH_json + increm4) < 23){
                     increm4++;
                     jsonTime = OpenWQ_units.convertTime_ints2time_t(
+                        OpenWQ_wqconfig,
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2645,6 +2671,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
                 while(jsonTime < simTime && (DD_json + increm3) < DD_max){
                     increm3++;
                     jsonTime = OpenWQ_units.convertTime_ints2time_t(
+                        OpenWQ_wqconfig,
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2661,6 +2688,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
                 while(jsonTime < simTime && (MM_json + increm2) < 12){
                     increm2++;
                     jsonTime = OpenWQ_units.convertTime_ints2time_t(
+                        OpenWQ_wqconfig,
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
@@ -2677,6 +2705,7 @@ void OpenWQ_extwatflux_ss::UpdateAllElemTimeIncremts(
                 while(jsonTime < simTime){
                     increm1++;
                     jsonTime = OpenWQ_units.convertTime_ints2time_t(
+                        OpenWQ_wqconfig,
                         YYYY_json + increm1, MM_json + increm2, DD_json + increm3, 
                         HH_json + increm4, MIN_json + increm5, SEC_json + increm6);
                 }
