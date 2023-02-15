@@ -2132,8 +2132,6 @@ void OpenWQ_extwatflux_ss::Update_EWFconc_jsonAscii(
     if(iz != -1){spZ_min = iz; spZ_max = iz;}
     else{spZ_min = 0; spZ_max = nz - 1;}
 
-    std::cout << "size of A: " << size((*OpenWQ_vars.ewf_conc)(ewfi)(chemi)) << std::endl;
-
     try{
         
         // Now update the elements with information in the EWF file
