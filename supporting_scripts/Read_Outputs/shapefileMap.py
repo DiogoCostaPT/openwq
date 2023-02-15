@@ -85,7 +85,7 @@ for i in range(len(keys_list)):
         },
     cmap="RdYlGn_r",figsize=(25, 20))
 
-    plt.title(keys_list[i])
+    plt.title(keys_list[indices[i]])
 
     cx.add_basemap(ax, source=cx.providers.Stamen.TonerLite)
     # plt.pause(0.05)
