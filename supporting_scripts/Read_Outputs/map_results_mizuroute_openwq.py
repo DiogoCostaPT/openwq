@@ -6,7 +6,41 @@ import matplotlib.pyplot as plt
 import contextily as cx
 from datetime import datetime
 import os
-import shutil
+
+# Genetare map figures
+def gen_map_figs(keys_list, hf_file, indices, comid, mizuroute_out_idFeature, geodf, folderSaveFigs_fullpath):
+
+    # Looping over time
+    for i in range(len(keys_list)):
+
+        # Get data from timestamp i
+        h5_timestamp_vals = hf_file.get(keys_list[indices[i]])
+        h5_timestamp_vals = np.array(h5_timestamp_vals)
+
+        # loop over shapefile elements and get comid
+        # then find the correst output result
+        for j in range(len(comid)):
+            comid_j = comid[j]
+            index_j = np.where(mizuroute_out_idFeature == comid_j)
+            try:
+                geodf["openwq_wq"][j] = h5_timestamp_vals[0][index_j[0]]
+            except:
+                geodf["openwq_wq"][j] = -1
+
+        # Plotting
+        ax = geodf.plot(column='openwq_wq', legend=True, vmin=0, vmax=0.15,
+                        legend_kwds={
+                            "location": "right",
+                            "shrink": .55
+                        },
+                        cmap="RdYlGn_r", figsize=(25, 20))
+
+        plt.title(keys_list[indices[i]])
+
+        # cx.add_basemap(ax, source=cx.providers.Stamen.TonerLite)
+        plt.savefig(folderSaveFigs_fullpath + str(i) + '.png')
+        plt.close()
+
 
 def MapGeoPandas(shpfile_fullpath,
                 openwq_out_fullpath,
@@ -57,41 +91,15 @@ def MapGeoPandas(shpfile_fullpath,
     if not os.path.exists(folderSaveFigs_fullpath):
         os.mkdir(folderSaveFigs_fullpath)
 
-    # Looping over time
-    for i in range(len(keys_list)):
-
-        # Get data from timestamp i
-        h5_timestamp_vals = hf_file.get(keys_list[indices[i]])
-        h5_timestamp_vals = np.array(h5_timestamp_vals)
-
-        # loop over shapefile elements and get comid
-        # then find the correst output result
-        for j in range(len(comid)):
-            comid_j = comid[j]
-            index_j = np.where(mizuroute_out_idFeature == comid_j)
-            try:
-                geodf["openwq_wq"][j] = h5_timestamp_vals[0][index_j[0]]
-            except:
-                geodf["openwq_wq"][j] = -1
-
-        # Plotting
-        ax = geodf.plot(column='openwq_wq', legend=True, vmin=0, vmax=0.15,
-            legend_kwds={
-                "location":"right",
-                "shrink":.55
-            },
-        cmap="RdYlGn_r",figsize=(25, 20))
-
-        plt.title(keys_list[indices[i]])
-
-        #cx.add_basemap(ax, source=cx.providers.Stamen.TonerLite)
-        # plt.pause(0.05)
-        plt.savefig(folderSaveFigs_fullpath + str(i) + '.png')
-        plt.close()
+    # Generate map figures
+    gen_map_figs(keys_list, hf_file, indices, comid, mizuroute_out_idFeature, geodf, folderSaveFigs_fullpath)
 
     # Build GIF
     import imageio.v2
     with imageio.get_writer(gif_name_fullpath, mode='I') as writer:
         for t in range(len(keys_list) + 15):
-            image = imageio.v2.imread(folderSaveFigs_fullpath + str(min(t, len(keys_list))) + '.png')
-            writer.append_data(image)
+            try:
+                image = imageio.v2.imread(folderSaveFigs_fullpath + str(min(t, len(keys_list))) + '.png')
+                writer.append_data(image)
+            except:
+                print('Map figure not found: ' + str(min(t, len(keys_list))) + '.png')
