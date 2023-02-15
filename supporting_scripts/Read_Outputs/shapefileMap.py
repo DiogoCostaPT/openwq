@@ -4,6 +4,7 @@ import geopandas as gpd
 import numpy as np
 import matplotlib.pyplot as plt
 import contextily as cx
+from datetime import datetime
 
 mainModelDir = '/Users/diogocosta/Library/CloudStorage/OneDrive-impactblue-scientific.com/6_Projects/1_GWF/2_WIP/code/mizuRoute/case_studies/testCase_cameo_v1.2/'
 
@@ -32,6 +33,16 @@ hf_file = h5py.File(mainModelDir + openwq_out_dir + openwq_out_file, 'r')
 
 # get list of h5 keys (timestamps)
 keys_list = list(hf_file.keys())
+keys_list = keys_list[1:len(keys_list)-2]  # need to remove the last two datasets (xyz_elements)
+
+# convert timestring to datetime
+datetime_timestampts = [datetime.strptime(keys_list[i], '%Y%b%d-%H:%M:%S') for i in range(len(keys_list))]
+
+# sort datetime and get indexes
+indices = sorted(
+    range(len(datetime_timestampts)),
+    key=lambda index: datetime_timestampts[index]
+)
 
 # Get mapping of indexes
 #indexes = np.array()
@@ -46,11 +57,12 @@ mizuroute_out_file = netCDF4.Dataset(mainModelDir + mizuroute_out_dir + mizurout
 mizuroute_out_idFeature = mizuroute_out_file.variables['reachID']
 mizuroute_out_idFeature = np.array(mizuroute_out_idFeature)
 
+
 # Looping over time
 for i in range(len(keys_list)):
 
     # Get data from timestamp i
-    h5_timestamp_vals = hf_file.get(keys_list[i])
+    h5_timestamp_vals = hf_file.get(keys_list[indices[i]])
     h5_timestamp_vals = np.array(h5_timestamp_vals)
 
     # loop over shapefile elements and get comid
@@ -66,16 +78,25 @@ for i in range(len(keys_list)):
 
 
     # Plotting
-    ax = geodf.plot(column='openwq_wq', legend=True, vmin=0, vmax=0.1, figsize=(20, 14))
+    ax = geodf.plot(column='openwq_wq', legend=True, vmin=0, vmax=0.25,
+        legend_kwds={
+            "location":"right",
+            "shrink":.55
+        },
+    cmap="RdYlGn_r",figsize=(25, 20))
+
+    plt.title(keys_list[i])
+
     cx.add_basemap(ax, source=cx.providers.Stamen.TonerLite)
     # plt.pause(0.05)
     plt.savefig('gif_results/' + str(i) + '.png')
     plt.close()
+    
 
 # Build GIF
 import imageio.v2
 
 with imageio.get_writer('gif_results/results_openwq.gif', mode='I') as writer:
-    for t in range(len(comid)):
-        image = imageio.v2.imread('gif_results/' + str(t) + '.png')
+    for t in range(len(keys_list) + 15):
+        image = imageio.v2.imread('gif_results/' + str(min(t, len(keys_list))) + '.png')
         writer.append_data(image)
