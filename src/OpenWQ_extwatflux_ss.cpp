@@ -2458,6 +2458,12 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
             timStampsIndex2Remove.push_back(tStamp);}
     }
 
+    // Sort timStampsIndex2Remove in descending order
+    // This is needed because, as the vector rows are removed,
+    // the indexes of the rows still to remove will change
+    // So, the removal needs to start from the bottom of the vector to avoid this
+    std::sort(timStampsIndex2Remove.rbegin(), timStampsIndex2Remove.rend());
+
      /* ########################################
     // Loop over rows2Remove
     // to remove the rows corresponding to timestamps
@@ -2473,12 +2479,12 @@ void OpenWQ_extwatflux_ss::RemoveLoadBeforeSimStart_h5(
         // Index of row to remove
         ri2remove = timStampsIndex2Remove[tstep];
         // Remove row from FORC_vec_data and 
-        (*FORC_vec_time_t)[reqi].erase((*FORC_vec_time_t)[reqi].begin()+(ri2remove-1));
+        (*FORC_vec_time_t)[reqi].erase((*FORC_vec_time_t)[reqi].begin()+(ri2remove));
 
         // Loop over all chemical species
         for (unsigned long long chemi=0;chemi<num_chems;chemi++){
 
-            (*FORC_vec_data)[reqi][chemi].erase((*FORC_vec_data)[reqi][chemi].begin()+(ri2remove-1));
+            (*FORC_vec_data)[reqi][chemi].erase((*FORC_vec_data)[reqi][chemi].begin()+(ri2remove));
 
         }
     }
