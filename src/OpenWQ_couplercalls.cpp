@@ -463,20 +463,25 @@ void OpenWQ_couplercalls::RunSpaceStep_IN(
     // Dummy variable
     double ewf_conc_chemi;  // concentraton of chemical at EWF at current time step
     unsigned int iewf;      // index of EWF
+    unsigned int ichem_mob; // iterative dummy var for mobile chemical species
 
     // Find specific EWF index in EWF names
     iewf = OpenWQ_utils.FindStrIndexInVectStr(
         OpenWQ_hostModelconfig.ewf_names,
         source_EWF_name);
 
-    // Loop for all chemical species listed in the BGQ file
-    // both mobile and immobile because these are external inputs
-    for (unsigned int chemi=0;chemi<OpenWQ_wqconfig.BGC_general_num_chem;chemi++){
+    unsigned int numspec = OpenWQ_wqconfig.BGC_general_mobile_species.size();
+
+    // Loop over mobile chemical species
+    for (unsigned int chemi=0;chemi<numspec;chemi++){
+
+        // mobile chemical species index
+        ichem_mob = OpenWQ_wqconfig.BGC_general_mobile_species[chemi];
 
         // Get appropriate chemi concentraton for this ewf and domain ix, iy, iz
         ewf_conc_chemi = (*OpenWQ_vars.ewf_conc)
             (iewf)
-            (chemi)
+            (ichem_mob)
             (ix_r,iy_r,iz_r);
 
         // Advection and dispersion
@@ -484,7 +489,7 @@ void OpenWQ_couplercalls::RunSpaceStep_IN(
             OpenWQ_vars, OpenWQ_wqconfig,
             recipient, ix_r, iy_r, iz_r,
             wflux_s2r,                      // external water flux
-            chemi,                          // chemical id (from BGQ file and used in state-varibble data structures)
+            ichem_mob,                          // chemical id (from BGQ file and used in state-varibble data structures)
             ewf_conc_chemi);                // concentration taken from EWF json file
 
     }
