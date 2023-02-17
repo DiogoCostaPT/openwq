@@ -17,23 +17,30 @@ def gen_map_figs(keys_list, hf_file, indices, comid, mizuroute_out_idFeature, ge
         h5_timestamp_vals = hf_file.get(keys_list[indices[i]])
         h5_timestamp_vals = np.array(h5_timestamp_vals)
 
+        geodf_openwq_wq_np = np.zeros(len(comid))
+
         # loop over shapefile elements and get comid
         # then find the correst output result
         for j in range(len(comid)):
             comid_j = comid[j]
+            index_j = 1
             index_j = np.where(mizuroute_out_idFeature == comid_j)
+            #if(comid_j==3175530):
+            #    print("openwq_id: " + str(index_j))
             try:
-                geodf["openwq_wq"][j] = h5_timestamp_vals[0][index_j[0]]
+                geodf_openwq_wq_np[j] = h5_timestamp_vals[0][index_j[0]]
             except:
-                geodf["openwq_wq"][j] = -1
+                geodf_openwq_wq_np[j] = -1
+
+        geodf["openwq_wq"] = geodf_openwq_wq_np
 
         # Plotting
-        ax = geodf.plot(column='openwq_wq', legend=True, vmin=0, vmax=0.15,
+        ax = geodf.plot(column='openwq_wq', legend=True, vmin=0, vmax=12,
                         legend_kwds={
                             "location": "right",
                             "shrink": .55
                         },
-                        cmap="RdYlGn_r", figsize=(25, 20))
+                        cmap="RdYlGn_r", figsize=(20, 10))
 
         plt.title(keys_list[indices[i]])
 
@@ -99,7 +106,7 @@ def MapGeoPandas(shpfile_fullpath,
     with imageio.get_writer(gif_name_fullpath, mode='I') as writer:
         for t in range(len(keys_list) + 15):
             try:
-                image = imageio.v2.imread(folderSaveFigs_fullpath + str(min(t, len(keys_list))) + '.png')
+                image = imageio.v2.imread(folderSaveFigs_fullpath + str(min(t, len(keys_list)-1)) + '.png')
                 writer.append_data(image)
             except:
                 print('Map figure not found: ' + str(min(t, len(keys_list))) + '.png')
