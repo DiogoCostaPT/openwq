@@ -226,7 +226,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     Chemical_name = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "CHEMICAL_NAME",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
             
     // Type (sink or source) (only used in SS)
     if (inputType.compare("ss")==0) {
@@ -234,7 +235,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
         Type = OpenWQ_utils.RequestJsonKeyVal_str(
             OpenWQ_wqconfig, OpenWQ_output,
             EWF_SS_json_sub, "TYPE",
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
     }else if (inputType.compare("ewf")==0){
         Type = "SOURCE";}
 
@@ -258,7 +260,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     ss_units_json= OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "UNITS",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     if (foundflag == false) return; // skip if chem not found
 
@@ -295,7 +298,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
         OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             EWF_SS_json_sub, "DATA",
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
 
         try{
 
@@ -306,25 +310,29 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
             ascii_FilePath = OpenWQ_utils.RequestJsonKeyVal_str(
                 OpenWQ_wqconfig, OpenWQ_output,
                 EWF_SS_json_sub["DATA"], "FILEPATH",
-                errorMsgIdentifier);
+                errorMsgIdentifier,
+                true);
 
             // delimiter
             ascii_delimiter = OpenWQ_utils.RequestJsonKeyVal_str(
                 OpenWQ_wqconfig, OpenWQ_output,
                 EWF_SS_json_sub["DATA"], "DELIMITER",
-                errorMsgIdentifier);
+                errorMsgIdentifier,
+                true);
 
             // number of header rows
             ascii_numHeaderRows = OpenWQ_utils.RequestJsonKeyVal_int(
                 OpenWQ_wqconfig, OpenWQ_output,
                 EWF_SS_json_sub["DATA"], "NUMBER_OF_HEADER_ROWS",
-                errorMsgIdentifier);            
+                errorMsgIdentifier,
+                true);            
 
             // position of key header
             ascii_headerKeyRow = OpenWQ_utils.RequestJsonKeyVal_int(
                 OpenWQ_wqconfig, OpenWQ_output,
                 EWF_SS_json_sub["DATA"], "HEADER_KEY_ROW",
-                errorMsgIdentifier);  
+                errorMsgIdentifier,
+            true);  
 
             // Get number of rows in ASCII file
             num_rowdata = OpenWQ_utils.getNumLinesfromASCIIFile(ascii_FilePath)
@@ -389,7 +397,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
         num_rowdata = OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             EWF_SS_json_sub, "DATA",
-            errorMsgIdentifier).size();
+            errorMsgIdentifier,
+            true).size();
     }
 
     /* ########################################
@@ -409,7 +418,8 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
         EWF_SS_json_sub_rowi = OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             EWF_SS_json_sub["DATA"], std::to_string(di+1),
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
 
         // If DataFormat=ASCII, then get row data 
         // and convert-to-upper-case and split it by element entry
@@ -1142,32 +1152,38 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     ewf_h5_folderPath = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "FOLDERPATH",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
     // h5 ic units
     ewf_h5_units = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "UNITS",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
     // get external compartment name (needed for both ss and ewf)
     external_compartName = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "EXTERNAL_COMPARTMENT_NAME",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
     // Get interface between openwq models
     interaction_interface_json = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "INTERACTION_INTERFACE",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
     // Get external flux name
     external_waterFluxName = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "EXTERNAL_INPUTFLUX_NAME",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
     // Get interpolation method
     (OpenWQ_wqconfig.h5EWF_interpMethod) = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         EWF_SS_json_sub, "INTERPOLATION",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // ################################
     // Some pre-processing

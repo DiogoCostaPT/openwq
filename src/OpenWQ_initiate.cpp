@@ -222,7 +222,8 @@ void OpenWQ_initiate::setIC_driver(
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Config, "BIOGEOCHEMISTRY_CONFIGURATION",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     /* ########################################
     // Loop over chemical species
@@ -355,31 +356,36 @@ void OpenWQ_initiate::setIC_json(
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Config, "BIOGEOCHEMISTRY_CONFIGURATION",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION";
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"], CompName_icmp,
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION > " + CompName_icmp;
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp], "INITIAL_CONDITIONS",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION > " + CompName_icmp + "INITIAL_CONDITIONS";
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]["INITIAL_CONDITIONS"], "DATA",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION > " + CompName_icmp + "INITIAL_CONDITIONS > DATA";
     ic_info_i = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp]["INITIAL_CONDITIONS"]["DATA"],chemname,
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     num_icData = ic_info_i.size();
     
@@ -611,38 +617,44 @@ void OpenWQ_initiate::setIC_h5(
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Config, "BIOGEOCHEMISTRY_CONFIGURATION",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION";
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"], CompName_icmp,
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION > " + CompName_icmp;
     json_ic_h5_icmp_SubStruct = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Config["BIOGEOCHEMISTRY_CONFIGURATION"][CompName_icmp], "INITIAL_CONDITIONS",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // h5 IC folder path
     errorMsgIdentifier = "Config file > BIOGEOCHEMISTRY_CONFIGURATION > " + CompName_icmp + "INITIAL_CONDITIONS";
     ic_h5_folderPath = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         json_ic_h5_icmp_SubStruct,"FOLDERPATH",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // h5 ic timestamp
     ic_h5_timestamp = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         json_ic_h5_icmp_SubStruct ,"TIMESTAMP",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // h5 ic units
     ic_h5_units = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         json_ic_h5_icmp_SubStruct ,"UNITS",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // replace "/" by "|" is needed because "/" is not compatible with directory full paths
     it = (int) ic_h5_units.find("/");
