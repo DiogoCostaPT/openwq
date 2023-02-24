@@ -8,10 +8,12 @@ from datetime import datetime
 import os
 
 # Genetare map figures
-def gen_map_figs(keys_list, hf_file, indices, comid, mizuroute_out_idFeature, geodf, folderSaveFigs_fullpath):
+def gen_map_figs(keys_list, hf_file, indices, comid, mizuroute_out_idFeature, geodf, folderSaveFigs_fullpath, print_step):
 
     # Looping over time
     for i in range(len(keys_list)):
+
+        if (i/print_step != round(i/print_step)): continue
 
         # Get data from timestamp i
         h5_timestamp_vals = hf_file.get(keys_list[indices[i]])
@@ -25,8 +27,8 @@ def gen_map_figs(keys_list, hf_file, indices, comid, mizuroute_out_idFeature, ge
             comid_j = comid[j]
             index_j = 1
             index_j = np.where(mizuroute_out_idFeature == comid_j)
-            #if(comid_j==3175530):
-            #    print("openwq_id: " + str(index_j))
+            if(comid_j==3179934):
+                print("openwq_id: " + str(index_j))
             try:
                 geodf_openwq_wq_np[j] = h5_timestamp_vals[0][index_j[0]]
             except:
@@ -53,7 +55,8 @@ def MapGeoPandas(shpfile_fullpath,
                 openwq_out_fullpath,
                 mizuroute_out_fullpath,
                 folderSaveFigs_fullpath,
-                gif_name_fullpath):
+                gif_name_fullpath,
+                 print_step):
 
     # Shapefile River
     geodf = gpd.read_file(shpfile_fullpath)
@@ -99,7 +102,7 @@ def MapGeoPandas(shpfile_fullpath,
         os.mkdir(folderSaveFigs_fullpath)
 
     # Generate map figures
-    gen_map_figs(keys_list, hf_file, indices, comid, mizuroute_out_idFeature, geodf, folderSaveFigs_fullpath)
+    gen_map_figs(keys_list, hf_file, indices, comid, mizuroute_out_idFeature, geodf, folderSaveFigs_fullpath, print_step)
 
     # Build GIF
     import imageio.v2
