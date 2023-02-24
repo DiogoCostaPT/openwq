@@ -47,8 +47,8 @@ function plot_OpenWQ_outputs_TimeX_ConcY_perElement(...
         
         
         % Determine number of subplots (5 in debug mode)
-        xnum_subplots = ceil(num_res2plot^0.5);
-        ynum_subplots = ceil(num_res2plot/xnum_subplots);
+        ynum_subplots = ceil(num_res2plot^0.5);
+        xnum_subplots = ceil(num_res2plot/ynum_subplots);
         
         % Loop over outputs (if debug mode is on, derivatives will be
         % printed)
