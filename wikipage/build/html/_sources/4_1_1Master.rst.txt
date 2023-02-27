@@ -30,17 +30,22 @@ The master configuration is a JSON file that provides OpenWQ with information an
 +-------------------------------------------------------+-------------------------------------------------------------------------------------------------------+
 | ``CONFIG_FILEPATH``                                   | `Main configuration file path <https://openwq.readthedocs.io/en/latest/4_1_2Config.html>`_            |
 +-------------------------------------------------------+-------------------------------------------------------------------------------------------------------+
-| ``EXTERNAL_WATER_FLUXES``                             | Numbered pairs of LABEL and FILEPATH for external-fluxes input files                                  |
+| - ``EXTERNAL_WATER_FLUXES``                           | Numbered pairs of LABEL and FILEPATH for external-fluxes input files                                  |
+| - *Optional*                                          |                                                                                                       |
 +-------------------------------------------------------+-------------------------------------------------------------------------------------------------------+
-| ``EXTERNAL_WATER_FLUXES`` -> ``(#)`` -> ``LABEL``     | Label id for input file                                                                               |
+| - ``EXTERNAL_WATER_FLUXES`` -> ``(#)`` -> ``LABEL``   | Label id for input file                                                                               |
+| - *Optional*                                          |                                                                                                       |
 +-------------------------------------------------------+-------------------------------------------------------------------------------------------------------+
-| ``EXTERNAL_WATER_FLUXES`` -> ``(#)`` -> ``FILEPATH``  | File path to `External Water Fluxes file <https://openwq.readthedocs.io/en/latest/4_1_4Source.html>`_ |
+| - ``EXTERNAL_WATER_FLUXES`` -> ``(#)`` -> ``FILEPATH``| File path to `External Water Fluxes file <https://openwq.readthedocs.io/en/latest/4_1_4Source.html>`_ |
+| - *Optional*                                          |                                                                                                       |
 +-------------------------------------------------------+-------------------------------------------------------------------------------------------------------+
-| ``SINK_SOURCE``                                       | Numbered pairs of LABEL and FILEPATH for chemical-sources input files                                 |
+| - ``SINK_SOURCE``                                     | Numbered pairs of LABEL and FILEPATH for chemical-sources input files                                 |
+| - *Optional*                                          |                                                                                                       |
 +-------------------------------------------------------+-------------------------------------------------------------------------------------------------------+
-| ``SINK_SOURCE``           -> ``(#)`` -> ``LABEL``     | Label id for input file                                                                               |
+| - ``SINK_SOURCE`` -> ``(#)`` -> ``LABEL``             | Label id for input file                                                                               |
+| - *Optional*                                          |                                                                                                       |
 +-------------------------------------------------------+-------------------------------------------------------------------------------------------------------+
-| ``EXTERNAL_WATER_FLUXES`` -> ``(#)`` -> ``FILEPATH``  | Path to `Sink and Source file <https://openwq.readthedocs.io/en/latest/4_1_4Source.html>`_            |
+| - ``SINK_SOURCE`` -> ``(#)`` -> ``FILEPATH``          | Path to `Sink and Source file <https://openwq.readthedocs.io/en/latest/4_1_4Source.html>`_            |
 +-------------------------------------------------------+-------------------------------------------------------------------------------------------------------+
 
 **Principal Keys 4**: ``MODULES``
