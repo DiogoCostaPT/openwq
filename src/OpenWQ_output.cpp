@@ -30,7 +30,7 @@ int OpenWQ_output::writeResults(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
     OpenWQ_wqconfig& OpenWQ_wqconfig,
     OpenWQ_solver& OpenWQ_solver,
-    time_t simtime){ // needs to be in seconds since 00:00 hours, Jan 1, 1970 UTC
+    time_t simtime){ // needs to be in seconds since 00:00 hours, Jan 1, 1900 UTC
     
 
     // Local Variables
@@ -38,17 +38,9 @@ int OpenWQ_output::writeResults(
     std::string output_file_label;          // label do add to file (to flag debug mode)
     std::string msg_string;                 // interactive message to print
     std::string outputfile_type;            // interactive name for output file
-    time_t simtime_sinceUnixTimeEpoch1970;  // need to reset simtime to referece of 1970 (unix time epoch)
-
-    // Reset simtime to referece of 1970 (unix time epoch)
-    // So that method "localtime" works
-    simtime_sinceUnixTimeEpoch1970 = simtime - OpenWQ_wqconfig.secFrom1900toUnixTimeEpoch1970;
 
     // Create time string to print
-    // Need to remove secFrom1900toUnixTimeEpoch1970 to reset to 1970 
-    struct tm *tm_simtime = localtime(
-        &simtime_sinceUnixTimeEpoch1970
-    );
+    struct tm *tm_simtime = localtime(&simtime);
 
     // Converting to string
     char timechar [30];

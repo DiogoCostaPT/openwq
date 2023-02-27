@@ -442,7 +442,7 @@ time_t OpenWQ_units::convertTime_ints2time_t(
     std::time_t sim_time_since1900;
     std::tm tm;
     
-    tm.tm_year = YYYY - 1900; // -1900 is needed to get the conversion to produce the correct output
+    tm.tm_year = YYYY - 1970; // number of years since unix-epoch 1970
     tm.tm_mon = MM - 1;
     tm.tm_hour = HH;
     tm.tm_mday = DD;
@@ -456,6 +456,7 @@ time_t OpenWQ_units::convertTime_ints2time_t(
     // Thus, the number of seconds since 00:00 1 Jan 1970 GMT, 
     // which is 2,208,988,800, is added.
     // This value is saved in OpenWQ_wqconfig.secSinceUnixTimeEpoch).
+    
     sim_time_since1900 = sim_time + OpenWQ_wqconfig.secFrom1900toUnixTimeEpoch1970;
 
     return sim_time_since1900;
@@ -475,7 +476,7 @@ time_t OpenWQ_units::convertTime_str2time_t(
     struct tm tm_month;
 
     // Get date
-    tm.tm_year = stoi(datetime_str.substr(0,4)) - 1900;  // -1900 is needed to get the conversion to produce the correct output
+    tm.tm_year = stoi(datetime_str.substr(0,4)) - 1970;  // number of years since unix-epoch 1970
     tm.tm_mday = stoi(datetime_str.substr(7,2));
     tm.tm_hour = stoi(datetime_str.substr(10,2));
     tm.tm_min = stoi(datetime_str.substr(13,2));
