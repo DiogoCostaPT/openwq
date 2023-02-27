@@ -78,35 +78,40 @@ class OpenWQ_utils{
         OpenWQ_output& OpenWQ_output,
         json json_struct,
         std::string jsonKey,
-        std::string msgIndetifier);
+        std::string msgIndetifier,
+        bool abort_flag);
 
     int RequestJsonKeyVal_int(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_output& OpenWQ_output,
         json json_struct,
         std::string jsonKey,
-        std::string msgIndetifier);
+        std::string msgIndetifier,
+        bool abort_flag);
 
     double RequestJsonKeyVal_double(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_output& OpenWQ_output,
         json json_struct,
         std::string jsonKey,
-        std::string msgIndetifier);
+        std::string msgIndetifier,
+        bool abort_flag);
 
     json RequestJsonKeyVal_json(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_output& OpenWQ_output,
         json json_struct,
         std::string jsonKey,
-        std::string msgIndetifier);
+        std::string msgIndetifier,
+        bool abort_flag);
 
     void RequestJsonKeyVal_errorAbort(
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_output& OpenWQ_output,
         std::string jsonKey,
         std::string msgIndetifier,
-        std::string varType);
+        std::string varType,
+        bool abort_flag);
 
     void check_mkdir(
         std::string &dirname);

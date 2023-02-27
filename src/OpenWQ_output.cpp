@@ -36,11 +36,19 @@ int OpenWQ_output::writeResults(
     // Local Variables
     std::vector<int>::iterator it;          // Iterator used to store the position of searched element
     std::string output_file_label;          // label do add to file (to flag debug mode)
-    std::string msg_string;                  // interactive message to print
+    std::string msg_string;                 // interactive message to print
     std::string outputfile_type;            // interactive name for output file
+    time_t simtime_sinceUnixTimeEpoch1970;  // need to reset simtime to referece of 1970 (unix time epoch)
+
+    // Reset simtime to referece of 1970 (unix time epoch)
+    // So that method "localtime" works
+    simtime_sinceUnixTimeEpoch1970 = simtime - OpenWQ_wqconfig.secFrom1900toUnixTimeEpoch1970;
 
     // Create time string to print
-    struct tm *tm_simtime = localtime(&simtime);
+    // Need to remove secFrom1900toUnixTimeEpoch1970 to reset to 1970 
+    struct tm *tm_simtime = localtime(
+        &simtime_sinceUnixTimeEpoch1970
+    );
 
     // Converting to string
     char timechar [30];

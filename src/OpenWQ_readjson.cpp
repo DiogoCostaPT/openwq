@@ -56,7 +56,8 @@ void OpenWQ_readjson::read_all(
     jsonMaster_SubStruct = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Master, "OPENWQ_INPUT",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // ########################
     // Main confirguration json (read)
@@ -64,7 +65,8 @@ void OpenWQ_readjson::read_all(
     input_filepath = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         jsonMaster_SubStruct, "CONFIG_FILEPATH",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     OpenWQ_readjson::read_JSON_2class(
         OpenWQ_wqconfig,
@@ -81,7 +83,8 @@ void OpenWQ_readjson::read_all(
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         jsonMaster_SubStruct, "EXTERNAL_WATER_FLUXES",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
     unsigned int num_eff = jsonMaster_SubStruct["EXTERNAL_WATER_FLUXES"].size();
 
     errorMsgIdentifier = "Master file inside OPENWQ_INPUT > EXTERNAL_WATER_FLUXES";
@@ -92,13 +95,15 @@ void OpenWQ_readjson::read_all(
         OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             jsonMaster_SubStruct["EXTERNAL_WATER_FLUXES"], std::to_string(eff + 1),
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
 
         // Check if row eff field exists
        input_filepath = OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             jsonMaster_SubStruct["EXTERNAL_WATER_FLUXES"][std::to_string(eff + 1)],"FILEPATH",
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
 
         OpenWQ_readjson::read_JSON_2class(
             OpenWQ_wqconfig,
@@ -117,7 +122,8 @@ void OpenWQ_readjson::read_all(
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         jsonMaster_SubStruct, "SINK_SOURCE",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
     unsigned int num_ssf = jsonMaster_SubStruct["SINK_SOURCE"].size();
 
     errorMsgIdentifier = "Master file inside OPENWQ_INPUT > SINK_SOURCE";
@@ -127,13 +133,15 @@ void OpenWQ_readjson::read_all(
         OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             jsonMaster_SubStruct["SINK_SOURCE"], std::to_string(ssf + 1),
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
 
         // Check if row eff field exists
        input_filepath = OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             jsonMaster_SubStruct["SINK_SOURCE"][std::to_string(ssf + 1)],"FILEPATH",
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
 
         OpenWQ_readjson::read_JSON_2class(
             OpenWQ_wqconfig,
@@ -155,7 +163,8 @@ void OpenWQ_readjson::read_all(
     jsonMaster_SubStruct = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Master, "MODULES",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // ########################
     // BGC_module cycling json (read)
@@ -165,13 +174,15 @@ void OpenWQ_readjson::read_all(
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         jsonMaster_SubStruct, "BIOGEOCHEMISTRY",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     errorMsgIdentifier = "Master file inside OPENWQ_INPUT > MODULES > BIOGEOCHEMISTRY";
     input_filepath = OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             jsonMaster_SubStruct["BIOGEOCHEMISTRY"],"MODULE_CONFIG_FILEPATH",
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
 
     OpenWQ_readjson::read_JSON_2class(
         OpenWQ_wqconfig,
@@ -191,13 +202,15 @@ void OpenWQ_readjson::read_all(
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         jsonMaster_SubStruct, "TRANSPORT_EROSION",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     errorMsgIdentifier = "Master file inside OPENWQ_INPUT > MODULES > TRANSPORT_EROSION";
     input_filepath = OpenWQ_utils.RequestJsonKeyVal_json(
-            OpenWQ_wqconfig, OpenWQ_output,
-            jsonMaster_SubStruct["TRANSPORT_EROSION"],"MODULE_CONFIG_FILEPATH",
-            errorMsgIdentifier);
+        OpenWQ_wqconfig, OpenWQ_output,
+        jsonMaster_SubStruct["TRANSPORT_EROSION"],"MODULE_CONFIG_FILEPATH",
+        errorMsgIdentifier,
+        true);
 
     OpenWQ_readjson::read_JSON_2class(
         OpenWQ_wqconfig,
@@ -770,7 +783,8 @@ void OpenWQ_readjson::SetConfigInfo_compute(
     json_computeSettings = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Master, "COMPUTATIONAL_SETTINGS",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // Run model: check if DEBUG model has been requested
     // The model will print all the derivatives
@@ -778,7 +792,8 @@ void OpenWQ_readjson::SetConfigInfo_compute(
     OpenWQ_wqconfig.debug_mode = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         json_computeSettings, "RUN_MODE_DEBUG",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // Get number of threads in the system
     OpenWQ_wqconfig.num_threads_system = sysconf(_SC_NPROCESSORS_ONLN);
@@ -906,21 +921,24 @@ void OpenWQ_readjson::SetConfigInfo_chemModule(
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Master, "MODULES",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // Check if BIOGEOCHEMISTRY key exists
     errorMsgIdentifier = "Master file > MODULE";
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Master["MODULES"], "BIOGEOCHEMISTRY",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // Chem method
     errorMsgIdentifier = "Master file > MODULE > BIOGEOCHEMISTRY";
     BGC_method_local = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Master["MODULES"]["BIOGEOCHEMISTRY"], "MODULE_NAME",
-        errorMsgIdentifier);    
+        errorMsgIdentifier,
+        true);    
     
     (OpenWQ_wqconfig.BGC_module).append(BGC_method_local);
 
@@ -933,14 +951,16 @@ void OpenWQ_readjson::SetConfigInfo_chemModule(
         BGQjson_subStruct = OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             OpenWQ_json.BGC_module, "CHEMICAL_SPECIES",
-            errorMsgIdentifier); 
+            errorMsgIdentifier,
+            true); 
 
         // Check if BGQ json has CHEMICAL_SPECIES key
         errorMsgIdentifier = "BGQ file in CHEMICAL_SPECIES";
         BGQjson_ChemList = OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             BGQjson_subStruct, "LIST",
-            errorMsgIdentifier); 
+            errorMsgIdentifier,
+            true); 
 
         // Get number of chemical species from BGC_json
         (OpenWQ_wqconfig.BGC_general_num_chem) = BGQjson_ChemList.size();
@@ -951,7 +971,8 @@ void OpenWQ_readjson::SetConfigInfo_chemModule(
         BGQjson_mobileSpecies = OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             BGQjson_subStruct, "BGC_GENERAL_MOBILE_SPECIES",
-            errorMsgIdentifier); 
+            errorMsgIdentifier,
+            false);  // no abort
 
         for (unsigned int chemi = 0; chemi < BGQjson_mobileSpecies.size(); chemi++){
         
@@ -1005,21 +1026,24 @@ void OpenWQ_readjson::SetConfigInfo_TEModule(
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Master, "MODULES",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // check if field MODULES > TRANSPORT_EROSION exist
     errorMsgIdentifier = "Master file in MODULES";
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Master["MODULES"], "TRANSPORT_EROSION",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // Get TRANSPORT_EROSION module name
     errorMsgIdentifier = "Master file in MODULES > TRANSPORT_EROSION";
     TE_method_local = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Master["MODULES"]["TRANSPORT_EROSION"], "MODULE_NAME",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
     (OpenWQ_wqconfig.TE_module).append(TE_method_local);
 
     // Load information fo the method
@@ -1032,13 +1056,15 @@ void OpenWQ_readjson::SetConfigInfo_TEModule(
         json_IntMov_subStruct = OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             OpenWQ_json.TE_module, "INTMOB_CONFIGURATION",
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
 
         errorMsgIdentifier = "Master file in MODULES > INTMOB_CONFIGURATION";
         json_K_Erodib_K = OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             json_IntMov_subStruct, "K_VAL",
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
 
         for (unsigned int cmpi=0;cmpi<OpenWQ_hostModelconfig.num_HydroComp;cmpi++){
             try{
@@ -1064,7 +1090,8 @@ void OpenWQ_readjson::SetConfigInfo_TEModule(
         json_BoundMix_subStruct = OpenWQ_utils.RequestJsonKeyVal_json(
             OpenWQ_wqconfig, OpenWQ_output,
             OpenWQ_json.TE_module, "BOUNDMIX_CONFIGURATION",
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
 
         num_entries = json_BoundMix_subStruct.size();
 
@@ -1075,29 +1102,34 @@ void OpenWQ_readjson::SetConfigInfo_TEModule(
             json_BoundMix_subStruct_subStruct = OpenWQ_utils.RequestJsonKeyVal_json(
                 OpenWQ_wqconfig, OpenWQ_output,
                 json_BoundMix_subStruct, std::to_string(entry_i + 1),
-                errorMsgIdentifier);
+                errorMsgIdentifier,
+                true);
 
             // Get entries
             errorMsgIdentifier = "TE file > " + std::to_string(entry_i + 1);
             input_direction = OpenWQ_utils.RequestJsonKeyVal_str(
                 OpenWQ_wqconfig, OpenWQ_output,
                 json_BoundMix_subStruct_subStruct, "DIRECTION",
-                errorMsgIdentifier); 
+                errorMsgIdentifier,
+                true); 
 
             input_upper_compartment = OpenWQ_utils.RequestJsonKeyVal_str(
                 OpenWQ_wqconfig, OpenWQ_output,
                 json_BoundMix_subStruct_subStruct, "UPPER_COMPARTMENT",
-                errorMsgIdentifier); 
+                errorMsgIdentifier,
+                true); 
 
             input_lower_compartment = OpenWQ_utils.RequestJsonKeyVal_str(
                 OpenWQ_wqconfig, OpenWQ_output,
                 json_BoundMix_subStruct_subStruct, "LOWER_COMPARTMENT",
-                errorMsgIdentifier); 
+                errorMsgIdentifier,
+                true); 
 
             input_k_val = OpenWQ_utils.RequestJsonKeyVal_double(
                 OpenWQ_wqconfig, OpenWQ_output,
                 json_BoundMix_subStruct_subStruct, "K_VAL",
-                errorMsgIdentifier); 
+                errorMsgIdentifier,
+                true); 
 
             // Get corresponding indexes
             
@@ -1213,20 +1245,23 @@ void OpenWQ_readjson::SetConfigInfo_output_logFile(
     // Check if OPENWQ_OUTPUT field exists
     errorMsgIdentifier = "Master file";
     OpenWQ_utils.RequestJsonKeyVal_json(
-            OpenWQ_wqconfig, OpenWQ_output,
-            OpenWQ_json.Master, "OPENWQ_OUTPUT",
-            errorMsgIdentifier);
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Master, "OPENWQ_OUTPUT",
+        errorMsgIdentifier,
+        true);
 
     errorMsgIdentifier = "Master file > OPENWQ_OUTPUT";
     output_format = OpenWQ_utils.RequestJsonKeyVal_str(
-            OpenWQ_wqconfig, OpenWQ_output,
-            OpenWQ_json.Master["OPENWQ_OUTPUT"],"FORMAT",
-            errorMsgIdentifier);
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Master["OPENWQ_OUTPUT"],"FORMAT",
+        errorMsgIdentifier,
+        true);
 
     output_folder = OpenWQ_utils.RequestJsonKeyVal_str(
-            OpenWQ_wqconfig, OpenWQ_output,
-            OpenWQ_json.Master["OPENWQ_OUTPUT"],"RESULTS_FOLDERPATH",
-            errorMsgIdentifier);
+        OpenWQ_wqconfig, OpenWQ_output,
+        OpenWQ_json.Master["OPENWQ_OUTPUT"],"RESULTS_FOLDERPATH",
+        errorMsgIdentifier,
+        true);
 
     // Create Log file name with full or relative path
     OpenWQ_wqconfig.LogFile_name_fullpath =  OpenWQ_wqconfig.LogFile_name;
@@ -1273,27 +1308,31 @@ void OpenWQ_readjson::SetConfigInfo_output_options(
     json_output_subStruct = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Master,"OPENWQ_OUTPUT",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // Output folder
     errorMsgIdentifier = "Master file > OPENWQ_OUTPUT";
     OpenWQ_wqconfig.output_dir = OpenWQ_utils.RequestJsonKeyVal_str(
         OpenWQ_wqconfig, OpenWQ_output,
         json_output_subStruct,"RESULTS_FOLDERPATH",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // Output Units (tuple with all the information needed)
     std::get<0>(OpenWQ_wqconfig.output_units) = 
         OpenWQ_utils.RequestJsonKeyVal_str(
             OpenWQ_wqconfig, OpenWQ_output,
             json_output_subStruct,"UNITS",
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
 
     // Flag for no water
     OpenWQ_wqconfig.noWaterConc = OpenWQ_utils.RequestJsonKeyVal_int(
             OpenWQ_wqconfig, OpenWQ_output,
             json_output_subStruct,"NO_WATER_CONC_FLAG",
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
     
      // Convert time units from host model units to seconds (OpenWQ time units)
     // 1) Calculate unit multiplers
@@ -1313,7 +1352,8 @@ void OpenWQ_readjson::SetConfigInfo_output_options(
     output_format = OpenWQ_utils.RequestJsonKeyVal_str(
             OpenWQ_wqconfig, OpenWQ_output,
             json_output_subStruct,"FORMAT",
-            errorMsgIdentifier);
+            errorMsgIdentifier,
+            true);
 
     // ########################################
     // Output format ######
@@ -1347,7 +1387,8 @@ void OpenWQ_readjson::SetConfigInfo_output_options(
     json_time = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         json_output_subStruct,"TIMESTEP",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     (OpenWQ_wqconfig.timetep_out) = json_time.at(0);       // Get value
     (OpenWQ_wqconfig.timestep_out_unit) = json_time.at(1); // Get units
@@ -1412,13 +1453,15 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
     json_output_subStruct = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         OpenWQ_json.Master,"OPENWQ_OUTPUT",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     errorMsgIdentifier = "Master file > OPENWQ_OUTPUT";
     num_chem2print = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         json_output_subStruct,"CHEMICAL_SPECIES",
-        errorMsgIdentifier).size();
+        errorMsgIdentifier,
+        true).size();
     
     // Get indexes for the list of chemicals requested
     for (unsigned int chemi = 0; chemi < num_chem2print; chemi++){
@@ -1441,7 +1484,8 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
     json_output_subStruct_CmpCells = OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         json_output_subStruct,"COMPARTMENTS_AND_CELLS",
-        errorMsgIdentifier);
+        errorMsgIdentifier,
+        true);
 
     // num of comartments to print
     num_compt2print = json_output_subStruct_CmpCells.size();

@@ -323,7 +323,8 @@ std::string OpenWQ_utils::RequestJsonKeyVal_str(
     OpenWQ_output& OpenWQ_output,
     json json_struct,
     std::string jsonKey,
-    std::string msgIndetifier){
+    std::string msgIndetifier,
+    bool abort_flag){
 
     // Local variables
     std::string jsonVal_str;
@@ -342,7 +343,8 @@ std::string OpenWQ_utils::RequestJsonKeyVal_str(
             OpenWQ_output,
             jsonKey,
             msgIndetifier,
-            varType);
+            varType,
+            abort_flag);
         
     } 
 
@@ -357,7 +359,8 @@ int OpenWQ_utils::RequestJsonKeyVal_int(
     OpenWQ_output& OpenWQ_output,
     json json_struct,
     std::string jsonKey,
-    std::string msgIndetifier){
+    std::string msgIndetifier,
+    bool abort_flag){
 
     // Local variables
     int jsonVal_int;
@@ -376,7 +379,8 @@ int OpenWQ_utils::RequestJsonKeyVal_int(
             OpenWQ_output,
             jsonKey,
             msgIndetifier,
-            varType);
+            varType,
+            abort_flag);
         
     } 
 
@@ -391,7 +395,8 @@ double OpenWQ_utils::RequestJsonKeyVal_double(
     OpenWQ_output& OpenWQ_output,
     json json_struct,
     std::string jsonKey,
-    std::string msgIndetifier){
+    std::string msgIndetifier,
+    bool abort_flag){
 
     // Local variables
     double jsonVal_double;
@@ -410,7 +415,8 @@ double OpenWQ_utils::RequestJsonKeyVal_double(
             OpenWQ_output,
             jsonKey,
             msgIndetifier,
-            varType);
+            varType,
+            abort_flag);
         
     } 
 
@@ -425,7 +431,8 @@ json OpenWQ_utils::RequestJsonKeyVal_json(
     OpenWQ_output& OpenWQ_output,
     json json_struct,
     std::string jsonKey,
-    std::string msgIndetifier){
+    std::string msgIndetifier,
+    bool abort_flag){
 
     // Local variables
     json jsonVal_json;
@@ -443,7 +450,8 @@ json OpenWQ_utils::RequestJsonKeyVal_json(
             OpenWQ_output,
             jsonKey,
             msgIndetifier,
-            varType);
+            varType,
+            abort_flag);
 
     }
 
@@ -458,25 +466,39 @@ void OpenWQ_utils::RequestJsonKeyVal_errorAbort(
     OpenWQ_output& OpenWQ_output,
     std::string jsonKey,
     std::string msgIndetifier,
-    std::string varType){
+    std::string varType,
+    bool abort_flag){
 
     // Local variables
     std::string jsonKeyNull_msg;
+    std::string msg_start;
+    std::string msg_end;
 
+    // Get appropriate start and end message string
+    // depending on if to abort or not
+    if (abort_flag == true){
+        msg_start = OpenWQ_wqconfig.jsonKeyNull_msg_start_abort;
+        msg_end = OpenWQ_wqconfig.jsonKeyNull_msg_end_abort;
+    }else if (abort_flag == false){
+        msg_start = OpenWQ_wqconfig.jsonKeyNull_msg_start_NOabort;
+        msg_end = OpenWQ_wqconfig.jsonKeyNull_msg_end_NOabort;
+    }
     // If results is NULL, throw error message and abort 
     jsonKeyNull_msg = "####################\n"
-                    + OpenWQ_wqconfig.jsonKeyNull_msg_start 
+                    + msg_start
                     + jsonKey
                     + " of type=" + varType
                     + " at " + msgIndetifier
-                    + OpenWQ_wqconfig.jsonKeyNull_msg_end
+                    + msg_end
                     + "\n####################";
 
     // Print in console and logFile
     OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, jsonKeyNull_msg, true,true); 
     
     // Abort program
-    exit(EXIT_FAILURE);
+    if (abort_flag == true){
+        exit(EXIT_FAILURE);
+    }
 
 }
 

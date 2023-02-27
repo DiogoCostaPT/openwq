@@ -91,14 +91,13 @@ void OpenWQ_solver::Numerical_Solver(
                         // ####################################
                         // 4
                         // Dynamic change (derivatives): chemistry and tranport
-                        // multiplies by hostmodel dt (OpenWQ_hostModelconfig.time_step)
+                        // It has already been multiplied by hostmodel dt (OpenWQ_hostModelconfig.time_step)
 
                         // Chemistry
-                        dm_dt_chem = (*OpenWQ_vars.d_chemass_dt_chem)(icmp)(chemi)(ix,iy,iz)
-                            * OpenWQ_hostModelconfig.time_step;
+                        dm_dt_chem = (*OpenWQ_vars.d_chemass_dt_chem)(icmp)(chemi)(ix,iy,iz);
                         // updating cumulative calc for output in debug mode
+                        // No need to multiply by timestep because that has been done in chem module
                         (*OpenWQ_vars.d_chemass_dt_chem_out)(icmp)(chemi)(ix,iy,iz) += dm_dt_chem;
-
                         // Transport (no need to multiply by timestep because the water flux is usually
                         // is provided as a water volume, and not as a water volume per unit of time)
                         dm_dt_trans = (*OpenWQ_vars.d_chemass_dt_transp)(icmp)(chemi)(ix,iy,iz); 
@@ -117,6 +116,9 @@ void OpenWQ_solver::Numerical_Solver(
                                 + dm_dt_chem        // Mass change due to chemistry                            
                                 + dm_dt_trans);     // Mass change due to transport
 
+                        if((*OpenWQ_vars.chemass)(icmp)(chemi)(ix,iy,iz) < 0){
+                            (*OpenWQ_vars.chemass)(icmp)(chemi)(ix,iy,iz) = 0;
+                        }
                     }
                 }
             }

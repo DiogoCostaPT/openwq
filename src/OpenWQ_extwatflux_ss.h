@@ -178,6 +178,7 @@ class OpenWQ_extwatflux_ss{
         unsigned int& row_i);
 
     void RemoveLoadBeforeSimStart_jsonAscii(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units,
         std::unique_ptr<arma::Mat<double>>& array_FORC,
         const int YYYY,             // current model step: Year
@@ -188,6 +189,7 @@ class OpenWQ_extwatflux_ss{
         const int SEC);             // current model step: sec
 
     void RemoveLoadBeforeSimStart_h5(
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_units& OpenWQ_units,
         std::unique_ptr<std::vector<std::vector<std::vector<arma::Cube<double>>>>>& FORC_vec_data, // H5 interface data
         std::unique_ptr<std::vector<std::vector<time_t>>>& FORC_vec_time_t,          // H5 interface timestamps
@@ -201,6 +203,7 @@ class OpenWQ_extwatflux_ss{
 
     void UpdateAllElemTimeIncremts(
         std::unique_ptr<arma::Mat<double>>& array_FORC,
+        OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_utils& OpenWQ_utils,
         OpenWQ_units& OpenWQ_units,
         const int YYYY,             // current model step: Year

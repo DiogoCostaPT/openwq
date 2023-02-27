@@ -429,6 +429,7 @@ bool OpenWQ_units::Check_Time_Units(
 // Convert discreted date info into time_t
 ################################################# */
 time_t OpenWQ_units::convertTime_ints2time_t(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
     int YYYY, 
     int MM, 
     int DD, 
@@ -436,8 +437,10 @@ time_t OpenWQ_units::convertTime_ints2time_t(
     int MIN,
     int SEC) {
 
+    // Local variables
     std::time_t sim_time;
-    std::tm tm{};
+    std::time_t sim_time_since1900;
+    std::tm tm;
     
     tm.tm_year = YYYY - 1900; // -1900 is needed to get the conversion to produce the correct output
     tm.tm_mon = MM - 1;
@@ -447,17 +450,27 @@ time_t OpenWQ_units::convertTime_ints2time_t(
     tm.tm_sec = SEC;
     sim_time = timegm(&tm);
 
-    return sim_time;
+    // Since the unix time epoch is 1970, which is used as a reference for timegm,
+    // the seconds become negative for years below 1970, 
+    // which will mess up time management.
+    // Thus, the number of seconds since 00:00 1 Jan 1970 GMT, 
+    // which is 2,208,988,800, is added.
+    // This value is saved in OpenWQ_wqconfig.secSinceUnixTimeEpoch).
+    sim_time_since1900 = sim_time + OpenWQ_wqconfig.secFrom1900toUnixTimeEpoch1970;
+
+    return sim_time_since1900;
 }
 
 /* #################################################
 // Convert date string info into time_t
 ################################################# */
 time_t OpenWQ_units::convertTime_str2time_t(
+    OpenWQ_wqconfig& OpenWQ_wqconfig,
     std::string datetime_str) {
     
     // Local variables
     std::time_t sim_time;
+    std::time_t sim_time_since1900;
     struct tm tm;
     struct tm tm_month;
 
@@ -477,6 +490,14 @@ time_t OpenWQ_units::convertTime_str2time_t(
     // Convert time to time_t  
     sim_time = timegm(&tm);
 
-    return sim_time;
+    // Since the unix time epoch is 1970, which is used as a reference for timegm,
+    // the seconds become negative for years below 1970, 
+    // which will mess up time management.
+    // Thus, the number of seconds since 00:00 1 Jan 1970 GMT, 
+    // which is 2,208,988,800, is added.
+    // This value is saved in OpenWQ_wqconfig.secSinceUnixTimeEpoch).
+    sim_time_since1900 = sim_time + OpenWQ_wqconfig.secFrom1900toUnixTimeEpoch1970;
+
+    return sim_time_since1900;
     
 }

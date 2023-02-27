@@ -211,8 +211,10 @@ class OpenWQ_wqconfig
     size_t num_coldata_h5;
 
     // General JSON key null error
-    std::string jsonKeyNull_msg_start = "<OpenWQ> Execution ABORTED!\nExpected json value for key=";
-    std::string jsonKeyNull_msg_end = " but not found! Revise the JSON files.";
+    std::string jsonKeyNull_msg_start_abort = "<OpenWQ> Execution ABORTED!\nExpected json value for key=";
+    std::string jsonKeyNull_msg_end_abort = " but not found! Revise the JSON files.";
+    std::string jsonKeyNull_msg_start_NOabort = "<OpenWQ> WARNING: Expected json value for key=";
+    std::string jsonKeyNull_msg_end_NOabort = " but not found! The entry has been zeroed. Make sure this was intended!";
     
     // Master file location
     std::string OpenWQ_masterjson;
@@ -278,6 +280,13 @@ class OpenWQ_wqconfig
     std::vector<int> compt2print;
     std::vector<bool> cells2print_bool;
     std::vector<arma::mat> cells2print_vec;
+    // Since the unix time epoch is 1970, which is used as a reference for timegm,
+    // the seconds become negative for years below 1970, 
+    // which will mess up time management.
+    // Thus, the number of seconds since 00:00 1 Jan 1970 GMT, 
+    // which is 2,208,988,800, is added 
+    // (which is saved in OpenWQ_vars.secSinceUnixTimeEpoch).
+    unsigned long long secFrom1900toUnixTimeEpoch1970 = 2208988800;
     
     // Output folder
     std::string output_dir;

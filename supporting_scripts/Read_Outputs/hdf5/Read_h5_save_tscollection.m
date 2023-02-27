@@ -120,10 +120,9 @@ function output_tscollect = Read_h5_save_tscollection(...
         
         % Get time samples and model elements
         timestamps = datasets(1:end-2);         % time steps
-        xyz_elements_name = datasets{end-1};        % z elements
 
         % x, y, z elements
-        xyz_elements_source = h5read(filepath_i,['/',xyz_elements_name]);
+        xyz_elements_source = h5read(filepath_i,'/xyz_elements');
 
         % Skip if source does not have data
         if isempty(xyz_elements_source)
