@@ -1,7 +1,7 @@
-Source/Sink & External Fluxes
-=====================================
+Source/Sink & External Fluxes (*Optional*)
+==========================================
 
-``Source/Sink`` loads and ``External Fluxes`` use a similar data input structure. The differences are highlighted below.
+``Source/Sink`` loads and ``External Fluxes`` are optional entries. They use a similar data input structure. The differences are highlighted below.
 
 The chemical sink and source files used by OpenWQ are defined in the master configuration file.
 Each sink/source is defined in an individual ``json-block``, and you can add as many ``json`` files as desired.
