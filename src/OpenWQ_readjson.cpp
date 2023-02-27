@@ -79,12 +79,12 @@ void OpenWQ_readjson::read_all(
 
     // ########################
     // External fluxes json (read)
-    // if not found, throw message and abort
+    // if not found, throw a warning message and continue
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         jsonMaster_SubStruct, "EXTERNAL_WATER_FLUXES",
         errorMsgIdentifier,
-        true);
+        false);
     unsigned int num_eff = jsonMaster_SubStruct["EXTERNAL_WATER_FLUXES"].size();
 
     errorMsgIdentifier = "Master file inside OPENWQ_INPUT > EXTERNAL_WATER_FLUXES";
@@ -117,13 +117,13 @@ void OpenWQ_readjson::read_all(
 
     // ########################
     // SinkSource json (read)
-    // if not found, throw message and abort
+    // if not found, throw a warning message and continue
     errorMsgIdentifier = "Master file inside OPENWQ_INPUT";
     OpenWQ_utils.RequestJsonKeyVal_json(
         OpenWQ_wqconfig, OpenWQ_output,
         jsonMaster_SubStruct, "SINK_SOURCE",
         errorMsgIdentifier,
-        true);
+        false);
     unsigned int num_ssf = jsonMaster_SubStruct["SINK_SOURCE"].size();
 
     errorMsgIdentifier = "Master file inside OPENWQ_INPUT > SINK_SOURCE";
