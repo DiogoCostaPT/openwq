@@ -168,7 +168,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "crhm_openwq")
                 SET(exec_name "${COMPILE_TARGET}_${COMPILE_MODE}")
 
                 # Choose where to create the executable
-                SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+                SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
                 SET(EXEC_DIR ${PARENT_DIR}/../case_studies)
 
                 SET(CRHM_DIR ${PARENT_DIR}/crhm)
