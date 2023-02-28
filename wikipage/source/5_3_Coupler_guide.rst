@@ -1,5 +1,5 @@
-How to couple to hydro-models?
-==============================
+How to couple OpenWQ?
+=====================
 
 .. toctree::
    :maxdepth: 3

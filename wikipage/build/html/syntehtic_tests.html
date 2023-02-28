@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; OpenWQ 0.0.2 documentation</title>
+  <title>Synthetic tests &mdash; OpenWQ 0.0.2 documentation</title>
   
 
   
@@ -35,7 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-    <link rel="index" title="Index" href="#" />
+    <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
 
@@ -84,9 +85,9 @@
 <li class="toctree-l1"><a class="reference internal" href="1_0_Home.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_0_Installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_3_base_Hydro_models.html">Coupling OpenWQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_1_OpenWQ_IO.html">OpenWQ I/O</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Join us!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_3_base_Hydro_models.html">Hydro-models (forcing)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Developer: Join us!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="6_0_Contact.html">Contact</a></li>
 </ul>
 
@@ -133,12 +134,14 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Index</li>
+      <li>Synthetic tests</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
+            <a href="_sources/syntehtic_tests.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -150,12 +153,58 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-
-<h1 id="index">Index</h1>
-
-<div class="genindex-jumpbox">
- 
-</div>
+  <section id="synthetic-tests">
+<h1>Synthetic tests<a class="headerlink" href="#synthetic-tests" title="Permalink to this headline">¶</a></h1>
+<p>A total of 10 synthetic tests have been prepared to verify OpenWQ’s outputs against analytical solutions.</p>
+<p>Such tests should be performed regularly during development to ensure that OpenWQ is still performing accurately as expected.</p>
+<p>The json-input files for each of these synthetic tests can be obtained from the folowing GitHub repository: <a class="reference external" href="https://github.com/ue-hydro/synthetic_tests">https://github.com/ue-hydro/synthetic_tests</a></p>
+<p>The table below summarizes the different tests:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 19%" />
+<col style="width: 68%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Transport Scheme</p></td>
+<td><p>Designation</p></td>
+<td><p>Description</p></td>
+</tr>
+<tr class="row-even"><td rowspan="6"><p>No transport</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">1_noTrans_1species_1storder</span></code></p></td>
+<td><p>Batch reactor involving 1 chemical species subject to first-order decay</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">2_noTrans_1species</span> <span class="pre">2ndorder</span></code></p></td>
+<td><p>Batch reactor involving 1 chemical species subject to second-order decay</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">3_noTrans_2species</span></code></p></td>
+<td><p>Batch reactor involving 2 chemical species subject to first-order decay</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4_noTrans_3species</span></code></p></td>
+<td><p>Batch reactor involving 3 chemical species subject to first-order decay</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">5_noTrans_nitrogencycle</span></code></p></td>
+<td><p>Batch reactor representing the nitrogen cycle</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">6_noTrans_oxygenBODcycle</span></code></p></td>
+<td><p>Batch reactor representing the dissolved oxygen cycle</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><p>Advection-Dispersion</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">7_trans_contS</span></code></p></td>
+<td><p>PorMedia Non-reactive transport of 1 chemical species in porous media subject to a continuous load</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">8_trans_contS</span></code></p></td>
+<td><p>PorMedia 1storder Reactive (linear decay) transport of 1 chemical species in porous media subject to a continuous load</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">9_trans_instS</span></code></p></td>
+<td><p>PorMedia Non-reactive transport of 1 chemical species in porous media subject to an instantaneous load</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">10_trans_instS</span></code></p></td>
+<td><p>PorMedia 1storder Reactive (linear decay) transport of 1 chemical species in porous media subject to an instantaneous load</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 
 
            </div>
