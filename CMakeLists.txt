@@ -172,8 +172,8 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "crhm_openwq")
                 SET(EXEC_DIR ${PARENT_DIR}/../case_studies)
 
                 SET(CRHM_DIR ${PARENT_DIR}/crhm)
-                SET(OPENWQ_DIR ${PARENT_DIR}/openwq)
-                SET(HYDROLINK_DIR ${PARENT_DIR})
+                SET(OPENWQ_DIR ${PARENT_DIR}/openwq/openwq)
+                SET(HYDROLINK_DIR ${PARENT_DIR}/openwq)
 
                 FILE(GLOB SOURCES
                         ${CRHM_DIR}/vcl.cpp
