@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Hydro-models (forcing) &mdash; OpenWQ 0.0.2 documentation</title>
+  <title>Coupling OpenWQ &mdash; OpenWQ 0.0.2 documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Existing couplings" href="5_3_0_Hydro_coupled_models.html" />
-    <link rel="prev" title="Reading model outputs" href="4_2_2_OutputReadScript.html" /> 
+    <link rel="prev" title="Troubleshooting" href="3_4_Trouble.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,13 +87,14 @@
 <li class="toctree-l1"><a class="reference internal" href="1_0_Home.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_0_Documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_0_Installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_1_OpenWQ_IO.html">OpenWQ I/O</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Hydro-models (forcing)</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Coupling OpenWQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="5_3_0_Hydro_coupled_models.html">Existing couplings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="5_3_Coupler_guide.html">How to couple to hydro-models?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_3_Coupler_guide.html">How to couple OpenWQ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="synthetic_tests.html">Synthetic tests</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Developer: Join us!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_1_OpenWQ_IO.html">OpenWQ I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_0_Developer.html">Join us!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="6_0_Contact.html">Contact</a></li>
 </ul>
 
@@ -140,7 +141,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Hydro-models (forcing)</li>
+      <li>Coupling OpenWQ</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -159,8 +160,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="hydro-models-forcing">
-<h1>Hydro-models (forcing)<a class="headerlink" href="#hydro-models-forcing" title="Permalink to this headline">¶</a></h1>
+  <section id="coupling-openwq">
+<h1>Coupling OpenWQ<a class="headerlink" href="#coupling-openwq" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="5_3_0_Hydro_coupled_models.html">Existing couplings</a><ul>
@@ -170,7 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="5_3_0_Hydro_coupled_models.html#fluxos-overland"><strong>FLUXOS-OVERLAND</strong></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="5_3_Coupler_guide.html">How to couple to hydro-models?</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="5_3_Coupler_guide.html">How to couple OpenWQ?</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="5_3_0_Coupling_what_do_you_need.html">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_3_0_Coupling_steps.html">Steps to perform the coupling</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="5_3_0_Coupling_steps.html#step-1-hydro-model-structure">STEP 1: Hydro-model structure</a></li>
@@ -196,11 +197,13 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="5_3_000_Wrapper_interfaces.html">Language binding</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="5_3_000_Wrapper_interfaces.html#what-is-binding">What is binding?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="5_3_000_Wrapper_interfaces.html#wrapper-libraries-for-different-languages">Wrapper libraries for different languages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_000_Wrapper_interfaces.html#wrapper-libraries-for-fortran">Wrapper libraries for Fortran</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_3_000_Wrapper_interfaces.html#wrapper-libraries-for-other-languages">Wrapper libraries for other languages</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic_tests.html">Synthetic tests</a></li>
 </ul>
 </div>
 </section>
@@ -216,7 +219,7 @@
         <a href="5_3_0_Hydro_coupled_models.html" class="btn btn-neutral float-right" title="Existing couplings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="4_2_2_OutputReadScript.html" class="btn btn-neutral float-left" title="Reading model outputs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="3_4_Trouble.html" class="btn btn-neutral float-left" title="Troubleshooting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
