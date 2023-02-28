@@ -8,8 +8,8 @@ The OpenWQ system stems from previous models developed by `Environment and Clima
 Our vision is to provide a customizable, multi-scale, multi-chemistry modelling framework suitable for flexible model hypothesis testing and uncertainty analysis.
 This is extremely important in a time of great climate uncertainty.
 
-OpenWQ does not run standalone. It runs coupled to existing hydro-models, which makes it ideal for scientists and engineers that want to enable biogeochemical modelling capabilities in their preferred modelling systems. The model is currently being coupled to `CRHM <https://research-groups.usask.ca/hydrology/modelling/crhm.php>`_, `SUMMA <https://ral.ucar.edu/solutions/products/summa>`_ and `MESH <https://research-groups.usask.ca/hydrology/modelling/mesh.php>`_.
-Explore the `Existing couplings <https://openwq.readthedocs.io/en/latest/5_3_0_Hydro_coupled_models.html>`_ section or learn how OpenWQ can be `coupled to your model <https://openwq.readthedocs.io/en/latest/5_3_Coupler_guide.html>`_.
+OpenWQ does not run standalone. It runs coupled to existing hydro-models, which makes it ideal for scientists and engineers that want to enable biogeochemical modelling capabilities in their preferred modelling systems.
+OpenWQ has has been coupled to several models. Explore the `Existing couplings <https://openwq.readthedocs.io/en/latest/5_3_0_Hydro_coupled_models.html>`_ section and learn how OpenWQ can be `coupled to your model <https://openwq.readthedocs.io/en/latest/5_3_Coupler_guide.html>`_.
 
 .. image:: as_coupler.png
 

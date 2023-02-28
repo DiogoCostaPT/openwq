@@ -19,7 +19,7 @@ To clone OpenWQ in your machine you should first install `Git <https://git-scm.c
 
 Now, lets clone the OpenWQ project in that folder. Go back to the Terminal, and run the following git command:
 
-``git clone https://github.com/DiogoCostaPT/openwq.git``
+``git clone https://github.com/ue-hydro/openwq.git``
 
 This will create a new folder named ``openwq`` that will contain the OpenWQ project, which consists of:
 

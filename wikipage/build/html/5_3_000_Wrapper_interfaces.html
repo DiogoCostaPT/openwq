@@ -97,7 +97,8 @@
 <li class="toctree-l3"><a class="reference internal" href="5_3_00_APIs.html">C++ API reference</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Language binding</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#what-is-binding">What is binding?</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#wrapper-libraries-for-different-languages">Wrapper libraries for different languages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wrapper-libraries-for-fortran">Wrapper libraries for Fortran</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wrapper-libraries-for-other-languages">Wrapper libraries for other languages</a></li>
 </ul>
 </li>
 </ul>
@@ -182,11 +183,22 @@
 <p>Binding generally refers to a mapping of one thing to another.
 In the context of software libraries, bindings are wrapper libraries that bridge two programming languages, so that a library written for one language can be used in another language.</p>
 </section>
-<section id="wrapper-libraries-for-different-languages">
-<h2>Wrapper libraries for different languages<a class="headerlink" href="#wrapper-libraries-for-different-languages" title="Permalink to this headline">¶</a></h2>
+<section id="wrapper-libraries-for-fortran">
+<h2>Wrapper libraries for Fortran<a class="headerlink" href="#wrapper-libraries-for-fortran" title="Permalink to this headline">¶</a></h2>
+<p>OpenWQ has been coupled to two Fortran models, <em>SUMMA</em> and <em>MizuRoute</em>.
+The wrapper functions were developed using <code class="docutils literal notranslate"><span class="pre">`iso_c_binding</span></code> &lt;<a class="reference external" href="https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fC_005fBINDING.html">https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fC_005fBINDING.html</a>&gt;`_, which is a standard intrinsic module that defines named constants, types, and procedures for C interoperability.</p>
+<p>In order to minimize the amount of code added to the host-models, the interface functions have been stored in a series of <code class="docutils literal notranslate"><span class="pre">.f90</span></code>, <code class="docutils literal notranslate"><span class="pre">*.cpp</span></code> and <code class="docutils literal notranslate"><span class="pre">*.h</span></code> files that can be used as a starting point for the coupling of OpenWQ to new host-models based on Fortran.</p>
+<p>These interface functions, which can be obtained from the respective GitHub repositories of the aforementioned coupled models (<a class="reference external" href="https://openwq.readthedocs.io/en/latest/5_3_0_Hydro_coupled_models.html">link</a>), are listed below (ordered in terms of information flow):</p>
 <ul class="simple">
-<li><p>Fortran</p></li>
+<li><p>(Fortran) <code class="docutils literal notranslate"><span class="pre">summa_openWQ.f90</span></code> (SUMA coupling) or <code class="docutils literal notranslate"><span class="pre">mizuroute_openwq.f90</span></code> (MizuRoute coupling)</p></li>
+<li><p>(Fortran) <code class="docutils literal notranslate"><span class="pre">openWQInterface.f90</span></code></p></li>
+<li><p>(Fortran) <code class="docutils literal notranslate"><span class="pre">openWQ.f90</span></code></p></li>
+<li><p>(C++) <code class="docutils literal notranslate"><span class="pre">OpenWQ_interface.cpp</span></code> and <code class="docutils literal notranslate"><span class="pre">OpenWQ_interface.h</span></code></p></li>
+<li><p>(C++) <code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink.cpp</span></code> and <code class="docutils literal notranslate"><span class="pre">OpenWQ_hydrolink.h</span></code></p></li>
 </ul>
+</section>
+<section id="wrapper-libraries-for-other-languages">
+<h2>Wrapper libraries for other languages<a class="headerlink" href="#wrapper-libraries-for-other-languages" title="Permalink to this headline">¶</a></h2>
 <p>Coming soon!</p>
 </section>
 </section>
