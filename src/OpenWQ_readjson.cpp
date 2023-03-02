@@ -1439,9 +1439,10 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
     std::string compt_name2print;                           // iteractive compartment name to print
     std::string cells_input;                                // interactive string for cells input for each compartment
     arma::mat cells2print_cmpt;                             // cumulative vector with all cells to print for each compartment
-    arma::mat cells2print_row(1,3,arma::fill::zeros);       // iteractive vector with cell x, y and z indexes
     bool noValPrintRequest_flag;                            // flag to through message if no valid compartments/cells have been selected for printing
     std::vector<int>::iterator it;                          // iteractor for flagging if compartment i has been selected for printing
+    unsigned long long iRow;                                // dummy variable to track the number of rows for cell2print
+    unsigned long long nRows;                               // dummy variable to store the total number of rows for cell2print
     std::string msg_string;
     json json_output_subStruct;
     json json_output_subStruct_CmpCells;
@@ -1546,221 +1547,76 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
         // this gets true if loading of json input is sucessfull
         OpenWQ_wqconfig.cells2print_bool.push_back(false);
 
-        // Check if requesting to print "ALL_CELLS"
-        try{ // try if string input
-            cells_input = json_output_subStruct_CmpCells
-                [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))];
+        // Get number of cell entries provided
+        num_cells2print = json_output_subStruct_CmpCells
+            [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))].size();
 
-            // if "all" (cells and compartments), then put true in cells2print_bool for compartment icmp
-            if(cells_input.compare("ALL") == 0){
+        // Loop over all cells
+        for (unsigned int celli = 0; celli < num_cells2print; celli++){
+            
+            // Get ix value (as integer)
+            try{
+                ix_json = json_output_subStruct_CmpCells
+                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                    [std::to_string(celli + 1)]
+                    .at(0);
+                ix_json --; // remove 1 to match c++ convention to start in zero
+            
+            }catch(...){
+                // if not integer, then check if "all"
+                cells_input = json_output_subStruct_CmpCells
+                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                    [std::to_string(celli + 1)]
+                    .at(0);
 
-                // Construct vector cells2print_vec with all x,y,z combinations
-                for (int iz=0;iz<nz;iz++){   
-                    for (int iy=0;iy<ny;iy++){
-                        for (int ix=0;ix<nx;ix++){
-                        
-                            // add cell requested to list to print for each compartment
-                            // first create the vector cells2print_row with x, y and z values
-                            cells2print_row(0,0) = ix;
-                            cells2print_row(0,1) = iy;
-                            cells2print_row(0,2) = iz;
-
-                            // add that cells2print_row to cells2print_cmpt
-                            cells2print_cmpt.insert_rows(
-                                cells2print_cmpt.n_rows,
-                                cells2print_row);
-
-                            // set to zero cells2print_row for re-use
-                            cells2print_row.zeros();
-
-                        }
-                    }
-                }
-
-            }else{
-                
-                // Create Message (Warning Message)
-                msg_string = 
-                    "<OpenWQ> WARNING: Unkown entry (" 
-                    + cells_input
-                    + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
-                    + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
-                    + "(entry skipped";
-
-                // Print it (Console and/or Log file)
-                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig,msg_string,true,true);
-
-                // not a valid entry
-                continue;
-
-            } 
-
-        // If not "ALL" (cells and compartments), then look for vectors with cell locations requested"
-        }catch(...){
-
-            // Get number of cell entries provided
-            num_cells2print = json_output_subStruct_CmpCells
-                [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))].size();
-
-            for (unsigned int celli = 0; celli < num_cells2print; celli++){
-                
-                // Get ix value (as integer)
-                try{
-                    ix_json = json_output_subStruct_CmpCells
-                        [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
-                        [std::to_string(celli + 1)]
-                        .at(0);
-                    ix_json --; // remove 1 to match c++ convention to start in zero
-                
-                }catch(...){
-                    // if not integer, then check if "all"
-                    cells_input = json_output_subStruct_CmpCells
-                        [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
-                        [std::to_string(celli + 1)]
-                        .at(0);
-
-                    if (cells_input.compare("ALL")==0){
-                        // then, use "all" flag (=-1)
-                        ix_json = -1;
-
-                    }else{
-                        msg_string = 
-                            "<OpenWQ> WARNING: Unkown entry for ix (" 
-                            + cells_input
-                            + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
-                            + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
-                            + "(entry skipped)";
-
-                        // Print it (Console and/or Log file)
-                        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig,msg_string,true,true);
-
-                        // not a valid entry
-                        continue;
-                        
-                    }
-                }
-
-                // Get iy value
-                try{
-                    iy_json = json_output_subStruct_CmpCells
-                        [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
-                        [std::to_string(celli + 1)]
-                        .at(1);
-                    iy_json--;  // remove 1 to match c++ convention to start in zero
-                
-                }catch(...){
-
-                    // if not integer, then check if "all"
-                    cells_input = json_output_subStruct_CmpCells
-                        [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
-                        [std::to_string(celli + 1)]
-                        .at(1);
-
-                    if (cells_input.compare("ALL")==0){
-                        // then, use "all" flag (=-1)
-                        iy_json = -1;
-
-                    }else{
-                        msg_string = 
-                            "<OpenWQ> WARNING: Unkown entry for iy (" 
-                            + cells_input
-                            + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
-                            + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
-                            + "(entry skipped)";
-
-                        // Print it (Console and/or Log file)
-                        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig,msg_string,true,true);
-
-                        // not a valid entry
-                        continue;
-
-                    }
-                }
-
-                // Get iz value
-                try{
-                    iz_json = json_output_subStruct_CmpCells
-                        [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
-                        [std::to_string(celli + 1)]
-                        .at(2);
-                    iz_json --; // remove 1 to match c++ convention to start in zero
-
-                }catch(...){
-
-                    // if not integer, then check if "all"
-                    cells_input = json_output_subStruct_CmpCells
-                        [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
-                        [std::to_string(celli + 1)]
-                        .at(2);
-
-                    if (cells_input.compare("ALL")==0){
-                        // then, use "all" flag (=-1)
-                        iz_json = -1;
-
-                    }else{
-                        msg_string = 
-                            "<OpenWQ> WARNING: Unkown entry for iz (" 
-                            + cells_input
-                            + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
-                            + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
-                            + "(entry skipped)";
-
-                        // Print it (Console and/or Log file)
-                        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig,msg_string,true,true);
-
-                        // not a valid entry
-                        continue;
-
-                    }
-                }
-
-                // Check if cell requested is witin the boundaries of the spatial domain
-                // If yes, add the cell selected to cells2print_vec
-                // Otherwise, write warning message (skip entry)
-                if (ix_json <= nx
-                    && iy_json <= ny
-                    && iz_json <= nz){
-
-                    // ix
-                    if(ix_json != -1){spX_min = ix_json; spX_max = ix_json;}
-                    else{spX_min = 0; spX_max = nx - 1;}
-                    // iy
-                    if(iy_json != -1){spY_min = iy_json; spY_max = iy_json;}
-                    else{spY_min = 0; spY_max = ny - 1;}
-                    // iz
-                    if(iz_json != -1){spZ_min = iz_json; spZ_max = iz_json;}
-                    else{spZ_min = 0; spZ_max = nz - 1;}
-
-                    // add cell requested to list to print for each compartment
-                    // first create the vector cells2print_row with x, y and z values
-                    // loop is to account for "all" entries
-                    for (int ix_j = spX_min; ix_j <= spX_max; ix_j++){
-                        for (int iy_j = spY_min; iy_j <= spY_max; iy_j++){
-                            for (int iz_j = spZ_min; iz_j <= spZ_max; iz_j++){
-                                
-                                cells2print_row(0,0) = ix_j;
-                                cells2print_row(0,1) = iy_j;
-                                cells2print_row(0,2) = iz_j;
-
-                                // add that cells2print_row to cells2print_cmpt
-                                cells2print_cmpt.insert_rows(
-                                    cells2print_cmpt.n_rows,
-                                    cells2print_row);
-
-                                // clear cells2print_row for re-use
-                                cells2print_row.zeros();
-                            }
-                        }
-                    }
+                if (cells_input.compare("ALL")==0){
+                    // then, use "all" flag (=-1)
+                    ix_json = -1;
 
                 }else{
-                    
-                    // Create Message (Error - locate problematic cell)
                     msg_string = 
-                        "<OpenWQ> ERROR: Cell entry provided out of domain"
-                        " in OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > "
+                        "<OpenWQ> WARNING: Unkown entry for ix (" 
+                        + cells_input
+                        + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
                         + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
-                        + "> '" + std::to_string(celli + 1) + "'";
+                        + "(entry skipped)";
+
+                    // Print it (Console and/or Log file)
+                    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig,msg_string,true,true);
+
+                    // not a valid entry
+                    continue;
+                    
+                }
+            }
+
+            // Get iy value
+            try{
+                iy_json = json_output_subStruct_CmpCells
+                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                    [std::to_string(celli + 1)]
+                    .at(1);
+                iy_json--;  // remove 1 to match c++ convention to start in zero
+            
+            }catch(...){
+
+                // if not integer, then check if "all"
+                cells_input = json_output_subStruct_CmpCells
+                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                    [std::to_string(celli + 1)]
+                    .at(1);
+
+                if (cells_input.compare("ALL")==0){
+                    // then, use "all" flag (=-1)
+                    iy_json = -1;
+
+                }else{
+                    msg_string = 
+                        "<OpenWQ> WARNING: Unkown entry for iy (" 
+                        + cells_input
+                        + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
+                        + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
+                        + "(entry skipped)";
 
                     // Print it (Console and/or Log file)
                     OpenWQ_output.ConsoleLog(OpenWQ_wqconfig,msg_string,true,true);
@@ -1769,9 +1625,110 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
                     continue;
 
                 }
-                  
             }
 
+            // Get iz value
+            try{
+                iz_json = json_output_subStruct_CmpCells
+                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                    [std::to_string(celli + 1)]
+                    .at(2);
+                iz_json --; // remove 1 to match c++ convention to start in zero
+
+            }catch(...){
+
+                // if not integer, then check if "all"
+                cells_input = json_output_subStruct_CmpCells
+                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                    [std::to_string(celli + 1)]
+                    .at(2);
+
+                if (cells_input.compare("ALL")==0){
+                    // then, use "all" flag (=-1)
+                    iz_json = -1;
+
+                }else{
+                    msg_string = 
+                        "<OpenWQ> WARNING: Unkown entry for iz (" 
+                        + cells_input
+                        + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
+                        + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
+                        + "(entry skipped)";
+
+                    // Print it (Console and/or Log file)
+                    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig,msg_string,true,true);
+
+                    // not a valid entry
+                    continue;
+
+                }
+            }
+
+            // Check if cell requested is witin the boundaries of the spatial domain
+            // If yes, add the cell selected to cells2print_vec
+            // Otherwise, write warning message (skip entry)
+            if (ix_json <= nx
+                && iy_json <= ny
+                && iz_json <= nz){
+
+                // ix
+                if(ix_json != -1){spX_min = ix_json; spX_max = ix_json;}
+                else{spX_min = 0; spX_max = nx - 1;}
+                // iy
+                if(iy_json != -1){spY_min = iy_json; spY_max = iy_json;}
+                else{spY_min = 0; spY_max = ny - 1;}
+                // iz
+                if(iz_json != -1){spZ_min = iz_json; spZ_max = iz_json;}
+                else{spZ_min = 0; spZ_max = nz - 1;}
+
+                // Create arma mat to append
+                nRows = (spX_max - spX_min + 1) * (spY_max - spY_min + 1) * (spZ_max - spZ_min + 1);
+                arma::mat cells2print_row(nRows,3,arma::fill::zeros);       // iteractive vector with cell x, y and z indexes
+
+                // Reset dummy variables
+                iRow = 0;
+
+                // add cell requested to list to print for each compartment
+                // first create the vector cells2print_row with x, y and z values
+                // loop is to account for "all" entries
+                for (int ix_j = spX_min; ix_j <= spX_max; ix_j++){
+                    for (int iy_j = spY_min; iy_j <= spY_max; iy_j++){
+                        for (int iz_j = spZ_min; iz_j <= spZ_max; iz_j++){
+                            
+                            cells2print_row(iRow,0) = ix_j;
+                            cells2print_row(iRow,1) = iy_j;
+                            cells2print_row(iRow,2) = iz_j;
+                            iRow++;
+
+                        }
+                    }
+                }
+
+                // add that cells2print_row to cells2print_cmpt
+                cells2print_cmpt.insert_rows(
+                    cells2print_cmpt.n_rows,
+                    cells2print_row);
+
+                // Reset dummy variables
+                cells2print_row.zeros();
+
+            }else{
+                
+                // Create Message (Error - locate problematic cell)
+                msg_string = 
+                    "<OpenWQ> ERROR: Cell entry provided out of domain"
+                    " in OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > "
+                    + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
+                    + "> '" + std::to_string(celli + 1) + "'";
+
+                // Print it (Console and/or Log file)
+                OpenWQ_output.ConsoleLog(OpenWQ_wqconfig,msg_string,true,true);
+
+                // not a valid entry
+                continue;
+
+            }
+                
         }
 
         // Add the complete list of cells to print
