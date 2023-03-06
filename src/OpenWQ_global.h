@@ -373,9 +373,10 @@ class OpenWQ_vars
     OpenWQ_vars(){
 
     }
-    OpenWQ_vars(size_t num_HydroComp){
+    OpenWQ_vars(size_t num_HydroComp, size_t num_EWF){
 
         this-> num_HydroComp = num_HydroComp;
+        this-> num_EWF = num_EWF;
 
         try{
 
@@ -431,7 +432,7 @@ class OpenWQ_vars
                 arma::field< // Compartments
                 arma::field< // Chemical Species
                 arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_EWF));
 
             // ############################################
             // Cumulative Mass changes 
@@ -481,7 +482,7 @@ class OpenWQ_vars
                 arma::field< // Compartments
                 arma::field< // Chemical Species
                 arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_EWF));
 
         }catch(const std::exception& e){
 
@@ -495,6 +496,7 @@ class OpenWQ_vars
 
     }
     size_t num_HydroComp;
+    size_t num_EWF;
 
     std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> 
         chemass,                    // state-variable
