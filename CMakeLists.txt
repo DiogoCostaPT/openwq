@@ -36,7 +36,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10 FATAL_ERROR)
 # optA2) crhm_openwq -> compile with crhm using hydrolink
 # optA3) summa_openwq -> compile with summa using hydrolink
 # optA4) mizuroute_openwq -> compile with mizuRoute using hydrolink
-SET(COMPILE_TARGET mizuroute_openwq)
+# optA5) fluxos_openwq -> compile with fluxos using hydrolink
+SET(COMPILE_TARGET fluxos_openwq)
 
 # B) Set Compilation mode:
 # optB1) debug -> set the necessary flags for debugging
@@ -168,12 +169,12 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "crhm_openwq")
                 SET(exec_name "${COMPILE_TARGET}_${COMPILE_MODE}")
 
                 # Choose where to create the executable
-                SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
+                SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
                 SET(EXEC_DIR ${PARENT_DIR}/../case_studies)
 
                 SET(CRHM_DIR ${PARENT_DIR}/crhm)
-                SET(OPENWQ_DIR ${PARENT_DIR}/openwq)
-                SET(HYDROLINK_DIR ${PARENT_DIR})
+                SET(OPENWQ_DIR ${PARENT_DIR}/openwq/openwq)
+                SET(HYDROLINK_DIR ${PARENT_DIR}/openwq)
 
                 FILE(GLOB SOURCES
                         ${CRHM_DIR}/vcl.cpp
@@ -713,7 +714,96 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "mizuroute_openwq")
                 MESSAGE(STATUS "See intructions in the CMakeLists.txt.")
 
         ENDIF()
+
+# ..................
+# IF TARGET = fluxos_openwq
+# Only supports compilation in linux
+# ..................
+ELSEIF("${COMPILE_TARGET}" STREQUAL "fluxos_openwq")
+SET(exec_name "${COMPILE_TARGET}_${COMPILE_MODE}")
+
+        # Choose where to create the executable
+        SET(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
+        SET(EXEC_DIR ${PARENT_DIR}/bin/)
+
+        IF(UNIX AND NOT APPLE)
+
+                MESSAGE(STATUS "** OpenWQ ** current platform is Linux")
+
+                # Declare use of multiple Languages
+                PROJECT("${COMPILE_TARGET}")
+
+                # Get paths to source code
+                SET(FLUXOS_DIR ${PARENT_DIR}/src/fluxos)
+                SET(OPENWQ_DIR ${PARENT_DIR}/src/openwq/openwq/src)
+                SET(OPENWQ_INTERFACE_DIR ${PARENT_DIR}/src/openwq)
+
+                # Setting MizuRoute sources
+                FILE(GLOB SOURCES
+                        ${FLUXOS_DIR}/*.cpp
+                        ${OPENWQ_DIR}/*.cpp
+                        ${OPENWQ_INTERFACE_DIR}/OpenWQ_hydrolink.cpp)
+
+                LIST(REMOVE_ITEM SOURCES ${OPENWQ_INTERFACE_DIR}/main*.cpp)
+
+                SET(CMAKE_CXX_STANDARD 17)
+
+                IF("${COMPILE_MODE}" STREQUAL "debug")
+                        SET(CMAKE_CXX_FLAGS "-g3 -O0 -Wall -pedantic")
+                ELSEIF("${COMPILE_MODE}" STREQUAL "fast")
+                        SET(CMAKE_CXX_FLAGS "-O3 ${OpenMP_CXX_FLAGS}")
+                        FIND_PACKAGE(OpenMP)
+                ENDIF()
+
+                FIND_PACKAGE(Armadillo REQUIRED) # don't forget to activate HDF5 support when installing Armadillo
+                FIND_PACKAGE(HDF5 REQUIRED)
+                #FIND_PACKAGE(netCDF REQUIRED)
+                #FIND_PACKAGE(LAPACK REQUIRED)
+
+                SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXEC_DIR})
+
+                # Create the executable with openWQ coupled to CRHM   
+                ADD_EXECUTABLE(
+                        ${exec_name}
+                        ${SOURCES})
+
+                TARGET_INCLUDE_DIRECTORIES(
+                        ${exec_name} PUBLIC 
+                        ${ARMADILLO_INCLUDE_DIR}
+                        ${HDF5_INCLUDE_DIRS}
+                        "/usr/include/"
+                        "/code/")
+
+                TARGET_LINK_LIBRARIES(
+                        ${exec_name} PUBLIC
+                        #"/usr/lib/x86_64-linux-gnu/libnetcdff.a"
+                        "/usr/lib/aarch64-linux-gnu/libnetcdff.a"
+                        ${ARMADILLO_LIBRARIES}
+                        ${HDF5_C_LIBRARY_hdf5}
+                        )
                 
+                IF(OpenMP_CXX_FOUND)
+                        MESSAGE("** OpenWQ **: OpenMP enabled!")
+                        TARGET_LINK_LIBRARIES(
+                                ${exec_name} PUBLIC 
+                                OpenMP::OpenMP_CXX)
+                ENDIF()
+
+
+        ELSE()
+
+                # Apple and Windows not supported
+                IF(UNIX AND APPLE)
+                        MESSAGE(STATUS "** OpenWQ: current platform is MacOS")
+                ELSE()
+                        MESSAGE(STATUS "** OpenWQ: current platform is Windows")
+                ENDIF()
+                MESSAGE(STATUS "Not supported yet!")
+                MESSAGE(STATUS "Please compile the code inside the Docker container!")
+                MESSAGE(STATUS "See intructions in the CMakeLists.txt.")
+
+        ENDIF()
+
 # ..................
 # IF TARGET = unknown
 # ..................
