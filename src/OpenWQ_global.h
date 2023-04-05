@@ -432,7 +432,7 @@ class OpenWQ_vars
                 arma::field< // Compartments
                 arma::field< // Chemical Species
                 arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_EWF));
+                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
 
             // ############################################
             // Cumulative Mass changes 
