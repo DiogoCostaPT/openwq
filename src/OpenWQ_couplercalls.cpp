@@ -185,7 +185,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
     // ################################
     // Read and Set Initial Conditions
     // ################################
-    if (OpenWQ_hostModelconfig.interaction_step == 1){
+    if (OpenWQ_hostModelconfig.is_first_interaction_step()){
 
         // (icmp, chemi, ix, ix and iz loop is inside the function)
         OpenWQ_initiate.readSet(

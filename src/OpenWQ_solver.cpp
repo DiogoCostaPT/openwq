@@ -61,7 +61,7 @@ void OpenWQ_solver::Numerical_Solver(
                         // 1
                         // Single-time change at simulation start
                         //  (IC and input unit conversions)
-                        if (OpenWQ_hostModelconfig.interaction_step == 1){
+                        if (OpenWQ_hostModelconfig.is_first_interaction_step()){
 
                             dm_ic = 
                                 (*OpenWQ_vars.d_chemass_ic)(icmp)(chemi)(ix,iy,iz);

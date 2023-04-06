@@ -16,13 +16,20 @@
 
 #pragma once
 
-
+#include <armadillo>
+#include <memory> 
+#include <vector>
 
 /* #################################################
  Link: openWQ to Host Hydrological Model
 ################################################# */
 class OpenWQ_hostModelconfig
 {
+    private:
+        // Host model iteraction step (dynamic value)
+        long interaction_step = 0;
+
+
     public:
     
     // ########################
@@ -36,26 +43,9 @@ class OpenWQ_hostModelconfig
     // (5) int => number of cells in z-direction
     // ########################
 
-    OpenWQ_hostModelconfig(){
+    // Constructor
+    OpenWQ_hostModelconfig();
 
-        // Water volumes from hostmodel
-        waterVol_hydromodel = std::unique_ptr<
-            std::vector<                            // compartments
-            arma::Cube<                             // ix, iy, iz
-            double>>>(new std::vector<arma::cube>); 
-
-        // Dependencies from hostmodel 
-        // (to be available for BGC)
-        dependVar = std::unique_ptr<
-            std::vector<                            // dependency variable
-            arma::Cube<                             // ix, iy, iz
-            double>>>(new std::vector<arma::cube>);
-
-        dependVar_scalar = std::unique_ptr<
-            std::vector<
-            double>>(new std::vector<double>);
-
-    }
 
     // Vectors with characterization of the different 
     // model compartments and external fluxes
@@ -74,9 +64,6 @@ class OpenWQ_hostModelconfig
     unsigned int num_EWF;
     unsigned int num_Depend;
 
-    // Host model iteraction step (dynamic value)
-    long interaction_step = 0;
-
     // Host model time step (in seconds)
     long time_step;
 
@@ -93,5 +80,15 @@ class OpenWQ_hostModelconfig
     // to avoid concentration instabilities and numerical blowup
     // uses native units: m3
     const double watervol_minlim = 1;
+
+
+
+    // Methods
+    
+    // Increase interaction step by 1
+    void increment_interaction_step();
+
+    // Return True if interaction step is 0, False otherwise
+    bool is_first_interaction_step();
 
 };

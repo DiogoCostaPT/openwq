@@ -779,10 +779,10 @@ void OpenWQ_initiate::setTimeVars(
     time_t simtime){
 
     // Update interaction number
-    OpenWQ_hostModelconfig.interaction_step += 1;
+    OpenWQ_hostModelconfig.increment_interaction_step();
 
     // Update other time variables
-    if (OpenWQ_hostModelconfig.interaction_step == 1){
+    if (OpenWQ_hostModelconfig.is_first_interaction_step()){
 
         // Initiate OpenWQ_wqconfig.nexttime_out with simtime
         // this is only applicable at the start of the simulation

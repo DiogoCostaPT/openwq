@@ -298,6 +298,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                 # File definitions for subcomponents - For OpenWQ
                 FILE(GLOB OPENWQ_SOURCES 
                         ${OPENWQ_DIR}/src/*.cpp 
+                        ${OPENWQ_DIR}/src/global/*.cpp
                         ${PARENT_DIR}/OpenWQ_hydrolink.cpp
                         ${PARENT_DIR}/OpenWQ_interface.cpp)
 
