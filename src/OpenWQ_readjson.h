@@ -36,7 +36,9 @@ using json = nlohmann::json;
 
 //#include "utility.h"
 
-#include "OpenWQ_global.h"
+#include "global/OpenWQ_json.hpp"
+#include "global/OpenWQ_wqconfig.hpp"
+#include "global/OpenWQ_hostModelconfig.hpp"
 #include "OpenWQ_units.h"
 #include "OpenWQ_output.h"
 #include "OpenWQ_utils.h"

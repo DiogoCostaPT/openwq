@@ -21,7 +21,8 @@
 
 #include <sys/stat.h>
 
-#include "OpenWQ_global.h"
+#include "global/OpenWQ_json.hpp"
+#include "global/OpenWQ_wqconfig.hpp"
 #include "OpenWQ_solver.h"
 #include "OpenWQ_output.h"
 

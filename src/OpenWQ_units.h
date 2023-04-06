@@ -24,7 +24,7 @@
 #include "jnlohmann/json.hpp"
 using json = nlohmann::json;
 
-#include "OpenWQ_global.h"
+#include "global/OpenWQ_wqconfig.hpp"
 #include "OpenWQ_output.h"
 
 /* #################################################

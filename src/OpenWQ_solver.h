@@ -19,7 +19,9 @@
 #ifndef OPENWQ_SOLVERH_INCLUDED
 #define OPENWQ_SOLVERH_INCLUDED
 
-#include "OpenWQ_global.h"
+#include "global/OpenWQ_vars.hpp"
+#include "global/OpenWQ_wqconfig.hpp"
+#include "global/OpenWQ_hostModelconfig.hpp"
 
 class OpenWQ_solver{
 

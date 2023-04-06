@@ -28,7 +28,9 @@
 //#include "utility.h"
 //#include "ADE_solver.h"
 
-#include "OpenWQ_global.h"
+#include "global/OpenWQ_vars.hpp"
+#include "global/OpenWQ_wqconfig.hpp"
+#include "global/OpenWQ_hostModelconfig.hpp"
 //#include "OpenWQ_initiate.h"
 //#include "OpenWQ_print.h"
 

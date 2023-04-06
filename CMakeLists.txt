@@ -37,7 +37,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10 FATAL_ERROR)
 # optA3) summa_openwq -> compile with summa using hydrolink
 # optA4) mizuroute_openwq -> compile with mizuRoute using hydrolink
 # optA5) fluxos_openwq -> compile with fluxos using hydrolink
-SET(COMPILE_TARGET fluxos_openwq)
+SET(COMPILE_TARGET summa_openwq)
 
 # B) Set Compilation mode:
 # optB1) debug -> set the necessary flags for debugging
@@ -300,6 +300,13 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         ${OPENWQ_DIR}/src/*.cpp 
                         ${PARENT_DIR}/OpenWQ_hydrolink.cpp
                         ${PARENT_DIR}/OpenWQ_interface.cpp)
+
+                SET(OPENWQ_INCLUDES
+                        ${OPENWQ_DIR}/src/global/
+                        ${OPENWQ_DIR}/src/jnlohmann/
+                        ${PARENT_DIR})
+
+
 
                 # File definitions for subcomponents - For Summa
                 SET(DRIVER_DIR ${SUMMA_DIR}/build/source/driver)

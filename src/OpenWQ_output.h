@@ -39,7 +39,10 @@
 #include <vtkRenderWindowInteractor.h>
 */
 
-#include "OpenWQ_global.h"
+#include "global/OpenWQ_json.hpp"
+#include "global/OpenWQ_vars.hpp"
+#include "global/OpenWQ_wqconfig.hpp"
+#include "global/OpenWQ_hostModelconfig.hpp"
 #include "OpenWQ_solver.h"
 
 class OpenWQ_output{
