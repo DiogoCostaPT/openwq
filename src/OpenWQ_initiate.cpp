@@ -788,13 +788,12 @@ void OpenWQ_initiate::setTimeVars(
         // this is only applicable at the start of the simulation
         OpenWQ_wqconfig.nexttime_out = simtime;
 
-        // Initiate time_step
-        OpenWQ_hostModelconfig.time_step = 0.0f;
     }else{
 
         // Update time step and difference as fraction of 1 day (because reaction kinetics are
         // given is rate per day. Then update time_previous for next time step
-        OpenWQ_hostModelconfig.time_step = (simtime - OpenWQ_wqconfig.time_previous);
+
+        OpenWQ_hostModelconfig.set_time_step(simtime - OpenWQ_wqconfig.time_previous);
 
     }
 

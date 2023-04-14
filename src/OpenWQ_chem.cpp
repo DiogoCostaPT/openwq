@@ -424,10 +424,10 @@ void OpenWQ_chem::BGC_Transform(
                                 0.0f); // Needs to be positive (from consumed to produced)
 
                             // Guarantee that removed mass is not larger than existing mass
-                            if (OpenWQ_hostModelconfig.time_step != 0){
+                            if (!OpenWQ_hostModelconfig.is_time_step_0()){
                                 transf_mass = std::fmin(
                                         (*OpenWQ_vars.chemass)(icmp)(index_cons)(ix,iy,iz),
-                                        transf_mass * OpenWQ_hostModelconfig.time_step);    // need to multiply by the time step
+                                        transf_mass * OpenWQ_hostModelconfig.get_time_step());    // need to multiply by the time step
                                                                                             // because that's the total mass that is 
                                                                                             // going to be added/substracted in the 
                                                                                             // solver

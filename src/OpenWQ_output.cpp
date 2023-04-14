@@ -416,7 +416,7 @@ int OpenWQ_output::writeCSV(
 
             // Set to zero if volume of water is smaller 
             // than OpenWQ_hostModelconfig.watervol_minlim
-            if (water_vol_i > OpenWQ_hostModelconfig.watervol_minlim){
+            if (water_vol_i > OpenWQ_hostModelconfig.get_watervol_minlim()){
                 
                 filedata(ixyz,ichem + 3) = 
                     (*OpenWQ_var2print)
@@ -609,7 +609,7 @@ int OpenWQ_output::writeHDF5(
             // than OpenWQ_hostModelconfig.watervol_minlim (only if requesting conc)
             if (
                 (std::get<3>(OpenWQ_wqconfig.output_units) == true &&
-                water_vol_i > OpenWQ_hostModelconfig.watervol_minlim) 
+                water_vol_i > OpenWQ_hostModelconfig.get_watervol_minlim()) 
                 || std::get<3>(OpenWQ_wqconfig.output_units) == false){
              
                 data2print(celli,0) = 

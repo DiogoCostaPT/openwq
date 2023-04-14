@@ -50,17 +50,37 @@ bool OpenWQ_hostModelconfig::is_first_interaction_step()
     return (this->interaction_step == 1);
 }
 
+// HydroTuple methods
 unsigned int OpenWQ_hostModelconfig::get_num_HydroComp()
 {
     return this->HydroComp.size();
 }
-
 unsigned int OpenWQ_hostModelconfig::get_num_HydroExtFlux()
 {
     return this->HydroExtFlux.size();
 }
-
 unsigned int OpenWQ_hostModelconfig::get_num_HydroDepend()
 {
     return this->HydroDepend.size();
 }
+
+// time_step_methods
+bool OpenWQ_hostModelconfig::is_time_step_0()
+{
+    return (this->time_step == 0);
+}
+void OpenWQ_hostModelconfig::set_time_step(double time_step)
+{
+    this->time_step = time_step;
+}
+double OpenWQ_hostModelconfig::get_time_step()
+{
+    return this->time_step;
+}
+
+// waterVol_minlim methods
+double OpenWQ_hostModelconfig::get_watervol_minlim()
+{
+    return this->watervol_minlim;
+}
+
