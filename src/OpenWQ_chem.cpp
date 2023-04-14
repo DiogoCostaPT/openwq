@@ -238,7 +238,7 @@ void OpenWQ_chem::setBGCexpressions(
             symbol_table.add_vector("openWQ_BGCnative_chemass_InTransfEq",OpenWQ_wqconfig.openWQ_BGCnative_chemass_InTransfEq);
 
             // Add variable dependencies to table of symbols (in case they are used)
-            for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.num_Depend;depi++){
+            for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.get_num_HydroDepend();depi++){
 
                 symbol_table.add_variable(
                     OpenWQ_hostModelconfig.depend_names[depi],          // Dependency Var name
@@ -284,7 +284,7 @@ void OpenWQ_chem::Run(
     
 
     // Loop over number of compartments
-    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
+    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.get_num_HydroComp();icmp++){
     
         BGC_Transform( // calls exprtk: parsing expression
             OpenWQ_json,
@@ -414,7 +414,7 @@ void OpenWQ_chem::BGC_Transform(
 
                             // Update current dependencies for current x, y and z
                             // dependVar_scalar needed for exportk
-                            for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.num_Depend;depi++){
+                            for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.get_num_HydroDepend();depi++){
                                 (*OpenWQ_hostModelconfig.dependVar_scalar)[depi] = (*OpenWQ_hostModelconfig.dependVar)[depi](ix,iy,iz);}
 
                             // Mass transfered: Consumed -> Produced (using exprtk)

@@ -44,7 +44,7 @@ void OpenWQ_initiate::initmemory(
     // Loop over compartments
     // Assign and  allocate memory to openWQ variables
     ######################################## */
-    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
+    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.get_num_HydroComp();icmp++){
             
         // Dimensions for compartment icmp
         n_xyz[0] = std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // num of x elements
@@ -100,7 +100,7 @@ void OpenWQ_initiate::initmemory(
     // Loop over EWF
     // Assign and  allocate memory to openWQ variables
     ######################################## */
-    for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.num_EWF;ewfi++){
+    for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.get_num_HydroExtFlux();ewfi++){
             
         // Dimensions for compartment ewfi
         n_xyz[0] = std::get<2>(OpenWQ_hostModelconfig.HydroExtFlux.at(ewfi)); // num of x elements
@@ -136,7 +136,7 @@ void OpenWQ_initiate::initmemory(
 
     // Hydro model variables used as BGC dependencies
     // Just need to do this once (no need to repeat in this loop)
-    for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.num_Depend;depi++){
+    for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.get_num_HydroDepend();depi++){
             
         // Dimensions for compartment depi
         n_xyz[0] = std::get<2>(OpenWQ_hostModelconfig.HydroDepend.at(depi)); // num of x elements
@@ -178,7 +178,7 @@ void OpenWQ_initiate::readSet(
     // Read and set IC conditions
     ################################################# */
    
-    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
+    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.get_num_HydroComp();icmp++){
 
         setIC_driver(
             OpenWQ_json,

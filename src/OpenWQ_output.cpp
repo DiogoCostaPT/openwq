@@ -68,7 +68,7 @@ int OpenWQ_output::writeResults(
     //Begin OpenMP parallel region
 
     //#pragma omp parallel for private(it) num_threads(OpenWQ_wqconfig.num_threads_requested)
-    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
+    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.get_num_HydroComp();icmp++){
 
         // See if icmp is in compt2print 
         // (which means user wants to print variables for this compartment)

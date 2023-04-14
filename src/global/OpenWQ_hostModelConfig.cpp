@@ -38,14 +38,29 @@ OpenWQ_hostModelconfig::OpenWQ_hostModelconfig()
         double>>(new std::vector<double>);
 }
 
-// Methods
+/******** Methods *********/
 
 void OpenWQ_hostModelconfig::increment_interaction_step()
 {
-    interaction_step++;
+    this->interaction_step++;
 }
 
 bool OpenWQ_hostModelconfig::is_first_interaction_step()
 {
-    return (interaction_step == 1);
+    return (this->interaction_step == 1);
+}
+
+unsigned int OpenWQ_hostModelconfig::get_num_HydroComp()
+{
+    return this->HydroComp.size();
+}
+
+unsigned int OpenWQ_hostModelconfig::get_num_HydroExtFlux()
+{
+    return this->HydroExtFlux.size();
+}
+
+unsigned int OpenWQ_hostModelconfig::get_num_HydroDepend()
+{
+    return this->HydroDepend.size();
 }

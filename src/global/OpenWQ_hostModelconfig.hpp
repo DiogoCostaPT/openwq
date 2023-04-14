@@ -58,12 +58,6 @@ class OpenWQ_hostModelconfig
     std::vector<std::string> ewf_names;     // names of external water fluxes
     std::vector<std::string> depend_names;  // names of external water fluxes
 
-    // Number of hydrological compartments and EWF
-    // (that can store and transport water)
-    unsigned int num_HydroComp;
-    unsigned int num_EWF;
-    unsigned int num_Depend;
-
     // Host model time step (in seconds)
     long time_step;
 
@@ -83,12 +77,17 @@ class OpenWQ_hostModelconfig
 
 
 
-    // Methods
+    /******** Methods *********/
     
     // Increase interaction step by 1
     void increment_interaction_step();
 
     // Return True if interaction step is 0, False otherwise
     bool is_first_interaction_step();
+    
+    // Return sizes for hydrotuples
+    unsigned int get_num_HydroComp();
+    unsigned int get_num_HydroExtFlux();
+    unsigned int get_num_HydroDepend();
 
 };

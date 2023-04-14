@@ -42,7 +42,7 @@ void OpenWQ_solver::Numerical_Solver(
     ##################################################### */
 
     #pragma omp parallel for private (nx, ny, nz, ix, iy, iz, dm_ic, dm_ss, dm_ewf, dm_dt_chem, dm_dt_trans) num_threads(OpenWQ_wqconfig.num_threads_requested)
-    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
+    for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.get_num_HydroComp();icmp++){
 
         // Dimensions for compartment icmp
         nx = std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // num of x elements
@@ -145,7 +145,7 @@ void OpenWQ_solver::Reset_Deriv(
     {
         // Compartment loop
         #pragma omp parallel for collapse(2) num_threads(OpenWQ_wqconfig.num_threads_requested)
-        for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
+        for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.get_num_HydroComp();icmp++){
 
             // Chemical loop
             for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){
@@ -168,7 +168,7 @@ void OpenWQ_solver::Reset_Deriv(
     {
         // Compartment loop
         #pragma omp parallel for collapse(2) num_threads(OpenWQ_wqconfig.num_threads_requested)
-        for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.num_HydroComp;icmp++){
+        for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.get_num_HydroComp();icmp++){
 
             // Chemical loop
             for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){
@@ -197,7 +197,7 @@ void OpenWQ_solver::Reset_EWFconc(
 
     // Compartment loop
     #pragma omp parallel for collapse(2) num_threads(OpenWQ_wqconfig.num_threads_requested)
-    for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.num_EWF;ewfi++){
+    for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.get_num_HydroExtFlux();ewfi++){
 
         // Chemical loop
         for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){

@@ -877,24 +877,20 @@ void OpenWQ_readjson::SetConfigInfo_compute(
 void OpenWQ_readjson::SetConfigInfo_hostmodel(
     OpenWQ_hostModelconfig& OpenWQ_hostModelconfig){
 
-    // Number of hydrological compartments, EWF or dependency variables in host model
-    OpenWQ_hostModelconfig.num_HydroComp = OpenWQ_hostModelconfig.HydroComp.size(); 
-    OpenWQ_hostModelconfig.num_EWF = OpenWQ_hostModelconfig.HydroExtFlux.size();
-    OpenWQ_hostModelconfig.num_Depend = OpenWQ_hostModelconfig.HydroDepend.size(); 
 
     // Compartment, External water-fluxes, and dependency-vars names
     // Compartments
-    for (unsigned int cmpti=0;cmpti<OpenWQ_hostModelconfig.num_HydroComp;cmpti++){
+    for (unsigned int cmpti=0;cmpti<OpenWQ_hostModelconfig.get_num_HydroComp();cmpti++){
         OpenWQ_hostModelconfig.cmpt_names.push_back(
             std::get<1>(
                 OpenWQ_hostModelconfig.HydroComp[cmpti]));}
     // EWF
-    for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.num_EWF;ewfi++){
+    for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.get_num_HydroExtFlux();ewfi++){
         OpenWQ_hostModelconfig.ewf_names.push_back(
             std::get<1>(
                 OpenWQ_hostModelconfig.HydroExtFlux[ewfi]));}
     // Dependency Variables
-    for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.num_Depend;depi++){
+    for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.get_num_HydroDepend();depi++){
         OpenWQ_hostModelconfig.depend_names.push_back(
             std::get<1>(
                 OpenWQ_hostModelconfig.HydroDepend[depi]));}
@@ -1066,7 +1062,7 @@ void OpenWQ_readjson::SetConfigInfo_TEModule(
             errorMsgIdentifier,
             true);
 
-        for (unsigned int cmpi=0;cmpi<OpenWQ_hostModelconfig.num_HydroComp;cmpi++){
+        for (unsigned int cmpi=0;cmpi<OpenWQ_hostModelconfig.get_num_HydroComp();cmpi++){
             try{
                 OpenWQ_wqconfig.OpenWQ_TE_native_IntMob_Erodib_K.push_back( 
                     (double)json_K_Erodib_K.at(cmpi));
@@ -1074,7 +1070,7 @@ void OpenWQ_readjson::SetConfigInfo_TEModule(
                 msg_string = 
                     "<OpenWQ> ERROR: Problem with TE json > BOUNDMIX module > INTMOB_CONFIGURATION "
                     " > K_val vector. It must have size "
-                    + std::to_string(OpenWQ_hostModelconfig.num_HydroComp)
+                    + std::to_string(OpenWQ_hostModelconfig.get_num_HydroComp())
                     + " (number of compartments in host_model) and contain only"
                     " double or integer entries.";
                 // Print it (Console and/or Log file)
@@ -1161,7 +1157,7 @@ void OpenWQ_readjson::SetConfigInfo_TEModule(
 
             // 2) upper compartment AND lower compartment index
             // Loop through native compartment names
-            for (unsigned int icmp_i = 0; icmp_i < OpenWQ_hostModelconfig.num_HydroComp; icmp_i++)
+            for (unsigned int icmp_i = 0; icmp_i < OpenWQ_hostModelconfig.get_num_HydroComp(); icmp_i++)
             {
                 // Upper compartment: index
                 if (input_upper_compartment.compare(std::get<1>(OpenWQ_hostModelconfig.HydroComp[icmp_i])) == 0){
@@ -1502,7 +1498,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
     // Get indexes for the list of compartments requested
     for (unsigned int cmpti = 0; cmpti < num_compt2print; cmpti++){
         compt_name2print = compt_names_vec[cmpti]; 
-        for (unsigned int icmp = 0; icmp < OpenWQ_hostModelconfig.num_HydroComp; icmp++){     
+        for (unsigned int icmp = 0; icmp < OpenWQ_hostModelconfig.get_num_HydroComp(); icmp++){     
             CompName_icmp = std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp));  // name
             // Check if compartments listed match internal compartment names
             if (CompName_icmp.compare(compt_name2print) == 0){                               
@@ -1521,7 +1517,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
     noValPrintRequest_flag = false;
 
     // Check what cells to print for each viable (compt2print) compartment requested
-    for (unsigned int icmp = 0; icmp < OpenWQ_hostModelconfig.num_HydroComp; icmp++){
+    for (unsigned int icmp = 0; icmp < OpenWQ_hostModelconfig.get_num_HydroComp(); icmp++){
 
         // Check if icmp is included in compt2print
         it = find (
