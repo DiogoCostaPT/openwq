@@ -239,10 +239,12 @@ void OpenWQ_chem::setBGCexpressions(
 
             // Add variable dependencies to table of symbols (in case they are used)
             for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.get_num_HydroDepend();depi++){
+                
+                double var = OpenWQ_hostModelconfig.get_dependVar_scalar_at(depi);
 
                 symbol_table.add_variable(
-                    OpenWQ_hostModelconfig.get_HydroDepend_name_at(depi),          // Dependency Var name
-                    (*OpenWQ_hostModelconfig.dependVar_scalar)[depi]    // Variable data
+                    OpenWQ_hostModelconfig.get_HydroDepend_name_at(depi),    // Dependency Var name
+                    var    // Variable data
                 );
 
             }
@@ -415,7 +417,7 @@ void OpenWQ_chem::BGC_Transform(
                             // Update current dependencies for current x, y and z
                             // dependVar_scalar needed for exportk
                             for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.get_num_HydroDepend();depi++){
-                                (*OpenWQ_hostModelconfig.dependVar_scalar)[depi] = (*OpenWQ_hostModelconfig.dependVar)[depi](ix,iy,iz);}
+                                OpenWQ_hostModelconfig.set_dependVar_scalar_at(depi, OpenWQ_hostModelconfig.get_dependVar_at(depi,ix,iy,iz));}
 
                             // Mass transfered: Consumed -> Produced (using exprtk)
                             // Make sure that transf_mass is positive, otherwise ignore transformation

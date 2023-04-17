@@ -42,6 +42,14 @@ class OpenWQ_hostModelconfig
         std::vector<hydroTuple> HydroExtFlux;
         std::vector<hydroTuple> HydroDepend;
 
+        // Stores water fluxes when concentration are requested for outputs
+        std::unique_ptr<std::vector<arma::Cube<double>>> waterVol_hydromodel;
+
+        // To store all dependency variables 
+        // to be available for BGC calculations and expressionss
+        std::unique_ptr<std::vector<arma::Cube<double>>> dependVar; // global data
+        std::unique_ptr<std::vector<double>> dependVar_scalar;      // data updated for use with exprtk
+
 
         // Host model iteraction step (dynamic value)
         long interaction_step = 0;
@@ -64,15 +72,6 @@ class OpenWQ_hostModelconfig
         // Destructor
         ~OpenWQ_hostModelconfig();
 
-        // Stores water fluxes when concentration are requested for outputs
-        std::unique_ptr<std::vector<arma::Cube<double>>> waterVol_hydromodel;
-
-        // To store all dependency variables 
-        // to be available for BGC calculations and expressionss
-        std::unique_ptr<std::vector<arma::Cube<double>>> dependVar; // global data
-        std::unique_ptr<std::vector<double>> dependVar_scalar;      // data updated for use with exprtk
-
-
         /******** Methods *********/
         
         // Increase interaction step by 1
@@ -81,9 +80,9 @@ class OpenWQ_hostModelconfig
         // Return True if interaction step is 0, False otherwise
         bool is_first_interaction_step();
         
-        /**
+        /********************
          * HydroTuple methods
-        */
+        *********************/
         // Add a compartment to the vector of compartments
         void add_HydroComp(int index, std::string name, int num_cells_x, int num_cells_y, int num_cells_z);
         // Add a external flux to the vector of external fluxes
@@ -118,6 +117,22 @@ class OpenWQ_hostModelconfig
         unsigned int get_HydroDepend_num_cells_y_at(int index);
         unsigned int get_HydroDepend_num_cells_z_at(int index);
 
+        /*
+        * waterVol methods
+        */
+        void add_waterVol_hydromodel(arma::Cube<double> waterVol);
+        double get_waterVol_hydromodel_at(int index, int ix, int iy, int iz);
+        void set_waterVol_hydromodel_at(int index, int ix, int iy, int iz, double value);
+        /*
+        * dependVar methods
+        */
+        void add_dependVar(arma::Cube<double> dependVar);
+        double get_dependVar_at(int index, int ix, int iy, int iz);
+        void set_dependVar_at(int index, int ix, int iy, int iz, double value); 
+
+        void add_dependVar_scalar(double dependVar_scalar);
+        double get_dependVar_scalar_at(int index);
+        void set_dependVar_scalar_at(int index, double value);
 
         // time_step methods
         bool is_time_step_0();

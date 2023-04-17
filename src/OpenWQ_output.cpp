@@ -398,7 +398,7 @@ int OpenWQ_output::writeCSV(
             // only if concentration is asked as output
             // otherwise set it to 1 for no effect
             if (std::get<3>(OpenWQ_wqconfig.output_units) == true){
-                water_vol_i = (*OpenWQ_hostModelconfig.waterVol_hydromodel)[icmp](ix,iy,iz);
+                water_vol_i = OpenWQ_hostModelconfig.get_waterVol_hydromodel_at(icmp,ix,iy,iz);
             }else{
                 water_vol_i = 1.0f;
             }
@@ -597,7 +597,7 @@ int OpenWQ_output::writeHDF5(
             // only if concentration is asked as output
             // otherwise set it to 1 for no effect
             if (std::get<3>(OpenWQ_wqconfig.output_units) == true){
-                water_vol_i = (*OpenWQ_hostModelconfig.waterVol_hydromodel)[icmp](ix,iy,iz);
+                water_vol_i = OpenWQ_hostModelconfig.get_waterVol_hydromodel_at(icmp,ix,iy,iz);
             }else{
                 water_vol_i = 1.0f;
             }

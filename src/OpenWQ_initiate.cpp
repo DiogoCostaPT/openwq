@@ -92,7 +92,7 @@ void OpenWQ_initiate::initmemory(
         // Hydro model variables (water volumes for calc of concentrations)
         // Set them to ones in case concentrations are not requested
         // In such cases, the output will multiply by one (so it's fine)
-        (*OpenWQ_hostModelconfig.waterVol_hydromodel).push_back(domain_xyz);
+        OpenWQ_hostModelconfig.add_waterVol_hydromodel(domain_xyz);
 
     }
 
@@ -154,8 +154,8 @@ void OpenWQ_initiate::initmemory(
         ######################################## */
         
         // OpenWQ state variable
-        (*OpenWQ_hostModelconfig.dependVar).push_back(domain_xyz);
-        (*OpenWQ_hostModelconfig.dependVar_scalar).push_back(0.0f);
+        OpenWQ_hostModelconfig.add_dependVar(domain_xyz);
+        OpenWQ_hostModelconfig.add_dependVar_scalar(0.0f);
 
     }
     
@@ -553,7 +553,7 @@ void OpenWQ_initiate::setIC_json(
                             if (units[1].compare("EMPTY") == 0){
                                 i_volume = 1.0f;
                             }else{
-                                i_volume = (*OpenWQ_hostModelconfig.waterVol_hydromodel)[icmp](ix,iy,iz);
+                                i_volume = OpenWQ_hostModelconfig.get_waterVol_hydromodel_at(icmp,ix,iy,iz);
                             }
                             
                             // Get IC mass
@@ -740,7 +740,7 @@ void OpenWQ_initiate::setIC_h5(
             if (units[1].compare("EMPTY") == 0){
                 i_volume = 1.0f;
             }else{
-                i_volume = (*OpenWQ_hostModelconfig.waterVol_hydromodel)[icmp](ic_x,ic_y,ic_z);
+                i_volume = OpenWQ_hostModelconfig.get_waterVol_hydromodel_at(icmp,ic_x,ic_y,ic_z);
             }
             
             // Get IC mass

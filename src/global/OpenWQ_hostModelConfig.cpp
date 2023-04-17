@@ -21,19 +21,19 @@
 OpenWQ_hostModelconfig::OpenWQ_hostModelconfig() 
 {
     // Water volumes from hostmodel
-    waterVol_hydromodel = std::unique_ptr<
+    this->waterVol_hydromodel = std::unique_ptr<
         std::vector<                            // compartments
         arma::Cube<                             // ix, iy, iz
         double>>>(new std::vector<arma::cube>); 
 
     // Dependencies from hostmodel 
     // (to be available for BGC)
-    dependVar = std::unique_ptr<
+    this->dependVar = std::unique_ptr<
         std::vector<                            // dependency variable
         arma::Cube<                             // ix, iy, iz
         double>>>(new std::vector<arma::cube>);
 
-    dependVar_scalar = std::unique_ptr<
+    this->dependVar_scalar = std::unique_ptr<
         std::vector<
         double>>(new std::vector<double>);
 }
@@ -140,6 +140,7 @@ unsigned int OpenWQ_hostModelconfig::get_HydroComp_num_cells_z_at(int index)
 {
     return std::get<4>(this->HydroComp[index]);
 }
+
 // Get number of cells in x, y and z directions - HydroExtFlux
 unsigned int OpenWQ_hostModelconfig::get_HydroExtFlux_num_cells_x_at(int index)
 {
@@ -153,6 +154,7 @@ unsigned int OpenWQ_hostModelconfig::get_HydroExtFlux_num_cells_z_at(int index)
 {
     return std::get<4>(this->HydroExtFlux[index]);
 }
+
 // Get number of cells in x, y and z directions - HydroDepend
 unsigned int OpenWQ_hostModelconfig::get_HydroDepend_num_cells_x_at(int index)
 {
@@ -165,6 +167,45 @@ unsigned int OpenWQ_hostModelconfig::get_HydroDepend_num_cells_y_at(int index)
 unsigned int OpenWQ_hostModelconfig::get_HydroDepend_num_cells_z_at(int index)
 {
     return std::get<4>(this->HydroDepend[index]);
+}
+
+
+void OpenWQ_hostModelconfig::add_waterVol_hydromodel(arma::Cube<double> waterVol) 
+{
+    (*this->waterVol_hydromodel).push_back(waterVol);
+}
+double OpenWQ_hostModelconfig::get_waterVol_hydromodel_at(int index, int ix, int iy, int iz) 
+{
+    return (*this->waterVol_hydromodel)[index](ix,iy,iz);
+}
+void OpenWQ_hostModelconfig::set_waterVol_hydromodel_at(int index, int ix, int iy, int iz, double value) 
+{
+    (*this->waterVol_hydromodel)[index](ix,iy,iz) = value;
+}
+
+void OpenWQ_hostModelconfig::add_dependVar(arma::Cube<double> dependVar) 
+{
+    (*this->dependVar).push_back(dependVar);
+}
+double OpenWQ_hostModelconfig::get_dependVar_at(int index, int ix, int iy, int iz) 
+{
+    return (*this->dependVar)[index](ix,iy,iz);
+}
+void OpenWQ_hostModelconfig::set_dependVar_at(int index, int ix, int iy, int iz, double value) 
+{
+    (*this->dependVar)[index](ix,iy,iz) = value;
+}
+void OpenWQ_hostModelconfig::add_dependVar_scalar(double dependVar_scalar)
+{
+    (*this->dependVar_scalar).push_back(dependVar_scalar);
+}
+double OpenWQ_hostModelconfig::get_dependVar_scalar_at(int index)
+{
+    return (*this->dependVar_scalar)[index];
+}
+void OpenWQ_hostModelconfig::set_dependVar_scalar_at(int index, double value)
+{
+    (*this->dependVar_scalar)[index] = value;
 }
 
 
