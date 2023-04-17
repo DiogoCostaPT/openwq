@@ -1228,9 +1228,9 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
     }
 
     // Get num of interface elements
-    ewfName_nx = std::get<2>(OpenWQ_hostModelconfig.HydroExtFlux[external_waterFluxName_id]);
-    ewfName_ny = std::get<3>(OpenWQ_hostModelconfig.HydroExtFlux[external_waterFluxName_id]);
-    ewfName_nz = std::get<4>(OpenWQ_hostModelconfig.HydroExtFlux[external_waterFluxName_id]);
+    ewfName_nx = OpenWQ_hostModelconfig.get_HydroExtFlux_num_cells_x_at(external_waterFluxName_id);
+    ewfName_ny = OpenWQ_hostModelconfig.get_HydroExtFlux_num_cells_y_at(external_waterFluxName_id);
+    ewfName_nz = OpenWQ_hostModelconfig.get_HydroExtFlux_num_cells_z_at(external_waterFluxName_id);
     
     // Generate arma::cube of compartment ewfi size
     // And reset ExtFlux_FORC_data_tStep for dimensions of 
@@ -2132,9 +2132,9 @@ void OpenWQ_extwatflux_ss::Update_EWFconc_jsonAscii(
     // Local Variables
     std::string msg_string;             // error/warning message string
     unsigned int spX_min, spX_max, spY_min, spY_max, spZ_min, spZ_max;
-    unsigned int nx = std::get<2>(OpenWQ_hostModelconfig.HydroExtFlux[ewfi]);
-    unsigned int ny = std::get<3>(OpenWQ_hostModelconfig.HydroExtFlux[ewfi]);
-    unsigned int nz = std::get<4>(OpenWQ_hostModelconfig.HydroExtFlux[ewfi]);
+    unsigned int nx = OpenWQ_hostModelconfig.get_HydroExtFlux_num_cells_x_at(ewfi);
+    unsigned int ny = OpenWQ_hostModelconfig.get_HydroExtFlux_num_cells_y_at(ewfi);
+    unsigned int nz = OpenWQ_hostModelconfig.get_HydroExtFlux_num_cells_z_at(ewfi);
 
     // #####################
     // Determine domain region (or simple grid cells) to add load
@@ -2206,9 +2206,9 @@ void OpenWQ_extwatflux_ss::Update_EWFconc_h5(
     ewfi = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_ewfCompID)[reqi];
 
     // Get num of interface elements
-    nx_interf = std::get<2>(OpenWQ_hostModelconfig.HydroExtFlux[ewfi]) - 1;
-    ny_interf = std::get<3>(OpenWQ_hostModelconfig.HydroExtFlux[ewfi]) - 1;
-    nz_interf = std::get<4>(OpenWQ_hostModelconfig.HydroExtFlux[ewfi]) - 1;
+    nx_interf = OpenWQ_hostModelconfig.get_HydroExtFlux_num_cells_x_at(ewfi) - 1;
+    ny_interf = OpenWQ_hostModelconfig.get_HydroExtFlux_num_cells_y_at(ewfi) - 1;
+    nz_interf = OpenWQ_hostModelconfig.get_HydroExtFlux_num_cells_z_at(ewfi) - 1;
 
     // Set range of cells to replace
     spX_min = 0; spX_max = nx_interf;

@@ -43,7 +43,32 @@ OpenWQ_hostModelconfig::~OpenWQ_hostModelconfig()
 {
 }
 
-/******** Methods *********/
+/******** 
+ * Methods 
+ * *********/
+// Add a compartment to the vector of compartments
+void OpenWQ_hostModelconfig::add_HydroComp(int index, std::string name, int num_cells_x, 
+                    int num_cells_y, int num_cells_z) 
+{
+    this->HydroComp.push_back(OpenWQ_hostModelconfig::hydroTuple(
+        index, name, num_cells_x, num_cells_y, num_cells_z));
+}
+// Add an external flux to the vector of external fluxes
+void OpenWQ_hostModelconfig::add_HydroExtFlux(int index, std::string name, int num_cells_x, 
+                    int num_cells_y, int num_cells_z) 
+{
+    this->HydroExtFlux.push_back(OpenWQ_hostModelconfig::hydroTuple(
+        index, name, num_cells_x, num_cells_y, num_cells_z));
+}
+// Add a dependency to the vector of dependencies
+void OpenWQ_hostModelconfig::add_HydroDepend(int index, std::string name, int num_cells_x, 
+                    int num_cells_y, int num_cells_z) 
+{
+    this->HydroDepend.push_back(OpenWQ_hostModelconfig::hydroTuple(
+        index, name, num_cells_x, num_cells_y, num_cells_z));
+}
+
+
 
 void OpenWQ_hostModelconfig::increment_interaction_step()
 {
@@ -102,7 +127,7 @@ std::vector<std::string> OpenWQ_hostModelconfig::get_HydroExtFlux_names()
     return names;
 }
 
-// Get number of cells in x, y and z directions
+// Get number of cells in x, y and z directions - HydroComp
 unsigned int OpenWQ_hostModelconfig::get_HydroComp_num_cells_x_at(int index)
 {
     return std::get<2>(this->HydroComp[index]);
@@ -114,6 +139,32 @@ unsigned int OpenWQ_hostModelconfig::get_HydroComp_num_cells_y_at(int index)
 unsigned int OpenWQ_hostModelconfig::get_HydroComp_num_cells_z_at(int index)
 {
     return std::get<4>(this->HydroComp[index]);
+}
+// Get number of cells in x, y and z directions - HydroExtFlux
+unsigned int OpenWQ_hostModelconfig::get_HydroExtFlux_num_cells_x_at(int index)
+{
+    return std::get<2>(this->HydroExtFlux[index]);
+}
+unsigned int OpenWQ_hostModelconfig::get_HydroExtFlux_num_cells_y_at(int index)
+{
+    return std::get<3>(this->HydroExtFlux[index]);
+}
+unsigned int OpenWQ_hostModelconfig::get_HydroExtFlux_num_cells_z_at(int index)
+{
+    return std::get<4>(this->HydroExtFlux[index]);
+}
+// Get number of cells in x, y and z directions - HydroDepend
+unsigned int OpenWQ_hostModelconfig::get_HydroDepend_num_cells_x_at(int index)
+{
+    return std::get<2>(this->HydroDepend[index]);
+}
+unsigned int OpenWQ_hostModelconfig::get_HydroDepend_num_cells_y_at(int index)
+{
+    return std::get<3>(this->HydroDepend[index]);
+}
+unsigned int OpenWQ_hostModelconfig::get_HydroDepend_num_cells_z_at(int index)
+{
+    return std::get<4>(this->HydroDepend[index]);
 }
 
 

@@ -25,8 +25,23 @@
 ################################################# */
 class OpenWQ_hostModelconfig
 {
-
     private:
+        // ########################
+        // Host model COMPARTMENT or EXTERNAL FLUX characterization via tuple
+        typedef std::tuple<int,std::string,int, int, int> hydroTuple;
+        // Add host_hydrological_model compartment:
+        // (1) int => index in openWQ 
+        // (2) std::string => reference name in JSON file
+        // (3) int => number of cells in x-direction
+        // (4) int => number of cells in y-direction
+        // (5) int => number of cells in z-direction
+        // ########################
+        // Vectors with characterization of the different 
+        // model compartments and external fluxes
+        std::vector<hydroTuple> HydroComp;
+        std::vector<hydroTuple> HydroExtFlux;
+        std::vector<hydroTuple> HydroDepend;
+
 
         // Host model iteraction step (dynamic value)
         long interaction_step = 0;
@@ -49,23 +64,6 @@ class OpenWQ_hostModelconfig
         // Destructor
         ~OpenWQ_hostModelconfig();
 
-        // ########################
-        // Host model COMPARTMENT or EXTERNAL FLUX characterization via tuple
-        typedef std::tuple<int,std::string,int, int, int> hydroTuple;
-        // Add host_hydrological_model compartment:
-        // (1) int => index in openWQ 
-        // (2) std::string => reference name in JSON file
-        // (3) int => number of cells in x-direction
-        // (4) int => number of cells in y-direction
-        // (5) int => number of cells in z-direction
-        // ########################
-        // Vectors with characterization of the different 
-        // model compartments and external fluxes
-        std::vector<hydroTuple> HydroComp;
-        std::vector<hydroTuple> HydroExtFlux;
-        std::vector<hydroTuple> HydroDepend;
-
-
         // Stores water fluxes when concentration are requested for outputs
         std::unique_ptr<std::vector<arma::Cube<double>>> waterVol_hydromodel;
 
@@ -86,6 +84,13 @@ class OpenWQ_hostModelconfig
         /**
          * HydroTuple methods
         */
+        // Add a compartment to the vector of compartments
+        void add_HydroComp(int index, std::string name, int num_cells_x, int num_cells_y, int num_cells_z);
+        // Add a external flux to the vector of external fluxes
+        void add_HydroExtFlux(int index, std::string name, int num_cells_x, int num_cells_y, int num_cells_z);
+        // Add a dependency variable to the vector of dependency variables
+        void add_HydroDepend(int index, std::string name, int num_cells_x, int num_cells_y, int num_cells_z);
+
         // Return sizes for hydrotuples
         unsigned int get_num_HydroComp();
         unsigned int get_num_HydroExtFlux();
@@ -100,11 +105,18 @@ class OpenWQ_hostModelconfig
         std::vector<std::string> get_HydroComp_names();
         std::vector<std::string> get_HydroExtFlux_names();
 
-        // Get number of cells in x, y and z directions
+        // Get number of cells in x, y and z directions - HydroComp
         unsigned int get_HydroComp_num_cells_x_at(int index);
         unsigned int get_HydroComp_num_cells_y_at(int index);
         unsigned int get_HydroComp_num_cells_z_at(int index);
-
+        // Get number of cells in x, y and z directions - HydroExtFlux
+        unsigned int get_HydroExtFlux_num_cells_x_at(int index);
+        unsigned int get_HydroExtFlux_num_cells_y_at(int index);
+        unsigned int get_HydroExtFlux_num_cells_z_at(int index);
+        // Get number of cells in x, y and z directions - HydroDepend
+        unsigned int get_HydroDepend_num_cells_x_at(int index);
+        unsigned int get_HydroDepend_num_cells_y_at(int index);
+        unsigned int get_HydroDepend_num_cells_z_at(int index);
 
 
         // time_step methods

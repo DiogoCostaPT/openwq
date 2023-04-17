@@ -103,9 +103,9 @@ void OpenWQ_initiate::initmemory(
     for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.get_num_HydroExtFlux();ewfi++){
             
         // Dimensions for compartment ewfi
-        n_xyz[0] = std::get<2>(OpenWQ_hostModelconfig.HydroExtFlux.at(ewfi)); // num of x elements
-        n_xyz[1] = std::get<3>(OpenWQ_hostModelconfig.HydroExtFlux.at(ewfi)); // num of y elements
-        n_xyz[2] = std::get<4>(OpenWQ_hostModelconfig.HydroExtFlux.at(ewfi)); // num of z elements
+        n_xyz[0] = OpenWQ_hostModelconfig.get_HydroExtFlux_num_cells_x_at(ewfi); // num of x elements
+        n_xyz[1] = OpenWQ_hostModelconfig.get_HydroExtFlux_num_cells_y_at(ewfi); // num of y elements
+        n_xyz[2] = OpenWQ_hostModelconfig.get_HydroExtFlux_num_cells_z_at(ewfi); // num of z elements
         
         // Generate arma::cube of compartment ewfi size
         arma::Cube<double> domain_xyz(n_xyz[0],n_xyz[1],n_xyz[2]);
@@ -139,9 +139,9 @@ void OpenWQ_initiate::initmemory(
     for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.get_num_HydroDepend();depi++){
             
         // Dimensions for compartment depi
-        n_xyz[0] = std::get<2>(OpenWQ_hostModelconfig.HydroDepend.at(depi)); // num of x elements
-        n_xyz[1] = std::get<3>(OpenWQ_hostModelconfig.HydroDepend.at(depi)); // num of y elements
-        n_xyz[2] = std::get<4>(OpenWQ_hostModelconfig.HydroDepend.at(depi)); // num of z elements
+        n_xyz[0] = OpenWQ_hostModelconfig.get_HydroDepend_num_cells_x_at(depi); // num of x elements
+        n_xyz[1] = OpenWQ_hostModelconfig.get_HydroDepend_num_cells_y_at(depi); // num of y elements
+        n_xyz[2] = OpenWQ_hostModelconfig.get_HydroDepend_num_cells_z_at(depi); // num of z elements
         
         // Generate arma::cube of compartment depi size
         arma::Cube<double> domain_xyz(n_xyz[0],n_xyz[1],n_xyz[2]);
@@ -340,8 +340,7 @@ void OpenWQ_initiate::setIC_json(
     std::string errorMsgIdentifier; 
 
     // Find compartment icmp name from code (host hydrological model)
-    std::string CompName_icmp = std::get<1>(
-        OpenWQ_hostModelconfig.HydroComp.at(icmp)); // Compartment icomp name
+    std::string CompName_icmp = OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp);
 
     // Get chem name
     std::string chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[chemi]; // chemical name in BGC-json list
