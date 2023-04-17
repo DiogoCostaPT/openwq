@@ -2004,9 +2004,9 @@ void OpenWQ_extwatflux_ss::Apply_Source(
     // Local Variables
     std::string msg_string;             // error/warning message string
     unsigned int spX_min, spX_max, spY_min, spY_max, spZ_min, spZ_max;
-    unsigned int nx = std::get<2>(OpenWQ_hostModelconfig.HydroComp[cmpi]);
-    unsigned int ny = std::get<3>(OpenWQ_hostModelconfig.HydroComp[cmpi]);
-    unsigned int nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp[cmpi]);
+    unsigned int nx = OpenWQ_hostModelconfig.get_HydroComp_num_cells_x_at(cmpi);
+    unsigned int ny = OpenWQ_hostModelconfig.get_HydroComp_num_cells_y_at(cmpi);
+    unsigned int nz = OpenWQ_hostModelconfig.get_HydroComp_num_cells_z_at(cmpi);
 
     // #####################
     // Determine domain region (or simple grid cells) to add load
@@ -2066,9 +2066,9 @@ void OpenWQ_extwatflux_ss::Apply_Sink(
     // Local Variables
     std::string msg_string;             // error/warning message string
     unsigned int spX_min, spX_max, spY_min, spY_max, spZ_min, spZ_max;
-    unsigned int nx = std::get<2>(OpenWQ_hostModelconfig.HydroComp[cmpi]);
-    unsigned int ny = std::get<3>(OpenWQ_hostModelconfig.HydroComp[cmpi]);
-    unsigned int nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp[cmpi]);
+    unsigned int nx = OpenWQ_hostModelconfig.get_HydroComp_num_cells_x_at(cmpi);
+    unsigned int ny = OpenWQ_hostModelconfig.get_HydroComp_num_cells_y_at(cmpi);
+    unsigned int nz = OpenWQ_hostModelconfig.get_HydroComp_num_cells_z_at(cmpi);
 
     // #####################
     // Determine domain region (or simple grid cells) to add load

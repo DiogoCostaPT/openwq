@@ -353,8 +353,7 @@ int OpenWQ_output::writeCSV(
     }
     
     // Compartment info
-    CompName_icmp = std::get<1>(
-        OpenWQ_hostModelconfig.HydroComp.at(icmp));  // name
+    CompName_icmp = OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp);
 
     // Get unit multipliers (numerator and denominator
     unit_multiplers.push_back(std::get<1>(OpenWQ_wqconfig.output_units)); // numerator
@@ -486,13 +485,12 @@ int OpenWQ_output::writeHDF5(
     }
     
     // Compartment info
-    CompName_icmp = std::get<1>(
-        OpenWQ_hostModelconfig.HydroComp.at(icmp));  // name
+    CompName_icmp = OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp);
     
     // Get compartment nx, ny, nz
-    cells2print_xyzElements_total(0,0) = std::get<2>(OpenWQ_hostModelconfig.HydroComp[icmp]);
-    cells2print_xyzElements_total(0,1) =  std::get<3>(OpenWQ_hostModelconfig.HydroComp[icmp]);
-    cells2print_xyzElements_total(0,2) =  std::get<4>(OpenWQ_hostModelconfig.HydroComp[icmp]);
+    cells2print_xyzElements_total(0,0) = OpenWQ_hostModelconfig.get_HydroComp_num_cells_x_at(icmp);
+    cells2print_xyzElements_total(0,1) =  OpenWQ_hostModelconfig.get_HydroComp_num_cells_y_at(icmp);
+    cells2print_xyzElements_total(0,2) =  OpenWQ_hostModelconfig.get_HydroComp_num_cells_z_at(icmp);
 
     // num of chemicals to print
     num_chem2print = OpenWQ_wqconfig.chem2print.size();
@@ -642,172 +640,6 @@ int OpenWQ_output::writeHDF5(
 
     return EXIT_SUCCESS;
 }
-
-/* ########################################
-// VTU output
-########################################
-
-int OpenWQ_output::writeVTU(
-    OpenWQ_json& OpenWQ_json,
-    OpenWQ_vars& OpenWQ_vars,
-    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-    OpenWQ_wqconfig& OpenWQ_wqconfig,
-    std::string timestr,    // time step (in seconds)
-    int icmp){          // compartment index
-
-    // Local Variables
-    unsigned int nx, ny, nz;                // compartment dimensions
-    unsigned int index_i;                   // iteractive index
-    unsigned int numvert, nnumel;           // iteractive variables for VTK
-    std::string CompName_icmp;              // compartment name (iteractive)
-    std::string filename;                   // iteractive output file name
-    std::vector<double> unit_multiplers;    // multipliers to convert units      
-    double water_vol_i;                    // interactive water volume for calc of concentrations
-    
-
-    // Compartment info
-    CompName_icmp = std::get<1>(
-        OpenWQ_hostModelconfig.HydroComp.at(icmp));  // name
-    nx = std::get<2>(
-        OpenWQ_hostModelconfig.HydroComp.at(icmp));  // get domain dimensions                     
-    ny = std::get<3>(
-        OpenWQ_hostModelconfig.HydroComp.at(icmp));
-    nz = std::get<4>(
-        OpenWQ_hostModelconfig.HydroComp.at(icmp));
-
-    // Reset file name for each compartment
-    filename = OpenWQ_wqconfig.output_dir;
-
-    filename.append("/");
-    filename.append(CompName_icmp);
-    filename.append("_");
-    filename.append(timestr); // time stamp
-    filename.append("sec");
-    filename.append(".vtu");
-    std::string chemname;        
-
-    // total number of vertices and hexahedrons
-    numvert = (nx+1)*(ny+1)*(nz+1);
-    nnumel = nx * ny * nz;
-
-    
-    ########################################
-    // Determine the all the vertices (assuming a spacing of 1 m for now)
-    ######################################## 
-    double x[numvert][3];
-    index_i = 0;
-    for (unsigned int iz=0;iz<=nz;iz++){   
-            for (unsigned int ix=0;ix<=nx;ix++){
-                for (unsigned int iy=0;iy<=ny;iy++){
-                x[index_i][0] = ix-0.5;
-                x[index_i][1] = iy-0.5;
-                x[index_i][2] = iz-0.5;
-                index_i++;
-            }
-        }
-    }
-
-    ########################################
-    // Determine the faces of each element/hexahedron
-    ######################################## 
-    vtkIdType pts[nnumel][8];
-    index_i = 0;
-    for (unsigned int iz=0;iz<nz;iz++){   
-            for (unsigned int ix=0;ix<nx;ix++){
-                for (unsigned int iy=0;iy<ny;iy++){
-                pts[index_i][0] = (nx+1)*(ny+1)*(iz) + (ny+1)*(ix) + iy;
-                pts[index_i][1] = (nx+1)*(ny+1)*(iz) + (ny+1)*(ix+1) + iy;
-                pts[index_i][2] = (nx+1)*(ny+1)*(iz) + (ny+1)*(ix+1) + iy+1;
-                pts[index_i][3] = (nx+1)*(ny+1)*(iz) + (ny+1)*(ix) + iy+1;
-                pts[index_i][4] = (nx+1)*(ny+1)*(iz+1) + (ny+1)*(ix) + iy;
-                pts[index_i][5] = (nx+1)*(ny+1)*(iz+1) + (ny+1)*(ix+1) + iy;
-                pts[index_i][6] = (nx+1)*(ny+1)*(iz+1) + (ny+1)*(ix+1) + iy+1;
-                pts[index_i][7] = (nx+1)*(ny+1)*(iz+1) + (ny+1)*(ix) + iy+1;
-            index_i++;
-            }
-        }
-    }
-
-    // Determine vtkPoints for vtkUnstructuredGrid build
-    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-    for (index_i=0; index_i<numvert; index_i++) points->InsertPoint(index_i,x[index_i]);
-
-    // Initiate vtkUnstructuredGrid and add all the hexahedrons
-    vtkSmartPointer<vtkUnstructuredGrid> ugrid =
-        vtkSmartPointer<vtkUnstructuredGrid>::New();
-    ugrid->Allocate(100);
-    for (index_i=0; index_i<nnumel; index_i++){
-        ugrid->InsertNextCell(VTK_HEXAHEDRON, 8, pts[index_i]);
-    }
-
-    ugrid->SetPoints(points);
-
-
-    ########################################
-    // Loop over chemical species
-    ########################################
-    for (unsigned int ichem=0;ichem<(OpenWQ_wqconfig.chem2print.size());ichem++){ // all chemical species
-
-        vtkSmartPointer<vtkDoubleArray> varexpot = vtkSmartPointer<vtkDoubleArray>::New();
-        varexpot->SetNumberOfValues(numvert);
-
-        // Set name of array (chem variable name)
-        // Get chemical species name
-        chemname = (OpenWQ_wqconfig.BGC_general_chem_species_list)[ichem];
-        // Add discription of output units
-        chemname.append("#");
-        chemname.append(std::get<0>(OpenWQ_wqconfig.output_units));
-
-        // Assign chem name to variable exported
-        varexpot->SetName(chemname.c_str());
-
-        ########################################
-        // Loop dimensions 
-        ########################################
-        index_i = 0;
-        for (unsigned int iz=0;iz<=nz;iz++){   
-                for (unsigned int ix=0;ix<=nx;ix++){
-                    for (unsigned int iy=0;iy<=ny;iy++){
-
-                        // Get cell volume
-                        water_vol_i = (*OpenWQ_hostModelconfig.waterVol_hydromodel)[icmp](ix,iy,iy);
-
-                        if(iz!=nz && iy!=ny && ix!=nx
-                            && water_vol_i > OpenWQ_hostModelconfig.watervol_minlim){
-                            varexpot->SetValue(
-                                index_i, 
-                                (*OpenWQ_vars.chemass)
-                                    (icmp)
-                                    (OpenWQ_wqconfig.chem2print[ichem])         // index of chemical to print
-                                    (ix,iy,iz))
-                                        * unit_multiplers[0]                            // numerator unit conversion
-                                        / (  water_vol_i              // water volume (= 1 if mass requested (and not conc))
-                                            * unit_multiplers [1] );  // denominator unit conversion 
-                        }else{
-
-                            // Set as NaN because the concentration is not really zero,
-                            // it simply does not exist when there is no water
-                            varexpot->SetValue(index_i, -9999.0f);
-                        }
-                index_i++;
-                }
-            }
-        }
-        ugrid->GetPointData()->AddArray(varexpot);
-    }
-
-    // Write file
-    vtkSmartPointer<vtkXMLUnstructuredGridWriter> writer =
-        vtkSmartPointer<vtkXMLUnstructuredGridWriter>::New();  
-    writer->SetFileName(filename.c_str());
-    
-    writer->SetInputData(ugrid);
-    writer->Write();
-
-    return EXIT_SUCCESS;
-
-}
-*/
 
 
 /* ########################################

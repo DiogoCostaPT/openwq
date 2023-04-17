@@ -265,9 +265,9 @@ void OpenWQ_watertransp::BoundMix(
         input_k_val = std::get<3>(OpenWQ_wqconfig.OpenWQ_TE_native_BoundMix_info[entry_i]);
 
         // Num of cells in upper_compartment
-        xyz_upper_compartment.push_back(std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(input_upper_compartment_index)));
-        xyz_upper_compartment.push_back(std::get<3>(OpenWQ_hostModelconfig.HydroComp.at(input_upper_compartment_index)));
-        xyz_upper_compartment.push_back(std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(input_upper_compartment_index)));
+        xyz_upper_compartment.push_back(OpenWQ_hostModelconfig.get_HydroComp_num_cells_x_at(input_upper_compartment_index));
+        xyz_upper_compartment.push_back(OpenWQ_hostModelconfig.get_HydroComp_num_cells_y_at(input_upper_compartment_index));
+        xyz_upper_compartment.push_back(OpenWQ_hostModelconfig.get_HydroComp_num_cells_z_at(input_upper_compartment_index));
 
         // Ignore if entry is not applicable to the current source compartment
         if (input_upper_compartment_index != source)

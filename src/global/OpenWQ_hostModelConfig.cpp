@@ -102,6 +102,21 @@ std::vector<std::string> OpenWQ_hostModelconfig::get_HydroExtFlux_names()
     return names;
 }
 
+// Get number of cells in x, y and z directions
+unsigned int OpenWQ_hostModelconfig::get_HydroComp_num_cells_x_at(int index)
+{
+    return std::get<2>(this->HydroComp[index]);
+}
+unsigned int OpenWQ_hostModelconfig::get_HydroComp_num_cells_y_at(int index)
+{
+    return std::get<3>(this->HydroComp[index]);
+}
+unsigned int OpenWQ_hostModelconfig::get_HydroComp_num_cells_z_at(int index)
+{
+    return std::get<4>(this->HydroComp[index]);
+}
+
+
 
 // time_step_methods
 bool OpenWQ_hostModelconfig::is_time_step_0()

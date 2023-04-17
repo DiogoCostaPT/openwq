@@ -317,9 +317,9 @@ void OpenWQ_chem::BGC_Transform(
     unsigned int index_cons,index_prod; // indexed for consumed and produced chemical
     unsigned int num_transf; // number of transformation in biogeochemical cycle bgci
     unsigned int num_BGCcycles; // number of BGC frameworks in comparment icmp
-    unsigned int nx = std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in x-direction
-    unsigned int ny = std::get<3>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in y-direction
-    unsigned int nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icmp)); // number of cell in z-direction
+    unsigned int nx = OpenWQ_hostModelconfig.get_HydroComp_num_cells_x_at(icmp); // number of cell in x-direction
+    unsigned int ny = OpenWQ_hostModelconfig.get_HydroComp_num_cells_y_at(icmp); // number of cell in y-direction
+    unsigned int nz = OpenWQ_hostModelconfig.get_HydroComp_num_cells_z_at(icmp); // number of cell in z-direction
     std::string BGCcycles_name_icmp,BGCcycles_name_list; // BGC Cycling name i of compartment icmp  
     double transf_mass;         // interactive mass to transfer between species
     std::string msg_string;             // error/warning message string
@@ -329,8 +329,8 @@ void OpenWQ_chem::BGC_Transform(
 
 
     // Find compartment icmp name from code (host hydrological model)
-    std::string CompName_icmp = std::get<1>(
-        OpenWQ_hostModelconfig.HydroComp.at(icmp)); // Compartment icomp name
+    std::string CompName_icmp = 
+        OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp); // Compartment icomp name
 
     // Get cycling_frameworks for compartment icomp (name = CompName_icmp) 
     // (compartment names need to match)

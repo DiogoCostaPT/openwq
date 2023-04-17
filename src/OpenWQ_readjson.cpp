@@ -1132,12 +1132,12 @@ void OpenWQ_readjson::SetConfigInfo_TEModule(
             for (unsigned int icmp_i = 0; icmp_i < OpenWQ_hostModelconfig.get_num_HydroComp(); icmp_i++)
             {
                 // Upper compartment: index
-                if (input_upper_compartment.compare(std::get<1>(OpenWQ_hostModelconfig.HydroComp[icmp_i])) == 0){
+                if (input_upper_compartment.compare(OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp_i)) == 0){
                     input_upper_compartment_index = icmp_i;
                     input_upper_compartment_index_exist = true;
                 }
                 // Lower compartment: index
-                if (input_lower_compartment.compare(std::get<1>(OpenWQ_hostModelconfig.HydroComp[icmp_i])) == 0){
+                if (input_lower_compartment.compare(OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp_i)) == 0){
                     input_lower_compartment_index = icmp_i;
                     input_lower_compartment_index_exist = true;
                 }
@@ -1471,7 +1471,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
     for (unsigned int cmpti = 0; cmpti < num_compt2print; cmpti++){
         compt_name2print = compt_names_vec[cmpti]; 
         for (unsigned int icmp = 0; icmp < OpenWQ_hostModelconfig.get_num_HydroComp(); icmp++){     
-            CompName_icmp = std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp));  // name
+            CompName_icmp = OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp);  // name
             // Check if compartments listed match internal compartment names
             if (CompName_icmp.compare(compt_name2print) == 0){                               
                 OpenWQ_wqconfig.compt2print.push_back(icmp);
@@ -1507,9 +1507,9 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
         }
 
         // compartnment icmp domain
-        nx = std::get<2>(OpenWQ_hostModelconfig.HydroComp.at(icmp));
-        ny = std::get<3>(OpenWQ_hostModelconfig.HydroComp.at(icmp));
-        nz = std::get<4>(OpenWQ_hostModelconfig.HydroComp.at(icmp));
+        nx = OpenWQ_hostModelconfig.get_HydroComp_num_cells_x_at(icmp);
+        ny = OpenWQ_hostModelconfig.get_HydroComp_num_cells_y_at(icmp);
+        nz = OpenWQ_hostModelconfig.get_HydroComp_num_cells_z_at(icmp);
         
         // first set default no print
         // this gets true if loading of json input is sucessfull
@@ -1517,7 +1517,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
 
         // Get number of cell entries provided
         num_cells2print = json_output_subStruct_CmpCells
-            [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))].size();
+            [OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp)].size();
 
         // Loop over all cells
         for (unsigned int celli = 0; celli < num_cells2print; celli++){
@@ -1525,7 +1525,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
             // Get ix value (as integer)
             try{
                 ix_json = json_output_subStruct_CmpCells
-                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                    [OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp)]
                     [std::to_string(celli + 1)]
                     .at(0);
                 ix_json --; // remove 1 to match c++ convention to start in zero
@@ -1533,7 +1533,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
             }catch(...){
                 // if not integer, then check if "all"
                 cells_input = json_output_subStruct_CmpCells
-                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                    [OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp)]
                     [std::to_string(celli + 1)]
                     .at(0);
 
@@ -1546,7 +1546,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
                         "<OpenWQ> WARNING: Unkown entry for ix (" 
                         + cells_input
                         + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
-                        + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
+                        + OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp)
                         + "(entry skipped)";
 
                     // Print it (Console and/or Log file)
@@ -1561,7 +1561,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
             // Get iy value
             try{
                 iy_json = json_output_subStruct_CmpCells
-                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                    [OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp)]
                     [std::to_string(celli + 1)]
                     .at(1);
                 iy_json--;  // remove 1 to match c++ convention to start in zero
@@ -1570,7 +1570,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
 
                 // if not integer, then check if "all"
                 cells_input = json_output_subStruct_CmpCells
-                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                    [OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp)]
                     [std::to_string(celli + 1)]
                     .at(1);
 
@@ -1583,7 +1583,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
                         "<OpenWQ> WARNING: Unkown entry for iy (" 
                         + cells_input
                         + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
-                        + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
+                        + OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp)
                         + "(entry skipped)";
 
                     // Print it (Console and/or Log file)
@@ -1598,7 +1598,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
             // Get iz value
             try{
                 iz_json = json_output_subStruct_CmpCells
-                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                    [OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp)]
                     [std::to_string(celli + 1)]
                     .at(2);
                 iz_json --; // remove 1 to match c++ convention to start in zero
@@ -1607,7 +1607,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
 
                 // if not integer, then check if "all"
                 cells_input = json_output_subStruct_CmpCells
-                    [std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))]
+                    [OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp)]
                     [std::to_string(celli + 1)]
                     .at(2);
 
@@ -1620,7 +1620,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
                         "<OpenWQ> WARNING: Unkown entry for iz (" 
                         + cells_input
                         + ") for OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > " 
-                        + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
+                        + OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp)
                         + "(entry skipped)";
 
                     // Print it (Console and/or Log file)
@@ -1686,7 +1686,7 @@ void OpenWQ_readjson::SetConfigInfo_output_what2print(
                 msg_string = 
                     "<OpenWQ> ERROR: Cell entry provided out of domain"
                     " in OPENWQ_OUTPUT > COMPARTMENTS_AND_CELLS > "
-                    + std::get<1>(OpenWQ_hostModelconfig.HydroComp.at(icmp))
+                    + OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp)
                     + "> '" + std::to_string(celli + 1) + "'";
 
                 // Print it (Console and/or Log file)

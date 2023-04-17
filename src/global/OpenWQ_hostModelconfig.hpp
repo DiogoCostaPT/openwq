@@ -100,6 +100,12 @@ class OpenWQ_hostModelconfig
         std::vector<std::string> get_HydroComp_names();
         std::vector<std::string> get_HydroExtFlux_names();
 
+        // Get number of cells in x, y and z directions
+        unsigned int get_HydroComp_num_cells_x_at(int index);
+        unsigned int get_HydroComp_num_cells_y_at(int index);
+        unsigned int get_HydroComp_num_cells_z_at(int index);
+
+
 
         // time_step methods
         bool is_time_step_0();
