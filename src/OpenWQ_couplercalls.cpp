@@ -467,7 +467,7 @@ void OpenWQ_couplercalls::RunSpaceStep_IN(
 
     // Find specific EWF index in EWF names
     iewf = OpenWQ_utils.FindStrIndexInVectStr(
-        OpenWQ_hostModelconfig.ewf_names,
+        OpenWQ_hostModelconfig.get_HydroExtFlux_names(),
         source_EWF_name);
 
     unsigned int numspec = OpenWQ_wqconfig.BGC_general_mobile_species.size();

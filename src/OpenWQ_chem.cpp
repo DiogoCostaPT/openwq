@@ -241,7 +241,7 @@ void OpenWQ_chem::setBGCexpressions(
             for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.get_num_HydroDepend();depi++){
 
                 symbol_table.add_variable(
-                    OpenWQ_hostModelconfig.depend_names[depi],          // Dependency Var name
+                    OpenWQ_hostModelconfig.get_HydroDepend_name_at(depi),          // Dependency Var name
                     (*OpenWQ_hostModelconfig.dependVar_scalar)[depi]    // Variable data
                 );
 

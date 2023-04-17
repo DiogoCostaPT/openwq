@@ -38,6 +38,11 @@ OpenWQ_hostModelconfig::OpenWQ_hostModelconfig()
         double>>(new std::vector<double>);
 }
 
+// Destructor
+OpenWQ_hostModelconfig::~OpenWQ_hostModelconfig() 
+{
+}
+
 /******** Methods *********/
 
 void OpenWQ_hostModelconfig::increment_interaction_step()
@@ -50,7 +55,9 @@ bool OpenWQ_hostModelconfig::is_first_interaction_step()
     return (this->interaction_step == 1);
 }
 
-// HydroTuple methods
+/**
+ * HydroTuple methods
+*/
 unsigned int OpenWQ_hostModelconfig::get_num_HydroComp()
 {
     return this->HydroComp.size();
@@ -63,6 +70,38 @@ unsigned int OpenWQ_hostModelconfig::get_num_HydroDepend()
 {
     return this->HydroDepend.size();
 }
+
+// get names of compartments and external fluxes
+// for a specific index
+std::string OpenWQ_hostModelconfig::get_HydroComp_name_at(int index)
+{
+    return std::get<1>(this->HydroComp[index]);
+}
+std::string OpenWQ_hostModelconfig::get_HydroDepend_name_at(int index)
+{
+    return std::get<1>(this->HydroDepend[index]);
+}
+
+// Get vector of compartment names and external fluxes names
+std::vector<std::string> OpenWQ_hostModelconfig::get_HydroComp_names()
+{
+    std::vector<std::string> names;
+    for (auto &i : this->HydroComp)
+    {
+        names.push_back(std::get<1>(i));
+    }
+    return names;
+}
+std::vector<std::string> OpenWQ_hostModelconfig::get_HydroExtFlux_names()
+{
+    std::vector<std::string> names;
+    for (auto &i : this->HydroExtFlux)
+    {
+        names.push_back(std::get<1>(i));
+    }
+    return names;
+}
+
 
 // time_step_methods
 bool OpenWQ_hostModelconfig::is_time_step_0()

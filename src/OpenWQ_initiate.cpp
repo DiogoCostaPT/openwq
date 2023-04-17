@@ -706,7 +706,7 @@ void OpenWQ_initiate::setIC_h5(
             + ic_h5_timestamp
             + "' in h5 file='" + ic_filenamePath
             + "'. Request ignored and IC concentrations defaulted to zero for all chemicals of "
-            "compartment=" + OpenWQ_hostModelconfig.cmpt_names[icmp];
+            "compartment=" + OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp);
 
         // Print it (Console and/or Log file)
         OpenWQ_output.ConsoleLog(OpenWQ_wqconfig,msg_string,true,true);
@@ -756,7 +756,7 @@ void OpenWQ_initiate::setIC_h5(
             msg_string = 
                 "<OpenWQ> WARNING: IC h5-format data load out of boundaries."
                 "Requested load ignored: "
-                "Compartment=" + OpenWQ_hostModelconfig.cmpt_names[icmp]
+                "Compartment=" + OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp)
                 + ", Chemical=" + OpenWQ_wqconfig.BGC_general_chem_species_list[chemi]
                 + ", ix=" + std::to_string(ic_x)
                 + ", iy=" + std::to_string(ic_y)

@@ -46,6 +46,8 @@ class OpenWQ_hostModelconfig
     
         // Constructor
         OpenWQ_hostModelconfig();
+        // Destructor
+        ~OpenWQ_hostModelconfig();
 
         // ########################
         // Host model COMPARTMENT or EXTERNAL FLUX characterization via tuple
@@ -62,12 +64,6 @@ class OpenWQ_hostModelconfig
         std::vector<hydroTuple> HydroComp;
         std::vector<hydroTuple> HydroExtFlux;
         std::vector<hydroTuple> HydroDepend;
-
-        // Compartment and external water fluxes names
-        std::vector<std::string> cmpt_names;    // names of comparments fluxes
-        std::vector<std::string> ewf_names;     // names of external water fluxes
-        std::vector<std::string> depend_names;  // names of external water fluxes
-
 
 
         // Stores water fluxes when concentration are requested for outputs
@@ -87,10 +83,23 @@ class OpenWQ_hostModelconfig
         // Return True if interaction step is 0, False otherwise
         bool is_first_interaction_step();
         
+        /**
+         * HydroTuple methods
+        */
         // Return sizes for hydrotuples
         unsigned int get_num_HydroComp();
         unsigned int get_num_HydroExtFlux();
         unsigned int get_num_HydroDepend();
+
+        // get names of compartments and external fluxes
+        // for a specific index
+        std::string get_HydroComp_name_at(int index);
+        std::string get_HydroDepend_name_at(int index);
+
+        // Get vector of compartment names and external fluxes names
+        std::vector<std::string> get_HydroComp_names();
+        std::vector<std::string> get_HydroExtFlux_names();
+
 
         // time_step methods
         bool is_time_step_0();

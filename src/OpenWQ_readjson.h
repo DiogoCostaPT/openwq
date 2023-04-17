@@ -104,9 +104,6 @@ class OpenWQ_readjson{
         OpenWQ_utils& OpenWQ_utils,
         OpenWQ_output& OpenWQ_output);
 
-    void SetConfigInfo_hostmodel(
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig);
-
     void SetConfigInfo_chemModule(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_wqconfig& OpenWQ_wqconfig,

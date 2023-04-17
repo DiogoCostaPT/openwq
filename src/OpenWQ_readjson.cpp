@@ -700,10 +700,6 @@ void OpenWQ_readjson::SetConfigInfo_driver(
     SetConfigInfo_compute(
         OpenWQ_json, OpenWQ_wqconfig, OpenWQ_utils, OpenWQ_output);
 
-    // Set computation settings
-    SetConfigInfo_hostmodel(
-        OpenWQ_hostModelconfig);
-
     // Set chem module settings
     SetConfigInfo_chemModule(
         OpenWQ_json, OpenWQ_wqconfig, OpenWQ_utils, OpenWQ_output);
@@ -870,30 +866,6 @@ void OpenWQ_readjson::SetConfigInfo_compute(
         OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string,false, true);
 
     }
-
-}
-
-// Set input data and options
-void OpenWQ_readjson::SetConfigInfo_hostmodel(
-    OpenWQ_hostModelconfig& OpenWQ_hostModelconfig){
-
-
-    // Compartment, External water-fluxes, and dependency-vars names
-    // Compartments
-    for (unsigned int cmpti=0;cmpti<OpenWQ_hostModelconfig.get_num_HydroComp();cmpti++){
-        OpenWQ_hostModelconfig.cmpt_names.push_back(
-            std::get<1>(
-                OpenWQ_hostModelconfig.HydroComp[cmpti]));}
-    // EWF
-    for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.get_num_HydroExtFlux();ewfi++){
-        OpenWQ_hostModelconfig.ewf_names.push_back(
-            std::get<1>(
-                OpenWQ_hostModelconfig.HydroExtFlux[ewfi]));}
-    // Dependency Variables
-    for (unsigned int depi=0;depi<OpenWQ_hostModelconfig.get_num_HydroDepend();depi++){
-        OpenWQ_hostModelconfig.depend_names.push_back(
-            std::get<1>(
-                OpenWQ_hostModelconfig.HydroDepend[depi]));}
 
 }
 
