@@ -1187,6 +1187,7 @@ void OpenWQ_readjson::SetConfigInfo_output_driver(
 
     // Set options and unit conversions
     SetConfigInfo_output_options(
+        OpenWQ_hostModelconfig,
         OpenWQ_json, OpenWQ_wqconfig, OpenWQ_utils, OpenWQ_units,
         OpenWQ_output);
 
@@ -1253,6 +1254,7 @@ void OpenWQ_readjson::SetConfigInfo_output_logFile(
 
 // Set output options
 void OpenWQ_readjson::SetConfigInfo_output_options(
+    OpenWQ_hostModelconfig &OpenWQ_hostModelconfig,
     OpenWQ_json &OpenWQ_json,
     OpenWQ_wqconfig &OpenWQ_wqconfig,
     OpenWQ_utils& OpenWQ_utils,
@@ -1357,9 +1359,9 @@ void OpenWQ_readjson::SetConfigInfo_output_options(
         json_output_subStruct,"TIMESTEP",
         errorMsgIdentifier,
         true);
-
-    (OpenWQ_wqconfig.timetep_out) = json_time.at(0);       // Get value
-    (OpenWQ_wqconfig.timestep_out_unit) = json_time.at(1); // Get units
+    
+    OpenWQ_hostModelconfig.set_timestep_out(json_time.at(0));
+    OpenWQ_hostModelconfig.set_timestep_out_unit(json_time.at(1));
 
     // Convert time units from host model units to seconds (OpenWQ time units)
     // 1) Calculate unit multiplers
@@ -1367,16 +1369,15 @@ void OpenWQ_readjson::SetConfigInfo_output_options(
     OpenWQ_units.Calc_Unit_Multipliers(
         OpenWQ_wqconfig, OpenWQ_output,
         unit_multiplers,                    // multiplers (numerator and denominator)
-        OpenWQ_wqconfig.timestep_out_unit,  // input units
+        OpenWQ_hostModelconfig.get_timestep_out_unit(),  // input units
         units,                              // units (numerator and denominator)
         true);                              // direction of the conversion: 
                                             // to native (true) or 
                                             // from native to desired output units (false)
     
-    // 2) Calculate value with new units
-    OpenWQ_units.Convert_Units(
-        OpenWQ_wqconfig.timetep_out,    // value passed by reference so that it can be changed
-        unit_multiplers);               // units
+    // Used to be a call to OpenWQ_Units::Convert_Units
+    // Changed to encapsulate time within the host model config
+    OpenWQ_hostModelconfig.convert_units_timestep_out(unit_multiplers);
 
 }
 

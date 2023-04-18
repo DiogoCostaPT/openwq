@@ -227,7 +227,7 @@ bool OpenWQ_hostModelconfig::is_first_interaction_step()
 
 
 /**************
-time_step_methods
+time methods
 **************/
 bool OpenWQ_hostModelconfig::is_time_step_0()
 {
@@ -240,4 +240,38 @@ void OpenWQ_hostModelconfig::set_time_step(double time_step)
 double OpenWQ_hostModelconfig::get_time_step()
 {
     return this->time_step;
+}
+
+
+double OpenWQ_hostModelconfig::get_time_previous() {
+    return this->time_previous;
+}
+void OpenWQ_hostModelconfig::set_time_previous(double time_previous) {
+    this->time_previous = time_previous;  
+}
+
+double OpenWQ_hostModelconfig::get_nexttime_out() {
+    return this->nexttime_out;
+}
+void OpenWQ_hostModelconfig::set_nexttime_out(double nexttime_out) {
+    this->nexttime_out = nexttime_out;  
+}
+void OpenWQ_hostModelconfig::update_nexttime_out() {
+    this->nexttime_out += this->timestep_out;
+}
+void OpenWQ_hostModelconfig::set_timestep_out(double timestep_out) {
+    this->timestep_out = timestep_out;
+}
+double OpenWQ_hostModelconfig::get_timestep_out() {
+    return this->timestep_out;
+}
+void OpenWQ_hostModelconfig::set_timestep_out_unit(std::string timestep_out_unit) {
+    this->timestep_out_unit = timestep_out_unit;
+}
+std::string OpenWQ_hostModelconfig::get_timestep_out_unit() {
+    return this->timestep_out_unit;
+}
+// TODO: Reduntant but necessary for now
+void OpenWQ_hostModelconfig::convert_units_timestep_out(std::vector<double> unit_multiplers){    
+    this->timestep_out = this->timestep_out * unit_multiplers[0] / unit_multiplers[1];
 }

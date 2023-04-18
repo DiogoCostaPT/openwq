@@ -68,6 +68,7 @@ class OpenWQ_wqconfig
         // 3 - iz
         // 4 - value (already converted to mg/l (concentration) or g(mass))
 
+
     public:
         // Constructor
         OpenWQ_wqconfig();
@@ -81,13 +82,19 @@ class OpenWQ_wqconfig
         std::string get_OpenWQ_masterjson();
         void set_OpenWQ_masterjson(std::string OpenWQ_masterjson);
 
+        // /**
+        //  * time_previous methods
+        // */
+        // double get_time_previous();
+        // void set_time_previous(double time_previous);
         
 
 
     // #################################################
     // General
-    double time_previous;           // previous time (in seconds) for calculation of dynamic
-                                    // timesteps that critical for calculation of transformation rates
+
+    // TODO: These variables probably do not need to be here. They seem like they should be part of the
+    // JSON classes or output class
     std::string LogFile_name = "Log_OpenWQ.txt";       // name of log file
     std::string LogFile_name_fullpath;
     // #################################################
@@ -127,10 +134,7 @@ class OpenWQ_wqconfig
 
     // #################################################
 
-    // Time
-    double timetep_out;             // time step (in seconds)
-    std::string timestep_out_unit;  // time step unit
-    double nexttime_out = 0.0f;     // iteractive next printing time (in seconds)
+
     // output format
     unsigned long output_type;      // 1) CSV, 2) HDF5
     bool debug_mode = false;        // set to true if debug mode is requested

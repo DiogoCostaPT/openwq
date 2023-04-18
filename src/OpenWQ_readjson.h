@@ -126,6 +126,7 @@ class OpenWQ_readjson{
         OpenWQ_output& OpenWQ_output);
 
     void SetConfigInfo_output_options(
+        OpenWQ_hostModelconfig &OpenWQ_hostModelconfig,
         OpenWQ_json& OpenWQ_json,
         OpenWQ_wqconfig& OpenWQ_wqconfig,
         OpenWQ_utils& OpenWQ_utils,

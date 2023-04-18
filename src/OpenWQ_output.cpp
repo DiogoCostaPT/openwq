@@ -290,7 +290,7 @@ int OpenWQ_output::writeResults(
     OpenWQ_wqconfig.print_oneStep = false; 
 
     // update new OpenWQ_wqconfig.nexttime_out
-    OpenWQ_wqconfig.nexttime_out += OpenWQ_wqconfig.timetep_out;
+    OpenWQ_hostModelconfig.update_nexttime_out();
 
     // Message in console reporting output printing Sucessful
     // Create Message

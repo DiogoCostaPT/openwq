@@ -537,7 +537,7 @@ void OpenWQ_couplercalls::RunTimeLoopEnd(
 
     // Print/Save results
     // Return if not time to print
-    if (simtime >= OpenWQ_wqconfig.nexttime_out){
+    if (simtime >= OpenWQ_hostModelconfig.get_nexttime_out()){
 
         // Get compartment volumes for calculation of concentration (if requested)
         // neet to convert from mm (CRHM native units) to m3 (OpenWQ native units)

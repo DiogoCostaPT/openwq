@@ -76,6 +76,15 @@ void OpenWQ_wqconfig::set_OpenWQ_masterjson(std::string OpenWQ_masterjson) {
     this->OpenWQ_masterjson = OpenWQ_masterjson;  
 }
 
+// /**
+//  * time_previous methods
+// */
+// double OpenWQ_wqconfig::get_time_previous() {
+//     return this->time_previous;
+// }
+// void OpenWQ_wqconfig::set_time_previous(double time_previous) {
+//     this->time_previous = time_previous;  
+// }
 
 
 
