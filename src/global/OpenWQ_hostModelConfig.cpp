@@ -70,15 +70,7 @@ void OpenWQ_hostModelconfig::add_HydroDepend(int index, std::string name, int nu
 
 
 
-void OpenWQ_hostModelconfig::increment_interaction_step()
-{
-    this->interaction_step++;
-}
 
-bool OpenWQ_hostModelconfig::is_first_interaction_step()
-{
-    return (this->interaction_step == 1);
-}
 
 /**
  * HydroTuple methods
@@ -169,7 +161,9 @@ unsigned int OpenWQ_hostModelconfig::get_HydroDepend_num_cells_z_at(int index)
     return std::get<4>(this->HydroDepend[index]);
 }
 
-
+/*
+* waterVol methods
+*/
 void OpenWQ_hostModelconfig::add_waterVol_hydromodel(arma::Cube<double> waterVol) 
 {
     (*this->waterVol_hydromodel).push_back(waterVol);
@@ -182,7 +176,15 @@ void OpenWQ_hostModelconfig::set_waterVol_hydromodel_at(int index, int ix, int i
 {
     (*this->waterVol_hydromodel)[index](ix,iy,iz) = value;
 }
+// waterVol_minlim method
+double OpenWQ_hostModelconfig::get_watervol_minlim()
+{
+    return this->watervol_minlim;
+}
 
+/*
+* dependVar methods
+*/
 void OpenWQ_hostModelconfig::add_dependVar(arma::Cube<double> dependVar) 
 {
     (*this->dependVar).push_back(dependVar);
@@ -195,6 +197,7 @@ void OpenWQ_hostModelconfig::set_dependVar_at(int index, int ix, int iy, int iz,
 {
     (*this->dependVar)[index](ix,iy,iz) = value;
 }
+// dependVar_scalar methods
 void OpenWQ_hostModelconfig::add_dependVar_scalar(double dependVar_scalar)
 {
     (*this->dependVar_scalar).push_back(dependVar_scalar);
@@ -209,8 +212,23 @@ void OpenWQ_hostModelconfig::set_dependVar_scalar_at(int index, double value)
 }
 
 
+/**************
+ interaction_step methods
+**************/
+void OpenWQ_hostModelconfig::increment_interaction_step()
+{
+    this->interaction_step++;
+}
 
-// time_step_methods
+bool OpenWQ_hostModelconfig::is_first_interaction_step()
+{
+    return (this->interaction_step == 1);
+}
+
+
+/**************
+time_step_methods
+**************/
 bool OpenWQ_hostModelconfig::is_time_step_0()
 {
     return (this->time_step == 0);
@@ -223,10 +241,3 @@ double OpenWQ_hostModelconfig::get_time_step()
 {
     return this->time_step;
 }
-
-// waterVol_minlim methods
-double OpenWQ_hostModelconfig::get_watervol_minlim()
-{
-    return this->watervol_minlim;
-}
-

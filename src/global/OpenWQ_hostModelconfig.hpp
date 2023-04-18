@@ -74,11 +74,7 @@ class OpenWQ_hostModelconfig
 
         /******** Methods *********/
         
-        // Increase interaction step by 1
-        void increment_interaction_step();
 
-        // Return True if interaction step is 0, False otherwise
-        bool is_first_interaction_step();
         
         /********************
          * HydroTuple methods
@@ -123,6 +119,9 @@ class OpenWQ_hostModelconfig
         void add_waterVol_hydromodel(arma::Cube<double> waterVol);
         double get_waterVol_hydromodel_at(int index, int ix, int iy, int iz);
         void set_waterVol_hydromodel_at(int index, int ix, int iy, int iz, double value);
+        // waterVol_minlim method
+        double get_watervol_minlim();
+        
         /*
         * dependVar methods
         */
@@ -134,12 +133,21 @@ class OpenWQ_hostModelconfig
         double get_dependVar_scalar_at(int index);
         void set_dependVar_scalar_at(int index, double value);
 
-        // time_step methods
+        /*
+        * interaction_step methods
+        */
+        // Increase interaction step by 1
+        void increment_interaction_step();
+        // Return True if interaction step is 0, False otherwise
+        bool is_first_interaction_step();
+
+        /*
+        * time_step methods
+        */
         bool is_time_step_0();
         void set_time_step(double time_step);
         double get_time_step();
 
-        // waterVol_minlim methods
-        double get_watervol_minlim();
+    
 
 };
