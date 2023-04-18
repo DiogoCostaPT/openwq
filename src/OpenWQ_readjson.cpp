@@ -49,7 +49,7 @@ void OpenWQ_readjson::read_all(
         OpenWQ_json.Master,                 // JSON structure to save to
         false,                              // Save in subfield of JSON structure? only if multiple files (e.g., source and sinks)
         "",                                 // if above true, provide name of subfield
-        OpenWQ_wqconfig.OpenWQ_masterjson); // Name of JSON file
+        OpenWQ_wqconfig.get_OpenWQ_masterjson()); // Name of JSON file
 
     // Get json substructure
     errorMsgIdentifier = "Master file";

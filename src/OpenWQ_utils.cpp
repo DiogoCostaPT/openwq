@@ -21,7 +21,28 @@
 // based on https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
 
 
-#include "OpenWQ_utils.h"
+#include "OpenWQ_utils.hpp"
+
+/*
+* JSON key null error
+*/
+std::string OpenWQ_utils::get_jsonKeyNull_msg_start_abort()
+{
+    return this->jsonKeyNull_msg_start_abort;
+}
+std::string OpenWQ_utils::get_jsonKeyNull_msg_end_abort()
+{
+    return this->jsonKeyNull_msg_end_abort;
+}
+std::string OpenWQ_utils::get_jsonKeyNull_msg_start_NOabort()
+{
+    return this->jsonKeyNull_msg_start_NOabort;
+}
+std::string OpenWQ_utils::get_jsonKeyNull_msg_end_NOabort()
+{
+    return this->jsonKeyNull_msg_end_NOabort;
+}
+
 
 // ########################################                                                          
 // Get number of lines in file
@@ -477,11 +498,11 @@ void OpenWQ_utils::RequestJsonKeyVal_errorAbort(
     // Get appropriate start and end message string
     // depending on if to abort or not
     if (abort_flag == true){
-        msg_start = OpenWQ_wqconfig.jsonKeyNull_msg_start_abort;
-        msg_end = OpenWQ_wqconfig.jsonKeyNull_msg_end_abort;
+        msg_start = this->get_jsonKeyNull_msg_start_abort();
+        msg_end = this->get_jsonKeyNull_msg_end_abort();
     }else if (abort_flag == false){
-        msg_start = OpenWQ_wqconfig.jsonKeyNull_msg_start_NOabort;
-        msg_end = OpenWQ_wqconfig.jsonKeyNull_msg_end_NOabort;
+        msg_start = this->get_jsonKeyNull_msg_start_NOabort();
+        msg_end = this->get_jsonKeyNull_msg_end_NOabort();
     }
     // If results is NULL, throw error message and abort 
     jsonKeyNull_msg = "####################\n"

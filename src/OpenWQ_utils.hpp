@@ -28,6 +28,24 @@
 
 class OpenWQ_utils{
 
+    private:
+         // General JSON key null error
+        const std::string jsonKeyNull_msg_start_abort = "<OpenWQ> Execution ABORTED!\nExpected json value for key=";
+        const std::string jsonKeyNull_msg_end_abort = " but not found! Revise the JSON files.";
+        const std::string jsonKeyNull_msg_start_NOabort = "<OpenWQ> WARNING: Expected json value for key=";
+        const std::string jsonKeyNull_msg_end_NOabort = " but not found! The entry has been zeroed. Make sure this was intended!";
+        
+        
+        
+        // Methods only needed by this class
+        /*
+         * JSON key null error
+        */
+        std::string get_jsonKeyNull_msg_start_abort();
+        std::string get_jsonKeyNull_msg_end_abort();
+        std::string get_jsonKeyNull_msg_start_NOabort();
+        std::string get_jsonKeyNull_msg_end_NOabort();
+
     public:
 
     // Get number of lines in file

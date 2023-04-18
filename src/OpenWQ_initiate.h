@@ -30,7 +30,7 @@ using json = nlohmann::json;
 #include "global/OpenWQ_hostModelconfig.hpp"
 #include "OpenWQ_units.h"
 #include "OpenWQ_output.h"
-#include "OpenWQ_utils.h"
+#include "OpenWQ_utils.hpp"
 
 
 class OpenWQ_initiate{

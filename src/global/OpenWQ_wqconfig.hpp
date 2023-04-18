@@ -17,7 +17,9 @@
 #pragma once
 
 #include <armadillo>
+#include <memory>
 #include "exprtk.hpp"
+#include <string>
 
 
 
@@ -26,18 +28,20 @@
 ################################################# */
 class OpenWQ_wqconfig
 {
-    public:
-    OpenWQ_wqconfig(){
 
-        
 
-        // #################################################
-        // Compiling and re-structuring of input data for quicker access during runtime
-        // Source and source forcing (SinkSource_FORC)
-        // AND
-        // External fluxes (ExtFlux_FORC_jsonAscii)
+    // #################################################
+    // Compiling and re-structuring of input data for quicker access during runtime
+    // Source and source forcing (SinkSource_FORC)
+    // AND
+    // External fluxes (ExtFlux_FORC_jsonAscii)
+    private:
 
-        this -> num_coldata_jsonAscii = 20;
+        // Master file location
+        std::string OpenWQ_masterjson;
+
+
+        size_t num_coldata_jsonAscii = 20;
         // num_coldata_jsonAscii is, the moment, equal to 20
         // 0 - chemical
         // 1 - compartment id (from HydroComp) / external flux id (from HydroExtFlux)
@@ -58,64 +62,27 @@ class OpenWQ_wqconfig
             // and it is set to -1, which after use becomes -2 for not use again
             // otherwise, it gets updated everytime the load is added
             // and it provides the time increment for the next load
-
-        this -> num_coldata_h5 = 4;
+        size_t num_coldata_h5 = 4;
         // 1 - ix
         // 2 - iy
         // 3 - iz
         // 4 - value (already converted to mg/l (concentration) or g(mass))
 
-        // Sink and source forcing
-        SinkSource_FORC = 
-            std::unique_ptr<
-            arma::Mat<double>>
-            (new  arma::mat(0,num_coldata_jsonAscii));
+    public:
+        // Constructor
+        OpenWQ_wqconfig();
 
-        // External fluxes forcing (JSON or ASCII datatypes)
-        ExtFlux_FORC_jsonAscii = 
-            std::unique_ptr<
-            arma::Mat<double>>
-            (new  arma::mat(0,num_coldata_jsonAscii));
+        // Destructor
+        ~OpenWQ_wqconfig();
+
+        /**
+         * OpenWQ_masterjson
+        */
+        std::string get_OpenWQ_masterjson();
+        void set_OpenWQ_masterjson(std::string OpenWQ_masterjson);
+
         
-        // External fluxes forcing (HDF5) 
-        // Storing timestamps as time_t
-        ExtFlux_FORC_HDF5vec_time =
-            std::unique_ptr<        // EWF-h5 json block/request
-            std::vector<            
-            std::vector<time_t>>>
-            (new  std::vector<std::vector<time_t>>);
-        // Storing external_flux id
-        ExtFlux_FORC_HDF5vec_ewfCompID =
-            std::unique_ptr<
-            std::vector<unsigned int>>
-            (new  std::vector<unsigned int>);
-        // Saving 1 timestep
-        ExtFlux_FORC_data_tStep = 
-            std::unique_ptr<
-            arma::Cube<double>>
-            (new  arma::cube);
-        // Storing all timesteps
-        ExtFlux_FORC_HDF5vec_data = 
-            std::unique_ptr<
-            std::vector<           // EWF-h5 json block/request
-            std::vector<           // ChemSpecies 
-            std::vector<           // timestamps
-            arma::Cube<double>>>>>
-            (new  std::vector<std::vector<std::vector<arma::cube>>>);
 
-    }
-
-    size_t num_coldata_jsonAscii;
-    size_t num_coldata_h5;
-
-    // General JSON key null error
-    std::string jsonKeyNull_msg_start_abort = "<OpenWQ> Execution ABORTED!\nExpected json value for key=";
-    std::string jsonKeyNull_msg_end_abort = " but not found! Revise the JSON files.";
-    std::string jsonKeyNull_msg_start_NOabort = "<OpenWQ> WARNING: Expected json value for key=";
-    std::string jsonKeyNull_msg_end_NOabort = " but not found! The entry has been zeroed. Make sure this was intended!";
-    
-    // Master file location
-    std::string OpenWQ_masterjson;
 
     // #################################################
     // General
