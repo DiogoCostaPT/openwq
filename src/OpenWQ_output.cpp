@@ -290,7 +290,7 @@ int OpenWQ_output::writeResults(
     OpenWQ_wqconfig.print_oneStep = false; 
 
     // update new OpenWQ_wqconfig.nexttime_out
-    OpenWQ_hostModelconfig.update_nexttime_out();
+    OpenWQ_wqconfig.update_nexttime_out();
 
     // Message in console reporting output printing Sucessful
     // Create Message
@@ -661,7 +661,7 @@ void OpenWQ_output::ConsoleLog(
 
         // Append line with error or warnning message
         std::ofstream log(
-            OpenWQ_wqconfig.LogFile_name_fullpath, 
+            OpenWQ_wqconfig.get_LogFile_name_fullpath(), 
             std::ios_base::app | std::ios_base::out);
 
         log << msg_string.append("\n");

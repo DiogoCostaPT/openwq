@@ -1,4 +1,3 @@
-
 // Copyright 2020, Diogo Costa, diogo.pinhodacosta@canada.ca
 // This file is part of OpenWQ model.
 
@@ -218,7 +217,7 @@ bool OpenWQ_utils::GetTimeStampsFromLogFile(
     // Full path to LogFile of EWF source
     ewf_sim_logFile_path = logFile_folderPath;
     ewf_sim_logFile_path.append("/");
-    ewf_sim_logFile_path.append(OpenWQ_wqconfig.LogFile_name);
+    ewf_sim_logFile_path.append(OpenWQ_wqconfig.get_LogFile_name());
 
     // Open LogFile_name_fullpath file to read timestamps (read mode only)
     std::ifstream logFile_ewf (ewf_sim_logFile_path, std::ios::in);

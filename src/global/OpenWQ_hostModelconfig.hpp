@@ -57,12 +57,6 @@ class OpenWQ_hostModelconfig
      
         // Time
         double time_step = 0.0f;    // Host model time step (in seconds)
-        double time_previous;       // previous time (in seconds) for calculation of dynamic
-                                    // timesteps that critical for calculation of transformation rates
-
-        double timestep_out;             // time step (in seconds)
-        std::string timestep_out_unit;  // time step unit
-        double nexttime_out = 0.0f;     // iteractive next printing time (in seconds)
 
             
         // Water volume minimum limit (critical for concentration calculations)
@@ -155,19 +149,6 @@ class OpenWQ_hostModelconfig
         void set_time_step(double time_step);
         double get_time_step();
 
-        double get_time_previous();
-        void set_time_previous(double time_previous);
-
-        double get_nexttime_out();
-        void set_nexttime_out(double nexttime_out);
-        // update new nexttime_out with timstesp_out
-        void update_nexttime_out();
-
-        void set_timestep_out(double timestep_out);
-        double get_timestep_out();
-        void set_timestep_out_unit(std::string timestep_out_unit);
-        std::string get_timestep_out_unit();
-        void convert_units_timestep_out(std::vector<double> unit_multiplers);
 
     
 

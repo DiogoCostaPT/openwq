@@ -792,7 +792,7 @@ void OpenWQ_readjson::SetConfigInfo_compute(
         true);
 
     // Get number of threads in the system
-    OpenWQ_wqconfig.num_threads_system = sysconf(_SC_NPROCESSORS_ONLN);
+    OpenWQ_wqconfig.set_num_threads_system(sysconf(_SC_NPROCESSORS_ONLN)); 
     
     // Get number of threads requested
     // It can be provided as an int or "all" (string)
@@ -800,7 +800,7 @@ void OpenWQ_readjson::SetConfigInfo_compute(
     try{
         // Test if provided as integer with number of cores
         // Convert cast to int (if double or flow)
-        OpenWQ_wqconfig.num_threads_requested = (int) json_computeSettings["USE_NUM_THREADS"];
+        OpenWQ_wqconfig.set_num_threads_requested((int) json_computeSettings["USE_NUM_THREADS"]);
 
     }catch(...){
         
@@ -812,7 +812,7 @@ void OpenWQ_readjson::SetConfigInfo_compute(
             // If string check if it is a string equal to "ALL"
             if (num_cores_input.compare("ALL") == 0){
 
-                OpenWQ_wqconfig.num_threads_requested = OpenWQ_wqconfig.num_threads_system;
+                OpenWQ_wqconfig.set_threads_requested_to_system();
 
             }else{
                 // Set error flag = true
@@ -832,37 +832,32 @@ void OpenWQ_readjson::SetConfigInfo_compute(
                  "<OpenWQ> WARNNING: Unrecognized input for COMPUTATIONAL_SETTINGS > USE_NUM_THREADS: '"
                 + num_cores_input
                 + "' (Only allowed \"all\" or integer). USE_NUM_THREADS has been defaulted to "
-                + std::to_string(OpenWQ_wqconfig.num_threads_default) + ".";
+                + std::to_string(OpenWQ_wqconfig.get_num_threads_default()) + ".";
             OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, false, true);
 
             // Default number of threads
-            OpenWQ_wqconfig.num_threads_requested = OpenWQ_wqconfig.num_threads_default;
+            OpenWQ_wqconfig.set_threads_requested_to_default();
 
         }
     }
     
     // Check if number of threads requested is higher than existing in the system
     // if yes, throw warning message and limited the request
-    if (OpenWQ_wqconfig.num_threads_system < OpenWQ_wqconfig.num_threads_requested){
+    if (OpenWQ_wqconfig.is_num_threads_requested_valid() == false){
 
         // Create Message
-        msg_string = 
-            "<OpenWQ> WARNING: Number of threads in the system (" 
-            + std::to_string(OpenWQ_wqconfig.num_threads_system)
-            + ") is lower than requested ("
-            + std::to_string(OpenWQ_wqconfig.num_threads_requested)
-            + "). All system threads available have been engaged.";
-        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string,false, true);
+        msg_string = OpenWQ_wqconfig.get_num_threads_warning();
+        OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string,
+                                false, true);
         
         // Overwrite OpenWQ_wqconfig.num_threads_requested to max number in the system
-        OpenWQ_wqconfig.num_threads_requested = OpenWQ_wqconfig.num_threads_system;
+        OpenWQ_wqconfig.set_threads_requested_to_system();
         
     }else{
 
         // Create Message
-        msg_string = 
-            "<OpenWQ> INFO: Number of threads requested and used: " 
-            + std::to_string(OpenWQ_wqconfig.num_threads_requested) + ".";
+        msg_string = OpenWQ_wqconfig.get_num_threads_info();
+
         OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string,false, true);
 
     }
@@ -1187,7 +1182,6 @@ void OpenWQ_readjson::SetConfigInfo_output_driver(
 
     // Set options and unit conversions
     SetConfigInfo_output_options(
-        OpenWQ_hostModelconfig,
         OpenWQ_json, OpenWQ_wqconfig, OpenWQ_utils, OpenWQ_units,
         OpenWQ_output);
 
@@ -1233,14 +1227,11 @@ void OpenWQ_readjson::SetConfigInfo_output_logFile(
         true);
 
     // Create Log file name with full or relative path
-    OpenWQ_wqconfig.LogFile_name_fullpath =  OpenWQ_wqconfig.LogFile_name;
-    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0,"/");
-    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0, output_format);
-    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0,"/");
-    OpenWQ_wqconfig.LogFile_name_fullpath.insert(0, output_folder);
+    OpenWQ_wqconfig.set_LogFile_name_fullpath(output_format, output_folder);
+
 
     // Create log file
-    std::ofstream outfile (OpenWQ_wqconfig.LogFile_name_fullpath);
+    std::ofstream outfile (OpenWQ_wqconfig.get_LogFile_name_fullpath());
 
     // ###############
     // Write header in log file
@@ -1254,7 +1245,6 @@ void OpenWQ_readjson::SetConfigInfo_output_logFile(
 
 // Set output options
 void OpenWQ_readjson::SetConfigInfo_output_options(
-    OpenWQ_hostModelconfig &OpenWQ_hostModelconfig,
     OpenWQ_json &OpenWQ_json,
     OpenWQ_wqconfig &OpenWQ_wqconfig,
     OpenWQ_utils& OpenWQ_utils,
@@ -1360,8 +1350,8 @@ void OpenWQ_readjson::SetConfigInfo_output_options(
         errorMsgIdentifier,
         true);
     
-    OpenWQ_hostModelconfig.set_timestep_out(json_time.at(0));
-    OpenWQ_hostModelconfig.set_timestep_out_unit(json_time.at(1));
+    OpenWQ_wqconfig.set_timestep_out(json_time.at(0));
+    OpenWQ_wqconfig.set_timestep_out_unit(json_time.at(1));
 
     // Convert time units from host model units to seconds (OpenWQ time units)
     // 1) Calculate unit multiplers
@@ -1369,7 +1359,7 @@ void OpenWQ_readjson::SetConfigInfo_output_options(
     OpenWQ_units.Calc_Unit_Multipliers(
         OpenWQ_wqconfig, OpenWQ_output,
         unit_multiplers,                    // multiplers (numerator and denominator)
-        OpenWQ_hostModelconfig.get_timestep_out_unit(),  // input units
+        OpenWQ_wqconfig.get_timestep_out_unit(),  // input units
         units,                              // units (numerator and denominator)
         true);                              // direction of the conversion: 
                                             // to native (true) or 
@@ -1377,7 +1367,7 @@ void OpenWQ_readjson::SetConfigInfo_output_options(
     
     // Used to be a call to OpenWQ_Units::Convert_Units
     // Changed to encapsulate time within the host model config
-    OpenWQ_hostModelconfig.convert_units_timestep_out(unit_multiplers);
+    OpenWQ_wqconfig.convert_units_timestep_out(unit_multiplers);
 
 }
 

@@ -69,22 +69,106 @@ OpenWQ_wqconfig::OpenWQ_wqconfig() {
 /**
  * OpenWQ_masterjson
 */
-std::string OpenWQ_wqconfig::get_OpenWQ_masterjson() {
+std::string OpenWQ_wqconfig::get_OpenWQ_masterjson() 
+{
     return this->OpenWQ_masterjson;
 }
-void OpenWQ_wqconfig::set_OpenWQ_masterjson(std::string OpenWQ_masterjson) {
+void OpenWQ_wqconfig::set_OpenWQ_masterjson(std::string OpenWQ_masterjson) 
+{
     this->OpenWQ_masterjson = OpenWQ_masterjson;  
 }
 
-// /**
-//  * time_previous methods
-// */
-// double OpenWQ_wqconfig::get_time_previous() {
-//     return this->time_previous;
-// }
-// void OpenWQ_wqconfig::set_time_previous(double time_previous) {
-//     this->time_previous = time_previous;  
-// }
+std::string OpenWQ_wqconfig::get_LogFile_name() 
+{
+    return this->LogFile_name;
+}
+
+std::string OpenWQ_wqconfig::get_LogFile_name_fullpath() 
+{
+    return this->LogFile_name_fullpath;
+}
+
+void OpenWQ_wqconfig::set_LogFile_name_fullpath(std::string output_folder,
+                                                std::string output_format) 
+{
+    this->LogFile_name_fullpath = this->LogFile_name;
+    this->LogFile_name_fullpath.insert(0,"/");
+    this->LogFile_name_fullpath.insert(0, output_format);
+    this->LogFile_name_fullpath.insert(0,"/");
+    this->LogFile_name_fullpath.insert(0, output_folder);
+}
 
 
+int OpenWQ_wqconfig::get_num_threads_default() {
+    return this->num_threads_default;
+}
+
+void OpenWQ_wqconfig::set_num_threads_system(int num_threads_system) {
+    this->num_threads_system = num_threads_system;
+}
+
+void OpenWQ_wqconfig::set_num_threads_requested(int num_threads_requested) {
+    this->num_threads_requested = num_threads_requested;
+}
+int OpenWQ_wqconfig::get_num_threads_requested() {
+    return this->num_threads_requested;
+}
+
+void OpenWQ_wqconfig::set_threads_requested_to_system() {
+  this->num_threads_requested = this->num_threads_system;
+}
+
+void OpenWQ_wqconfig::set_threads_requested_to_default() {
+  this->num_threads_requested = this->num_threads_default;
+}
+
+bool OpenWQ_wqconfig::is_num_threads_requested_valid() {
+  return this->num_threads_system >= this->num_threads_requested;
+}
+
+std::string OpenWQ_wqconfig::get_num_threads_warning() {
+  return "<OpenWQ> WARNING: Number of threads in the system (" 
+      + std::to_string(this->num_threads_system)
+      + ") is lower than requested ("
+      + std::to_string(this->num_threads_requested)
+      + "). All system threads available have been engaged.";
+}
+
+std::string OpenWQ_wqconfig::get_num_threads_info() {
+  return "<OpenWQ> INFO: Number of threads requested and used: " 
+    + std::to_string(this->num_threads_requested) + ".";;
+}
+
+double OpenWQ_wqconfig::get_time_previous() {
+    return this->time_previous;
+}
+void OpenWQ_wqconfig::set_time_previous(double time_previous) {
+    this->time_previous = time_previous;  
+}
+
+double OpenWQ_wqconfig::get_nexttime_out() {
+    return this->nexttime_out;
+}
+void OpenWQ_wqconfig::set_nexttime_out(double nexttime_out) {
+    this->nexttime_out = nexttime_out;  
+}
+void OpenWQ_wqconfig::update_nexttime_out() {
+    this->nexttime_out += this->timestep_out;
+}
+void OpenWQ_wqconfig::set_timestep_out(double timestep_out) {
+    this->timestep_out = timestep_out;
+}
+double OpenWQ_wqconfig::get_timestep_out() {
+    return this->timestep_out;
+}
+void OpenWQ_wqconfig::set_timestep_out_unit(std::string timestep_out_unit) {
+    this->timestep_out_unit = timestep_out_unit;
+}
+std::string OpenWQ_wqconfig::get_timestep_out_unit() {
+    return this->timestep_out_unit;
+}
+// TODO: Reduntant but necessary for now
+void OpenWQ_wqconfig::convert_units_timestep_out(std::vector<double> unit_multiplers){    
+    this->timestep_out = this->timestep_out * unit_multiplers[0] / unit_multiplers[1];
+}
 
