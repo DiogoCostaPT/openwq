@@ -69,24 +69,23 @@ class OpenWQ_wqconfig
         // 4 - value (already converted to mg/l (concentration) or g(mass))
 
 
-
-        // TODO: These variables probably do not need to be here. They seem like they should be part of the
         // JSON classes or output class
         std::string LogFile_name = "Log_OpenWQ.txt";       // name of log file
         std::string LogFile_name_fullpath;
 
+        // Thread Settings
+        int num_threads_system;         // number of threads in the system
+        int num_threads_requested;      // number of threads requested by user
+        int num_threads_default = 4;    // if requested num threads is invalid, defaults to this value 
+
         // Time settings
         double time_previous;       // previous time (in seconds) for calculation of dynamic
                                     // timesteps that critical for calculation of transformation rates
-
         double timestep_out;             // time step (in seconds)
         std::string timestep_out_unit;  // time step unit
         double nexttime_out = 0.0f;     // iteractive next printing time (in seconds)
 
-        // Computation settings
-        int num_threads_system;         // number of threads in the system
-        int num_threads_requested;      // number of threads requested by user
-        int num_threads_default = 4;    // if requested num threads is invalid, defaults to this value 
+
 
 
     public:
@@ -95,45 +94,53 @@ class OpenWQ_wqconfig
 
         // Destructor
         ~OpenWQ_wqconfig();
-
-        /**
-         * OpenWQ_masterjson
-        */
+        //###############################################
+        // Methods 
+        //###############################################
+        
+        /***********************************************
+        * OpenWQ_masterjson
+        ************************************************/
         std::string get_OpenWQ_masterjson();
         void set_OpenWQ_masterjson(std::string OpenWQ_masterjson);
 
+        /***********************************************
+        * LogFile
+        ************************************************/
         std::string get_LogFile_name();
         std::string get_LogFile_name_fullpath();
         void set_LogFile_name_fullpath(std::string output_format, std::string output_folder);
 
+        /***********************************************
+        * Methods for Threads
+        ************************************************/
         int get_num_threads_default();
         void set_num_threads_system(int num_threads_system);
         int get_num_threads_system();
         void set_num_threads_requested(int num_threads_requested);
         int get_num_threads_requested();
-
-        // set the number of requested threads to the number of threads in the system
         void set_threads_requested_to_system();
         void set_threads_requested_to_default();
-
         bool is_num_threads_requested_valid();
         std::string get_num_threads_warning();
         std::string get_num_threads_info();
 
-
+        /***********************************************
+        * Time Methods
+        ************************************************/
         double get_time_previous();
         void set_time_previous(double time_previous);
-        
         double get_nexttime_out();
         void set_nexttime_out(double nexttime_out);
         // update new nexttime_out with timstesp_out
         void update_nexttime_out();
-
         void set_timestep_out(double timestep_out);
         double get_timestep_out();
         void set_timestep_out_unit(std::string timestep_out_unit);
         std::string get_timestep_out_unit();
         void convert_units_timestep_out(std::vector<double> unit_multiplers);
+
+        
 
 
 

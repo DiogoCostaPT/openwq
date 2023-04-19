@@ -62,13 +62,14 @@ OpenWQ_wqconfig::OpenWQ_wqconfig() {
 // Destructor
 // OpenWQ_wqconfig::~OpenWQ_wqconfig() {}
 
-/******** 
- * Methods 
- * *********/
+//###############################################
+// Methods 
+//###############################################
 
-/**
+
+/***********************************************
  * OpenWQ_masterjson
-*/
+************************************************/
 std::string OpenWQ_wqconfig::get_OpenWQ_masterjson() 
 {
     return this->OpenWQ_masterjson;
@@ -78,6 +79,9 @@ void OpenWQ_wqconfig::set_OpenWQ_masterjson(std::string OpenWQ_masterjson)
     this->OpenWQ_masterjson = OpenWQ_masterjson;  
 }
 
+/***********************************************
+ * LogFile
+************************************************/
 std::string OpenWQ_wqconfig::get_LogFile_name() 
 {
     return this->LogFile_name;
@@ -87,7 +91,6 @@ std::string OpenWQ_wqconfig::get_LogFile_name_fullpath()
 {
     return this->LogFile_name_fullpath;
 }
-
 void OpenWQ_wqconfig::set_LogFile_name_fullpath(std::string output_folder,
                                                 std::string output_format) 
 {
@@ -98,7 +101,9 @@ void OpenWQ_wqconfig::set_LogFile_name_fullpath(std::string output_folder,
     this->LogFile_name_fullpath.insert(0, output_folder);
 }
 
-
+/***********************************************
+ * Methods for Threads
+************************************************/
 int OpenWQ_wqconfig::get_num_threads_default() {
     return this->num_threads_default;
 }
@@ -139,6 +144,9 @@ std::string OpenWQ_wqconfig::get_num_threads_info() {
     + std::to_string(this->num_threads_requested) + ".";;
 }
 
+/***********************************************
+ * Time Methods
+************************************************/
 double OpenWQ_wqconfig::get_time_previous() {
     return this->time_previous;
 }
@@ -171,4 +179,7 @@ std::string OpenWQ_wqconfig::get_timestep_out_unit() {
 void OpenWQ_wqconfig::convert_units_timestep_out(std::vector<double> unit_multiplers){    
     this->timestep_out = this->timestep_out * unit_multiplers[0] / unit_multiplers[1];
 }
+
+
+
 
