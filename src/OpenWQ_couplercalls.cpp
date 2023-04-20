@@ -255,7 +255,7 @@ void OpenWQ_couplercalls::RunTimeLoopStart(
         hour_sim_now, min_sim_now, sec_sim_now); 
 
     // Flag to note that 1st time step has been completed
-    OpenWQ_wqconfig.tstep1_flag = false;
+    OpenWQ_wqconfig.set_tstep1_flag_false();
 
     // #################################################
     // MODULES

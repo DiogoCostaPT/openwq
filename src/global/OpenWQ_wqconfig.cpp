@@ -91,14 +91,16 @@ std::string OpenWQ_wqconfig::get_LogFile_name_fullpath()
 {
     return this->LogFile_name_fullpath;
 }
-void OpenWQ_wqconfig::set_LogFile_name_fullpath(std::string output_folder,
-                                                std::string output_format) 
+void OpenWQ_wqconfig::create_LogFile_name_fullpath(
+    std::string output_format, std::string output_folder) 
 {
     this->LogFile_name_fullpath = this->LogFile_name;
     this->LogFile_name_fullpath.insert(0,"/");
     this->LogFile_name_fullpath.insert(0, output_format);
     this->LogFile_name_fullpath.insert(0,"/");
     this->LogFile_name_fullpath.insert(0, output_folder);
+
+    std::ofstream outfile(this->LogFile_name_fullpath);
 }
 
 /***********************************************
@@ -179,6 +181,143 @@ std::string OpenWQ_wqconfig::get_timestep_out_unit() {
 void OpenWQ_wqconfig::convert_units_timestep_out(std::vector<double> unit_multiplers){    
     this->timestep_out = this->timestep_out * unit_multiplers[0] / unit_multiplers[1];
 }
+
+/***********************************************
+* Sink and Source AND External fluxes Methods
+************************************************/
+
+void OpenWQ_wqconfig::set_h5EWF_interpMethod(std::string h5EWF_interpMethod) {
+    this->h5EWF_interpMethod = h5EWF_interpMethod;
+}
+
+bool OpenWQ_wqconfig::is_h5EWF_interpMethod(std::string h5EWF_interpMethod) {
+    return this->h5EWF_interpMethod.compare(h5EWF_interpMethod) == 0;
+}
+
+std::string OpenWQ_wqconfig::h5EWF_interp_warning_msg() {
+    return  "<OpenWQ> WARNING: EWF load using HDF5 file 'INTERPOLATION' unkown:"
+            + this->h5EWF_interpMethod
+            + ". 'INTERPOLATION' defaulted to 'STEP'";
+}
+
+void OpenWQ_wqconfig::set_tstep1_flag_false() 
+{
+    this->tstep1_flag = false;
+}
+
+bool OpenWQ_wqconfig::is_tstep1() 
+{
+    return this->tstep1_flag;
+}
+
+int OpenWQ_wqconfig::get_allSS_flag() 
+{
+    return this->allSS_flag;
+}
+
+/***********************************************
+* Output Format Methods //TODO: Check if output class is a better place for this
+************************************************/
+bool OpenWQ_wqconfig::is_output_type_csv() 
+{
+    return this->output_type == 0;
+}
+bool OpenWQ_wqconfig::is_output_type_hdf5() 
+{
+    return this->output_type == 1;
+}
+
+void OpenWQ_wqconfig::set_output_type_csv()
+{
+    this->output_type = 0;
+    this->output_dir.append("/CSV");
+    check_mkdir();
+}
+
+void OpenWQ_wqconfig::set_output_type_hdf5()
+{
+    this->output_type = 1;
+    this->output_dir.append("/HDF5");
+    check_mkdir();
+}
+
+std::string OpenWQ_wqconfig::get_output_dir()
+{
+    return this->output_dir;
+}
+
+void OpenWQ_wqconfig::set_output_dir(std::string output_dir)
+{
+    this->output_dir = output_dir;
+    check_mkdir();
+}
+
+// Check if directory exists and create it
+void OpenWQ_wqconfig::check_mkdir()
+{
+    struct stat st = {0};
+    
+    // convert to *char
+    const char *cstr = this->output_dir.c_str();
+
+    // mkdir
+    if (stat(cstr, &st) == -1) {
+        mkdir(cstr, 0700);
+    }
+}
+
+// Output Units
+std::string OpenWQ_wqconfig::get_output_units() 
+{
+    return std::get<0>(this->output_units);
+}
+
+double OpenWQ_wqconfig::get_output_units_numerator() 
+{
+    return std::get<1>(this->output_units);
+}
+
+double OpenWQ_wqconfig::get_output_units_denominator() 
+{
+    return std::get<2>(this->output_units);
+}
+
+bool OpenWQ_wqconfig::is_conentration_requested()
+{
+    return std::get<3>(this->output_units);
+}
+
+void OpenWQ_wqconfig::set_output_units(std::string output_units)
+{
+    std::get<0>(this->output_units) = output_units;
+}
+
+void OpenWQ_wqconfig::set_output_units_numerator(double output_units_numerator)
+{
+    std::get<1>(this->output_units) = output_units_numerator;
+}
+
+void OpenWQ_wqconfig::set_output_units_denominator(double output_units_denominator)
+{
+    std::get<2>(this->output_units) = output_units_denominator;
+}
+
+void OpenWQ_wqconfig::set_output_units_concentration(bool conentration_requested)
+{
+    std::get<3>(this->output_units) = conentration_requested;
+}
+
+/***********************************************
+Modules
+***********************************************/
+// Transport / Erosion
+
+
+
+
+
+
+        
 
 
 

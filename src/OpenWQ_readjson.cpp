@@ -1227,11 +1227,8 @@ void OpenWQ_readjson::SetConfigInfo_output_logFile(
         true);
 
     // Create Log file name with full or relative path
-    OpenWQ_wqconfig.set_LogFile_name_fullpath(output_format, output_folder);
+    OpenWQ_wqconfig.create_LogFile_name_fullpath(output_format, output_folder);
 
-
-    // Create log file
-    std::ofstream outfile (OpenWQ_wqconfig.get_LogFile_name_fullpath());
 
     // ###############
     // Write header in log file
@@ -1273,19 +1270,19 @@ void OpenWQ_readjson::SetConfigInfo_output_options(
 
     // Output folder
     errorMsgIdentifier = "Master file > OPENWQ_OUTPUT";
-    OpenWQ_wqconfig.output_dir = OpenWQ_utils.RequestJsonKeyVal_str(
-        OpenWQ_wqconfig, OpenWQ_output,
-        json_output_subStruct,"RESULTS_FOLDERPATH",
-        errorMsgIdentifier,
-        true);
+    OpenWQ_wqconfig.set_output_dir(OpenWQ_utils.RequestJsonKeyVal_str(
+                                OpenWQ_wqconfig, OpenWQ_output,
+                                json_output_subStruct,"RESULTS_FOLDERPATH",
+                                errorMsgIdentifier,
+                                true));
 
     // Output Units (tuple with all the information needed)
-    std::get<0>(OpenWQ_wqconfig.output_units) = 
-        OpenWQ_utils.RequestJsonKeyVal_str(
+    OpenWQ_wqconfig.set_output_units(
+            OpenWQ_utils.RequestJsonKeyVal_str(
             OpenWQ_wqconfig, OpenWQ_output,
             json_output_subStruct,"UNITS",
             errorMsgIdentifier,
-            true);
+            true));
 
     // Flag for no water
     OpenWQ_wqconfig.noWaterConc = OpenWQ_utils.RequestJsonKeyVal_int(
@@ -1299,14 +1296,14 @@ void OpenWQ_readjson::SetConfigInfo_output_options(
     volume_unit_flag = OpenWQ_units.Calc_Unit_Multipliers(
                 OpenWQ_wqconfig, OpenWQ_output,
                 unit_multiplers,                            // multiplers (numerator and denominator)
-                std::get<0>(OpenWQ_wqconfig.output_units),  // input units
+                OpenWQ_wqconfig.get_output_units(),  // input units
                 units,
                 false);              // direction of the conversion: 
                                      // to native (true) or 
                                      // from native to desired output units (false)
-    std::get<1>(OpenWQ_wqconfig.output_units) = unit_multiplers[0]; // multipler for numerator
-    std::get<2>(OpenWQ_wqconfig.output_units) = unit_multiplers[1]; // multiupler for denominator
-    std::get<3>(OpenWQ_wqconfig.output_units) = volume_unit_flag; // flag if denominator is volume
+    OpenWQ_wqconfig.set_output_units_numerator(unit_multiplers[0]); // multipler for numerator
+    OpenWQ_wqconfig.set_output_units_denominator(unit_multiplers[1]); // multiupler for denominator
+    OpenWQ_wqconfig.set_output_units_concentration(volume_unit_flag); // flag if denominator is volume
 
     // Output format
     output_format = OpenWQ_utils.RequestJsonKeyVal_str(
@@ -1319,18 +1316,15 @@ void OpenWQ_readjson::SetConfigInfo_output_options(
     // Output format ######
 
     // Create OpenWQ_wqconfig.output_dir folder if nonexistant
-    OpenWQ_utils.check_mkdir(OpenWQ_wqconfig.output_dir);   
-    OpenWQ_wqconfig.output_type = -1;   // reset
+    // OpenWQ_utils.check_mkdir(OpenWQ_wqconfig.get_output_dir());   // Called in set_output_type and set_output_dir
 
     // Create data type sub-folders if needed
     // CSV format
     if (output_format.compare("CSV") == 0){
-        OpenWQ_wqconfig.output_type = 0;
-        OpenWQ_wqconfig.output_dir.append("/CSV");
+        OpenWQ_wqconfig.set_output_type_csv();
     // HDF5 format
     }else if (output_format.compare("HDF5") == 0){
-        OpenWQ_wqconfig.output_type = 1;
-        OpenWQ_wqconfig.output_dir.append("/HDF5");
+        OpenWQ_wqconfig.set_output_type_hdf5();
     } else {
         // Create Message (Error Message)
         msg_string = 
@@ -1338,7 +1332,7 @@ void OpenWQ_readjson::SetConfigInfo_output_options(
         OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, false, true); 
         exit(EXIT_FAILURE);
     }
-    OpenWQ_utils.check_mkdir(OpenWQ_wqconfig.output_dir); 
+    // OpenWQ_utils.check_mkdir(OpenWQ_wqconfig.output_dir); // Called in set_output_type and set_output_dir
 
     // ########################################
     // Time ######

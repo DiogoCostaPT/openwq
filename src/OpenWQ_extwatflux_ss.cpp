@@ -1179,11 +1179,12 @@ void OpenWQ_extwatflux_ss::Set_EWF_h5(
         errorMsgIdentifier,
         true);
     // Get interpolation method
-    (OpenWQ_wqconfig.h5EWF_interpMethod) = OpenWQ_utils.RequestJsonKeyVal_str(
-        OpenWQ_wqconfig, OpenWQ_output,
-        EWF_SS_json_sub, "INTERPOLATION",
-        errorMsgIdentifier,
-        true);
+    OpenWQ_wqconfig.set_h5EWF_interpMethod(
+                OpenWQ_utils.RequestJsonKeyVal_str(
+                    OpenWQ_wqconfig, OpenWQ_output,
+                    EWF_SS_json_sub, "INTERPOLATION",
+                    errorMsgIdentifier,
+                    true)) ;
 
     // ################################
     // Some pre-processing
@@ -1559,7 +1560,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
     // Data update/clean-up at 1st timestep
     // Applicable to both SS and EWF
     ######################################## */
-    if (OpenWQ_wqconfig.tstep1_flag){
+    if (OpenWQ_wqconfig.is_tstep1()){
 
         // Remove requested loads that are prior to the simulation start datetime
         RemoveLoadBeforeSimStart_jsonAscii(
@@ -1864,7 +1865,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
     /* ########################################
     // Data update/clean-up at 1st timestep
     ######################################## */
-    if (OpenWQ_wqconfig.tstep1_flag){
+    if (OpenWQ_wqconfig.is_tstep1()){
 
         // Loop over all requests
         for (unsigned int reqi=0;reqi<num_ewfh5_requests;reqi++){
@@ -1922,7 +1923,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
                     // Interpolation options
 
                     // Option: "STEP"
-                    if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("STEP")==0){
+                    if(OpenWQ_wqconfig.is_h5EWF_interpMethod("STEP")){
 
                         h5Conc_chemi_interp = h5Conc_chemi_before;
 
@@ -1931,7 +1932,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
                         // Get h5-ewf for chemical chemi at tStamp+1 timestep
                             h5Conc_chemi_after = (*OpenWQ_wqconfig.ExtFlux_FORC_HDF5vec_data)[reqi][chemi][tStamp];
                         // Option: "LINEAR"
-                        if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("LINEAR")==0){
+                        if(OpenWQ_wqconfig.is_h5EWF_interpMethod("LINEAR")){
                             h5Conc_chemi_interp = h5Conc_chemi_before 
                                                 + (
                                                     (h5Conc_chemi_after - h5Conc_chemi_before) 
@@ -1940,7 +1941,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
                                                 );
                         }
                         // Option: "NEAREST"
-                        else if((OpenWQ_wqconfig.h5EWF_interpMethod).compare("NEAREST")==0){
+                        else if(OpenWQ_wqconfig.is_h5EWF_interpMethod("NEAREST")){
                             if( (simTime - h5EWF_time_before) 
                                 > (h5EWF_time_after - h5EWF_time_before)/2){
                                 h5Conc_chemi_interp = h5Conc_chemi_after;
@@ -1949,14 +1950,12 @@ void OpenWQ_extwatflux_ss::CheckApply_EWF_h5(
                         // Option: unkown 
                         // (defaulting to STEP and throw warning message)
                         }else {
-                            OpenWQ_wqconfig.h5EWF_interpMethod = "STEP";
+                            OpenWQ_wqconfig.set_h5EWF_interpMethod("STEP");
                             h5Conc_chemi_interp = h5Conc_chemi_before;
 
                             //Create message
-                            msg_string = 
-                                "<OpenWQ> WARNING: EWF load using HDF5 file 'INTERPOLATION' unkown:"
-                                + OpenWQ_wqconfig.h5EWF_interpMethod
-                                + ". 'INTERPOLATION' defaulted to 'STEP'";
+                            msg_string = OpenWQ_wqconfig.h5EWF_interp_warning_msg();
+                               
                             // Print it (Console and/or Log file)
                             OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, msg_string, true, true);
                         }
@@ -2311,7 +2310,7 @@ bool OpenWQ_extwatflux_ss::getModIndex(
     
     if(elemEntry.compare("ALL") == 0){
         
-        elemVal = OpenWQ_wqconfig.allSS_flag;
+        elemVal = OpenWQ_wqconfig.get_allSS_flag();
 
     }else{ 
         

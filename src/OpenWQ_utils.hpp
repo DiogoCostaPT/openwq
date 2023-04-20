@@ -132,8 +132,6 @@ class OpenWQ_utils{
         std::string varType,
         bool abort_flag);
 
-    void check_mkdir(
-        std::string &dirname);
 
 };
 

@@ -522,18 +522,3 @@ void OpenWQ_utils::RequestJsonKeyVal_errorAbort(
 
 }
 
-// Check if directory exists and create it
-void OpenWQ_utils::check_mkdir(
-    std::string &dirname){
-    
-    struct stat st = {0};
-    
-    // convert to *char
-    const char *cstr = dirname.c_str();
-
-    // mkdir
-    if (stat(cstr, &st) == -1) {
-        mkdir(cstr, 0700);
-    }
-
-}

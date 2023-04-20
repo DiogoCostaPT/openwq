@@ -57,9 +57,6 @@ int OpenWQ_output::writeResults(
         
     }catch (...){}
 
-    // Get outputfile_type name
-    if (OpenWQ_wqconfig.output_type == 0){outputfile_type = "CSV";}
-    else if (OpenWQ_wqconfig.output_type == 1){outputfile_type = "HDF5";}
 
     /* ########################################
     // Loop over comparments
@@ -83,9 +80,9 @@ int OpenWQ_output::writeResults(
 
         // ################################################
         // CSV
-        if (OpenWQ_wqconfig.output_type == 0){
+        if (OpenWQ_wqconfig.is_output_type_csv()){
 
-            //outputfile_type = "CSV";
+            outputfile_type = "CSV";
 
             // ###########
             // MAIN: label file and call main function
@@ -192,7 +189,7 @@ int OpenWQ_output::writeResults(
 
         // ################################################
         // HDF5
-        else if (OpenWQ_wqconfig.output_type == 1){
+        else if (OpenWQ_wqconfig.is_output_type_hdf5()){
 
             //outputfile_type = "HDF5";
 
@@ -356,11 +353,11 @@ int OpenWQ_output::writeCSV(
     CompName_icmp = OpenWQ_hostModelconfig.get_HydroComp_name_at(icmp);
 
     // Get unit multipliers (numerator and denominator
-    unit_multiplers.push_back(std::get<1>(OpenWQ_wqconfig.output_units)); // numerator
-    unit_multiplers.push_back(std::get<2>(OpenWQ_wqconfig.output_units)); // denominator
+    unit_multiplers.push_back(OpenWQ_wqconfig.get_output_units_numerator()); // numerator
+    unit_multiplers.push_back(OpenWQ_wqconfig.get_output_units_denominator()); // denominator
     
     // Reset file name for each compartment
-    filename = OpenWQ_wqconfig.output_dir;
+    filename = OpenWQ_wqconfig.get_output_dir();
 
     filename.append("/");
     filename.append(CompName_icmp);
@@ -397,7 +394,7 @@ int OpenWQ_output::writeCSV(
             // Get cell volume
             // only if concentration is asked as output
             // otherwise set it to 1 for no effect
-            if (std::get<3>(OpenWQ_wqconfig.output_units) == true){
+            if (OpenWQ_wqconfig.is_conentration_requested()){
                 water_vol_i = OpenWQ_hostModelconfig.get_waterVol_hydromodel_at(icmp,ix,iy,iz);
             }else{
                 water_vol_i = 1.0f;
@@ -411,7 +408,7 @@ int OpenWQ_output::writeCSV(
             // Include the output units
             header(ichem + 3) = chem_name // chemical name
                                 .append("#")
-                                .append(std::get<0>(OpenWQ_wqconfig.output_units)); // output units
+                                .append(OpenWQ_wqconfig.get_output_units()); // output units
 
             // Set to zero if volume of water is smaller 
             // than OpenWQ_hostModelconfig.watervol_minlim
@@ -496,12 +493,12 @@ int OpenWQ_output::writeHDF5(
     num_chem2print = OpenWQ_wqconfig.chem2print.size();
 
     // Get unit multipliers (numerator and denominator
-    unit_multiplers.push_back(std::get<1>(OpenWQ_wqconfig.output_units)); // numerator
-    unit_multiplers.push_back(std::get<2>(OpenWQ_wqconfig.output_units)); // denominator
+    unit_multiplers.push_back(OpenWQ_wqconfig.get_output_units_numerator()); // numerator
+    unit_multiplers.push_back(OpenWQ_wqconfig.get_output_units_denominator()); // denominator
 
     // Units string
     // replace "/" by "|" is needed because "/" is not compatible with directory full paths
-    units_string = std::get<0>(OpenWQ_wqconfig.output_units);
+    units_string = OpenWQ_wqconfig.get_output_units();
     it = (int) units_string.find("/");
     if (it <= units_string.size()){
         units_string.replace(it,1, "|");
@@ -524,7 +521,7 @@ int OpenWQ_output::writeHDF5(
             OpenWQ_wqconfig.chem2print[ichem]].c_str();           // index of chemical to print
 
             // Reset file name for each compartment
-            filename = OpenWQ_wqconfig.output_dir;
+            filename = OpenWQ_wqconfig.get_output_dir();
 
             filename.append("/");
             filename.append(CompName_icmp); // compartment
@@ -573,7 +570,7 @@ int OpenWQ_output::writeHDF5(
             OpenWQ_wqconfig.chem2print[ichem]].c_str();           // index of chemical to print
 
         // Reset file name for each compartment
-        filename = OpenWQ_wqconfig.output_dir;
+        filename = OpenWQ_wqconfig.get_output_dir();
 
         filename.append("/");
         filename.append(CompName_icmp); // compartment
@@ -596,7 +593,7 @@ int OpenWQ_output::writeHDF5(
             // Get cell volume
             // only if concentration is asked as output
             // otherwise set it to 1 for no effect
-            if (std::get<3>(OpenWQ_wqconfig.output_units) == true){
+            if (OpenWQ_wqconfig.is_conentration_requested()){
                 water_vol_i = OpenWQ_hostModelconfig.get_waterVol_hydromodel_at(icmp,ix,iy,iz);
             }else{
                 water_vol_i = 1.0f;
@@ -606,9 +603,9 @@ int OpenWQ_output::writeHDF5(
             // Set to zero if volume of water is smaller 
             // than OpenWQ_hostModelconfig.watervol_minlim (only if requesting conc)
             if (
-                (std::get<3>(OpenWQ_wqconfig.output_units) == true &&
+                (OpenWQ_wqconfig.is_conentration_requested() &&
                 water_vol_i > OpenWQ_hostModelconfig.get_watervol_minlim()) 
-                || std::get<3>(OpenWQ_wqconfig.output_units) == false){
+                || OpenWQ_wqconfig.is_conentration_requested() == false){
              
                 data2print(celli,0) = 
                     (*OpenWQ_var2print)

@@ -20,6 +20,7 @@
 #include <memory>
 #include "exprtk.hpp"
 #include <string>
+#include <sys/stat.h>
 
 
 
@@ -86,6 +87,24 @@ class OpenWQ_wqconfig
         double nexttime_out = 0.0f;     // iteractive next printing time (in seconds)
 
 
+        // Sink and Source AND External fluxes
+        std::string h5EWF_interpMethod;     // interpolation method for h5 EWF 
+        int allSS_flag = -1;                // number to replace in SinkSource_FORC to denote "all"
+        bool tstep1_flag = true;            // flag to note that it's the first time step, so need to exclude loads prior to that
+
+
+
+        // output format
+        unsigned long output_type;      // 1) CSV = 0, 2) HDF5 = 1
+        // Output folder
+        std::string output_dir;
+        void check_mkdir(); // private method used by set_output_dir and set_output_type
+        std::tuple<
+                std::string,                // output units as provided by the user
+                double,                     // numerator multiplier (determined by Convert_Units)
+                double,                     // denominator multiplier (determined by Convert_Units)
+                bool                        // flag if requested concentration (needs to be divided by water volume)
+                > output_units;             // Tuple with info about output units
 
 
     public:
@@ -105,11 +124,11 @@ class OpenWQ_wqconfig
         void set_OpenWQ_masterjson(std::string OpenWQ_masterjson);
 
         /***********************************************
-        * LogFile
+        * LogFile // TODO: Check if output class is a better place for this
         ************************************************/
         std::string get_LogFile_name();
         std::string get_LogFile_name_fullpath();
-        void set_LogFile_name_fullpath(std::string output_format, std::string output_folder);
+        void create_LogFile_name_fullpath(std::string output_format, std::string output_folder);
 
         /***********************************************
         * Methods for Threads
@@ -140,80 +159,99 @@ class OpenWQ_wqconfig
         std::string get_timestep_out_unit();
         void convert_units_timestep_out(std::vector<double> unit_multiplers);
 
+
+        
+        void set_h5EWF_interpMethod(std::string h5EWF_interpMethod);
+        bool is_h5EWF_interpMethod(std::string h5EWF_interpMethod);
+        std::string h5EWF_interp_warning_msg();
+
+        void set_tstep1_flag_false();
+        bool is_tstep1();
+
+        int get_allSS_flag();
+
+        /***********************************************
+        * Output Format Methods //TODO: Check if output class is a better place for this
+        ************************************************/
+        bool is_output_type_csv();
+        bool is_output_type_hdf5();
+        void set_output_type_csv();
+        void set_output_type_hdf5();
+        std::string get_output_dir();
+        void set_output_dir(std::string output_dir);
+        
+        // Output Units
+        std::string get_output_units();
+        double get_output_units_numerator();
+        double get_output_units_denominator();
+        bool is_conentration_requested();
+        void set_output_units(std::string output_units_name);
+        void set_output_units_numerator(double numerator);
+        void set_output_units_denominator(double denominator);
+        void set_output_units_concentration(bool concentration_requested);
+
+
+
+    
+        // Since the unix time epoch is 1970, which is used as a reference for timegm,
+        // the seconds become negative for years below 1970, 
+        // which will mess up time management.
+        // Thus, the number of seconds since 00:00 1 Jan 1970 GMT, 
+        // which is 2,208,988,800, is added 
+        // (which is saved in OpenWQ_vars.secSinceUnixTimeEpoch).
+        const unsigned long long secFrom1900toUnixTimeEpoch1970 = 2208988800;
+
+
+        // TODO: Below needs to be moved to private
+
+        /***********************************************
+        * Sink and Source AND External fluxes
+        ************************************************/
+        std::unique_ptr<            
+            arma::Mat<double>
+            > SinkSource_FORC;              // SS
+        std::unique_ptr<            
+            arma::Mat<double>
+            > ExtFlux_FORC_jsonAscii;       // External fluxes (JSON and ASCII)
+        std::unique_ptr<
+            std::vector<       
+            std::vector<time_t>
+            >> ExtFlux_FORC_HDF5vec_time;   // External fluxes HDF5 vector (timestamps as time_t)
+        std::unique_ptr<                    // EWF compartment id
+            std::vector<unsigned int>
+            > ExtFlux_FORC_HDF5vec_ewfCompID;
+        std::unique_ptr<            
+            arma::Cube<double>
+            > ExtFlux_FORC_data_tStep;      // External fluxes HDF5 vector (one timestep)
+        std::unique_ptr<
+            std::vector<                    // JSON-h5-EWF request (blocks)   
+            std::vector<                    // Chemical species
+            std::vector<                    // Time steps
+            arma::Cube<double>
+            >>>> ExtFlux_FORC_HDF5vec_data;   // External fluxes HDF5 vector (data)
+
+            
+        bool debug_mode = false;        // set to true if debug mode is requested
+
+        // chemicals, compartments and cells/elements to export
+        std::vector<int> chem2print;
+        std::vector<int> compt2print;
+        std::vector<bool> cells2print_bool;
+        std::vector<arma::mat> cells2print_vec;
+        // No water concentration (as a marker/flag)
+        // TODO: Getter Setter
+        int noWaterConc = -9999; // setting a default value
+
+        // Flag for printing coordinates once
+
+        bool print_oneStep = true;
+
+        // Error message flags
+        bool readSet_print_errmsg = true;
+        bool BGC_Transform_print_errmsg = true;
+        bool invalid_bgc_entry_errmsg = true;
         
 
-
-
-    
-
-
-    // #################################################
-    // Sink and Source AND External fluxes
-    std::unique_ptr<            
-        arma::Mat<double>
-        > SinkSource_FORC;              // SS
-    std::unique_ptr<            
-        arma::Mat<double>
-        > ExtFlux_FORC_jsonAscii;       // External fluxes (JSON and ASCII)
-    std::unique_ptr<
-        std::vector<       
-        std::vector<time_t>
-        >> ExtFlux_FORC_HDF5vec_time;   // External fluxes HDF5 vector (timestamps as time_t)
-    std::unique_ptr<                    // EWF compartment id
-        std::vector<unsigned int>
-        > ExtFlux_FORC_HDF5vec_ewfCompID;
-    std::unique_ptr<            
-        arma::Cube<double>
-        > ExtFlux_FORC_data_tStep;      // External fluxes HDF5 vector (one timestep)
-    std::unique_ptr<
-        std::vector<                    // JSON-h5-EWF request (blocks)   
-        std::vector<                    // Chemical species
-        std::vector<                    // Time steps
-        arma::Cube<double>
-        >>>> ExtFlux_FORC_HDF5vec_data;   // External fluxes HDF5 vector (data)
-
-    std::string h5EWF_interpMethod;     // interpolation method for h5 EWF 
-    int allSS_flag = -1;                // number to replace in SinkSource_FORC to denote "all"
-    bool tstep1_flag = true;            // flag to note that it's the first time step, so need to exclude loads prior to that
-
-    // #################################################
-
-
-    // output format
-    unsigned long output_type;      // 1) CSV, 2) HDF5
-    bool debug_mode = false;        // set to true if debug mode is requested
-    std::tuple<
-        std::string,                // output units as provided by the user
-        double,                     // numerator multiplier (determined by Convert_Units)
-        double,                     // denominator multiplier (determined by Convert_Units)
-        bool                        // flad if requested concentration (needs to be divided by water volume)
-        > output_units;             // Tuple with info about output units
-    // chemicals, compartments and cells/elements to export
-    std::vector<int> chem2print;
-    std::vector<int> compt2print;
-    std::vector<bool> cells2print_bool;
-    std::vector<arma::mat> cells2print_vec;
-    // Since the unix time epoch is 1970, which is used as a reference for timegm,
-    // the seconds become negative for years below 1970, 
-    // which will mess up time management.
-    // Thus, the number of seconds since 00:00 1 Jan 1970 GMT, 
-    // which is 2,208,988,800, is added 
-    // (which is saved in OpenWQ_vars.secSinceUnixTimeEpoch).
-    unsigned long long secFrom1900toUnixTimeEpoch1970 = 2208988800;
-    
-    // Output folder
-    std::string output_dir;
-
-    // No water concentration (as a marker/flag)
-    int noWaterConc = -9999; // setting a default value
-
-    // Flag for printing coordinates once
-    bool print_oneStep = true;
-
-    // Error message flags
-    bool readSet_print_errmsg = true;
-    bool BGC_Transform_print_errmsg = true;
-    bool invalid_bgc_entry_errmsg = true;
 
     // ########################################
     // MODULES
