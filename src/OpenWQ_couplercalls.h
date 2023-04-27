@@ -27,7 +27,7 @@
 #include "OpenWQ_initiate.h"
 #include "OpenWQ_chem.h"
 #include "OpenWQ_watertransp.h"
-#include "OpenWQ_extwatflux_ss.h"
+#include "extwatflux_ss/OpenWQ_extwatflux_ss.hpp"
 #include "OpenWQ_units.h"
 #include "OpenWQ_solver.h"
 #include "OpenWQ_output.h"

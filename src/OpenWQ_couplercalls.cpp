@@ -16,6 +16,7 @@
 
 
 #include "OpenWQ_couplercalls.h"
+#include "extwatflux_ss/OpenWQ_extwatflux_ss.hpp"
 
 // ################################################################
 // Initial Configuration of OpenWQ
