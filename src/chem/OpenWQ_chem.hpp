@@ -43,32 +43,35 @@ using json = nlohmann::json;
 class OpenWQ_chem{
 
     public:
+        // Parse biogeochemical expressions
+        // chem_decl.cpp
+        void setBGCexpressions(
+            OpenWQ_json& OpenWQ_json,
+            OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+            OpenWQ_wqconfig& OpenWQ_wqconfig,
+            OpenWQ_vars& OpenWQ_vars,
+            OpenWQ_units& OpenWQ_units,
+            OpenWQ_output& OpenWQ_output);
 
-    // Parse biogeochemical expressions
-    void setBGCexpressions(
-        OpenWQ_json& OpenWQ_json,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_units& OpenWQ_units,
-        OpenWQ_output& OpenWQ_output);
-
-    // Run Chemistry (main call)
-    void Run(
-        OpenWQ_json& OpenWQ_json,
-        OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        OpenWQ_output& OpenWQ_output);
-
-    // Perform transformations
-    void BGC_Transform(
-        OpenWQ_json& OpenWQ_json,
-        OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_output& OpenWQ_output,
-        unsigned int icmp);
+        // Run Chemistry (main call)
+        // chem_runtimestart.cpp
+        void Run(
+            OpenWQ_json& OpenWQ_json,
+            OpenWQ_vars& OpenWQ_vars,
+            OpenWQ_wqconfig& OpenWQ_wqconfig,
+            OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+            OpenWQ_output& OpenWQ_output);
+    
+    private:
+        // Perform transformations
+        // chem_runtimestart.cpp
+        void BGC_Transform(
+            OpenWQ_json& OpenWQ_json,
+            OpenWQ_vars& OpenWQ_vars,
+            OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
+            OpenWQ_wqconfig& OpenWQ_wqconfig,
+            OpenWQ_output& OpenWQ_output,
+            unsigned int icmp);
 
 };
 

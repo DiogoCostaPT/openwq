@@ -25,7 +25,7 @@
 #include "global/OpenWQ_hostModelconfig.hpp"
 #include "OpenWQ_readjson.h"
 #include "initiate/OpenWQ_initiate.hpp"
-#include "OpenWQ_chem.h"
+#include "chem/OpenWQ_chem.hpp"
 #include "OpenWQ_watertransp.h"
 #include "extwatflux_ss/OpenWQ_extwatflux_ss.hpp"
 #include "OpenWQ_units.h"
