@@ -17,7 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "OpenWQ_watertransp.h"
+#include "OpenWQ_watertransp.hpp"
 
 /* #################################################
 // Mass transport

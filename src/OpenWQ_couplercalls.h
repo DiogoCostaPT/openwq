@@ -26,7 +26,7 @@
 #include "OpenWQ_readjson.h"
 #include "initiate/OpenWQ_initiate.hpp"
 #include "chem/OpenWQ_chem.hpp"
-#include "OpenWQ_watertransp.h"
+#include "watertransp/OpenWQ_watertransp.hpp"
 #include "extwatflux_ss/OpenWQ_extwatflux_ss.hpp"
 #include "OpenWQ_units.h"
 #include "OpenWQ_solver.h"
