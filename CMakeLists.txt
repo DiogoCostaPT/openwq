@@ -300,6 +300,7 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         ${OPENWQ_DIR}/src/*.cpp 
                         ${OPENWQ_DIR}/src/global/*.cpp
                         ${OPENWQ_DIR}/src/extwatflux_ss/*.cpp
+                        ${OPENWQ_DIR}/src/initiate/*.cpp
                         ${PARENT_DIR}/OpenWQ_hydrolink.cpp
                         ${PARENT_DIR}/OpenWQ_interface.cpp)
 
