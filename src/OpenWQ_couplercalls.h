@@ -23,7 +23,7 @@
 #include "global/OpenWQ_vars.hpp"
 #include "global/OpenWQ_wqconfig.hpp"
 #include "global/OpenWQ_hostModelconfig.hpp"
-#include "OpenWQ_readjson.h"
+#include "readjson/OpenWQ_readjson.hpp"
 #include "initiate/OpenWQ_initiate.hpp"
 #include "chem/OpenWQ_chem.hpp"
 #include "watertransp/OpenWQ_watertransp.hpp"
