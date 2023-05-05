@@ -171,22 +171,6 @@ int OpenWQ_output::writeResults(
             }
 
         }
-        /*
-        // ################################################
-        // VTU
-        }else if (OpenWQ_wqconfig.output_type == 1){
-
-            outputfile_type = "VTK";
-            
-            OpenWQ_output::writeVTU(
-                OpenWQ_json,
-                OpenWQ_vars,
-                OpenWQ_hostModelconfig,
-                OpenWQ_wqconfig,
-                timestr,
-                icmp);
-        */
-
         // ################################################
         // HDF5
         else if (OpenWQ_wqconfig.is_output_type_hdf5()){
