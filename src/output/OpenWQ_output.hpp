@@ -15,35 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
 #ifndef OPENWQ_OUTPUT_INCLUDED
 #define OPENWQ_OUTPUT_INCLUDED
-
-/*
-#include <vtkSmartPointer.h>
-#include <vtkPoints.h>
-#include <vtkPointData.h>
-#include <vtkDoubleArray.h>
-#include <vtkUnstructuredGrid.h>
-#include <vtkXMLUnstructuredGridWriter.h>
-*/
-
-/* // if want to load 
-#include <vtkXMLUnstructuredGridReader.h>
-#
-#include <vtkActor.h>
-#include <vtkDataSetMapper.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderWindowInteractor.h>
-*/
 
 #include "global/OpenWQ_json.hpp"
 #include "global/OpenWQ_vars.hpp"
 #include "global/OpenWQ_wqconfig.hpp"
 #include "global/OpenWQ_hostModelconfig.hpp"
-#include "OpenWQ_solver.h"
+#include "solver/OpenWQ_solver.hpp"
 
 class OpenWQ_output{
 
@@ -68,18 +47,7 @@ class OpenWQ_output{
         std::string timestr,            // time step (in seconds)
         int icmp);
     
-    // Print output in VTU
-    /*    
-    int writeVTU(OpenWQ_json& OpenWQ_json,
-        OpenWQ_vars& OpenWQ_vars,
-        OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
-        double ts,
-        int icmp);
-    */
-
    // Print output in HDF5
-
     int writeHDF5(
         OpenWQ_json& OpenWQ_json,
         OpenWQ_hostModelconfig& OpenWQ_hostModelconfig,

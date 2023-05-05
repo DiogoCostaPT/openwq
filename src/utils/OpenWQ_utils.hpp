@@ -23,8 +23,8 @@
 
 #include "global/OpenWQ_json.hpp"
 #include "global/OpenWQ_wqconfig.hpp"
-#include "OpenWQ_solver.h"
-#include "OpenWQ_output.h"
+#include "solver/OpenWQ_solver.hpp"
+#include "output/OpenWQ_output.hpp"
 
 class OpenWQ_utils{
 

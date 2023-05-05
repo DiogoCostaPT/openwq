@@ -25,7 +25,7 @@
 using json = nlohmann::json;
 
 #include "global/OpenWQ_wqconfig.hpp"
-#include "OpenWQ_output.h"
+#include "output/OpenWQ_output.hpp"
 
 /* #################################################
 // Functions to convert input units

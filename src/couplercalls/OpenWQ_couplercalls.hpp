@@ -28,10 +28,10 @@
 #include "chem/OpenWQ_chem.hpp"
 #include "watertransp/OpenWQ_watertransp.hpp"
 #include "extwatflux_ss/OpenWQ_extwatflux_ss.hpp"
-#include "OpenWQ_units.h"
-#include "OpenWQ_solver.h"
-#include "OpenWQ_output.h"
-#include "OpenWQ_utils.hpp"
+#include "units/OpenWQ_units.hpp"
+#include "solver/OpenWQ_solver.hpp"
+#include "output/OpenWQ_output.hpp"
+#include "utils/OpenWQ_utils.hpp"
 
 
 class OpenWQ_couplercalls{

@@ -28,9 +28,9 @@ using json = nlohmann::json;
 #include "global/OpenWQ_vars.hpp"
 #include "global/OpenWQ_wqconfig.hpp"
 #include "global/OpenWQ_hostModelconfig.hpp"
-#include "OpenWQ_units.h"
-#include "OpenWQ_output.h"
-#include "OpenWQ_utils.hpp"
+#include "units/OpenWQ_units.hpp"
+#include "output/OpenWQ_output.hpp"
+#include "utils/OpenWQ_utils.hpp"
 
 
 class OpenWQ_initiate{

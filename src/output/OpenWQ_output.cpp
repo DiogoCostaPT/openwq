@@ -21,7 +21,7 @@
 // based on https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
 
 
-#include "OpenWQ_output.h"
+#include "output/OpenWQ_output.hpp"
 
 
 int OpenWQ_output::writeResults(

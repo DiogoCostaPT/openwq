@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "OpenWQ_solver.h"
+#include "OpenWQ_solver.hpp"
 
 /* #################################################
 // General numerical solver

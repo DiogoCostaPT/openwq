@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "OpenWQ_couplercalls.h"
+#include "OpenWQ_couplercalls.hpp"
 #include "extwatflux_ss/OpenWQ_extwatflux_ss.hpp"
 
 // ################################################################

@@ -304,6 +304,11 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         ${OPENWQ_DIR}/src/chem/*.cpp
                         ${OPENWQ_DIR}/src/watertransp/*.cpp
                         ${OPENWQ_DIR}/src/readjson/*.cpp
+                        ${OPENWQ_DIR}/src/couplercalls/*.cpp
+                        ${OPENWQ_DIR}/src/output/*.cpp
+                        ${OPENWQ_DIR}/src/solver/*.cpp
+                        ${OPENWQ_DIR}/src/units/*.cpp
+                        ${OPENWQ_DIR}/src/utils/*.cpp
                         ${PARENT_DIR}/OpenWQ_hydrolink.cpp
                         ${PARENT_DIR}/OpenWQ_interface.cpp)
 
