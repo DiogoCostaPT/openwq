@@ -42,7 +42,7 @@ SET(COMPILE_TARGET summa_openwq)
 # B) Set Compilation mode:
 # optB1) debug -> set the necessary flags for debugging
 # optB2) fast -> set optimization flags
-SET(COMPILE_MODE debug)
+SET(COMPILE_MODE fast)
 
 #####
 # DON'T CHANGE BEYOND THIS POINT...............

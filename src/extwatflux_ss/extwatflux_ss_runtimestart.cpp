@@ -102,7 +102,7 @@ void OpenWQ_extwatflux_ss::CheckApply_EWFandSS_jsonAscii(
     num_rowdata = (*array_FORC).n_rows; 
 
     // First reset all values of ewf_conc to ZERO for new time step
-    #pragma omp parallel for collapse(2) num_threads(OpenWQ_wqconfig.num_threads_requested)
+    #pragma omp parallel for collapse(2) num_threads(OpenWQ_wqconfig.get_num_threads_requested())
     for (unsigned int ewfi=0;ewfi<OpenWQ_hostModelconfig.get_num_HydroExtFlux();ewfi++){ // 
         for (unsigned int chemi=0;chemi<(OpenWQ_wqconfig.BGC_general_num_chem);chemi++){
             (*OpenWQ_vars.ewf_conc)(ewfi)(chemi).zeros();}}

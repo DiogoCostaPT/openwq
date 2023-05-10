@@ -41,7 +41,7 @@ void OpenWQ_solver::Numerical_Solver(
     // Compartment loop
     ##################################################### */
 
-    #pragma omp parallel for private (nx, ny, nz, ix, iy, iz, dm_ic, dm_ss, dm_ewf, dm_dt_chem, dm_dt_trans) num_threads(OpenWQ_wqconfig.num_threads_requested)
+    #pragma omp parallel for private (nx, ny, nz, ix, iy, iz, dm_ic, dm_ss, dm_ewf, dm_dt_chem, dm_dt_trans) num_threads(OpenWQ_wqconfig.get_num_threads_requested())
     for (unsigned int icmp=0;icmp<OpenWQ_hostModelconfig.get_num_HydroComp();icmp++){
 
         // Dimensions for compartment icmp

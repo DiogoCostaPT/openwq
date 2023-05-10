@@ -356,7 +356,7 @@ int OpenWQ_output::writeCSV(
     header(2) = "iz [-]";
 
     // Parallel I/O section (writting to files)
-    #pragma omp parallel for private(chem_name,ix,iy,iz,water_vol_i) collapse(2) num_threads(OpenWQ_wqconfig.num_threads_requested)
+    #pragma omp parallel for private(chem_name,ix,iy,iz,water_vol_i) collapse(2) num_threads(OpenWQ_wqconfig.get_num_threads_requested())
     for (unsigned int ixyz=0;ixyz<num_cells2print;ixyz++){   
         
         for (unsigned int ichem=0;ichem<OpenWQ_wqconfig.chem2print.size();ichem++){
@@ -538,7 +538,7 @@ int OpenWQ_output::writeHDF5(
     num_cells2print = OpenWQ_wqconfig.cells2print_vec[icmp].n_rows;
 
     // Parallel I/O section (writting to files)
-    #pragma omp parallel for private(chem_name,filename,ix,iy,iz,water_vol_i) collapse(1) num_threads(OpenWQ_wqconfig.num_threads_requested)
+    #pragma omp parallel for private(chem_name,filename,ix,iy,iz,water_vol_i) collapse(1) num_threads(OpenWQ_wqconfig.get_num_threads_requested())
     for (unsigned int ichem=0;ichem<num_chem2print;ichem++){
 
         // Initiate arma::mat to print data

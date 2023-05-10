@@ -428,7 +428,7 @@ void OpenWQ_initiate::setIC_json(
         ######################################## */
 
         // X, Y, Z loops
-        #pragma omp parallel for private (ix, iy, iz) collapse (3) num_threads(OpenWQ_wqconfig.num_threads_requested)
+        #pragma omp parallel for private (ix, iy, iz) collapse (3) num_threads(OpenWQ_wqconfig.get_num_threads_requested())
         for (ix=0;ix<nx;ix++){
             for (iy=0;iy<ny;iy++){
                 for (iz=0;iz<nz;iz++){
@@ -604,7 +604,7 @@ void OpenWQ_initiate::setIC_h5(
     }
 
     // Saving IC in state variable 
-    #pragma omp parallel for private (irow, ic_x, ic_y, ic_z) num_threads(OpenWQ_wqconfig.num_threads_requested)
+    #pragma omp parallel for private (irow, ic_x, ic_y, ic_z) num_threads(OpenWQ_wqconfig.get_num_threads_requested())
     for (irow=0;irow<(int)xyzIC_h5.n_rows-1;irow++){
 
         // Get ix, iy, iz IC locations
