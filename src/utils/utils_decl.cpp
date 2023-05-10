@@ -22,26 +22,6 @@
 
 #include "OpenWQ_utils.hpp"
 
-/*
-* JSON key null error
-*/
-std::string OpenWQ_utils::get_jsonKeyNull_msg_start_abort()
-{
-    return this->jsonKeyNull_msg_start_abort;
-}
-std::string OpenWQ_utils::get_jsonKeyNull_msg_end_abort()
-{
-    return this->jsonKeyNull_msg_end_abort;
-}
-std::string OpenWQ_utils::get_jsonKeyNull_msg_start_NOabort()
-{
-    return this->jsonKeyNull_msg_start_NOabort;
-}
-std::string OpenWQ_utils::get_jsonKeyNull_msg_end_NOabort()
-{
-    return this->jsonKeyNull_msg_end_NOabort;
-}
-
 
 // ########################################                                                          
 // Get number of lines in file
@@ -102,56 +82,6 @@ std::vector<std::string> OpenWQ_utils::StringSplit (
 }
 
 // ########################################
-// Find index of string in vector::string
-// ########################################
-int OpenWQ_utils::FindStrIndexInVectStr(
-    std::vector<std::string> VectString,
-    std::string Str2Find){
-
-    // Local variables
-    int strIndex; // index of the Str2Find in VectString
-
-    std::vector<std::string>::iterator strInter = std::find(
-        VectString.begin(), 
-        VectString.end(), 
-        Str2Find);
-        
-    // determine index
-    strIndex = distance(VectString.begin(), strInter);
-    
-    // if not found, return -1
-    if(strIndex==(int)VectString.size()) strIndex=-1;
-
-    return strIndex;
-}
-
-// ########################################
-// Removing leading and trailling whitespaces
-// ########################################
-std::string OpenWQ_utils::RemoveStrLeadTrailWhiteSpaces(
-    std::string String2RemWhiteSpace){
-
-    // Remove Leading Spaces
-    String2RemWhiteSpace.erase(
-        String2RemWhiteSpace.begin(), 
-        std::find_if(String2RemWhiteSpace.begin(), 
-        String2RemWhiteSpace.end(), 
-        std::bind1st(std::not_equal_to<char>(), 
-        ' ')));
-
-    // Remove trailling spaces
-    String2RemWhiteSpace.erase(
-        std::find_if(
-            String2RemWhiteSpace.rbegin(), 
-            String2RemWhiteSpace.rend(), 
-            std::bind1st(std::not_equal_to<char>(), 
-            ' ')).base(), String2RemWhiteSpace.end());
-
-    return String2RemWhiteSpace;
-
-}
-
-// ########################################
 // Converts string text to lower case
 // ########################################
 
@@ -174,28 +104,6 @@ std::string OpenWQ_utils::ConvertStringToUpperCase(
     return NewStr;
 
 }
-
-// Function to return total number of days in a given year and month
-int  OpenWQ_utils::getNumberOfDaysInMonthYear(
-        const unsigned int YYYY_check,          // json: Year 
-        const unsigned int MM_check)            // json: Month
-{
-	//leap year condition, if month is 2
-	if(MM_check == 2)
-	{
-		if((YYYY_check%400==0) || (YYYY_check%4==0 && YYYY_check%100!=0))	
-			return 29;
-		else	
-			return 28;
-	}
-	//months which has 31 days
-	else if(MM_check == 1 || MM_check == 3 || MM_check == 5 || MM_check == 7 || MM_check == 8
-	||MM_check == 10 || MM_check==12)	
-		return 31;
-	else 		
-		return 30;
-
-} 
 
 // Get valid time stamps
 bool OpenWQ_utils::GetTimeStampsFromLogFile(
@@ -280,6 +188,7 @@ bool OpenWQ_utils::GetTimeStampsFromLogFile(
     
 }
 
+
 // Read JSON array element and return -1 if "all"
 bool OpenWQ_utils::Convert2NegativeOneIfAll_inputInt(
     OpenWQ_wqconfig & OpenWQ_wqconfig,
@@ -334,42 +243,6 @@ bool OpenWQ_utils::Convert2NegativeOneIfAll_inputInt(
     }
 
     return validEntryFlag;
-
-}
-
-// Read JSON keyVal with type: String
-std::string OpenWQ_utils::RequestJsonKeyVal_str(
-    OpenWQ_wqconfig& OpenWQ_wqconfig,
-    OpenWQ_output& OpenWQ_output,
-    json json_struct,
-    std::string jsonKey,
-    std::string msgIndetifier,
-    bool abort_flag){
-
-    // Local variables
-    std::string jsonVal_str;
-    std::string varType = "string";
-
-    try{
-
-        // Try to access json key
-        jsonVal_str = json_struct[jsonKey]; 
-
-    }catch(...){
-
-        // Abort and through error message
-        RequestJsonKeyVal_errorAbort(
-            OpenWQ_wqconfig, 
-            OpenWQ_output,
-            jsonKey,
-            msgIndetifier,
-            varType,
-            abort_flag);
-        
-    } 
-
-    // If jsonVal found, return it
-    return jsonVal_str;
 
 }
 
@@ -480,45 +353,29 @@ json OpenWQ_utils::RequestJsonKeyVal_json(
 
 }
 
-// Abort program if JSON key not found
-void OpenWQ_utils::RequestJsonKeyVal_errorAbort(
-    OpenWQ_wqconfig& OpenWQ_wqconfig,
-    OpenWQ_output& OpenWQ_output,
-    std::string jsonKey,
-    std::string msgIndetifier,
-    std::string varType,
-    bool abort_flag){
 
-    // Local variables
-    std::string jsonKeyNull_msg;
-    std::string msg_start;
-    std::string msg_end;
+// ########################################
+// Removing leading and trailling whitespaces
+// ########################################
+std::string OpenWQ_utils::RemoveStrLeadTrailWhiteSpaces(
+    std::string String2RemWhiteSpace){
 
-    // Get appropriate start and end message string
-    // depending on if to abort or not
-    if (abort_flag == true){
-        msg_start = this->get_jsonKeyNull_msg_start_abort();
-        msg_end = this->get_jsonKeyNull_msg_end_abort();
-    }else if (abort_flag == false){
-        msg_start = this->get_jsonKeyNull_msg_start_NOabort();
-        msg_end = this->get_jsonKeyNull_msg_end_NOabort();
-    }
-    // If results is NULL, throw error message and abort 
-    jsonKeyNull_msg = "####################\n"
-                    + msg_start
-                    + jsonKey
-                    + " of type=" + varType
-                    + " at " + msgIndetifier
-                    + msg_end
-                    + "\n####################";
+    // Remove Leading Spaces
+    String2RemWhiteSpace.erase(
+        String2RemWhiteSpace.begin(), 
+        std::find_if(String2RemWhiteSpace.begin(), 
+        String2RemWhiteSpace.end(), 
+        std::bind1st(std::not_equal_to<char>(), 
+        ' ')));
 
-    // Print in console and logFile
-    OpenWQ_output.ConsoleLog(OpenWQ_wqconfig, jsonKeyNull_msg, true,true); 
-    
-    // Abort program
-    if (abort_flag == true){
-        exit(EXIT_FAILURE);
-    }
+    // Remove trailling spaces
+    String2RemWhiteSpace.erase(
+        std::find_if(
+            String2RemWhiteSpace.rbegin(), 
+            String2RemWhiteSpace.rend(), 
+            std::bind1st(std::not_equal_to<char>(), 
+            ' ')).base(), String2RemWhiteSpace.end());
+
+    return String2RemWhiteSpace;
 
 }
-

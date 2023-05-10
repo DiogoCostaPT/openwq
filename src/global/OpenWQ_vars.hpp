@@ -26,145 +26,25 @@
 class OpenWQ_vars
 {
     public:
-    OpenWQ_vars(){
 
-    }
-    OpenWQ_vars(size_t num_HydroComp, size_t num_EWF){
+        size_t num_HydroComp;
+        size_t num_EWF;
 
-        this-> num_HydroComp = num_HydroComp;
-        this-> num_EWF = num_EWF;
+        std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> 
+            chemass,                    // state-variable
+            d_chemass_dt_chem,          // derivative (chemistry)
+            d_chemass_dt_transp,        // derivative (transport)
+            d_chemass_ss,               // derivative (isolated) SS
+            d_chemass_ewf,              // derivative (isolated) EWF
+            d_chemass_ic,               // derivative (at start) IC
+            d_chemass_dt_chem_out,      // cumulative derivative for output in debug model
+            d_chemass_dt_transp_out,    // cumulative derivative for output in debug model
+            d_chemass_ss_out,           // cumulative derivative for output in debug model
+            d_chemass_ewf_out,          // cumulative derivative for output in debug model
+            ewf_conc;                   // concentration of external water fluxes
 
-        try{
+        // Constructor
+        OpenWQ_vars(size_t num_HydroComp, size_t num_EWF);
 
-            // Units of chemass are in: g (grams)
-            // Thus, concentrations are in mg/l (or g/m3) and volume in m3
-            chemass = std::unique_ptr<
-                arma::field< // Compartments
-                arma::field< // Chemical Species
-                arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
-            
-            // ############################################
-            // Mass changes (for solver separation and DEBUG mode activation)
-            // ############################################
-
-            // ############################################
-            // Derivatives
-
-            // Derivative (chemistry)
-            d_chemass_dt_chem = std::unique_ptr<
-                arma::field< // Compartments
-                arma::field< // Chemical Species
-                arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
-
-            // Derivative (water transport)
-            d_chemass_dt_transp = std::unique_ptr<
-                arma::field< // Compartments
-                arma::field< // Chemical Species
-                arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
-
-            // ############################################
-            // Single time, constant or isolated changes 
-            // to state-variable
-
-            // IC (single time change at start of simulation)
-            d_chemass_ic = std::unique_ptr<
-                arma::field< // Compartments
-                arma::field< // Chemical Species
-                arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
-    
-            // Derivative (ss: sink or load)
-            d_chemass_ss = std::unique_ptr<
-                arma::field< // Compartments
-                arma::field< // Chemical Species
-                arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
-
-            // Derivative (ewf: external water flux)
-            d_chemass_ewf = std::unique_ptr<
-                arma::field< // Compartments
-                arma::field< // Chemical Species
-                arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
-
-            // ############################################
-            // Cumulative Mass changes 
-            // Cumulating mass changes until next output is printed
-            // Needed for Debug mode
-            // ############################################
-
-            // ############################################
-            // Derivatives
-
-            // Derivative (chemistry)
-            d_chemass_dt_chem_out = std::unique_ptr<
-                arma::field< // Compartments
-                arma::field< // Chemical Species
-                arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
-
-            // Derivative (water transport)
-            d_chemass_dt_transp_out = std::unique_ptr<
-                arma::field< // Compartments
-                arma::field< // Chemical Species
-                arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
-
-            // Derivative (ewf: external water flux)
-            d_chemass_ewf_out = std::unique_ptr<
-                arma::field< // Compartments
-                arma::field< // Chemical Species
-                arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
-                
-            // ############################################
-            // Single time, constant or isolated changes 
-            // to state-variable
-
-            // Derivative (ss: sink and source)
-            d_chemass_ss_out = std::unique_ptr<
-                arma::field< // Compartments
-                arma::field< // Chemical Species
-                arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_HydroComp));
-
-            // ############################################
-            // External IN-fluxes
-            // ############################################
-            ewf_conc = std::unique_ptr<
-                arma::field< // Compartments
-                arma::field< // Chemical Species
-                arma::Cube<  // Dimensions: nx, ny, nz
-                double>>>>(new arma::field<arma::field<arma::cube>>(num_EWF));
-
-        }catch(const std::exception& e){
-
-            // Write Error in Console only (the program hasn't started yet)
-            std::cout << 
-                "ERROR: An exception occured during memory allocation (openWQ_vars.hpp)" 
-                << std::endl;
-            exit (EXIT_FAILURE);
-
-        }
-
-    }
-    size_t num_HydroComp;
-    size_t num_EWF;
-
-    std::unique_ptr<arma::field<arma::field<arma::Cube<double>>>> 
-        chemass,                    // state-variable
-        d_chemass_dt_chem,          // derivative (chemistry)
-        d_chemass_dt_transp,        // derivative (transport)
-        d_chemass_ss,               // derivative (isolated) SS
-        d_chemass_ewf,              // derivative (isolated) EWF
-        d_chemass_ic,               // derivative (at start) IC
-        d_chemass_dt_chem_out,      // cumulative derivative for output in debug model
-        d_chemass_dt_transp_out,    // cumulative derivative for output in debug model
-        d_chemass_ss_out,           // cumulative derivative for output in debug model
-        d_chemass_ewf_out,          // cumulative derivative for output in debug model
-        ewf_conc;                   // concentration of external water fluxes
 
 };

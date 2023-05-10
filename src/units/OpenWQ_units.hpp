@@ -35,44 +35,49 @@ class OpenWQ_units{
 
     public: 
 
-    void Convert_Units(
-        double& input_value,                      // input value (passed by reference)
-        std::vector<double> unit_multiplers);   // multiplers (numerator and denominator) 
+        void Convert_Units(
+            double& input_value,                      // input value (passed by reference)
+            std::vector<double> unit_multiplers);   // multiplers (numerator and denominator) 
 
-    bool Calc_Unit_Multipliers(
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_output& OpenWQ_output,
-        std::vector<double>& unit_multiplers,   // multiplers (numerator and denominator)
-        std::string input_unit,                 // input units
-        std::vector<std::string>& units,        // units (numerator and denominator)
-        bool direction_2native);                // direction of the conversion: 
-                                                // to native (true) or 
-                                                // from native to desired output units (false)
+        bool Calc_Unit_Multipliers(
+            OpenWQ_wqconfig& OpenWQ_wqconfig,
+            OpenWQ_output& OpenWQ_output,
+            std::vector<double>& unit_multiplers,   // multiplers (numerator and denominator)
+            std::string input_unit,                 // input units
+            std::vector<std::string>& units,        // units (numerator and denominator)
+            bool direction_2native);                // direction of the conversion: 
+                                                    // to native (true) or 
+                                                    // from native to desired output units (false)
+        
+        time_t convertTime_ints2time_t(
+                OpenWQ_wqconfig& OpenWQ_wqconfig, 
+                int YYYY, 
+                int MM, 
+                int DD, 
+                int HH, 
+                int MIN,
+                int SEC);
+        
+        time_t convertTime_str2time_t(
+                OpenWQ_wqconfig& OpenWQ_wqconfig,
+                std::string datetime_str);
 
-    bool Check_Mass_Units(
-        std::string unit_i,         // unit of numerator or denominator
-        double& unit_multipler_i);  // multiplier of numerator or denominator
+    private:
 
-    bool Check_Volume_Units(
-        std::string unit_i,         // unit of numerator or denominator
-        double& unit_multipler_i);  // multiplier of numerator or denominator
+        bool Check_Mass_Units(
+            std::string unit_i,         // unit of numerator or denominator
+            double& unit_multipler_i);  // multiplier of numerator or denominator
 
-    bool Check_Time_Units(
-        std::string unit_i,         // unit of numerator or denominator
-        double& unit_multipler_i);  // multiplier of numerator or denominator
+        bool Check_Volume_Units(
+            std::string unit_i,         // unit of numerator or denominator
+            double& unit_multipler_i);  // multiplier of numerator or denominator
 
-    time_t convertTime_ints2time_t(
-        OpenWQ_wqconfig& OpenWQ_wqconfig, 
-        int YYYY, 
-        int MM, 
-        int DD, 
-        int HH, 
-        int MIN,
-        int SEC);
+        bool Check_Time_Units(
+            std::string unit_i,         // unit of numerator or denominator
+            double& unit_multipler_i);  // multiplier of numerator or denominator
 
-    time_t convertTime_str2time_t(
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
-        std::string datetime_str);
+
+
         
 };
 

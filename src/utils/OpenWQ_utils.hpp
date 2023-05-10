@@ -46,6 +46,19 @@ class OpenWQ_utils{
         std::string get_jsonKeyNull_msg_start_NOabort();
         std::string get_jsonKeyNull_msg_end_NOabort();
 
+        // Removing leading and trailling whitespaces
+        std::string RemoveStrLeadTrailWhiteSpaces(
+                std::string String2RemWhiteSpace);
+
+        
+        void RequestJsonKeyVal_errorAbort(
+            OpenWQ_wqconfig& OpenWQ_wqconfig,
+            OpenWQ_output& OpenWQ_output,
+            std::string jsonKey,
+            std::string msgIndetifier,
+            std::string varType,
+            bool abort_flag);
+
     public:
 
     // Get number of lines in file
@@ -61,10 +74,6 @@ class OpenWQ_utils{
     int FindStrIndexInVectStr(
         std::vector<std::string> VectString,
         std::string Str2Find);
-
-    // Removing leading and trailling whitespaces
-    std::string RemoveStrLeadTrailWhiteSpaces(
-        std::string String2RemWhiteSpace);
 
     // Convert string to upper case
     std::string ConvertStringToUpperCase(
@@ -124,13 +133,6 @@ class OpenWQ_utils{
         std::string msgIndetifier,
         bool abort_flag);
 
-    void RequestJsonKeyVal_errorAbort(
-        OpenWQ_wqconfig& OpenWQ_wqconfig,
-        OpenWQ_output& OpenWQ_output,
-        std::string jsonKey,
-        std::string msgIndetifier,
-        std::string varType,
-        bool abort_flag);
 
 
 };

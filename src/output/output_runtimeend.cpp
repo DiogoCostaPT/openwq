@@ -15,13 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// For VTK support:
-// This was built for hexahedrons (see line 66) for now (cubes, Rectangular cuboid, Trigonal trapezohedron, etc)
-// But line 33:33 makes determining cubes of side lenght = 1 (but this can all be changed)
-// based on https://lorensen.github.io/VTKExamples/site/Cxx/IO/WriteVTU/
 
-
-#include "output/OpenWQ_output.hpp"
+#include "OpenWQ_output.hpp"
 
 
 int OpenWQ_output::writeResults(
@@ -620,33 +615,4 @@ int OpenWQ_output::writeHDF5(
     }
 
     return EXIT_SUCCESS;
-}
-
-
-/* ########################################
-// Write to Console and Log file
-######################################## */
-
-void OpenWQ_output::ConsoleLog(
-    OpenWQ_wqconfig& OpenWQ_wqconfig,
-    std::string& msg_string,
-    bool print_console,
-    bool print_logFile){
-
-    // Print to Console if Requested (if print_console = true)
-    if (print_console == true)
-        std::cout << msg_string << std::endl;
-
-    // Print to Console if Requested (if print_console = true)
-    if (print_logFile == true){
-
-        // Append line with error or warnning message
-        std::ofstream log(
-            OpenWQ_wqconfig.get_LogFile_name_fullpath(), 
-            std::ios_base::app | std::ios_base::out);
-
-        log << msg_string.append("\n");
-
-    }
-
 }

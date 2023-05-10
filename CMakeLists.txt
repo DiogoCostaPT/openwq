@@ -21,7 +21,7 @@
 # 5) Open a shell inside that container: docker exec -it <container id> /bin/bash
 # 6) Armadillo now disables default hdf5 support for save/load, so inside the container you need to go to “/usr/include/armadillo_bits/config.hpp” and uncomment #define ARMA_USE_HDF5
 # 7) Inside the contained, go to the openwq folder that contains CMakeLists.txt, Dockerfile, and docker-compose.yml
-# 8) Compile with: rm CMakeCache.txt; rm -r CMakeFiles; cmake . ; make -B; rm *.mod
+# 8) Compile with: rm CMakeCache.txt; rm -r CMakeFiles; cmake . ; make -j 2; rm *.mod
 # That's all !!!
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10 FATAL_ERROR)
