@@ -74,9 +74,7 @@ class OpenWQ_hostModelconfig
         ~OpenWQ_hostModelconfig();
 
         /******** Methods *********/
-        
-
-        
+    
         /********************
          * HydroTuple methods
         *********************/
