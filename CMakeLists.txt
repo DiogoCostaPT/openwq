@@ -405,7 +405,8 @@ ELSEIF("${COMPILE_TARGET}" STREQUAL "summa_openwq")
                         ${ENGINE_DIR}/pOverwrite.f90
                         ${ENGINE_DIR}/read_param.f90
                         ${ENGINE_DIR}/paramCheck.f90
-                        ${ENGINE_DIR}/check_icond.f90)
+                        ${ENGINE_DIR}/check_icond.f90
+                        ${OPENWQ_INTERFACE_DIR}/summa_openWQ_allocspace.f90)
 
                 # Define routines for the SUMMA model runs
                 SET(MODRUN
