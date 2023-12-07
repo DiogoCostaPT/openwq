@@ -54,9 +54,11 @@ MESSAGE(STATUS "OpenWQ Compilation Setup:")
 MESSAGE(STATUS "  => Compilation Target: ${COMPILE_TARGET}")
 MESSAGE(STATUS "  => Compilation Mode: ${COMPILE_MODE}")
 MESSAGE(STATUS "##########################################")
-
 # Check CPU architecture (arm or x86) for netcdf library
-IF(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
+execute_process(COMMAND uname -p
+                OUTPUT_VARIABLE SYSTEM_PROCESSOR
+                OUTPUT_STRIP_TRAILING_WHITESPACE)
+IF(SYSTEM_PROCESSOR MATCHES "aarch64")
         SET(NETCDF_LIB_PATH "/usr/lib/aarch64-linux-gnu/libnetcdff.a")
 ELSE()
         SET(NETCDF_LIB_PATH "/usr/lib/x86_64-linux-gnu/libnetcdff.a")
