@@ -63,6 +63,7 @@ class OpenWQ_hostModelconfig
         // to avoid concentration instabilities and numerical blowup
         // uses native units: m3
         const double watervol_minlim = 1;
+        const double waterflux_minlim = 1e-08;
 
 
 
@@ -120,6 +121,8 @@ class OpenWQ_hostModelconfig
         void set_waterVol_hydromodel_at(int index, int ix, int iy, int iz, double value);
         // waterVol_minlim method
         double get_watervol_minlim();
+        // waterflux_minlim method
+        double get_waterflux_minlim();
         
         /*
         * dependVar methods
