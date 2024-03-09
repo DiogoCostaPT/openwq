@@ -181,6 +181,11 @@ double OpenWQ_hostModelconfig::get_watervol_minlim()
 {
     return this->watervol_minlim;
 }
+// waterflux_minlim method
+double OpenWQ_hostModelconfig::get_waterflux_minlim()
+{
+    return this->waterflux_minlim;
+}
 
 /*
 * dependVar methods
