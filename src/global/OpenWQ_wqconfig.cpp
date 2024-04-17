@@ -60,7 +60,7 @@ OpenWQ_wqconfig::OpenWQ_wqconfig() {
 }
 
 // Destructor
-// OpenWQ_wqconfig::~OpenWQ_wqconfig() {}
+OpenWQ_wqconfig::~OpenWQ_wqconfig() {}
 
 //###############################################
 // Methods 
