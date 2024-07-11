@@ -165,7 +165,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     unsigned long cmpi_ssi;                     // model index for compartment Compartment_name_name
     unsigned long chem_ssi;                     // model index for compartment Compartment_name_name
     unsigned long sinksource_ssi;               // = 0 (source), = 1 (sink)
-    unsigned int num_rowdata;                   // number of rows of data in JSON (YYYY, MM, DD, HH,...)
+    unsigned int num_rowdata = 0;               // number of rows of data in JSON (YYYY, MM, DD, HH,...)
     std::string Type;                           // from JSON filec (only used in SS)
     std::string ascii_FilePath;                 // additional information for ASCII data input
     std::string ascii_delimiter;                // additional information for ASCII data input
@@ -197,7 +197,7 @@ void OpenWQ_extwatflux_ss::Set_EWFandSS_jsonAscii(
     std::string errorMsgIdentifier;             // error message section identifier
     bool validEntryFlag;                        // valid entry flag to skip problematic row data
     std::string loadScheme_str;                 // Load scheme string: (1) discrete or (2) continuous
-    double loadScheme_id;                       // Load scheme id number: (1) discrete or (2) continuous
+    double loadScheme_id = 9999;                // Load scheme id number: (1) discrete or (2) continuous
     std::string contDt_str;                     // time units of continuous load
 
 
@@ -1612,7 +1612,7 @@ void OpenWQ_extwatflux_ss::AppendRow_SS_EWF_FORC_jsonAscii(
 
     // Local variables            
     arma::Mat<double> row_data_row;                     // new row data (initially as col data)
-    int int_n_elem;
+    int int_n_elem = 0;
 
     // Transpose vector for adding to SinkSource_FORC as a new row
     row_data_row = row_data_col.t();

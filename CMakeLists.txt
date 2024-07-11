@@ -21,7 +21,7 @@
 # 5) Open a shell inside that container: docker exec -it <container id> /bin/bash
 # 6) Armadillo now disables default hdf5 support for save/load, so inside the container you need to go to “/usr/include/armadillo_bits/config.hpp” and uncomment #define ARMA_USE_HDF5
 # 7) Inside the contained, go to the openwq folder that contains CMakeLists.txt, Dockerfile, and docker-compose.yml
-# 8) Compile with e.g.: rm CMakeCache.txt; rm -r CMakeFiles; cmake -DCOMPILE_TARGET:STRING=summa_openwq -DCOMPILE_MODE:STRING=debug .; make -j 2; rm *.mod
+# 8) Compile with e.g.: rm CMakeCache.txt; rm -r CMakeFiles; cmake -DCOMPILE_MODE=debug .; make -j 2; rm *.mod
 
 # That's all !!!
 

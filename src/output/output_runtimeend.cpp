@@ -170,7 +170,7 @@ int OpenWQ_output::writeResults(
         // HDF5
         else if (OpenWQ_wqconfig.is_output_type_hdf5()){
 
-            //outputfile_type = "HDF5";
+            outputfile_type = "HDF5";
 
             // ###########
             // MAIN: label file and call main function
