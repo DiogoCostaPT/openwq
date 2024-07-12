@@ -24,16 +24,19 @@
 
 // ########################################################
 // openWQ
-#include "src/OpenWQ_couplercalls.h"
-#include "src/OpenWQ_global.h"
-#include "src/OpenWQ_readjson.h"
-#include "src/OpenWQ_initiate.h"
-#include "src/OpenWQ_chem.h"
-#include "src/OpenWQ_watertransp.h"
-#include "src/OpenWQ_extwatflux_ss.h"
-#include "src/OpenWQ_units.h"
-#include "src/OpenWQ_solver.h"
-#include "src/OpenWQ_output.h"
+#include "couplercalls/OpenWQ_couplercalls.hpp"
+#include "global/OpenWQ_hostModelconfig.hpp"
+#include "global/OpenWQ_json.hpp"
+#include "global/OpenWQ_wqconfig.hpp"
+#include "global/OpenWQ_vars.hpp"
+#include "readjson/OpenWQ_readjson.hpp"
+#include "initiate/OpenWQ_initiate.hpp"
+#include "chem/OpenWQ_chem.hpp"
+#include "watertransp/OpenWQ_watertransp.hpp"
+#include "extwatflux_ss/OpenWQ_extwatflux_ss.hpp"
+#include "units/OpenWQ_units.hpp"
+#include "solver/OpenWQ_solver.hpp"
+#include "output/OpenWQ_output.hpp"
 
 
 int main(int argc, char* argv[]) 

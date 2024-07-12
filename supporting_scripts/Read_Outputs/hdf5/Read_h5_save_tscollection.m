@@ -52,7 +52,7 @@ function output_tscollect = Read_h5_save_tscollection(...
         temp(isspace(temp)) = [];       % remove all spaces
         temp = upper(temp);             % upper case
         temp = strrep(temp,'/','|');    % *.h5 cannot have "/", so replaced by "|" 
-        temp = [temp,'-',file_extensions_i];
+        temp = strcat(temp,'-',file_extensions_i);
         extractElm_info_i{1} = temp;
         extractElm_info{i,1} = temp;
         loc_file_i = find(contains(filenames,extractElm_info_i{1}) == 1);
@@ -105,7 +105,7 @@ function output_tscollect = Read_h5_save_tscollection(...
     for i = 1:num_valid_info2print
 
         filename_i = extractElm_info_valid{i,1};
-        filepath_i = [folderpath,filename_i,'.h5'];
+        filepath_i = strcat(folderpath,filename_i,'.h5');
        
         % update waitbar
         hbar.iterate(1);
@@ -114,7 +114,7 @@ function output_tscollect = Read_h5_save_tscollection(...
         try
            datasets = {h5info(filepath_i).Datasets.Name}';
         catch
-           disp(['<main_hdf5> Warning: Could not find file ', filename_i,'.h5']) 
+           disp(strcat('<main_hdf5> Warning: Could not find file ', filename_i,'.h5')) 
            continue
         end
         
@@ -176,7 +176,7 @@ function output_tscollect = Read_h5_save_tscollection(...
         for tstep = 1:numel(timestamps)
 
             % load hdf5 data
-            data_i = h5read(filepath_i,['/',timestamps{tstep}])';
+            data_i = h5read(filepath_i,strcat('/',timestamps{tstep}))';
 
             % Time
             time_i = timestamps(tstep);

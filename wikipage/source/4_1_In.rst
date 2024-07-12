@@ -9,5 +9,6 @@ The model requires 4 input files or groups of files.
    4_1_1Master
    4_1_2Config
    4_1_3BGC
-   4_1_4Source
+   4_1_4TE
+   4_1_5Source
 
